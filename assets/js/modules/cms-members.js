@@ -450,7 +450,7 @@
 
     // Generar credenciales solo si es necesario
     if (action === "approve" || action === "debug") {
-      newStatus = "activo";
+      newStatus = "active";
       if (!member.member_id || member.member_id.length < 3 || action === "debug") {
         update.member_id = generateMemberId();
       }
@@ -472,6 +472,33 @@
             .eq("id", memberId);
 
           if (error) throw error;
+
+          // Generar hash de la contraseña via Edge Function (para approve/debug)
+          if ((action === "approve" || action === "debug") && update.access_password) {
+            const finalMemberId = update.member_id || member.member_id;
+            const authFnUrl = `${window.APP_CONFIG.SUPABASE_URL}/functions/v1/auth-member`;
+            try {
+              const resp = await fetch(authFnUrl, {
+                method: "POST",
+                headers: { 
+                  "Content-Type": "application/json",
+                  "apikey": window.APP_CONFIG.SUPABASE_ANON_KEY
+                },
+                body: JSON.stringify({
+                  action: "set-password",
+                  member_id: finalMemberId,
+                  password: update.access_password
+                })
+              });
+              const result = await resp.json();
+              if (!result.success) {
+                console.warn("Hash generation warning:", result.error);
+              }
+            } catch (hashErr) {
+              console.error("Error setting password hash:", hashErr);
+              window.Toast.warning("Credenciales guardadas pero hash falló. Usar DEBUG para regenerar.");
+            }
+          }
         } catch (err) {
           console.error("Error updating member", err);
           window.Toast.error("Error al actualizar: " + err.message);

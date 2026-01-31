@@ -56,7 +56,7 @@ serve(async (req) => {
       return jsonResponse({ error: "Member no encontrado" }, 404);
     }
 
-    if (member.status !== "activo") {
+    if (member.status !== "active") {
       return jsonResponse({ error: "Tu membresía no está activa" }, 403);
     }
 

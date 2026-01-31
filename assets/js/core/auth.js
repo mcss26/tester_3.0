@@ -71,36 +71,36 @@ window.Auth = {
       .trim();
 
     if (r === "admin" || r === "contable")
-      return this.toAppPath("pages/admin/admin-index.html");
-    if (r === "manager") return this.toAppPath("pages/admin/admin-index.html");
+      return this.toAppPath("pages/admin/admin-index");
+    if (r === "manager") return this.toAppPath("pages/admin/admin-index");
     if (r === "logistico")
-      return this.toAppPath("pages/logistica/logistica-index.html");
+      return this.toAppPath("pages/logistica/logistica-index");
 
     // Encargados
     if (r === "encargado_caja")
-      return this.toAppPath("pages/encargados/encargado-caja-index.html");
+      return this.toAppPath("pages/encargados/encargado-caja-index");
     if (r === "encargado_barra")
-      return this.toAppPath("pages/encargados/encargado-barra-index.html");
+      return this.toAppPath("pages/encargados/encargado-barra-index");
 
     // Other encargados (limpieza, seguridad) fallback to standard operativo or specific if exists
     if (r.startsWith("encargado_"))
-      return this.toAppPath("pages/operativo/operativo-index.html");
+      return this.toAppPath("pages/operativo/operativo-index");
 
     // Staff specific dashboard
     if (r === "staff_caja")
-      return this.toAppPath("pages/staff/staff-caja-index.html");
+      return this.toAppPath("pages/staff/staff-caja-index");
     if (r === "staff_barra")
-      return this.toAppPath("pages/staff/staff-barra-index.html");
+      return this.toAppPath("pages/staff/staff-barra-index");
 
     // Operativo fallback
-    return this.toAppPath("pages/operativo/operativo-index.html");
+    return this.toAppPath("pages/operativo/operativo-index");
   },
 
   async guardOrRedirect(allowedRoles = []) {
     const session = await this.getSession();
 
     if (!session) {
-      window.location.href = this.toAppPath("login.html");
+      window.location.href = this.toAppPath("login");
       return null;
     }
 
@@ -131,7 +131,7 @@ window.Auth = {
 
   async signOutAndGoLogin() {
     await window.sb.auth.signOut();
-    window.location.href = this.toAppPath("login.html");
+    window.location.href = this.toAppPath("login");
   },
 
   logout() {
