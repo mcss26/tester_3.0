@@ -319,6 +319,10 @@
       actionsHtml += `<button class="btn-danger btn-sm" data-action="reject" data-id="${m.id}">RECHAZAR</button>`;
     }
 
+    if (status === "activo" && m.access_password && !credsIssue) {
+       actionsHtml += `<button class="btn-ghost btn-sm" data-action="resend" data-id="${m.id}">RESEND</button>`;
+    }
+
     if (credsIssue) {
       actionsHtml += `<button class="btn-secondary btn-sm" data-action="debug" data-id="${m.id}">DEBUG</button>`;
     }
@@ -430,6 +434,8 @@
       confirmMsg = `¿Rechazar solicitud de ${member.nombre}?`;
     if (action === "debug")
       confirmMsg = `¿Regenerar credenciales y reenviar mail a ${member.nombre}?`;
+    if (action === "resend")
+      confirmMsg = `¿Reenviar credenciales a ${member.nombre}?`;
 
     if (!confirm(confirmMsg)) return;
 
@@ -450,24 +456,34 @@
       update.access_password = generatePassword();
     }
 
-    if (action === "reject") {
-      newStatus = "rechazado";
+    // Acción RESEND: No modifica DB, solo envía email/fallback
+    if (action === "resend") {
+       // Mock update para usar la misma lógica de email abajo, pero sin tocar DB
+       // No llamamos a supabase.update
+    } else if (action === "approve" || action === "reject" || action === "debug") {
+       // Lógica original de update DB
+       if (action === "reject") {
+          newStatus = "rechazado";
+          update.status = newStatus;
+       } else {
+          update.status = newStatus;
+       }
+
+       try {
+          const { error } = await window.sb
+            .from("members")
+            .update(update)
+            .eq("id", memberId);
+          if (error) throw error;
+       } catch (err) {
+          console.error("Error updating member", err);
+          window.Toast.error("Error al actualizar: " + err.message);
+          return;
+       }
     }
 
-    update.status = newStatus;
-
-    try {
-      const { error } = await window.sb
-        .from("members")
-        .update(update)
-        .eq("id", memberId);
-
-      if (error) throw error;
-
-      // Email Notification
       if (
-        (action === "approve" || action === "debug") &&
-        member.email &&
+        (action === "approve" || action === "debug" || action === "resend") &&
         window.APP_CONFIG?.EMAILJS
       ) {
         const finalMemberId = update.member_id || member.member_id;
@@ -481,6 +497,7 @@
           login_url: "https://midnightclub.com.ar",
         };
 
+        // Intento de envío (Best Effort)
         emailjs
           .send(
             window.APP_CONFIG.EMAILJS.SERVICE_ID,
@@ -489,12 +506,23 @@
           )
           .then(
             () => window.Toast.success("Email enviado"),
-            (err) => console.error("Error EmailJS", err),
-          );
+            (err) => {
+                console.error("Fallo EmailJS", err);
+                window.Toast.warning("No se pudo enviar email. Copia las credenciales:");
+            }
+          )
+          .finally(() => {
+             // FALLBACK MANUAL SIEMPRE VISIBLE POR SEGURIDAD
+             alert(`✅ CREDENCIALES (${action.toUpperCase()})\n\nSi el email falla, envía esto manualmente:\n\nID: ${finalMemberId}\nPASS: ${finalPass}\n\n(Copia estos datos antes de cerrar)`);
+          });
       }
 
-      window.Toast.success("Acción completada");
-      await loadMembers();
+      if (action !== "resend") {
+         window.Toast.success("Acción completada");
+         await loadMembers();
+      } else {
+         window.Toast.success("Proceso de reenvío finalizado");
+      }
     } catch (err) {
       console.error("Error processAction", err);
       window.Toast.error("Error: " + err.message);
