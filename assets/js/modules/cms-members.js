@@ -319,7 +319,13 @@
       actionsHtml += `<button class="btn-danger btn-sm" data-action="reject" data-id="${m.id}">RECHAZAR</button>`;
     }
 
-    if (status === "activo" && m.access_password && !credsIssue) {
+    // DEBUG: Ver por qué no aparece
+    if (status === "activo") {
+        console.log("Member Activo:", m.nombre, "Pass:", m.access_password ? "SI" : "NO", "CredsIssue:", credsIssue);
+    }
+
+    if (status === "activo") {
+       // Mostrar siempre para probar, si no hay pass el alert lo dirá igual (saldrá undefined)
        actionsHtml += `<button class="btn-ghost btn-sm" data-action="resend" data-id="${m.id}">RESEND</button>`;
     }
 
