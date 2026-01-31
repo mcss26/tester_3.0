@@ -441,59 +441,53 @@
     if (action === "debug")
       confirmMsg = `¿Regenerar credenciales y reenviar mail a ${member.nombre}?`;
     if (action === "resend")
-      confirmMsg = `¿Reenviar credenciales a ${member.nombre}?`;
+      confirmMsg = `¿Reenviar credenciales a ${member.nombre}? (No regenera pass)`;
 
     if (!confirm(confirmMsg)) return;
 
     const update = {};
     let newStatus = member.status;
 
+    // Generar credenciales solo si es necesario
     if (action === "approve" || action === "debug") {
       newStatus = "activo";
-
-      if (
-        !member.member_id ||
-        member.member_id.length < 3 ||
-        action === "debug"
-      ) {
+      if (!member.member_id || member.member_id.length < 3 || action === "debug") {
         update.member_id = generateMemberId();
       }
-
       update.access_password = generatePassword();
     }
 
-    // Acción RESEND: No modifica DB, solo envía email/fallback
-    if (action === "resend") {
-       // Mock update para usar la misma lógica de email abajo, pero sin tocar DB
-       // No llamamos a supabase.update
-    } else if (action === "approve" || action === "reject" || action === "debug") {
-       // Lógica original de update DB
-       if (action === "reject") {
-          newStatus = "rechazado";
-          update.status = newStatus;
-       } else {
-          update.status = newStatus;
-       }
+    if (action === "reject") {
+      newStatus = "rechazado";
+    }
 
-       try {
+    // Acción RESEND: No toca la DB
+    // Acciones DB: approve, reject, debug
+    if (action !== "resend") {
+        update.status = newStatus;
+        try {
           const { error } = await window.sb
             .from("members")
             .update(update)
             .eq("id", memberId);
+
           if (error) throw error;
-       } catch (err) {
+        } catch (err) {
           console.error("Error updating member", err);
           window.Toast.error("Error al actualizar: " + err.message);
           return;
-       }
+        }
     }
 
-      if (
+    // Email Notification (para approve, debug, resend)
+    if (
         (action === "approve" || action === "debug" || action === "resend") &&
         window.APP_CONFIG?.EMAILJS
-      ) {
-        const finalMemberId = update.member_id || member.member_id;
-        const finalPass = update.access_password;
+    ) {
+        // En resend, usamos las credenciales existentes si no hay update
+        const finalMemberId = update.member_id || member.member_id || "N/A";
+        // En resend, si no hubo update, usamos la pass existente (ojo: debe venir en el select inicial)
+        const finalPass = update.access_password || member.access_password || "No disponible (regenerar con DEBUG)";
 
         const params = {
           to_name: member.nombre,
@@ -503,35 +497,33 @@
           login_url: "https://midnightclub.com.ar",
         };
 
-        // Intento de envío (Best Effort)
+        // UI Feedback inmediato
+        window.Toast.info("Enviando email...");
+
+        // Intento de envío
         emailjs
           .send(
             window.APP_CONFIG.EMAILJS.SERVICE_ID,
             window.APP_CONFIG.EMAILJS.TEMPLATE_APROBADO,
-            params,
+            params
           )
           .then(
-            () => window.Toast.success("Email enviado"),
+            () => window.Toast.success("Email enviado correctamente"),
             (err) => {
                 console.error("Fallo EmailJS", err);
-                window.Toast.warning("No se pudo enviar email. Copia las credenciales:");
+                window.Toast.warning("Falló el envío de email");
             }
           )
           .finally(() => {
-             // FALLBACK MANUAL SIEMPRE VISIBLE POR SEGURIDAD
-             alert(`✅ CREDENCIALES (${action.toUpperCase()})\n\nSi el email falla, envía esto manualmente:\n\nID: ${finalMemberId}\nPASS: ${finalPass}\n\n(Copia estos datos antes de cerrar)`);
+             // FALLBACK SIEMPRE VISIBLE
+             const msg = `✅ DATOS DE ACCESO (${action.toUpperCase()})\n\nID: ${finalMemberId}\nPASS: ${finalPass}\n\nURL: midnightclub.com.ar\n\n(Copia estos datos y envíalos manualmente si el email falló)`;
+             alert(msg);
           });
-      }
+    }
 
-      if (action !== "resend") {
-         window.Toast.success("Acción completada");
-         await loadMembers();
-      } else {
-         window.Toast.success("Proceso de reenvío finalizado");
-      }
-    } catch (err) {
-      console.error("Error processAction", err);
-      window.Toast.error("Error: " + err.message);
+    if (action !== "resend") {
+      window.Toast.success("Base de datos actualizada");
+      await loadMembers();
     }
   }
 
