@@ -463,7 +463,8 @@
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "apikey": window.APP_CONFIG.SUPABASE_ANON_KEY
+            "apikey": window.APP_CONFIG.SUPABASE_ANON_KEY,
+            "Authorization": `Bearer ${window.APP_CONFIG.SUPABASE_ANON_KEY}`
           },
           body: JSON.stringify({
             action: "approve",
