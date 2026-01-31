@@ -129,6 +129,47 @@
     }
 
     /**
+     * Initializes MCO Member QR Counter widget.
+     */
+    function initMcoQrWidget() {
+        const widget = document.getElementById('mco-qr-widget');
+        const elGenerated = document.getElementById('mco-qr-generated');
+        const elValidated = document.getElementById('mco-qr-validated');
+        
+        if (!widget) return;
+
+        const MCO_BATCH_ID = '141e44d9-42bc-4c2b-a3bb-4d9721e03802';
+
+        const fetchMcoStats = async () => {
+            try {
+                // Get generated count
+                const { count: generated } = await window.sb
+                    .from('qr_codes')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('batch_id', MCO_BATCH_ID);
+
+                // Get validated count
+                const { count: validated } = await window.sb
+                    .from('qr_codes')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('batch_id', MCO_BATCH_ID)
+                    .eq('status', 'ACREDITADO');
+
+                if (elGenerated) elGenerated.textContent = generated || 0;
+                if (elValidated) elValidated.textContent = validated || 0;
+                
+                window.Utils.show(widget);
+            } catch (err) {
+                console.error('Error fetching MCO QR stats:', err);
+            }
+        };
+
+        // Initial Load & Polling
+        fetchMcoStats();
+        setInterval(fetchMcoStats, 60000);
+    }
+
+    /**
      * Initializes the Tab switching for different roles.
      */
     /**
@@ -189,5 +230,8 @@
     if (workDay) {
         initQrWidget(workDay);
     }
+    
+    // Always init MCO widget (not dependent on current workday)
+    initMcoQrWidget();
 
 })();

@@ -130,6 +130,19 @@
                                 <textarea id="input-notes" class="input" rows="2"
                                     placeholder="Detalles específicos para esta jornada..."></textarea>
                             </div>
+
+                            <!-- Configuración Web: Countdown -->
+                            <div class="form-group" style="margin-top:16px; padding-top:16px; border-top:1px solid var(--border-subtle);">
+                                <label class="form-label">Evento Countdown (Web pública)</label>
+                                <div style="display:flex; gap:8px; align-items:center;">
+                                    <select id="select-countdown-event" class="input" style="flex:1;">
+                                        <option value="">-- Sin countdown --</option>
+                                    </select>
+                                    <button class="btn-secondary btn-sm" id="btn-save-countdown">Guardar</button>
+                                </div>
+                                <small style="color:var(--text-muted); font-size:11px; margin-top:4px; display:block;">Este evento aparecerá en el contador regresivo de la web pública.</small>
+                            </div>
+
                             <div class="footer-actions">
                                 <button class="btn-secondary" id="btn-back-list">Ver Historial</button>
                                 <button class="btn-primary" id="btn-confirm-jornada">Confirmar y Abrir Jornada</button>

@@ -15,7 +15,7 @@
     const ui = {
         moduleContent: document.getElementById('module-content'),
         loadingState: document.getElementById('page-card-loading'),
-        
+
         // KPIs
         kpiStaff: document.getElementById('kpi-staff-cost'),
         kpiFixed: document.getElementById('kpi-fixed-cost'),
@@ -35,10 +35,14 @@
         // Actions
         btnConfirm: document.getElementById('btn-confirm-jornada'),
         btnHistory: document.getElementById('btn-back-list'),
-        
+
         // Slide Panel (History)
         panelInstance: null,
-        historyContainer: document.getElementById('history-container')
+        historyContainer: document.getElementById('history-container'),
+
+        // Countdown Config
+        selectCountdownEvent: document.getElementById('select-countdown-event'),
+        btnSaveCountdown: document.getElementById('btn-save-countdown')
     };
 
     // Validation
@@ -52,7 +56,8 @@
         staffPlan: {}, // { roleId: quantity }
         costsPlan: {}, // { costId: { amount, isAdjusted } }
         history: [],
-        isLoading: false
+        isLoading: false,
+        currentCountdownEventId: null
     };
 
     // 4. Initialization
@@ -131,18 +136,22 @@
 
         // Confirm Action
         ui.btnConfirm?.addEventListener('click', handleConfirm);
+
+        // Countdown Config
+        ui.btnSaveCountdown?.addEventListener('click', saveCountdownEvent);
     }
 
     // 6. Data Fetching
     async function loadInitialData() {
         window.Utils.setPageState(ui, { loading: true });
-        
+
         try {
-            const [rolesRes, costsRes, eventsRes, historyRes] = await Promise.all([
+            const [rolesRes, costsRes, eventsRes, historyRes, countdownRes] = await Promise.all([
                 window.sb.from('master_staff_roles').select('*').eq('active', true).order('name'),
                 window.sb.from('finance_opening_cost_defs').select('*').eq('is_active', true).order('sort_order'),
                 window.sb.from('events').select('*').gte('date', new Date().toISOString().split('T')[0]).order('date').limit(15),
-                window.WorkDayHelper.getWorkDaySummary()
+                window.WorkDayHelper.getWorkDaySummary(),
+                window.sb.from('site_config').select('url').eq('key', 'next_event_id').maybeSingle()
             ]);
 
             if (rolesRes.error) throw rolesRes.error;
@@ -153,6 +162,7 @@
             state.openingCosts = costsRes.data || [];
             state.events = eventsRes.data || [];
             state.history = flattenHistory(historyRes);
+            state.currentCountdownEventId = countdownRes?.data?.url || null;
 
             // Initialize plans
             state.roles.forEach(r => state.staffPlan[r.id] = 0);
@@ -181,6 +191,7 @@
     // 7. Rendering
     function renderPanels() {
         renderEventsDropdown();
+        renderCountdownDropdown();
         renderStaffList();
         renderCostsList();
         calculateTotals();
@@ -192,6 +203,16 @@
             <option value="${ev.id}">${window.Utils.escapeHtml(ev.name)} (${window.WorkDayHelper.formatDate(ev.date)})</option>
         `).join('');
         ui.selectEvent.innerHTML = '<option value="">-- Sin Evento Vinculado --</option>' + options;
+    }
+
+    function renderCountdownDropdown() {
+        if (!ui.selectCountdownEvent) return;
+        const options = state.events.map(ev => `
+            <option value="${ev.id}" ${ev.id === state.currentCountdownEventId ? 'selected' : ''}>
+                ${window.Utils.escapeHtml(ev.name)} (${window.WorkDayHelper.formatDate(ev.date)})
+            </option>
+        `).join('');
+        ui.selectCountdownEvent.innerHTML = '<option value="">-- Sin countdown --</option>' + options;
     }
 
     function renderStaffList() {
@@ -413,6 +434,33 @@
             // In a better design, this should be a single transaction/RPC.
         } finally {
             window.Utils.setPageState(ui, { loading: false });
+        }
+    }
+
+    // 11. Countdown Config
+    async function saveCountdownEvent() {
+        const eventId = ui.selectCountdownEvent?.value || null;
+        ui.btnSaveCountdown.disabled = true;
+        ui.btnSaveCountdown.textContent = 'Guardando...';
+
+        try {
+            const { error } = await window.sb
+                .from('site_config')
+                .upsert(
+                    { key: 'next_event_id', url: eventId || '', is_active: !!eventId },
+                    { onConflict: 'key' }
+                );
+
+            if (error) throw error;
+
+            state.currentCountdownEventId = eventId;
+            window.Toast.success('Countdown actualizado correctamente.');
+        } catch (e) {
+            console.error('Error saving countdown:', e);
+            window.Toast.error('Error al guardar el countdown.');
+        } finally {
+            ui.btnSaveCountdown.disabled = false;
+            ui.btnSaveCountdown.textContent = 'Guardar';
         }
     }
 

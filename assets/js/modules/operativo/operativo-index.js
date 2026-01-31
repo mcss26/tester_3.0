@@ -70,6 +70,45 @@
     }
   }
 
+  /**
+   * Initializes MCO Member QR Counter widget.
+   */
+  function initMcoQrWidget() {
+    const widget = document.getElementById('mco-qr-widget');
+    const elGenerated = document.getElementById('mco-qr-generated');
+    const elValidated = document.getElementById('mco-qr-validated');
+    
+    if (!widget) return;
+
+    const MCO_BATCH_ID = '141e44d9-42bc-4c2b-a3bb-4d9721e03802';
+
+    const fetchMcoStats = async () => {
+      try {
+        const { count: generated } = await window.sb
+          .from('qr_codes')
+          .select('*', { count: 'exact', head: true })
+          .eq('batch_id', MCO_BATCH_ID);
+
+        const { count: validated } = await window.sb
+          .from('qr_codes')
+          .select('*', { count: 'exact', head: true })
+          .eq('batch_id', MCO_BATCH_ID)
+          .eq('status', 'ACREDITADO');
+
+        if (elGenerated) elGenerated.textContent = generated || 0;
+        if (elValidated) elValidated.textContent = validated || 0;
+        
+        widget.classList.remove('hidden');
+      } catch (err) {
+        console.warn('Error fetching MCO QR stats:', err);
+      }
+    };
+
+    fetchMcoStats();
+    setInterval(fetchMcoStats, 60000);
+  }
+
   // Init
   await Promise.all([loadProfile(), loadSystemStatus()]);
+  initMcoQrWidget();
 })();
