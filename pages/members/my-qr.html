@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi QR - Midnight Club</title>
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <style>
+      .member-panel {
+          background-color: var(--color-bg-base);
+          color: var(--color-text-base);
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 2rem 1rem;
+      }
+      .member-qr-container {
+          width: 100%;
+          max-width: 400px;
+          display: flex;
+          flex-direction: column;
+          gap: 2rem;
+          align-items: center;
+      }
+      .qr-header {
+          text-align: center;
+      }
+      .qr-header h1 {
+          font-size: 1.5rem;
+          font-weight: 700;
+          margin-bottom: 0.5rem;
+          color: var(--color-brand-primary, #3b82f6);
+      }
+      .qr-header p {
+          color: var(--color-text-muted);
+      }
+      .qr-box {
+          background: white;
+          padding: 1.5rem;
+          border-radius: 1rem;
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 1rem;
+      }
+      .qr-code-mono {
+          font-family: monospace;
+          font-size: 0.875rem;
+          color: #333;
+          letter-spacing: 1px;
+      }
+      .qr-info {
+          text-align: center;
+          color: var(--color-text-muted);
+          font-size: 0.875rem;
+      }
+      .qr-warning {
+          color: var(--color-status-warning, #f59e0b);
+          margin-top: 0.5rem;
+          font-weight: 500;
+      }
+      .qr-used {
+          opacity: 0.6;
+          position: relative;
+      }
+      .qr-used::after {
+          content: 'USADO';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%) rotate(-45deg);
+          font-size: 2rem;
+          font-weight: 900;
+          color: red;
+          border: 4px solid red;
+          padding: 0.5rem 1rem;
+          border-radius: 0.5rem;
+          opacity: 0.8;
+      }
+      .state-block {
+          text-align: center;
+          padding: 2rem;
+          background: rgba(255,255,255,0.05);
+          border-radius: 1rem;
+          width: 100%;
+      }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+</head>
+<body class="member-panel">
+
+  <main class="member-qr-container">
+    <div id="qr-loading" class="state-block loading">
+      <div class="state-spinner" style="margin: 0 auto 1rem auto; width: 24px; height: 24px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+      <p class="state-title">Cargando...</p>
+    </div>
+
+    <div id="qr-content" class="hidden" style="width: 100%; display: flex; flex-direction: column; align-items: center; gap: 2rem;">
+      <header class="qr-header">
+        <h1>Tu Acceso Gratuito</h1>
+        <p id="member-name"></p>
+      </header>
+
+      <div id="qr-display" class="qr-box">
+        <canvas id="qr-canvas"></canvas>
+        <p id="qr-code-text" class="qr-code-mono"></p>
+      </div>
+
+      <div class="qr-info">
+        <p>Válido hasta: <strong id="valid-until"></strong></p>
+        <p class="qr-warning">Mostrá este QR en la entrada</p>
+      </div>
+    </div>
+
+    <div id="qr-unavailable" class="hidden state-block">
+      <p class="state-title" id="unavailable-title">Sin evento disponible</p>
+      <p class="state-desc" id="unavailable-desc">No hay evento activo esta noche.</p>
+    </div>
+
+    <div id="qr-action" class="hidden">
+      <button id="btn-generate" class="btn btn-primary btn-lg" style="background-color: var(--color-brand-primary); color: white; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: bold; border: none; cursor: pointer;">
+        Generar Mi QR
+      </button>
+    </div>
+  </main>
+
+  <script src="../../assets/js/core/config.js"></script>
+  <script src="../../assets/js/members/my-qr.js"></script>
+  <script>
+      // Simple spinner animation keyframes
+      const style = document.createElement('style');
+      style.innerHTML = `
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .hidden { display: none !important; }
+      `;
+      document.head.appendChild(style);
+  </script>
+</body>
+</html>

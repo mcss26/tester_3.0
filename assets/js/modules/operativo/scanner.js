@@ -122,6 +122,17 @@ document.addEventListener('DOMContentLoaded', async () => {
                 return;
             }
 
+            // Expiration Validation
+            if (qrcode.valid_until) {
+                const now = new Date();
+                const validUntil = new Date(qrcode.valid_until);
+                // Add a small grace period if needed, or strict.
+                if (now > validUntil) {
+                    handleResult(false, 'EXPIRADO', 'El QR ha vencido', code, qrcode);
+                    return;
+                }
+            }
+
             // Valid -> Acreditar
             // Optimistic UI could happen here, but let's wait for DB
             const { error: updateError } = await sb
@@ -138,7 +149,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             // Success
             let msg = qrcode.qr_batches?.name || 'Lote General';
-            if (qrcode.qr_batches?.market_source) msg += ` (${qrcode.qr_batches.market_source})`;
+            if (qrcode.member_id && qrcode.external_id) {
+                // Show Member ID for member QRs
+                msg = `Member: ${qrcode.external_id}`;
+            } else if (qrcode.qr_batches?.market_source) {
+                msg += ` (${qrcode.qr_batches.market_source})`;
+            }
             
             handleResult(true, 'ACCESO OK', msg, code, qrcode);
 
