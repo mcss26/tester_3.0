@@ -49,6 +49,7 @@
         createEventModal: document.getElementById('createEventModal'),
         inputEventName: document.getElementById('input-event-name'),
         inputEventDate: document.getElementById('input-event-date'),
+        inputEventTime: document.getElementById('input-event-time'),
         inputEventQrQty: document.getElementById('input-event-qr-qty'),
         btnCancelEventModal: document.getElementById('btnCancelEventModal'),
         btnCreateEvent: document.getElementById('btnCreateEvent')
@@ -485,6 +486,7 @@
     function openEventModal() {
         ui.inputEventName.value = '';
         ui.inputEventDate.value = ui.inputDate.value || new Date().toISOString().split('T')[0];
+        ui.inputEventTime.value = '23:59';
         ui.inputEventQrQty.value = '0';
         ui.createEventModal?.classList.remove('hidden');
         ui.inputEventName?.focus();
@@ -497,6 +499,7 @@
     async function handleCreateEvent() {
         const name = ui.inputEventName?.value.trim();
         const date = ui.inputEventDate?.value;
+        const eventTime = ui.inputEventTime?.value || '23:59';
         const qrQty = parseInt(ui.inputEventQrQty?.value) || 0;
 
         if (!name) return window.Toast.warning('Ingresa un nombre para el evento.');
@@ -509,7 +512,7 @@
             // 1. Create Event
             const { data: event, error: errEvent } = await window.sb
                 .from('events')
-                .insert({ name, date, status: 'active' })
+                .insert({ name, date, event_time: eventTime, status: 'active' })
                 .select()
                 .single();
 
