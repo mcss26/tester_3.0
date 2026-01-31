@@ -456,7 +456,8 @@
         .select(`*, master_proveedores (nombre_fantasia)`)
         .in("request_id", requestIds)
         .neq("status", "cancelled")
-        .order("eta_date", { ascending: true });
+        .order("eta_date", { ascending: true })
+        .limit(10000);
 
       if (ordError) throw ordError;
 
@@ -588,7 +589,8 @@
         .from("replenishment_items")
         .select(`*, master_sku (id, nombre, pack_qty, costo, costo_pack)`)
         .in("request_id", requestIds)
-        .neq("status", "cancelled");
+        .neq("status", "cancelled")
+        .limit(10000);
 
       const skuIds = (items || []).map((i) => i.sku_id);
       let stockMap = {};

@@ -177,9 +177,9 @@
                     master_proveedores (id, nombre_fantasia)
                 `,
         )
-        .eq("request_id", state.currentRequestId)
         .eq("pre_approval_status", "pre_approved")
-        .order("created_at", { ascending: true });
+        .order("created_at", { ascending: true })
+        .limit(5000);
 
       if (itemsError) throw itemsError;
 
@@ -413,7 +413,8 @@
       .from("replenishment_items")
       .select("*, master_proveedores(nombre_fantasia, id)")
       .eq("request_id", state.currentRequestId)
-      .neq("status", "cancelled");
+      .neq("status", "cancelled")
+      .limit(5000);
 
     if (error) {
       ui.containers.supplierList.innerHTML = `<div class="empty-state accent">Error: ${error.message}</div>`;
