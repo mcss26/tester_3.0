@@ -80,9 +80,12 @@
                                 </div>
                                 <div class="planner-col">
                                     <label class="form-label">Evento (Calendario)</label>
-                                    <select id="select-event" class="input">
-                                        <option value="">-- Sin Evento Vinculado --</option>
-                                    </select>
+                                    <div style="display:flex; gap:8px;">
+                                        <select id="select-event" class="input" style="flex:1;">
+                                            <option value="">-- Sin Evento Vinculado --</option>
+                                        </select>
+                                        <button class="btn-secondary btn-sm" id="btn-new-event" title="Crear evento">+</button>
+                                    </div>
                                 </div>
                                 <div class="planner-col"
                                     style="flex:0; min-width:140px; display:flex; align-items:center; gap:8px; padding-top:24px;">
@@ -182,6 +185,34 @@
             <div class="modal-footer">
                 <button class="btn-secondary" id="btnCancelModal">Cancelar</button>
                 <button class="btn-primary" id="btnConfirmModal">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Event Modal -->
+    <div class="modal-overlay hidden" id="createEventModal">
+        <div class="modal-card modal-sm">
+            <div class="modal-header">
+                <h2 class="modal-title">Nuevo Evento</h2>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Nombre del evento</label>
+                    <input type="text" id="input-event-name" class="input" placeholder="Ej: Noche de Halloween">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Fecha</label>
+                    <input type="date" id="input-event-date" class="input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Cantidad de QRs a generar</label>
+                    <input type="number" id="input-event-qr-qty" class="input" min="0" max="500" value="0" placeholder="0 = sin QRs">
+                    <small style="color:var(--text-muted); font-size:11px;">Dejar en 0 para no generar entradas automáticamente.</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="btnCancelEventModal">Cancelar</button>
+                <button class="btn-primary" id="btnCreateEvent">Crear Evento</button>
             </div>
         </div>
     </div>

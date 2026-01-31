@@ -42,7 +42,16 @@
 
         // Countdown Config
         selectCountdownEvent: document.getElementById('select-countdown-event'),
-        btnSaveCountdown: document.getElementById('btn-save-countdown')
+        btnSaveCountdown: document.getElementById('btn-save-countdown'),
+
+        // Event Modal
+        btnNewEvent: document.getElementById('btn-new-event'),
+        createEventModal: document.getElementById('createEventModal'),
+        inputEventName: document.getElementById('input-event-name'),
+        inputEventDate: document.getElementById('input-event-date'),
+        inputEventQrQty: document.getElementById('input-event-qr-qty'),
+        btnCancelEventModal: document.getElementById('btnCancelEventModal'),
+        btnCreateEvent: document.getElementById('btnCreateEvent')
     };
 
     // Validation
@@ -139,6 +148,14 @@
 
         // Countdown Config
         ui.btnSaveCountdown?.addEventListener('click', saveCountdownEvent);
+
+        // Event Modal
+        ui.btnNewEvent?.addEventListener('click', openEventModal);
+        ui.btnCancelEventModal?.addEventListener('click', closeEventModal);
+        ui.btnCreateEvent?.addEventListener('click', handleCreateEvent);
+        ui.createEventModal?.addEventListener('click', (e) => {
+            if (e.target === ui.createEventModal) closeEventModal();
+        });
     }
 
     // 6. Data Fetching
