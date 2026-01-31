@@ -481,6 +481,93 @@
         }
     }
 
+    // 12. Event Modal
+    function openEventModal() {
+        ui.inputEventName.value = '';
+        ui.inputEventDate.value = ui.inputDate.value || new Date().toISOString().split('T')[0];
+        ui.inputEventQrQty.value = '0';
+        ui.createEventModal?.classList.remove('hidden');
+        ui.inputEventName?.focus();
+    }
+
+    function closeEventModal() {
+        ui.createEventModal?.classList.add('hidden');
+    }
+
+    async function handleCreateEvent() {
+        const name = ui.inputEventName?.value.trim();
+        const date = ui.inputEventDate?.value;
+        const qrQty = parseInt(ui.inputEventQrQty?.value) || 0;
+
+        if (!name) return window.Toast.warning('Ingresa un nombre para el evento.');
+        if (!date) return window.Toast.warning('Selecciona una fecha.');
+
+        ui.btnCreateEvent.disabled = true;
+        ui.btnCreateEvent.textContent = 'Creando...';
+
+        try {
+            // 1. Create Event
+            const { data: event, error: errEvent } = await window.sb
+                .from('events')
+                .insert({ name, date, status: 'active' })
+                .select()
+                .single();
+
+            if (errEvent) throw errEvent;
+
+            // 2. If QR quantity specified, create batch + codes
+            if (qrQty > 0) {
+                const { data: batch, error: errBatch } = await window.sb
+                    .from('qr_batches')
+                    .insert({
+                        name: `${name} - Entradas`,
+                        event_id: event.id,
+                        financial_type: 'VENTA',
+                        market_source: 'BOLETERIA',
+                        unit_price: 0,
+                        created_by: session.user.id
+                    })
+                    .select()
+                    .single();
+
+                if (errBatch) throw errBatch;
+
+                // 3. Generate QR codes
+                const codes = Array.from({ length: qrQty }, () => ({
+                    batch_id: batch.id,
+                    code: crypto.randomUUID(),
+                    status: 'PENDIENTE'
+                }));
+
+                const { error: errCodes } = await window.sb
+                    .from('qr_codes')
+                    .insert(codes);
+
+                if (errCodes) throw errCodes;
+
+                window.Toast.success(`Evento "${name}" creado con ${qrQty} entradas.`);
+            } else {
+                window.Toast.success(`Evento "${name}" creado.`);
+            }
+
+            // Add to state and re-render dropdowns
+            state.events.unshift(event);
+            renderEventsDropdown();
+            renderCountdownDropdown();
+
+            // Auto-select new event
+            ui.selectEvent.value = event.id;
+
+            closeEventModal();
+        } catch (e) {
+            console.error('Error creating event:', e);
+            window.Toast.error(e.message || 'Error al crear evento.');
+        } finally {
+            ui.btnCreateEvent.disabled = false;
+            ui.btnCreateEvent.textContent = 'Crear Evento';
+        }
+    }
+
     // Start
     init();
 
