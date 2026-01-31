@@ -129,19 +129,14 @@
     return `MC-${num}`;
   }
 
-  function generatePassword() {
-    return Math.random().toString(36).slice(-6).toUpperCase();
-  }
-
   function hasCredsIssue(member, statusOverride) {
     const status = (statusOverride ?? member.status ?? "")
       .toString()
       .toLowerCase();
     if (status !== "activo") return false;
     const mid = member.member_id;
-    const pass = member.access_password;
     if (!mid || mid === "null" || mid.length < 2) return true;
-    if (!pass || pass === "null") return true;
+    // Ya no verificamos access_password porque ya no existe en DB
     return false;
   }
 
@@ -200,7 +195,7 @@
         const { data, error } = await window.sb
           .from("members")
           .select(
-            "id, created_at, nombre, nacimiento, instagram, telefono, email, status, member_id, access_password",
+            "id, created_at, nombre, nacimiento, instagram, telefono, email, status, member_id",
           )
           .order("created_at", { ascending: false })
           .range(from, from + PAGE_SIZE - 1);
@@ -319,13 +314,7 @@
       actionsHtml += `<button class="btn-danger btn-sm" data-action="reject" data-id="${m.id}">RECHAZAR</button>`;
     }
 
-    // DEBUG: Ver por qué no aparece
     if (status === "activo") {
-        console.log("Member Activo:", m.nombre, "Pass:", m.access_password ? "SI" : "NO", "CredsIssue:", credsIssue);
-    }
-
-    if (status === "activo") {
-       // Mostrar siempre para probar, si no hay pass el alert lo dirá igual (saldrá undefined)
        actionsHtml += `<button class="btn-ghost btn-sm" data-action="resend" data-id="${m.id}">RESEND</button>`;
     }
 
@@ -445,112 +434,102 @@
 
     if (!confirm(confirmMsg)) return;
 
-    const update = {};
-    let newStatus = member.status;
+    const authFnUrl = `${window.APP_CONFIG.SUPABASE_URL}/functions/v1/auth-member`;
 
-    // Generar credenciales solo si es necesario
+    // APPROVE y DEBUG: Usar Edge Function (genera password, hashea, envía email)
     if (action === "approve" || action === "debug") {
-      newStatus = "active";
-      if (!member.member_id || member.member_id.length < 3 || action === "debug") {
-        update.member_id = generateMemberId();
-      }
-      update.access_password = generatePassword();
-    }
-
-    if (action === "reject") {
-      newStatus = "rechazado";
-    }
-
-    // Acción RESEND: No toca la DB
-    // Acciones DB: approve, reject, debug
-    if (action !== "resend") {
-        update.status = newStatus;
-        try {
-          const { error } = await window.sb
+      try {
+        // Asegurar que el miembro tenga member_id
+        let finalMemberId = member.member_id;
+        if (!finalMemberId || finalMemberId.length < 3 || action === "debug") {
+          finalMemberId = generateMemberId();
+          // Actualizar member_id en DB primero
+          await window.sb
             .from("members")
-            .update(update)
+            .update({ member_id: finalMemberId })
             .eq("id", memberId);
-
-          if (error) throw error;
-
-          // Generar hash de la contraseña via Edge Function (para approve/debug)
-          if ((action === "approve" || action === "debug") && update.access_password) {
-            const finalMemberId = update.member_id || member.member_id;
-            const authFnUrl = `${window.APP_CONFIG.SUPABASE_URL}/functions/v1/auth-member`;
-            try {
-              const resp = await fetch(authFnUrl, {
-                method: "POST",
-                headers: { 
-                  "Content-Type": "application/json",
-                  "apikey": window.APP_CONFIG.SUPABASE_ANON_KEY
-                },
-                body: JSON.stringify({
-                  action: "set-password",
-                  member_id: finalMemberId,
-                  password: update.access_password
-                })
-              });
-              const result = await resp.json();
-              if (!result.success) {
-                console.warn("Hash generation warning:", result.error);
-              }
-            } catch (hashErr) {
-              console.error("Error setting password hash:", hashErr);
-              window.Toast.warning("Credenciales guardadas pero hash falló. Usar DEBUG para regenerar.");
-            }
-          }
-        } catch (err) {
-          console.error("Error updating member", err);
-          window.Toast.error("Error al actualizar: " + err.message);
-          return;
         }
-    }
 
-    // Email Notification (para approve, debug, resend)
-    if (
-        (action === "approve" || action === "debug" || action === "resend") &&
-        window.APP_CONFIG?.EMAILJS
-    ) {
-        // En resend, usamos las credenciales existentes si no hay update
-        const finalMemberId = update.member_id || member.member_id || "N/A";
-        // En resend, si no hubo update, usamos la pass existente (ojo: debe venir en el select inicial)
-        const finalPass = update.access_password || member.access_password || "No disponible (regenerar con DEBUG)";
+        window.Toast.info("Procesando aprobación...");
 
-        const params = {
-          to_name: member.nombre,
-          to_email: member.email,
+        console.log("🔍 DEBUG - Llamando Edge Function:", {
+          url: authFnUrl,
           member_id: finalMemberId,
-          member_pass: finalPass,
-          login_url: "https://midnightclub.com.ar",
-        };
+          action: "approve"
+        });
 
-        // UI Feedback inmediato
-        window.Toast.info("Enviando email...");
+        // Llamar Edge Function para aprobar
+        const resp = await fetch(authFnUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "apikey": window.APP_CONFIG.SUPABASE_ANON_KEY
+          },
+          body: JSON.stringify({
+            action: "approve",
+            member_id: finalMemberId
+          })
+        });
 
-        // Intento de envío
-        emailjs
-          .send(
-            window.APP_CONFIG.EMAILJS.SERVICE_ID,
-            window.APP_CONFIG.EMAILJS.TEMPLATE_APROBADO,
-            params
-          )
-          .then(
-            () => window.Toast.success("Email enviado correctamente"),
-            (err) => {
-                console.error("Fallo EmailJS", err);
-                window.Toast.warning("Falló el envío de email");
-            }
-          )
-          .finally(() => {
-             // FALLBACK SIEMPRE VISIBLE
-             const msg = `✅ DATOS DE ACCESO (${action.toUpperCase()})\n\nID: ${finalMemberId}\nPASS: ${finalPass}\n\nURL: midnightclub.com.ar\n\n(Copia estos datos y envíalos manualmente si el email falló)`;
-             alert(msg);
+        console.log("🔍 DEBUG - Response status:", resp.status, resp.statusText);
+
+        const result = await resp.json();
+
+        console.log("🔍 DEBUG - Response body:", result);
+
+        if (!resp.ok || !result.success) {
+          console.error("❌ Error en response:", {
+            status: resp.status,
+            result
           });
+          throw new Error(result.error || "Error al aprobar miembro");
+        }
+
+        // Mostrar credenciales como fallback (por si el email falla)
+        if (result.credentials) {
+          const msg = `✅ MIEMBRO APROBADO\n\nID: ${result.credentials.member_id}\nPASS: ${result.credentials.password}\n\nURL: midnightclub.com.ar\n\n${result.warning ? '⚠️ ' + result.warning : 'Email enviado correctamente'}\n\n(Copia estos datos por seguridad)`;
+          alert(msg);
+        }
+
+        if (result.warning) {
+          window.Toast.warning(result.warning);
+        } else {
+          window.Toast.success("Miembro aprobado y email enviado");
+        }
+
+        await loadMembers();
+        return;
+      } catch (err) {
+        console.error("Error en approve:", err);
+        window.Toast.error("Error: " + err.message);
+        return;
+      }
     }
 
-    if (action !== "resend") {
-      window.Toast.success("Base de datos actualizada");
-      await loadMembers();
+    // REJECT: Solo actualizar status en DB
+    if (action === "reject") {
+      try {
+        const { error } = await window.sb
+          .from("members")
+          .update({ status: "rechazado" })
+          .eq("id", memberId);
+
+        if (error) throw error;
+
+        window.Toast.success("Solicitud rechazada");
+        await loadMembers();
+        return;
+      } catch (err) {
+        console.error("Error al rechazar:", err);
+        window.Toast.error("Error: " + err.message);
+        return;
+      }
+    }
+
+    // RESEND: No implementado aún (requiere acción separada en Edge Function)
+    if (action === "resend") {
+      window.Toast.warning("Función RESEND aún no implementada. Usa DEBUG para regenerar credenciales.");
+      return;
     }
   }
 
