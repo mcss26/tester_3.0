@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMS - Members</title>
+  <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+
+<body class="app-shell admin-shell admin-scroll cms-members"
+  data-allowed-roles="operativo,staff_barra,staff_operativo,admin,contable">
+
+  <header class="app-topbar">
+    <div class="topbar-left">
+      <button class="btn-icon btn-icon-flat" data-go="pages/operativo/operativo-cms.html" aria-label="Volver">←</button>
+      <span class="topbar-back">CMS</span>
+    </div>
+
+    <div class="topbar-center">
+      <span class="topbar-title">MEMBERS</span>
+    </div>
+
+    <div class="topbar-right">
+      <span class="system-status-pill status-open topbar-pill topbar-pill-quiet" id="cms-status-pill">SOLICITUDES</span>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <div class="page-card-wrap">
+      <div class="page-card">
+
+        <!-- Loading State -->
+        <div class="page-card-loading" id="page-card-loading">
+          <div class="state-block loading">
+            <div class="state-spinner" aria-hidden="true"></div>
+            <div class="state-loader"></div>
+            <p class="state-title">Cargando datos...</p>
+            <p class="state-desc">Sincronizando solicitudes</p>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="page-card-empty" id="page-card-empty">
+          <div class="state-block loading">
+            <p class="state-title">Sin resultados</p>
+            <p class="state-desc">No hay solicitudes disponibles.</p>
+          </div>
+        </div>
+
+        <!-- Module Content -->
+        <div id="module-content">
+          <div class="staff-dashboard cms-dashboard">
+            <div class="dashboard-header align-start">
+              <div>
+                <h2 class="dashboard-title dashboard-title-soft">CMS Members</h2>
+                <p class="dashboard-subtitle dashboard-subtitle-soft">Solicitudes, altas y cumpleaños</p>
+              </div>
+              <div class="actions-bar">
+                <span class="badge status-neutral">Total <span class="pill-count" id="count-total">0</span></span>
+                <span class="badge status-success">Activos <span class="pill-count" id="count-activo">0</span></span>
+                <button id="btnRefresh" class="btn-ghost btn-sm" aria-label="Refrescar">Refrescar</button>
+              </div>
+            </div>
+
+            <div class="filter-bar cms-tabs" aria-label="Vistas de members">
+              <div class="tab-bar">
+                <button class="tab-chip active" data-view="solicitudes">Solicitudes</button>
+                <button class="tab-chip" data-view="cumple">Cumpleaños</button>
+              </div>
+            </div>
+
+            <!-- VIEW: Solicitudes -->
+            <div id="view-solicitudes" class="view-container">
+
+              <!-- Toolbar (Filters + Search) -->
+              <div class="filter-bar filter-bar-compact">
+                <div class="filter-group">
+                  <button class="status-pill status-warning filter-pill active" data-status="pendiente">Pendientes <span
+                      class="pill-count" id="count-pendiente">0</span></button>
+                  <button class="status-pill status-success filter-pill" data-status="activo">Activos <span
+                      class="pill-count" id="count-activo-pill">0</span></button>
+                  <button class="status-pill status-error filter-pill" data-status="rechazado">Rechazados <span
+                      class="pill-count" id="count-rechazado">0</span></button>
+                  <button class="status-pill status-error filter-pill" data-status="banned">Baneados <span
+                      class="pill-count" id="count-banned">0</span></button>
+                  <button class="status-pill status-error filter-pill" data-status="debug">Credenciales <span
+                      class="pill-count" id="count-debug">0</span></button>
+                  <button class="status-pill status-neutral filter-pill" data-status="all">Todos <span
+                      class="pill-count" id="count-total-pill">0</span></button>
+                </div>
+
+                <div class="filter-actions">
+                  <input type="search" id="searchInput" class="input input-compact filter-input"
+                    placeholder="Buscar por nombre..." aria-label="Buscar por nombre">
+                </div>
+              </div>
+
+              <!-- Instagram Bulk Tool -->
+              <div class="filter-bar filter-bar-compact cms-bulk-row" aria-label="Herramienta de Instagram">
+                <div class="filter-group">
+                  <span class="faint">Instagrams Bulk</span>
+                </div>
+                <div class="filter-actions">
+                  <input type="number" id="instaFrom" class="input input-compact" placeholder="Desde"
+                    style="width: 70px;" aria-label="Desde">
+                  <input type="number" id="instaTo" class="input input-compact" placeholder="Hasta" style="width: 70px;"
+                    aria-label="Hasta">
+                  <button id="btnBulk" class="btn-secondary btn-sm" aria-label="Abrir Instagram en lote">Abrir
+                    ↗</button>
+                </div>
+              </div>
+
+              <!-- List -->
+              <div class="staff-list table-viewport table-shell cms-list" id="requestsList">
+                <!-- JS Injected Content -->
+              </div>
+            </div>
+
+            <!-- VIEW: Cumpleaños -->
+            <div id="view-cumple" class="view-container hidden">
+              <div class="filter-bar filter-bar-compact" aria-label="Resumen de cumpleaños">
+                <div class="filter-group">
+                  <span class="badge status-success">Hoy <span class="pill-count" id="birthday-today">-</span></span>
+                  <span class="badge status-neutral">Cumples <span class="pill-count" id="count-cumple">0</span></span>
+                </div>
+              </div>
+              <div id="birthdayList" class="staff-list table-viewport table-shell cms-list"></div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Overlays -->
+  <div class="panel-overlay" id="panelOverlay"></div>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+  <script src="../../assets/js/core/config.js"></script>
+  <script src="../../assets/js/core/supabase-client.js"></script>
+  <script src="../../assets/js/core/utils.js"></script>
+  <script src="../../assets/js/core/auth.js"></script>
+  <script src="../../assets/js/core/toast.js"></script>
+
+  <script src="../../assets/js/core/navigation.js"></script>
+  <script src="../../assets/js/modules/cms-members.js"></script>
+
+</body>
+
+</html>

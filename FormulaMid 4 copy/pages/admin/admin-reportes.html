@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportes - FormulaMid</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+
+<body class="app-shell admin-shell admin-scroll" data-allowed-roles="admin,contable">
+
+    <header class="app-topbar">
+        <div class="topbar-left">
+            <button class="topbar-link" data-go="pages/admin/admin-index.html">← Volver</button>
+        </div>
+
+        <nav class="topbar-center">
+            <button class="topbar-link active" data-go="pages/admin/admin-reportes.html">Reportes</button>
+        </nav>
+
+        <div class="topbar-right">
+            <div class="topbar-brand">ERP</div>
+        </div>
+    </header>
+
+    <main class="page-shell">
+        <div class="page-card-wrap">
+            <div class="page-card">
+
+                <!-- Loading State -->
+                <div class="page-card-loading" id="page-card-loading">
+                    <div class="state-block loading">
+                        <div class="state-spinner" aria-hidden="true"></div>
+                        <div class="state-loader"></div>
+                        <p class="state-title">Cargando datos...</p>
+                        <p class="state-desc">Esto puede tardar unos segundos</p>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div class="page-card-empty" id="page-card-empty">
+                    <div class="state-block">
+                        <p class="state-title">Sin resultados</p>
+                        <p class="state-desc">No se encontraron datos para los filtros aplicados.</p>
+                        <button class="btn-ghost btn-sm mt-2" id="btn-clear-search">Actualizar</button>
+                    </div>
+                </div>
+
+                <div id="module-content">
+                    <div class="staff-dashboard">
+                        <div class="dashboard-header" style="margin-bottom: 24px;">
+                            <div>
+                                <h2 class="dashboard-title">Reportes Operativos</h2>
+                                <p class="dashboard-subtitle">Métricas generadas por SQL Views</p>
+                            </div>
+                        </div>
+
+                        <!-- Tabs & Filters -->
+                        <div class="filter-bar filter-bar-compact"
+                            style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 16px; margin-bottom: 16px;">
+                            <div class="filter-group tab-bar">
+                                <button class="tab-chip active" data-view="ventas">Ventas (Caja)</button>
+                                <button class="tab-chip" data-view="staff">Performance Staff</button>
+                                <button class="tab-chip" data-view="finanzas">Finanzas</button>
+                                <button class="tab-chip" data-view="barras">Barras / Stock</button>
+                            </div>
+
+                            <!-- Date Filter -->
+                            <div class="filter-actions" style="display: flex; gap: 8px; align-items: center;">
+                                <input type="date" id="report-start" class="input input-compact">
+                                <span class="muted">-</span>
+                                <input type="date" id="report-end" class="input input-compact">
+                                <button id="btn-refresh-report" class="btn-icon btn-icon-flat" title="Actualizar"
+                                    aria-label="Actualizar">
+                                    🔄
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- TAB: VENTAS -->
+                        <div id="view-ventas" class="fade-in">
+                            <div class="table-viewport">
+                                <table class="table">
+                                    <thead>
+                                        <tr class="table-head">
+                                            <th class="table-cell is-header">Fecha</th>
+                                            <th class="table-cell is-header text-right">Sistema</th>
+                                            <th class="table-cell is-header text-right">Declarado</th>
+                                            <th class="table-cell is-header text-right">Diferencia</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="sales-list">
+                                        <!-- JS Injected -->
+                                        <tr>
+                                            <td colspan="4" class="table-cell text-center muted">Cargando datos...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- TAB: STAFF -->
+                        <div id="view-staff" class="hidden fade-in">
+                            <div class="table-viewport">
+                                <table class="table">
+                                    <thead>
+                                        <tr class="table-head">
+                                            <th class="table-cell is-header">Staff</th>
+                                            <th class="table-cell is-header text-center">Asistencia</th>
+                                            <th class="table-cell is-header text-right">Cierres</th>
+                                            <th class="table-cell is-header text-right">Dif. Neta</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="staff-list">
+                                        <!-- JS Injected -->
+                                        <tr>
+                                            <td colspan="4" class="table-cell text-center muted">Cargando datos...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- TAB: FINANZAS -->
+                        <div id="view-finanzas" class="hidden fade-in">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+                                <!-- P&L Section -->
+                                <div>
+                                    <h3 class="dashboard-subtitle" style="margin-bottom: 16px;">Resultados (P&L)</h3>
+                                    <div class="table-viewport">
+                                        <table class="table">
+                                            <thead>
+                                                <tr class="table-head">
+                                                    <th class="table-cell is-header">Periodo</th>
+                                                    <th class="table-cell is-header">Categoría</th>
+                                                    <th class="table-cell is-header text-right">Monto</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="pnl-list">
+                                                <tr>
+                                                    <td colspan="3" class="table-cell text-center muted">Cargando...
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <!-- Tax Section -->
+                                <div>
+                                    <h3 class="dashboard-subtitle" style="margin-bottom: 16px;">Estimación IVA (Crédito)
+                                    </h3>
+                                    <div class="table-viewport">
+                                        <table class="table">
+                                            <thead>
+                                                <tr class="table-head">
+                                                    <th class="table-cell is-header">Periodo</th>
+                                                    <th class="table-cell is-header text-right">Factura A Total</th>
+                                                    <th class="table-cell is-header text-right">IVA Computable</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tax-list">
+                                                <tr>
+                                                    <td colspan="3" class="table-cell text-center muted">Cargando...
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TAB: BARRAS -->
+                        <div id="view-barras" class="hidden fade-in">
+                            <div class="table-viewport">
+                                <table class="table">
+                                    <thead>
+                                        <tr class="table-head">
+                                            <th class="table-cell is-header">Fecha / Sesión</th>
+                                            <th class="table-cell is-header text-right">Ventas Calc.</th>
+                                            <th class="table-cell is-header text-right">Costo Físico</th>
+                                            <th class="table-cell is-header text-right">Costo Teórico</th>
+                                            <th class="table-cell is-header text-right">Diferencia</th>
+                                            <th class="table-cell is-header text-right">Costo %</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="bar-list">
+                                        <tr>
+                                            <td colspan="6" class="table-cell text-center muted">Cargando datos...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div> <!-- /module-content -->
+            </div>
+        </div>
+    </main>
+    <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script defer src="../../assets/js/core/config.js"></script>
+    <script defer src="../../assets/js/core/supabase-client.js"></script>
+    <script defer src="../../assets/js/core/auth.js"></script>
+    <script defer src="../../assets/js/core/utils.js"></script>
+    <script defer src="../../assets/js/core/toast.js"></script>
+    <script defer src="../../assets/js/modules/admin/admin-reportes.js"></script>
+    <script src="../../assets/js/core/navigation.js"></script>
+</body>
+
+</html>

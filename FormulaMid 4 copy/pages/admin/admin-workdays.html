@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Midnight - Jornadas</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+
+<body class="app-shell admin-shell admin-scroll" data-allowed-roles="admin,contable">
+
+    <!-- Topbar -->
+    <header class="app-topbar">
+        <div class="topbar-left">
+            <button class="btn-icon btn-icon-flat" data-go="pages/admin/admin-index.html" aria-label="Volver">←</button>
+            <span class="topbar-back">Inicio</span>
+        </div>
+        <nav class="topbar-center">
+            <!-- Title or Tabs -->
+            <span class="topbar-brand">Gestión de Jornadas</span>
+        </nav>
+        <div class="topbar-right">
+            <span class="system-status-pill status-open topbar-pill topbar-pill-quiet">Estado: OK</span>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <main class="page-shell">
+        <div class="page-card-wrap">
+            <div class="page-card">
+
+                <!-- Loading State -->
+                <div class="page-card-loading" id="page-card-loading">
+                    <div class="state-block loading">
+                        <div class="state-spinner" aria-hidden="true"></div>
+                        <div class="state-loader"></div>
+                        <p class="state-title">Cargando jornadas...</p>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div class="page-card-empty" id="page-card-empty">
+                    <div class="state-block">
+                        <p class="state-title">No hay jornadas registradas</p>
+                        <p class="state-subtitle">Crea una nueva jornada para comenzar.</p>
+                        <button class="btn-primary btn-sm" id="btn-new-empty">+ Nueva Jornada</button>
+                    </div>
+                </div>
+
+                <div id="module-content">
+                    <div class="planner-dashboard">
+                        <!-- Header KPIs -->
+                        <div class="kpi-strip">
+                            <div class="kpi-badge">
+                                <span class="kpi-label">Costo Staff (Est.)</span>
+                                <span class="kpi-value" id="kpi-staff-cost">$0</span>
+                            </div>
+                            <div class="kpi-badge kpi-fixed">
+                                <span class="kpi-label">Costo Apertura</span>
+                                <span class="kpi-value" id="kpi-fixed-cost">$0</span>
+                            </div>
+                            <div class="kpi-badge kpi-total">
+                                <span class="kpi-label">Break-even Total</span>
+                                <span class="kpi-value" id="kpi-total-cost">$0</span>
+                            </div>
+                        </div>
+
+                        <!-- PANEL A: Definición del Evento -->
+                        <section class="planner-section">
+                            <div class="panel-title-row">
+                                <span>A. Definición de la Jornada</span>
+                                <span class="status-pill staff-status-pending" id="workday-status-indicator">Estado:
+                                    Planning</span>
+                            </div>
+                            <div class="planner-row" style="margin-top:16px;">
+                                <div class="planner-col">
+                                    <label class="form-label">Fecha Operativa</label>
+                                    <input type="date" id="input-date" class="input" required>
+                                </div>
+                                <div class="planner-col">
+                                    <label class="form-label">Evento (Calendario)</label>
+                                    <select id="select-event" class="input">
+                                        <option value="">-- Sin Evento Vinculado --</option>
+                                    </select>
+                                </div>
+                                <div class="planner-col"
+                                    style="flex:0; min-width:140px; display:flex; align-items:center; gap:8px; padding-top:24px;">
+                                    <input type="checkbox" id="check-high-demand" class="checkbox">
+                                    <label for="check-high-demand" class="form-label"
+                                        style="margin:0; font-size:12px;">Alta Demanda</label>
+                                </div>
+                            </div>
+                        </section>
+
+                        <div class="planner-grid">
+                            <!-- PANEL B: Recursos Humanos -->
+                            <div class="planner-panel">
+                                <div class="panel-title-row">
+                                    <span>B. Dimensionamiento de Staff</span>
+                                    <span class="badge" id="staff-subtotal">$0</span>
+                                </div>
+                                <div class="panel-scroll" id="staff-container">
+                                    <div class="state-block loading">
+                                        <div class="state-loader"></div>
+                                        <p class="state-title">Cargando roles...</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- PANEL C: Costos de Apertura -->
+                            <div class="planner-panel">
+                                <div class="panel-title-row">
+                                    <span>C. Costos de Apertura</span>
+                                    <span class="badge" id="costs-subtotal">$0</span>
+                                </div>
+                                <div class="panel-scroll" id="costs-container">
+                                    <div class="state-block loading">
+                                        <div class="state-loader"></div>
+                                        <p class="state-title">Cargando costos...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FOOTER: Notas y Acciones -->
+                        <footer class="planner-footer">
+                            <div class="form-group" style="margin:0">
+                                <label class="form-label">Notas de Planificación</label>
+                                <textarea id="input-notes" class="input" rows="2"
+                                    placeholder="Detalles específicos para esta jornada..."></textarea>
+                            </div>
+                            <div class="footer-actions">
+                                <button class="btn-secondary" id="btn-back-list">Ver Historial</button>
+                                <button class="btn-primary" id="btn-confirm-jornada">Confirmar y Abrir Jornada</button>
+                            </div>
+                        </footer>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Slide Panel (List View para Historial) -->
+    <div class="panel-overlay" id="panel-overlay"></div>
+    <div class="slide-panel" id="slide-panel">
+        <div class="panel-header">
+            <h3 class="panel-title">Historial de Jornadas</h3>
+            <button class="btn-icon btn-close-panel" id="btn-close-panel" aria-label="Cerrar panel">✕</button>
+        </div>
+        <div class="panel-body">
+            <div class="table-shell" id="history-container">
+                <!-- Se inyectará el listado existente aquí -->
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Confirm Modal -->
+    <div class="modal-overlay hidden" id="confirmModal">
+        <div class="modal-card modal-sm">
+            <div class="modal-header">
+                <h2 id="modal-title" class="modal-title">Confirmar Acción</h2>
+            </div>
+            <div class="modal-body">
+                <p id="modal-message">¿Estás seguro de continuar?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="btnCancelModal">Cancelar</button>
+                <button class="btn-primary" id="btnConfirmModal">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="../../assets/js/core/config.js"></script>
+    <script src="../../assets/js/core/constants.js"></script>
+    <script src="../../assets/js/core/supabase-client.js"></script>
+    <script src="../../assets/js/core/auth.js"></script>
+    <script src="../../assets/js/core/utils.js"></script>
+    <script src="../../assets/js/core/toast.js"></script>
+    <script src="../../assets/js/modules/work-day-helper.js"></script>
+    <script src="../../assets/js/modules/panel.js"></script>
+    <script src="../../assets/js/core/navigation.js"></script>
+    <script src="../../assets/js/modules/admin/admin-workdays.js"></script>
+
+</body>
+
+</html>

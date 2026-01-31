@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Midnight - Operaciones</title>
+    <!-- Estilo Base -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <!-- Estilo Específico (Reusing Admin Dashboard styles) -->
+    <link rel="stylesheet" href="../../assets/css/pages/admin-index.css">
+</head>
+
+<body class="app-shell admin-shell" data-allowed-roles="operativo,staff_barra,staff_operativo">
+
+    <main class="page-shell">
+
+        <!-- 1. HEADER (Glassmorphism) -->
+        <header class="dashboard-header fade-in">
+            <div class="welcome-text">
+                <p class="label-welcome">Bienvenido</p>
+                <h1 id="user-name">Operativo</h1>
+                <p class="role-subtitle">Panel de <strong>OPERACIONES</strong></p>
+            </div>
+
+            <!-- Optional Status Widget -->
+            <div class="status-row">
+                <div id="system-status-widget" class="kpi-widget hidden">
+                    <span class="kpi-dot"></span>
+                    <span class="kpi-text">ESTADO: <span id="system-status-value" class="kpi-value">...</span></span>
+                </div>
+            </div>
+        </header>
+
+        <!-- 2. NAVIGATION (Segmented Control as Main Nav) -->
+        <nav class="segmented-control fade-in" style="animation-delay: 0.1s;">
+            <button class="segment-btn" data-go="pages/operativo/operativo-workday.html">WORKDAY</button>
+            <button class="segment-btn" data-go="pages/operativo/operativo-stock.html">STOCK</button>
+            <button class="segment-btn" data-go="pages/operativo/operativo-master-sku.html">SETTINGS</button>
+            <button class="segment-btn" data-go="pages/operativo/cms-members.html">MEMBERS</button>
+        </nav>
+
+    </main>
+
+    <!-- Scripts -->
+    <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script defer src="../../assets/js/core/config.js"></script>
+    <script defer src="../../assets/js/core/supabase-client.js"></script>
+    <script defer src="../../assets/js/core/auth.js"></script>
+    <script src="../../assets/js/core/navigation.js"></script>
+    <!-- Re-using logic if applicable, or generic logic -->
+    <script src="../../assets/js/modules/operativo/operativo-index.js"></script>
+
+    <footer class="footer" style="position: fixed; bottom: 20px; width: 100%; text-align: center;">
+        <button id="btn-logout" class="footer-link"
+            style="background:none; border:none; color: var(--text-2); cursor: pointer; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Cerrar
+            Sesión</button>
+    </footer>
+
+</body>
+
+</html>

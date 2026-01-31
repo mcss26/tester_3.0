@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Herramientas de Análisis - FormulaMid</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <!-- Chart.js and SheetJS (Excel) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+</head>
+
+<body class="app-shell admin-shell admin-scroll" data-allowed-roles="admin,contable,logistico">
+
+    <header class="app-topbar">
+        <div class="topbar-left">
+            <button class="btn-icon btn-icon-flat" data-go="pages/admin/admin-index.html" aria-label="Volver">←</button>
+            <span class="topbar-back">INICIO</span>
+        </div>
+
+        <nav class="topbar-center">
+            <div class="filter-bar filter-bar-compact" id="analysis-tabs-container">
+                <button class="filter-pill is-active" data-tab="resumen">RESUMEN</button>
+                <button class="filter-pill" data-tab="importar">IMPORTAR</button>
+                <button class="filter-pill" data-tab="analizar">ANALIZAR</button>
+                <button class="filter-pill" data-tab="comparativa">COMPARATIVA</button>
+                <button class="filter-pill" data-tab="historica">HISTÓRICA</button>
+            </div>
+        </nav>
+
+        <div class="topbar-right">
+            <span class="system-status-pill status-open topbar-pill topbar-pill-quiet">ESTADO: OK</span>
+        </div>
+    </header>
+
+    <!-- Overlay de Carga Standar -->
+    <div id="page-card-loading" class="page-card-loading">
+        <div class="state-block loading">
+            <div class="state-spinner" aria-hidden="true"></div>
+            <div class="state-loader"></div>
+            <p class="state-title">Cargando Herramientas...</p>
+            <p class="state-desc">Preparando motores de inteligencia...</p>
+        </div>
+    </div>
+
+    <!-- Empty State Standar -->
+    <div id="page-card-empty" class="page-card-empty hidden">
+        <div class="state-block loading">
+            <p class="state-title">Sin Resultados</p>
+            <p class="state-desc">No se encontraron datos para procesar.</p>
+            <button id="btn-retry" class="btn btn-primary btn-sm">Reintentar</button>
+        </div>
+    </div>
+
+    <main class="page-shell">
+        <div id="module-content" class="page-card-wrap hidden">
+            <div class="page-card overflow-visible">
+
+                <div class="staff-dashboard">
+                    <div id="dashboard-header-fixed" class="dashboard-header align-start">
+                        <div class="dashboard-header-text">
+                            <h2 class="dashboard-title dashboard-title-soft">Herramientas de Análisis</h2>
+                            <p class="dashboard-subtitle dashboard-subtitle-soft">Optimización de stock e inteligencia
+                                de consumos</p>
+                        </div>
+                    </div>
+
+                    <!-- TAB CONTENT: RESUMEN (Dashboard) -->
+                    <div id="analysis-tab-resumen" class="view-container">
+                        <div class="analysis-summary" id="dashboard-stats-grid">
+                            <div class="analysis-stat">
+                                <p class="analysis-stat-label">Reportes Totales</p>
+                                <p class="analysis-stat-value" id="stat-total-reports">-</p>
+                            </div>
+                            <div class="analysis-stat">
+                                <p class="analysis-stat-label">Último Reporte</p>
+                                <p class="analysis-stat-value text-sm" id="stat-last-report">-</p>
+                            </div>
+                            <div class="analysis-stat">
+                                <p class="analysis-stat-label">Items Analizados</p>
+                                <p class="analysis-stat-value" id="stat-total-items">-</p>
+                            </div>
+                        </div>
+
+                        <div class="dashboard-section section-pad">
+                            <h3 class="dashboard-title-soft text-sm">Top Consumos (Últimos 30 días)</h3>
+                            <div id="dashboard-top-items" class="staff-list">
+                                <div class="state-block">
+                                    <p class="state-desc italic">Cargando datos...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB CONTENT: IMPORTAR -->
+                    <div id="analysis-tab-importar" class="view-container hidden">
+                        <div class="filter-bar filter-bar-compact">
+                            <div class="filter-group">
+                                <div class="form-group">
+                                    <label class="form-label-xs">Fecha Operativa</label>
+                                    <input type="date" id="import-date" class="input input-xs">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label-xs">Archivo de Consumo</label>
+                                    <div class="file-drop-area">
+                                        <label for="import-file" class="btn btn-secondary btn-xs">Seleccionar Excel
+                                            (.xlsx)</label>
+                                        <input type="file" id="import-file" accept=".xlsx, .xls" hidden>
+                                        <span id="import-file-name" class="text-xs muted"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-viewport table-shell">
+                            <div class="table-scroll" id="import-preview">
+                                <div class="state-block">
+                                    <p class="state-desc muted">Previsualización de datos aquí</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB CONTENT: ANALIZAR (IDEALES) -->
+                    <div id="analysis-tab-analizar" class="view-container hidden">
+                        <div class="filter-bar filter-bar-compact">
+                            <div class="filter-group">
+                                <input type="date" id="analyze-date-start" class="input input-xs">
+                                <span class="muted text-xs">A</span>
+                                <input type="date" id="analyze-date-end" class="input input-xs">
+                            </div>
+                            <div class="filter-actions">
+                                <button id="btn-analyze-ideal" class="btn btn-primary btn-xs">CALCULAR IDEALES</button>
+                            </div>
+                        </div>
+
+                        <div class="table-viewport table-shell">
+                            <div class="table-scroll" id="analysis-results">
+                                <div class="state-block">
+                                    <p class="state-desc italic muted">Los resultados aparecerán después de calcular.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB CONTENT: COMPARATIVA -->
+                    <div id="analysis-tab-comparativa" class="view-container hidden">
+                        <div class="filter-bar filter-bar-compact">
+                            <div class="filter-group">
+                                <input type="date" id="comp-date-start" class="input input-xs">
+                                <span class="muted text-xs">A</span>
+                                <input type="date" id="comp-date-end" class="input input-xs">
+                            </div>
+                            <div class="filter-actions">
+                                <button id="btn-comp-run" class="btn btn-primary btn-xs">GENERAR COMPARATIVA</button>
+                            </div>
+                        </div>
+
+                        <div class="table-viewport table-shell">
+                            <div class="table-scroll" id="comp-results">
+                                <div class="state-block">
+                                    <p class="state-desc italic muted">Se comparará el consumo importado vs movimientos
+                                        de stock.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB CONTENT: HISTÓRICA -->
+                    <div id="analysis-tab-historica" class="view-container hidden">
+                        <div class="p-4">
+                            <div id="chart-container" style="position: relative; height: 400px; width: 100%;">
+                                <canvas id="history-chart"></canvas>
+                            </div>
+                            <p class="text-xs muted text-center mt-2">Tendencia de los productos con mayor rotación en
+                                los últimos reportes.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script defer src="../../assets/js/core/config.js"></script>
+    <script defer src="../../assets/js/core/supabase-client.js"></script>
+    <script defer src="../../assets/js/core/auth.js"></script>
+    <script defer src="../../assets/js/core/utils.js"></script>
+    <script defer src="../../assets/js/core/toast.js"></script>
+
+    <!-- Shared Navigation -->
+    <script src="../../assets/js/core/navigation.js"></script>
+
+    <!-- Module Specific -->
+    <script defer src="../../assets/js/modules/admin/admin-herramientas.js"></script>
+
+</body>
+
+</html>

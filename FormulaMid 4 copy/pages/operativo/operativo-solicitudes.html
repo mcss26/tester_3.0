@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Solicitudes Operativo - FormulaMid</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body class="app-shell stock-shell" data-allowed-roles="operativo,logistico">
+
+    <header class="app-topbar">
+        <div class="topbar-left">
+            <button class="topbar-link" data-go="pages/operativo/operativo-erp.html">← Volver</button>
+        </div>
+        <nav class="topbar-center">
+            <button class="topbar-link" data-go="pages/operativo/operativo-stock.html">Stock</button>
+            <button class="topbar-link active" data-go="pages/operativo/operativo-solicitudes.html">Solicitudes</button>
+        </nav>
+        <div class="topbar-right">
+            <div class="topbar-brand">ERP</div>
+        </div>
+    </header>
+
+    <main class="page-shell">
+        <div class="page-card-wrap">
+            <div class="page-card">
+                <div class="staff-dashboard">
+                    <div class="dashboard-header">
+                        <div>
+                            <h2 class="dashboard-title">Solicitudes</h2>
+                            <p class="dashboard-subtitle">Reposición y control operativo</p>
+                        </div>
+                    </div>
+
+                    <div class="tabs-row">
+                        <div class="tab-bar">
+                            <button class="tab-chip active" data-tab="sku-table">Por SKU</button>
+                            <button class="tab-chip" data-tab="supplier-table">Por Proveedor</button>
+                        </div>
+                    </div>
+
+                    <!-- SKU Table Section -->
+                    <div id="view-sku-table">
+                        <p class="muted text-sm">Items con stock bajo requerimiento o agregados manualmente.</p>
+                        <div class="staff-list" id="sku-list-container">
+                            <div class="empty-state">Cargando items...</div>
+                        </div>
+                    </div>
+
+                    <!-- Supplier Table Section -->
+                    <div id="view-supplier-table" class="hidden">
+                        <p class="muted text-sm">Agrupado por proveedor para generación de órdenes.</p>
+                        <div class="staff-list" id="supplier-list-container">
+                            <div class="empty-state">Cargando proveedores...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Ajuste -->
+    <div id="modal-adjust" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title">Motivo de Ajuste</h3>
+                <button class="modal-close" data-close-modal="modal-adjust">×</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-text">Detectamos una diferencia en el stock. Por favor indica el motivo.</p>
+                <div class="form-group">
+                    <label class="label">Motivo</label>
+                    <select id="adjust-reason-select" class="input">
+                        <option value="rotura">Rotura / Merma</option>
+                        <option value="consumo_interno">Consumo Interno / Degustación</option>
+                        <option value="diferencia_inventario">Error de Conteo / Desconocido</option>
+                        <option value="otro">Otro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="label">Observación (Opcional)</label>
+                    <input type="text" id="adjust-reason-text" class="input" placeholder="Detalles extra...">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-ghost" data-close-modal="modal-adjust">Cancelar</button>
+                <button class="btn-primary" id="confirm-adjust">Confirmar</button>
+            </div>
+        </div>
+    </div>
+    <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script defer src="../../assets/js/core/config.js"></script>
+    <script defer src="../../assets/js/core/constants.js"></script>
+    <script defer src="../../assets/js/core/supabase-client.js"></script>
+    <script defer src="../../assets/js/core/auth.js"></script>
+    <script defer src="../../assets/js/modules/work-day-helper.js"></script>
+    <script defer src="../../assets/js/core/utils.js"></script>
+    <script src="../../assets/js/core/navigation.js"></script>
+    <script defer src="../../assets/js/modules/operativo/operativo-solicitudes.js"></script>
+</body>
+
+</html>

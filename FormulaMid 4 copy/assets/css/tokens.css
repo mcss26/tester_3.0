@@ -1,0 +1,171 @@
+/* =========================================================================
+   1. TOKENS PRIMITIVOS (Global Raw Values)
+   ========================================================================= */
+:root {
+  /* Paleta Neutral */
+  --neutral-0:   #000000;
+  --neutral-50:  #050505;
+  --neutral-100: #1a1a1a;
+  --neutral-200: #262626;
+  --gray-300:    #d1d5db;
+  --neutral-900: #e5e5e5;
+  --neutral-1000: #ffffff;
+
+  /* Alpha (Transparencias sobre negro/blanco) */
+  --white-alpha-06: rgba(255, 255, 255, 0.06);
+  --white-alpha-12: rgba(255, 255, 255, 0.12);
+  --white-alpha-24: rgba(255, 255, 255, 0.24);
+  --white-alpha-50: rgba(255, 255, 255, 0.50);
+  --white-alpha-70: rgba(255, 255, 255, 0.70);
+  --black-alpha-20: rgba(0, 0, 0, 0.20);
+  --black-alpha-60: rgba(0, 0, 0, 0.60);
+  --black-alpha-92: rgba(20, 5, 5, 0.92);
+
+  /* Paleta Semántica Base */
+  --blue-400:  #60a5fa;
+  --red-500:    #ff453a;
+  --red-400:    #f87171;
+  --red-600:    #ff3b30;
+  --green-400:  #4ade80;
+  --green-500:  #30d158;
+  --orange-400: #fb923c;
+  --orange-500: #ff9f0a;
+  --yellow-400: #facc15;
+  --blue-500:   #0a84ff;
+  --purple-400: #c084fc;
+  --blue-600:   #2563eb;
+  --purple-600: #7c3aed;
+  --green-50:   #f0fdf4;
+  --red-100:    #fee2e2;
+
+  /* Geometría */
+  --space-unit: 4px;
+  --radius-sm:  10px;
+  --radius-md:  14px;
+  --radius-lg:  20px;
+  --radius-xl:  24px;
+
+  /* Tipografías base */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+  --font-mono: "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  /* Escala tipográfica */
+  --fs-xs: 11px;
+  --fs-sm: 12px;
+  --fs-md: 13px;
+  --fs-base: 14px;
+  --fs-lg: 16px;
+  --fs-xl: 20px;
+  --fs-2xl: 24px;
+  --lh-tight: 1.15;
+  --lh-normal: 1.4;
+  --lh-relaxed: 1.6;
+
+  /* Controles */
+  --control-h: 36px;
+  --control-h-sm: 30px;
+  --control-h-lg: 44px;
+}
+
+/* =========================================================================
+   2. TOKENS SEMÁNTICOS (Design Decisions)
+   ========================================================================= */
+:root {
+  color-scheme: dark;
+
+  /* Colores de Marca & Estado */
+  --accent:  var(--red-600);
+  --danger:  var(--red-500);
+  --success: var(--green-500);
+  --warning: var(--orange-500);
+  --info:    var(--blue-500);
+
+  /* Superficies */
+  --bg-base:  var(--neutral-50);       /* Fondo principal */
+  --bg-elev:  var(--black-alpha-92);   /* Modales, dropdowns */
+  --surface-1: var(--white-alpha-06);  /* Cards, inputs default */
+  --surface-2: var(--white-alpha-12);  /* Hover states */
+  --backdrop:  var(--black-alpha-60);  /* Overlay modales */
+
+  /* Tipografía */
+  --text-1: var(--neutral-1000);       /* Texto principal */
+  --text-2: var(--white-alpha-70);     /* Texto secundario */
+  --text-3: var(--white-alpha-50);     /* Placeholders, disabled */
+  --text-inverse: var(--neutral-50);   /* Texto sobre accent */
+
+  /* Bordes */
+  --border-1: var(--white-alpha-12);   /* Bordes sutiles */
+  --border-2: var(--white-alpha-24);   /* Bordes activos/focus */
+
+  /* Sombras */
+  --shadow-soft: 0 10px 20px var(--black-alpha-20);
+  --shadow-sm: 0 8px 20px var(--black-alpha-20);
+  --shadow-lg: -30px 0 60px var(--black-alpha-60);
+
+  /* Estados con fondos */
+  --success-bg: rgba(48, 209, 88, 0.16);
+  --warning-bg: rgba(255, 159, 10, 0.18);
+  --danger-bg:  rgba(255, 69, 58, 0.16);
+  --info-bg:    rgba(10, 132, 255, 0.15);
+  
+  /* Layout */
+  --page-max: 1120px;
+  --page-pad: 24px;
+  --topbar-h: 60px;
+  --topbar-h-mobile: 52px;
+
+  /* Spacing Scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+}
+
+/* =========================================================================
+   3. TOKENS DE COMPONENTE (Alias for specific UI)
+   ========================================================================= */
+:root {
+  /* Botones */
+  --btn-primary-bg:   var(--accent);
+  --btn-primary-text: var(--text-1);
+  --btn-radius:       99px;
+
+  /* Cards */
+  --card-bg:     var(--surface-1);
+  --card-border: var(--border-1);
+  --card-radius: var(--radius-lg);
+
+  /* Inputs */
+  --input-bg:     rgba(0,0,0,0.3);
+  --input-border: var(--border-1);
+  --input-radius: var(--radius-md);
+
+  /* Legacy aliases (mantener para compatibilidad en fase de migración) */
+  --text-primary:   var(--text-1);
+  --text-secondary: var(--text-2);
+  --text-tertiary:  var(--text-3);
+  --text-muted:     var(--text-3);
+  --accent-color:   var(--accent);
+  --primary-color:  var(--accent);
+  --danger-color:   var(--danger);
+  --success-color:  var(--success);
+  --bg-card:        var(--surface-1);
+  --surface-card:   var(--surface-1);
+  --surface-hover:  var(--surface-2);
+  --border-color:   var(--border-1);
+  --border:         var(--border-1);
+  --radius:         var(--radius-md);
+}
+
+/* =========================================================================
+   4. TOKENS ESPECÍFICOS (Print / QR)
+   ========================================================================= */
+:root {
+  --paper-mm: 80mm;
+  --pad-mm: 4mm;
+  --qr-mm: 35mm;
+  --gap-mm: 6mm;
+  --font-mm: 3.2mm;
+}

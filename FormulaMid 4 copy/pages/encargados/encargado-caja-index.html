@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Caja - Midnight Club</title>
+  <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+
+<body class="welcome-screen encargado-landing" data-allowed-roles="encargado_caja,admin">
+
+  <!-- Loading State -->
+  <div class="page-card-loading" id="page-card-loading">
+    <div class="state-block loading">
+      <div class="state-spinner" aria-hidden="true"></div>
+      <div class="state-loader"></div>
+      <p class="state-title">Cargando...</p>
+    </div>
+  </div>
+
+  <!-- Empty State (if needed) -->
+  <div class="page-card-empty" id="page-card-empty">
+    <div class="state-block">
+      <p class="state-title">Sin datos disponibles</p>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="center-content" id="module-content">
+    <section class="welcome-section">
+      <p class="label-welcome">BIENVENIDO</p>
+      <h1 id="user-name" class="title-name">Cargando...</h1>
+      <p class="role-subtitle">Encargado de <strong>CAJA</strong></p>
+
+      <!-- System Status -->
+      <p id="system-status" class="system-status-pill">...</p>
+    </section>
+
+    <section class="mode-selection link-row">
+      <a href="#" data-go="pages/encargados/encargado-caja-personal.html" class="footer-link">Personal</a>
+      <a href="#" data-go="pages/encargados/encargado-caja-noche.html" class="footer-link">Noche</a>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <button id="btn-logout" class="footer-link">Cerrar Sesión</button>
+  </footer>
+
+  <!-- Scripts -->
+  <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script defer src="../../assets/js/core/config.js"></script>
+  <script defer src="../../assets/js/core/supabase-client.js"></script>
+  <script defer src="../../assets/js/core/auth.js"></script>
+  <script defer src="../../assets/js/core/utils.js"></script>
+  <script defer src="../../assets/js/core/toast.js"></script>
+  <script defer src="../../assets/js/modules/work-day-helper.js"></script>
+  <script src="../../assets/js/core/navigation.js"></script>
+  <script defer src="../../assets/js/modules/encargados/encargado-caja-index.js"></script>
+
+</body>
+
+</html>

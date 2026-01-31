@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Scanner QR - Midnight</title>
+    
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    
+    <!-- Libraries -->
+    <script src="https://unpkg.com/html5-qrcode" defer></script>
+</head>
+<body class="qr-scanner" data-allowed-roles="admin,operativo,staff_guardia">
+
+    <header class="h-[60px] flex items-center justify-between px-4 border-b border-white/10 bg-black/20 backdrop-blur-md sticky top-0 z-50">
+        <div class="user-info flex items-center gap-2">
+            <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold" id="userAvatar">U</div>
+            <div class="flex flex-col">
+                 <span id="userName" class="text-sm font-bold leading-tight">...</span>
+                 <span id="userRole" class="text-[10px] uppercase text-white/50 leading-tight">...</span>
+            </div>
+        </div>
+        <button id="btnLogout" class="text-xs text-red-400 hover:text-red-300 uppercase font-bold">Salir</button>
+    </header>
+
+    <main class="flex-1 p-4 flex flex-col gap-4 overflow-hidden">
+        
+        <!-- Scanner Box -->
+        <div class="scanner-section">
+            <div id="reader" class="w-full h-full"></div>
+            <div class="scanner-overlay">
+                <div class="focus-box"></div>
+            </div>
+        </div>
+
+        <!-- Status Card -->
+        <div id="statusCard" class="status-card idle">
+            <div class="status-icon">📷</div>
+            <div class="status-details">
+                <h3 id="statusTitle">Listo</h3>
+                <p id="statusMsg">Escaneá un código QR</p>
+            </div>
+        </div>
+
+        <!-- Manual Input Toggle -->
+         <div class="flex flex-col gap-2">
+            <button id="btnManualInput" class="w-full bg-white/10 text-white p-3 rounded-xl text-sm font-bold">Ingreso Manual</button>
+            <div id="manualInputBox" class="hidden flex gap-2">
+                <input type="text" id="manualCode" placeholder="Código..." class="bg-white/5 border border-white/10 rounded-xl p-3 flex-1 text-white outline-none focus:border-blue-500">
+                <button id="btnCheckManual" class="bg-blue-600 text-white px-4 rounded-xl font-bold">OK</button>
+            </div>
+        </div>
+
+        <!-- History -->
+        <div class="history-section">
+            <div class="section-header">
+                <h3 class="text-sm font-bold text-white/70 uppercase">Recientes</h3>
+                <span id="checkinCount" class="text-white font-mono">0</span>
+            </div>
+            <div id="historyList" class="history-list">
+                <!-- Items -->
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Audios -->
+    <audio id="soundSuccess" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"></audio>
+    <audio id="soundError" src="https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3"></audio>
+
+    <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script defer src="../../assets/js/core/config.js"></script>
+    <script defer src="../../assets/js/core/supabase-client.js"></script>
+    <script defer src="../../assets/js/core/auth.js"></script>
+    <script defer src="../../assets/js/modules/work-day-helper.js"></script>
+    <script defer src="../../assets/js/modules/operativo/scanner.js"></script>
+</body>
+</html>

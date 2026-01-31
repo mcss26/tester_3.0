@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sesión de Barra - Midnight</title>
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+</head>
+<body class="app-shell admin-shell" data-allowed-roles="admin,manager,encargado_barra">
+
+    <header class="app-topbar">
+        <div class="topbar-left">
+            <button class="btn-icon" onclick="history.back()">←</button>
+        </div>
+        <nav class="topbar-center"></nav>
+        <div class="topbar-right" id="header-actions">
+            <span class="status-pill" id="session-status">...</span>
+            <div class="topbar-brand" id="session-location">...</div>
+        </div>
+    </header>
+
+    <main class="bar-dashboard">
+        
+        <!-- Status / Info Card -->
+        <div class="dashboard-header" id="info-card">
+             <div class="text-sm">
+                 Abierto por: <strong id="opener-name">...</strong>
+                 at <span id="open-time">...</span>
+             </div>
+             <div class="text-sm hidden" id="closer-info">
+                 Cerrado por: <strong id="closer-name">...</strong>
+             </div>
+        </div>
+
+        <!-- Stock Input Section (Opening / Closing) -->
+        <div id="stock-section" class="page-card hidden">
+             <div class="dashboard-header">
+                 <h2 class="form-label" id="stock-title">Inventario</h2>
+                 <input type="text" id="search-sku" placeholder="Buscar producto..." class="input input-sm w-auto">
+             </div>
+             
+             <!-- SKU List -->
+             <div class="table-scroll">
+                 <table class="table w-full">
+                     <thead class="table-head sticky-top">
+                         <tr>
+                             <th class="table-cell is-header">Producto</th>
+                            <th class="table-cell is-header text-right">Cantidad</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sku-list" class="table-body">
+                        <!-- Items -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="panel-footer">
+                <button id="btn-save-stock" class="btn btn-primary">
+                    Confirmar Inventario
+                </button>
+            </div>
+        </div>
+
+        <!-- Report Section (Closed View) -->
+        <div id="report-section" class="stack-lg hidden">
+             <!-- Summary Cards -->
+             <div class="kpi-grid">
+                 <div class="stat-card">
+                     <span class="stat-label">Consumo Físico</span>
+                     <span class="stat-value" id="rep-phys-total">-</span>
+                 </div>
+                 <div class="stat-card">
+                     <span class="stat-label">Ventas (Teórico)</span>
+                     <span class="stat-value" id="rep-theo-total">-</span>
+                     <button id="btn-import-sales" class="btn btn-secondary btn-sm">IMPORTAR</button>
+                 </div>
+             </div>
+
+             <!-- Reconciliation Table -->
+             <div class="page-card">
+                 <div class="dashboard-header"><h3 class="dashboard-title">Detalle de Diferencias</h3></div>
+                 <div class="table-scroll">
+                     <table class="table w-full">
+                         <thead class="table-head">
+                             <tr>
+                                 <th class="table-cell is-header">Producto</th>
+                                 <th class="table-cell is-header text-center">Inicial</th>
+                                 <th class="table-cell is-header text-center">Final</th>
+                                 <th class="table-cell is-header text-center">Consumo Real</th>
+                                 <th class="table-cell is-header text-center">Ventas Est.</th>
+                                 <th class="table-cell is-header text-right">Diferencia</th>
+                             </tr>
+                         </thead>
+                         <tbody id="report-list" class="table-body">
+                            <!-- Rows -->
+                         </tbody>
+                     </table>
+                 </div>
+             </div>
+        </div>
+
+    </main>
+
+    <!-- Import Modal -->
+    <div id="modal-import" class="modal-overlay">
+        <div class="modal-card">
+            <h3 class="modal-title">Importar Ventas (Gbol)</h3>
+            <p class="text-sm muted mb-4">Pega el JSON de ventas o utiliza el simulador.</p>
+            <textarea id="input-import-json" class="input font-mono text-xs w-full mb-4" rows="6" placeholder='[{"external_id": "100", "name": "Fernet", "quantity": 10, "amount": 50000}]'></textarea>
+            <div class="modal-actions">
+                <button id="btn-cancel-import" class="btn btn-ghost">Cancelar</button>
+                <button id="btn-save-import" class="btn btn-primary">Importar</button>
+            </div>
+        </div>
+    </div>
+
+    <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script defer src="../../../assets/js/core/config.js"></script>
+    <script defer src="../../../assets/js/core/constants.js"></script>
+    <script defer src="../../../assets/js/core/supabase-client.js"></script>
+    <script defer src="../../../assets/js/core/auth.js"></script>
+    <script defer src="../../../assets/js/core/utils.js"></script>
+    <script defer src="../../../assets/js/core/toast.js"></script>
+    <script defer src="../../../assets/js/modules/admin/bar-session.js"></script>
+
+</body>
+</html>

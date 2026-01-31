@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Midnight - Balance Semanal</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+
+<body class="bg-dark text-white" data-allowed-roles="admin,gerente,contable">
+    <div class="center-content">
+        <!-- Header -->
+        <header class="operativo-header">
+            <div class="flex items-center gap-4">
+                <a href="#" data-go="pages/admin/admin-index.html" class="footer-link back-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M15 18l-6-6 6-6" />
+                    </svg>
+                    Volver
+                </a>
+                <h1 class="panel-title">Balance Semanal</h1>
+            </div>
+        </header>
+
+        <main class="w-full max-w-5xl">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <!-- KPI Card -->
+                <div class="bg-white/5 p-6 rounded-2xl border border-white/10">
+                    <h3 class="text-xs uppercase tracking-wider text-white/50 mb-2">Ingresos Totales</h3>
+                    <div class="text-3xl font-mono text-green-400">$0</div>
+                </div>
+                <!-- KPI Card -->
+                <div class="bg-white/5 p-6 rounded-2xl border border-white/10">
+                    <h3 class="text-xs uppercase tracking-wider text-white/50 mb-2">Gastos Operativos</h3>
+                    <div class="text-3xl font-mono text-red-400">$0</div>
+                </div>
+                <!-- KPI Card -->
+                <div class="bg-white/5 p-6 rounded-2xl border border-white/10 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-accent/20 to-transparent pointer-events-none">
+                    </div>
+                    <h3 class="text-xs uppercase tracking-wider text-white/50 mb-2">Profit Semanal</h3>
+                    <div class="text-3xl font-mono text-white">$0</div>
+                </div>
+            </div>
+
+            <!-- Detailed Table Placeholder -->
+            <div class="staff-dashboard">
+                <div class="dashboard-header mb-4">
+                    <h2 class="dashboard-title">Detalle de Movimientos</h2>
+                </div>
+                <div class="p-8 text-center border-t border-white/10">
+                    <p class="text-white/30 text-lg">Módulo de Reportes Avanzados en Desarrollo.</p>
+                    <p class="text-white/20 text-sm mt-2">Próximamente integración con Ventas y Stock Real.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="../../assets/js/core/config.js"></script>
+    <script src="../../assets/js/core/supabase-client.js"></script>
+    <script src="../../assets/js/core/auth.js"></script>
+    <script src="../../assets/js/core/navigation.js"></script>
+</body>
+
+</html>

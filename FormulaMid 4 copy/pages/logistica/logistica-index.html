@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Midnight - Logística</title>
+  <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+
+<body class="welcome-screen logistica-landing" data-allowed-roles="logistico,admin">
+
+  <main class="center-content">
+    <section class="welcome-section">
+      <p class="label-welcome">BIENVENIDO</p>
+      <h1 id="user-name" class="title-name">...</h1>
+      <p class="role-subtitle">Logística de <strong>MIDNIGHT CLUB</strong></p>
+
+      <!-- System Status -->
+      <p id="system-status" class="system-status-pill">...</p>
+    </section>
+
+    <section class="mode-selection link-row">
+      <!-- Navigation Links -->
+      <div class="flex flex-wrap gap-4 justify-center mt-4">
+        <a href="#" data-go="pages/logistica/logistica-stock.html" class="footer-link">📦 Stock</a>
+        <a href="#" data-go="pages/logistica/logistica-distribucion.html" class="footer-link">🔄 Distribución</a>
+        <a href="#" data-go="pages/logistica/logistica-recepcion.html" class="footer-link">📥 Recepción</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <button id="btn-logout" class="footer-link">Cerrar Sesión</button>
+  </footer>
+
+  <!-- Scripts -->
+  <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script defer src="../../assets/js/core/config.js"></script>
+  <script defer src="../../assets/js/core/supabase-client.js"></script>
+  <script defer src="../../assets/js/core/auth.js"></script>
+  <script defer src="../../assets/js/modules/work-day-helper.js"></script>
+  <script src="../../assets/js/core/navigation.js"></script>
+  <script src="../../assets/js/modules/logistica/logistica-index.js"></script>
+</body>
+
+</html>

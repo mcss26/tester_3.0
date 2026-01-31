@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logística - Recepción</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+
+<body class="app-shell stock-shell" data-allowed-roles="logistico,admin">
+
+    <header class="app-topbar">
+        <div class="topbar-left">
+            <button class="topbar-link" data-go="pages/logistica/logistica-index.html">← Volver</button>
+        </div>
+
+        <nav class="topbar-center">
+            <button class="topbar-link" data-go="pages/logistica/logistica-stock.html">Stock</button>
+            <button class="topbar-link" data-go="pages/logistica/logistica-distribucion.html">Distribución</button>
+            <button class="topbar-link active" data-go="pages/logistica/logistica-recepcion.html">Recepción</button>
+        </nav>
+
+        <div class="topbar-right">
+            <div class="topbar-brand">LOGÍSTICA</div>
+        </div>
+    </header>
+
+    <main class="page-shell">
+        <div class="page-card-wrap">
+            <div class="page-card">
+
+                <div class="staff-dashboard">
+                    <div class="dashboard-header">
+                        <div>
+                            <h2 class="dashboard-title">Recepción de Mercadería</h2>
+                            <p class="dashboard-subtitle">Ingreso de productos al depósito</p>
+                        </div>
+                        <div class="header-actions">
+                            <button class="btn btn-primary" id="btn-new-receipt">+ Nueva Recepción</button>
+                        </div>
+                    </div>
+
+                    <div class="tabs-row">
+                        <div id="status-tabs" class="tab-bar">
+                            <button class="tab-chip status-tab active" data-status="">Todos</button>
+                            <button class="tab-chip status-tab" data-status="CONFIRMED">Por Recibir</button>
+                            <button class="tab-chip status-tab" data-status="RECEIVED">Recibidos</button>
+                        </div>
+                        <div class="tabs-actions">
+                            <button class="btn-ghost" id="btn-refresh">Refrescar</button>
+                        </div>
+                    </div>
+
+                    <div class="staff-list table-viewport" id="list-container">
+                        <!-- contenido por JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal de Recepción -->
+    <div class="modal-overlay hidden" id="modal-receive">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2 id="modal-title">Recibir Orden</h2>
+                <button class="btn-icon" id="close-modal">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-4 info-block">
+                    <p><strong>Proveedor:</strong> <span id="receive-supplier">-</span></p>
+                    <p><strong>Fecha Esperada:</strong> <span id="receive-eta">-</span></p>
+                    <p><strong>Total Estimado:</strong> <span id="receive-total">-</span></p>
+                </div>
+                <div class="form-group">
+                    <label>Número de Factura/Remito</label>
+                    <input type="text" id="receive-invoice" class="input" placeholder="Ej: FC-A-0001-00012345">
+                </div>
+                <div class="table-scroll" id="receive-items-container">
+                    <!-- items por JS -->
+                </div>
+                <div class="form-group">
+                    <label>Notas de Recepción</label>
+                    <textarea id="receive-notes" class="input" rows="2"
+                        placeholder="Observaciones (ej: productos dañados)..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" id="btn-cancel-receive">Cancelar</button>
+                <button class="btn btn-primary" id="btn-confirm-receive">Confirmar Recepción</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Nueva Recepción Libre -->
+    <div class="modal-overlay hidden" id="modal-free-receipt">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2>Nueva Recepción (Sin Orden)</h2>
+                <button class="btn-icon" id="close-free-modal">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Proveedor</label>
+                        <select id="free-supplier" class="input" required>
+                            <option value="">Seleccionar...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Número de Factura/Remito</label>
+                        <input type="text" id="free-invoice" class="input" placeholder="FC-A-0001-00012345">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Agregar Producto</label>
+                    <div class="flex gap-2">
+                        <select id="free-sku-select" class="input flex-2">
+                            <option value="">Buscar SKU...</option>
+                        </select>
+                        <input type="number" id="free-qty" class="input flex-1" placeholder="Cantidad" min="1">
+                        <button class="btn btn-ghost" id="btn-add-sku">+ Agregar</button>
+                    </div>
+                </div>
+                <div class="table-scroll" id="free-items-container">
+                    <table class="table" id="free-items-table">
+                        <thead>
+                            <tr class="table-head">
+                                <th class="table-cell is-header cell-pad">SKU</th>
+                                <th class="table-cell is-header cell-pad">Cantidad</th>
+                                <th class="table-cell is-header cell-pad">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="free-items-body">
+                            <tr>
+                                <td colspan="3" class="table-cell cell-pad muted">No hay productos agregados</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="form-group">
+                    <label>Notas</label>
+                    <textarea id="free-notes" class="input" rows="2" placeholder="Observaciones..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" id="btn-cancel-free">Cancelar</button>
+                <button class="btn btn-primary" id="btn-confirm-free">Confirmar Recepción</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script defer src="../../assets/js/core/config.js"></script>
+    <script defer src="../../assets/js/core/supabase-client.js"></script>
+    <script defer src="../../assets/js/core/auth.js"></script>
+    <script defer src="../../assets/js/core/utils.js"></script>
+    <script defer src="../../assets/js/modules/logistica/logistica-recepcion.js"></script>
+    <script src="../../assets/js/core/navigation.js"></script>
+</body>
+
+</html>

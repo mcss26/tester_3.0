@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Nómina - FormulaMid</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+
+<body class="app-shell admin-shell admin-scroll admin-nomina" data-allowed-roles="admin,contable">
+
+    <header class="app-topbar">
+        <div class="topbar-left">
+            <button class="btn-icon btn-icon-flat" data-go="pages/admin/admin-index.html" aria-label="Volver">←</button>
+            <span class="topbar-back">INICIO</span>
+        </div>
+
+        <nav class="topbar-center topbar-nav-split">
+            <div class="topbar-nav-group left">
+                <button class="topbar-link is-fade-1"
+                    data-go="pages/admin/admin-master-proveedores.html">Proveedores</button>
+            </div>
+            <div class="topbar-nav-group center">
+                <div class="tab-group-logic">
+                    <button class="topbar-link is-center active" id="tab-nomina">Nómina</button>
+                    <button class="topbar-link is-center" id="tab-perfiles">Perfiles</button>
+                </div>
+            </div>
+            <div class="topbar-nav-group right">
+                <button class="topbar-link is-fade-1" data-go="pages/admin/admin-index.html">Menú</button>
+            </div>
+        </nav>
+
+        <div class="topbar-right">
+            <span class="system-status-pill status-open topbar-pill topbar-pill-quiet">ESTADO: OK</span>
+        </div>
+    </header>
+
+    <main class="page-shell">
+        <div class="page-card-wrap">
+            <div class="page-card">
+                <div class="page-card-loading" id="page-card-loading">
+                    <div class="state-block loading">
+                        <div class="state-spinner" aria-hidden="true"></div>
+                        <div class="state-loader"></div>
+                        <p class="state-title">Cargando nómina...</p>
+                        <p class="state-desc">Esto puede tardar unos segundos</p>
+                    </div>
+                </div>
+                <div class="page-card-empty" id="page-card-empty">
+                    <div class="state-block loading">
+                        <p class="state-title">Sin resultados</p>
+                        <p class="state-desc">Prueba con otro término de búsqueda.</p>
+                        <button class="btn-ghost btn-sm mt-2" id="btn-clear-search">Limpiar búsqueda y ver
+                            todos</button>
+                    </div>
+                </div>
+
+                <div id="module-content">
+                    <!-- Vista Nómina (Tabla Estándar) -->
+                    <div id="view-nomina" class="staff-dashboard">
+                        <div class="dashboard-header align-start">
+                            <div>
+                                <h2 class="dashboard-title dashboard-title-soft">Gestión de Nómina</h2>
+                                <p class="dashboard-subtitle dashboard-subtitle-soft">Listado y control de staff y
+                                    personal</p>
+                            </div>
+                            <button class="btn-icon btn-icon-flat btn-icon-plus" id="btn-new"
+                                aria-label="Nuevo personal">+</button>
+                        </div>
+
+                        <div class="filter-bar filter-bar-compact" aria-label="Filtros de nómina">
+                            <div class="filter-group">
+                                <button
+                                    class="status-pill status-neutral topbar-pill topbar-pill-quiet filter-pill active"
+                                    data-status="all" aria-label="Mostrar todo el personal">
+                                    Total <span class="pill-count" id="staff-total">0</span>
+                                </button>
+                                <button class="status-pill status-success topbar-pill topbar-pill-quiet filter-pill"
+                                    data-status="active" aria-label="Mostrar personal activo">
+                                    Activos <span class="pill-count" id="staff-active">0</span>
+                                </button>
+                                <button class="status-pill status-error topbar-pill topbar-pill-quiet filter-pill"
+                                    data-status="inactive" aria-label="Mostrar personal inactivo">
+                                    Inactivos <span class="pill-count" id="staff-inactive">0</span>
+                                </button>
+                            </div>
+                            <div class="filter-actions">
+                                <input type="search" id="staff-search" class="input input-compact filter-input"
+                                    placeholder="Buscar por nombre, rol o email..." aria-label="Buscar personal" />
+                            </div>
+                        </div>
+
+                        <!-- List Container (Managed by JS) -->
+                        <div class="staff-list" id="list-container"></div>
+                    </div>
+
+                    <!-- Vista Perfiles (Grilla de Profile Cards) -->
+                    <div id="view-perfiles" class="staff-dashboard hidden">
+                        <div class="dashboard-header align-start">
+                            <div>
+                                <h2 class="dashboard-title dashboard-title-soft">Perfiles de Usuario</h2>
+                                <p class="dashboard-subtitle dashboard-subtitle-soft">Identidades y cuentas de acceso al
+                                    sistema</p>
+                            </div>
+                        </div>
+
+                        <div class="filter-bar filter-bar-compact">
+                            <input type="search" id="profiles-search" class="input input-compact filter-input"
+                                placeholder="Buscar perfil..." />
+                        </div>
+
+                        <div class="profiles-grid" id="profiles-grid-container">
+                            <!-- JS Inject -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Slide Panel -->
+    <div class="panel-overlay" id="panel-overlay"></div>
+    <div class="slide-panel" id="slide-panel">
+        <div class="panel-header">
+            <h3 class="panel-title" id="panel-title">Nuevo Personal</h3>
+            <button class="panel-close" id="btn-close-panel" aria-label="Cerrar panel">×</button>
+        </div>
+        <div class="panel-body" id="panel-form-container">
+            <div id="panel-error" class="panel-error"></div>
+
+            <div class="form-group">
+                <label for="staff-name" class="form-label">Nombre Completo *</label>
+                <input type="text" id="staff-name" class="input" placeholder="Ej: Juan Pérez" required>
+            </div>
+
+            <div class="form-group">
+                <label for="staff-role" class="form-label">Rol *</label>
+                <select id="staff-role" class="input" required>
+                    <option value="">Seleccionar rol</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="staff-phone" class="form-label">Teléfono</label>
+                <input type="text" id="staff-phone" class="input" placeholder="Ej: 11 1234 5678">
+            </div>
+
+            <div class="form-group">
+                <label for="staff-email" class="form-label">Email (Usuario)</label>
+                <input type="email" id="staff-email" class="input" placeholder="usuario@midnight.tmp">
+                <span class="note">Dejar vacío para autogenerar un email temporal.</span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="staff-active">Estado</label>
+                <label class="checkbox-row">
+                    <input type="checkbox" id="staff-active" checked>
+                    <span>Activo</span>
+                </label>
+            </div>
+        </div>
+        <div class="panel-footer">
+            <button class="btn-secondary" id="btn-cancel">Cancelar</button>
+            <button class="btn-primary" id="btn-save">Guardar</button>
+        </div>
+    </div>
+    <!-- Scripts -->
+    <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script defer src="../../assets/js/core/config.js"></script>
+    <script defer src="../../assets/js/core/supabase-client.js"></script>
+    <script defer src="../../assets/js/core/auth.js"></script>
+    <script defer src="../../assets/js/core/utils.js"></script>
+    <script defer src="../../assets/js/core/toast.js"></script>
+    <!-- Page Specific Script -->
+    <!-- Shared Panel Logic -->
+    <script defer src="../../assets/js/modules/panel.js"></script>
+    <!-- Page Specific Script -->
+    <script defer src="../../assets/js/modules/admin/admin-master-nomina.js"></script>
+
+    <!-- Shared Navigation Script -->
+    <script src="../../assets/js/core/navigation.js"></script>
+</body>
+
+</html>

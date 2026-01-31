@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master POS - FormulaMid</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+
+<body class="app-shell admin-shell admin-scroll admin-pos" data-allowed-roles="admin,contable">
+
+    <header class="app-topbar">
+        <div class="topbar-left">
+            <nav id="breadcrumbs" class="breadcrumbs"></nav>
+        </div>
+        <div class="topbar-right">
+            <span class="area-brand">ADMIN</span>
+        </div>
+    </header>
+
+    <main class="page-shell">
+        <div class="page-card-wrap">
+            <div class="page-card">
+                <!-- Loading State -->
+                <div class="page-card-loading" id="page-card-loading">
+                    <div class="state-block loading">
+                        <div class="state-spinner" aria-hidden="true"></div>
+                        <div class="state-loader"></div>
+                        <p class="state-title">Cargando terminales...</p>
+                        <p class="state-desc">Esto puede tardar unos segundos</p>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div class="page-card-empty" id="page-card-empty">
+                    <div class="state-block loading">
+                        <p class="state-title">Sin resultados</p>
+                        <p class="state-desc">No se encontraron terminales con los filtros actuales.</p>
+                        <button class="btn-ghost btn-sm mt-2" onclick="window.location.reload()">Recargar</button>
+                    </div>
+                </div>
+
+                <div id="module-content">
+                    <div class="staff-dashboard">
+                        <div class="dashboard-header align-start">
+                            <div>
+                                <h2 class="dashboard-title dashboard-title-soft">Gestion de Terminales POS</h2>
+                                <p class="dashboard-subtitle dashboard-subtitle-soft">Mapeo de Terminales a Puntos de
+                                    Venta</p>
+                            </div>
+                            <button class="btn-icon btn-icon-flat btn-icon-plus" id="btn-new"
+                                aria-label="Nueva Terminal">+</button>
+                        </div>
+
+                        <!-- Filter Bar -->
+                        <div class="filter-bar filter-bar-compact" aria-label="Filtros de terminales">
+                            <div class="filter-group">
+                                <button
+                                    class="status-pill status-neutral topbar-pill topbar-pill-quiet filter-pill active"
+                                    data-status="all">
+                                    Total <span class="pill-count" id="pos-total">0</span>
+                                </button>
+                                <button class="status-pill status-success topbar-pill topbar-pill-quiet filter-pill"
+                                    data-status="active">
+                                    Activos <span class="pill-count" id="pos-active-count">0</span>
+                                </button>
+                                <button class="status-pill status-error topbar-pill topbar-pill-quiet filter-pill"
+                                    data-status="inactive">
+                                    Inactivos <span class="pill-count" id="pos-inactive-count">0</span>
+                                </button>
+                            </div>
+                            <div class="filter-actions">
+                                <input type="search" id="pos-search" class="input input-compact filter-input"
+                                    placeholder="Buscar terminal..." aria-label="Buscar terminal" />
+                            </div>
+                        </div>
+
+                        <!-- List Container -->
+                        <div class="staff-list table-viewport table-shell" id="list-container">
+                            <!-- Content injected by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Slide Panel -->
+    <div class="panel-overlay" id="panel-overlay"></div>
+    <div class="slide-panel" id="slide-panel">
+        <div class="panel-header">
+            <h3 class="panel-title" id="panel-title">Nueva Terminal</h3>
+            <button class="btn-icon panel-close" id="btn-close-panel" aria-label="Cerrar">×</button>
+        </div>
+        <div class="panel-body" id="panel-form-container">
+            <div id="panel-error" class="panel-error"></div>
+
+            <div class="form-group">
+                <label for="pos-name" class="form-label">Nombre (Friendly Name) *</label>
+                <input type="text" id="pos-name" class="input" placeholder="Ej: Barra Principal" required>
+            </div>
+
+            <div class="form-group">
+                <label for="pos-provider" class="form-label">Proveedor *</label>
+                <select id="pos-provider" class="input">
+                    <option value="MERCADO PAGO">Mercado Pago</option>
+                    <option value="GETNET">Getnet</option>
+                    <option value="FISERV">Fiserv / Posnet</option>
+                    <option value="PAYWAY">Payway</option>
+                    <option value="OTHER">Otro</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="pos-external-id" class="form-label">External ID (Serial/Code) *</label>
+                <input type="text" id="pos-external-id" class="input" placeholder="Ej: MP-POINT-1234" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="pos-active">Estado</label>
+                <label class="checkbox-row">
+                    <input type="checkbox" id="pos-active" checked>
+                    <span>Activo</span>
+                </label>
+            </div>
+        </div>
+        <div class="panel-footer">
+            <button class="btn-secondary" id="btn-cancel">Cancelar</button>
+            <button class="btn-primary" id="btn-save">Guardar</button>
+        </div>
+    </div>
+    <!-- Scripts -->
+    <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script defer src="../../assets/js/core/config.js"></script>
+    <script defer src="../../assets/js/core/supabase-client.js"></script>
+    <script defer src="../../assets/js/core/auth.js"></script>
+    <script defer src="../../assets/js/core/utils.js"></script>
+    <script defer src="../../assets/js/core/toast.js"></script>
+    <!-- Shared Panel Logic -->
+    <script defer src="../../assets/js/modules/panel.js"></script>
+    <script defer src="../../assets/js/core/breadcrumbs.js"></script>
+    <!-- Page Specific Script -->
+    <script defer src="../../assets/js/modules/admin/admin-master-pos.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('breadcrumbs');
+            if (container && window.Breadcrumbs) {
+                window.Breadcrumbs.render(container);
+            }
+        });
+    </script>
+
+    <!-- Shared Navigation Script -->
+    <script src="../../assets/js/core/navigation.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supervisión Cajas - Midnight</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+
+<body class="app-shell"
+    data-allowed-roles="encargado_barra,encargado_caja,encargado_limpieza,encargado_seguridad,admin">
+
+    <!-- Standard Topbar -->
+    <header class="app-topbar">
+        <div class="topbar-left">
+            <button class="topbar-link" data-go="pages/encargados/encargado-caja-index.html">← Volver</button>
+        </div>
+        <nav class="topbar-center">
+            <button class="topbar-link" data-go="pages/encargados/encargado-caja-personal.html">Personal</button>
+            <button class="topbar-link active">Noche</button>
+        </nav>
+        <div class="topbar-right">
+            <span class="label-xs">CAJAS</span>
+            <button id="btn-close-night-init" class="btn-danger-text">Cerrar Noche</button>
+        </div>
+    </header>
+
+    <main class="page-shell">
+        <div class="page-card-wrap">
+
+            <!-- Loading State -->
+            <div id="page-card-loading" class="page-card is-visible">
+                <div class="loading-spinner"></div>
+                <p class="label-sm">Cargando terminales...</p>
+            </div>
+
+            <!-- Empty State: No workday -->
+            <div id="page-card-empty" class="page-card">
+                <div class="empty-state-icon">📅</div>
+                <p class="label-lg">Sin jornada abierta</p>
+                <p class="label-sm">Abra una jornada desde Admin Workdays para continuar.</p>
+            </div>
+
+            <!-- Content Card -->
+            <div id="page-card-content" class="page-card hidden">
+                <div class="staff-dashboard">
+                    <!-- Tabs -->
+                    <div class="tabs-row">
+                        <div class="tab-bar">
+                            <button class="tab-chip active" data-view="monitor">Monitor</button>
+                            <button class="tab-chip" data-view="movements">Movimientos</button>
+                        </div>
+                    </div>
+
+                    <!-- View 1: Monitor -->
+                    <div id="view-monitor">
+                        <!-- Stats Row -->
+                        <div class="filter-bar">
+                            <div class="stat-row">
+                                <div class="stat-item">
+                                    <span class="stat-label">Terminales</span>
+                                    <span class="stat-value" id="stat-terminals">0/0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Enviados</span>
+                                    <span class="stat-value" id="stat-submitted">0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Pendientes</span>
+                                    <span class="stat-value" id="stat-pending-withdrawal">0</span>
+                                </div>
+                            </div>
+                            <div class="filter-actions">
+                                <button id="btn-open-terminal-modal" class="btn-outline">+ Abrir</button>
+                                <button id="btn-request-withdrawal-modal" class="btn-action">$ Retiro</button>
+                            </div>
+                        </div>
+
+                        <!-- Terminals Grid -->
+                        <div class="card-grid" id="terminals-grid">
+                            <!-- Injected via JS -->
+                        </div>
+                    </div>
+
+                    <!-- View 2: Movements -->
+                    <div id="view-movements" class="hidden">
+                        <div class="log-container" id="movements-log">
+                            <!-- Injected via JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal: Open Terminal -->
+    <div id="modal-open-terminal" class="modal-overlay">
+        <div class="modal-shell">
+            <div class="modal-header">
+                <h3 class="modal-title">Apertura de Caja</h3>
+                <p class="modal-subtitle">Asigna un responsable a una terminal.</p>
+            </div>
+
+            <form id="form-open-terminal" class="modal-body">
+                <div class="form-group">
+                    <label class="text-label-sm">Terminal</label>
+                    <select id="open-select-terminal" class="input" required>
+                        <!-- Options loaded via JS -->
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="text-label-sm">Responsable (Staff)</label>
+                    <select id="open-select-staff" class="input" required>
+                        <option value="">Cargando staff...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="text-label-sm">Fondo Inicial ($)</label>
+                    <div class="input-currency-wrap">
+                        <span class="input-currency-symbol">$</span>
+                        <input type="number" id="open-amount" class="input input-currency-field" value="0" min="0"
+                            step="100">
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" data-modal-close>Cancelar</button>
+                    <button type="submit" class="btn-primary">ABRIR</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Request Withdrawal -->
+    <div id="modal-withdrawal" class="modal-overlay">
+        <div class="modal-shell">
+            <div class="modal-header">
+                <h3 class="modal-title">Solicitar Retiro / Egreso</h3>
+                <p class="modal-subtitle">El staff deberá confirmar la entrega del dinero.</p>
+            </div>
+
+            <form id="form-withdrawal" class="modal-body">
+                <div class="form-group">
+                    <label class="text-label-sm">Terminal Origen</label>
+                    <select id="select-terminal" class="input" required>
+                        <!-- Options loaded via JS -->
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="text-label-sm">Monto a Retirar</label>
+                    <div class="input-currency-wrap">
+                        <span class="input-currency-symbol">$</span>
+                        <input type="number" id="input-amount" class="input input-currency-field" required min="1"
+                            step="100">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="text-label-sm">Motivo</label>
+                    <input type="text" id="input-reason" class="input" placeholder="Ej: Pago Proveedor, Saturation..."
+                        required>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" data-modal-close>Cancelar</button>
+                    <button type="submit" class="btn-action">Solicitar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Close Terminal -->
+    <div id="modal-close-terminal" class="modal-overlay">
+        <div class="modal-shell modal-danger">
+            <div class="modal-header">
+                <h3 class="modal-title text-danger">Cerrar Terminal</h3>
+                <p class="modal-subtitle">Ingresa los montos declarados (Arqueo).</p>
+            </div>
+
+            <form id="form-close-terminal" class="modal-body">
+                <input type="hidden" id="close-terminal-id">
+
+                <div class="form-group">
+                    <label class="text-label-sm">Efectivo ($)</label>
+                    <div class="input-currency-wrap">
+                        <span class="input-currency-symbol">$</span>
+                        <input type="number" id="close-cash-amount" class="input input-currency-field" required min="0"
+                            step="100">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="text-label-sm">Zoco / QR ($)</label>
+                    <div class="input-currency-wrap">
+                        <span class="input-currency-symbol">$</span>
+                        <input type="number" id="close-zoco-amount" class="input input-currency-field" required min="0"
+                            step="100">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="text-label-sm">Notas</label>
+                    <input type="text" id="close-notes" class="input" placeholder="Opcional...">
+                </div>
+
+                <!-- Signature Pad -->
+                <div class="form-group">
+                    <label class="text-label-sm">Firma de Conformidad</label>
+                    <div class="signature-pad-container">
+                        <canvas id="signature-canvas"></canvas>
+                        <button type="button" id="btn-clear-signature" class="btn-clear-sig" title="Borrar Firma">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M3 6h18" />
+                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                                <line x1="10" x2="10" y1="11" y2="17" />
+                                <line x1="14" x2="14" y1="11" y2="17" />
+                            </svg>
+                        </button>
+                        <div id="signature-placeholder" class="signature-placeholder">
+                            <span>Firmar Aquí</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" data-modal-close>Cancelar</button>
+                    <button type="submit" class="btn-danger">CERRAR CAJA</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Close Night (Global) -->
+    <div id="modal-close-night" class="modal-overlay">
+        <div class="modal-shell modal-danger">
+            <div class="modal-header">
+                <h3 class="modal-title text-danger">Cierre General de Caja</h3>
+                <p class="modal-subtitle">Se finalizará la jornada operativa de caja.</p>
+            </div>
+
+            <div class="modal-alert">
+                <p>Asegúrate de haber cerrado todas las terminales.</p>
+                <p class="text-warning">Esta acción es irreversible.</p>
+            </div>
+
+            <form id="form-close-night" class="modal-body">
+                <div class="form-group">
+                    <label class="text-label-sm">Notas del Cierre</label>
+                    <textarea id="night-close-notes" class="input" rows="3"
+                        placeholder="Comentarios generales..."></textarea>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" data-modal-close>Cancelar</button>
+                    <button type="submit" class="btn-danger">FINALIZAR</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Confirm (Generic) -->
+    <div id="confirmModal" class="modal-overlay">
+        <div class="modal-shell modal-sm">
+            <div class="modal-header">
+                <h3 class="modal-title" id="confirmModalTitle">Confirmar</h3>
+            </div>
+            <div class="modal-body">
+                <p id="confirmModalMessage"></p>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" data-modal-close>Cancelar</button>
+                <button type="button" class="btn-primary" id="confirmModalAccept">Aceptar</button>
+            </div>
+        </div>
+    </div>
+
+    <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script defer src="../../assets/js/core/config.js"></script>
+    <script defer src="../../assets/js/core/supabase-client.js"></script>
+    <script defer src="../../assets/js/core/utils.js"></script>
+    <script defer src="../../assets/js/core/auth.js"></script>
+    <script src="../../assets/js/core/navigation.js"></script>
+    <script defer src="../../assets/js/core/toast.js"></script>
+    <script defer src="../../assets/js/modules/encargados/encargado-caja-noche.js"></script>
+
+</body>
+
+</html>

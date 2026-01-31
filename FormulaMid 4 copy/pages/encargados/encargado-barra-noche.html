@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FormulaMid — Control de Stock Barra</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+
+<body class="app-shell admin-shell admin-scroll encargado-barra-noche-shell" data-allowed-roles="encargado_barra,admin">
+
+    <!-- Topbar -->
+    <header class="app-topbar">
+        <div class="topbar-left">
+            <button class="btn-icon btn-icon-flat" data-go="pages/encargados/encargado-barra-index.html">←</button>
+            <span class="topbar-back">INICIO</span>
+        </div>
+        <div class="topbar-center">
+            <span class="topbar-title">CONTROL DE STOCK</span>
+        </div>
+        <div class="topbar-right">
+            <button id="btn-refresh" class="btn-icon btn-icon-flat" aria-label="Refrescar">↻</button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="page-shell">
+        <div class="page-card-wrap">
+
+            <!-- Loading State -->
+            <div class="page-card-loading" id="pageLoading">
+                <div class="loading-spinner"></div>
+                <span>Cargando información...</span>
+            </div>
+
+            <!-- Empty State: No Work Day -->
+            <div class="page-card-empty hidden" id="pageNoDay">
+                <p>🔴 No hay una jornada de trabajo activa.</p>
+                <p class="muted">Contacta a Gerencia para abrir la jornada.</p>
+                <button class="btn-secondary" style="margin-top: var(--space-md);"
+                    data-go="pages/encargados/encargado-barra-index.html">Volver</button>
+            </div>
+
+            <!-- Session Closed State -->
+            <div class="page-card-empty hidden" id="pageSessionClosed">
+                <p>✅ Barra Cerrada</p>
+                <p class="muted" id="closedTime">Has finalizado tu turno correctamente.</p>
+                <button class="btn-secondary" style="margin-top: var(--space-md);"
+                    data-go="pages/encargados/encargado-barra-index.html">Volver</button>
+            </div>
+
+            <!-- Ready to Open State -->
+            <div class="page-content hidden" id="pageOpen">
+                <div class="staff-dashboard">
+                    <div class="dashboard-header">
+                        <h2 class="dashboard-title">🔓 Apertura de Barra</h2>
+                    </div>
+                    <p class="muted" style="margin-bottom: var(--space-md);">Confirma el stock inicial para comenzar tu
+                        turno.</p>
+
+                    <div id="openingStockList" class="staff-list">
+                        <!-- JS Injected SKU rows -->
+                    </div>
+
+                    <div class="form-group" style="margin-top: var(--space-md);">
+                        <label>Notas de Apertura (Opcional)</label>
+                        <textarea id="openingNotes" class="input" rows="2"
+                            placeholder="Ej: Faltan hielos, vaso roto..."></textarea>
+                    </div>
+
+                    <button id="btnSubmitOpen" class="btn-primary w-full" style="margin-top: var(--space-md);">Confirmar
+                        Apertura</button>
+                </div>
+            </div>
+
+            <!-- Active Session State -->
+            <div class="page-content hidden" id="pageActive">
+                <div class="staff-dashboard">
+                    <div class="dashboard-header">
+                        <h2 class="dashboard-title">🟢 Barra Activa</h2>
+                        <span class="status-pill status-success" id="activeSessionTime">--:--</span>
+                    </div>
+
+                    <div style="display: flex; gap: var(--space-sm); margin-top: var(--space-md);">
+                        <button id="btnCloseSession" class="btn-danger w-full">🛑 Cerrar Barra</button>
+                    </div>
+                </div>
+
+                <!-- Closing View (shown when closing) -->
+                <div id="closingView" class="hidden" style="margin-top: var(--space-lg);">
+                    <div class="staff-dashboard">
+                        <div class="dashboard-header">
+                            <h2 class="dashboard-title">Cierre de Barra</h2>
+                        </div>
+                        <p class="muted" style="margin-bottom: var(--space-md);">Ingresa el stock final (Sobrante
+                            físico).</p>
+
+                        <div id="closingStockList" class="staff-list">
+                            <!-- JS Injected SKU rows -->
+                        </div>
+
+                        <div class="form-group" style="margin-top: var(--space-md);">
+                            <label>Notas de Cierre</label>
+                            <textarea id="closingNotes" class="input" rows="2"></textarea>
+                        </div>
+
+                        <div style="display: flex; gap: var(--space-sm); margin-top: var(--space-md);">
+                            <button id="btnCancelClose" class="btn-secondary" style="flex: 1;">Cancelar</button>
+                            <button id="btnSubmitClose" class="btn-primary" style="flex: 1;">Finalizar Turno</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Confirm Modal -->
+    <div class="modal-overlay hidden" id="confirmModal">
+        <div class="modal-card" style="max-width: 400px;">
+            <div class="modal-header">
+                <h2 id="confirmTitle">Confirmar Acción</h2>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage">¿Estás seguro de continuar?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="btnCancelConfirm">Cancelar</button>
+                <button class="btn-primary" id="btnConfirm">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script defer src="../../assets/js/core/config.js"></script>
+    <script defer src="../../assets/js/core/supabase-client.js"></script>
+    <script defer src="../../assets/js/core/auth.js"></script>
+    <script defer src="../../assets/js/core/utils.js"></script>
+    <script defer src="../../assets/js/core/toast.js"></script>
+    <script defer src="../../assets/js/modules/work-day-helper.js"></script>
+    <script src="../../assets/js/core/navigation.js"></script>
+    <script defer src="../../assets/js/modules/encargados/encargado-barra-noche.js"></script>
+
+</body>
+
+</html>

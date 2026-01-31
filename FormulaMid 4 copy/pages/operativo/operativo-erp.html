@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Operativo - ERP</title>
+  <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+
+<body class="welcome-screen operativo-landing" data-allowed-roles="operativo,staff_barra,staff_operativo">
+  <main class="center-content">
+    <section class="mode-selection link-row">
+      <a href="#" data-go="pages/operativo/operativo-index.html" class="footer-link">Volver</a>
+      <a href="#" data-go="pages/operativo/operativo-stock.html" class="footer-link">Inventario</a>
+      <a href="#" data-go="pages/operativo/operativo-analisis.html" class="footer-link">Herramientas</a>
+      <a href="#" data-go="pages/operativo/operativo-workday.html" class="footer-link">Work Day</a>
+      <a href="#" data-go="pages/operativo/operativo-master-proveedores.html" class="footer-link">Master</a>
+    </section>
+  </main>
+
+  <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script defer src="../../assets/js/core/config.js"></script>
+  <script defer src="../../assets/js/core/supabase-client.js"></script>
+  <script defer src="../../assets/js/core/auth.js"></script>
+  <script defer src="../../assets/js/modules/operativo/operativo-erp.js"></script>
+  <script src="../../assets/js/core/navigation.js"></script>
+</body>
+
+</html>

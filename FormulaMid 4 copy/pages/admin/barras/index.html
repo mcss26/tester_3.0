@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Barras - Midnight</title>
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+</head>
+<body class="app-shell admin-shell" data-allowed-roles="admin,manager,encargado_barra">
+
+    <header class="app-topbar">
+        <div class="topbar-left">
+            <button class="topbar-link" data-go="pages/admin/admin-index.html">← Volver</button>
+        </div>
+        <nav class="topbar-center"></nav>
+        <div class="topbar-right">
+            <span class="status-pill hidden" id="workday-pill">NO WORKDAY</span>
+            <div class="topbar-brand">BARRAS</div>
+        </div>
+    </header>
+
+    <main class="bar-dashboard">
+        <!-- Action Bar -->
+        <div class="dashboard-header">
+             <div>
+                 <h2 class="dashboard-title">Sesiones Activas</h2>
+                 <p class="dashboard-subtitle">Gestiona la apertura y cierre de puntos de venta.</p>
+             </div>
+             <div class="actions-bar">
+                 <a href="recipes.html" class="btn btn-secondary">
+                     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                     Recetas
+                 </a>
+                 <button id="btn-new-session" class="btn btn-primary">
+                     <span>+</span> Nueva Sesión
+                 </button>
+             </div>
+        </div>
+
+        <!-- Active Sessions Grid -->
+        <div id="active-sessions-grid" class="session-grid">
+            <!-- Injected by JS -->
+            <div class="page-card-loading is-visible">Cargando sesiones...</div>
+        </div>
+
+        <hr>
+
+        <!-- History/Closed Header -->
+        <div class="section-header">
+             <h2 class="section-title muted">Historial Reciente (Cerradas)</h2>
+        </div>
+        
+        <div id="closed-sessions-list" class="list-stack opacity-60">
+             <!-- Injected by JS -->
+        </div>
+
+    </main>
+
+    <!-- New Session Modal -->
+    <div id="modal-new-session" class="modal-overlay">
+        <div class="modal-card">
+            <h3 class="modal-title">Apertura de Barra</h3>
+            
+            <div class="form-group">
+                <label class="label">Ubicación / Barra</label>
+                <select id="input-location" class="input">
+                    <option value="Barra Principal">Barra Principal</option>
+                    <option value="Barra VIP">Barra VIP</option>
+                    <option value="Barra Patio">Barra Patio</option>
+                    <option value="Barra Recepcion">Barra Recepción</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="label">Notas Iniciales (Opcional)</label>
+                <textarea id="input-notes" class="input" rows="3" placeholder="Estado inicial, observaciones..."></textarea>
+            </div>
+
+            <div id="modal-actions" class="modal-actions">
+                <button id="btn-cancel-modal" class="btn btn-ghost">Cancelar</button>
+                <button id="btn-create-session" class="btn btn-primary">Abrir Barra</button>
+            </div>
+        </div>
+    </div>
+
+    <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script defer src="../../../assets/js/core/config.js"></script>
+    <script defer src="../../../assets/js/core/constants.js"></script>
+    <script defer src="../../../assets/js/core/supabase-client.js"></script>
+    <script defer src="../../../assets/js/core/auth.js"></script>
+    <script defer src="../../../assets/js/core/utils.js"></script>
+    <script defer src="../../../assets/js/core/toast.js"></script>
+    <script defer src="../../../assets/js/modules/admin/bar-dashboard.js"></script>
+
+</body>
+</html>

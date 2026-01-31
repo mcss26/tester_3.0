@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Midnight - Iniciar Sesión</title>
+
+    <!-- Estilos -->
+    <link rel="stylesheet" href="assets/css/main.css" />
+
+    <!-- Supabase & Core JS -->
+    <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script defer src="assets/js/core/config.js"></script>
+    <script defer src="assets/js/core/supabase-client.js"></script>
+    <script defer src="assets/js/core/auth.js"></script>
+
+    <!-- Login Module -->
+    <script src="assets/js/modules/login.js" defer></script>
+  </head>
+  <body class="login">
+    <div class="card">
+      <div class="header">
+        <h1>MIDNIGHT</h1>
+      </div>
+    
+      <form id="login-form">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            required
+            autocomplete="email"
+            placeholder="usuario@formula.mid"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Contraseña</label>
+          <input
+            type="password"
+            id="password"
+            required
+            autocomplete="current-password"
+            placeholder="••••••••"
+          />
+        </div>
+
+        <div id="login-error" class="error-message"></div>
+
+        <button type="submit" class="btn-primary">Ingresar</button>
+        
+        <div class="login-staff-divider">
+            <button type="button" class="btn-ghost text-xs" onclick="alert('Staff: Usa tu email registrado y contraseña genérica (o solicita acceso al Encargado).')">
+                ¿Eres Staff? Acceso aquí
+            </button>
+        </div>
+      </form>
+
+    </div>
+  </body>
+</html>

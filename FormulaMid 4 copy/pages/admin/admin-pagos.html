@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FormulaMid — Admin Pagos</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../../assets/css/main.css" />
+</head>
+
+<body class="app-shell admin-shell admin-scroll admin-pagos">
+
+    <!-- TOPBAR -->
+    <!-- TOPBAR -->
+    <header class="app-topbar">
+        <div class="topbar-left">
+            <button class="btn-icon btn-icon-flat" data-go="pages/admin/admin-index.html" aria-label="Volver">←</button>
+            <span class="topbar-back">ADMIN</span>
+        </div>
+        <nav class="topbar-center">
+            <span class="topbar-brand">GESTIÓN DE PAGOS</span>
+        </nav>
+        <div class="topbar-right">
+            <div class="user-profile" id="user-profile">
+                <span id="user-name" class="user-name">Admin</span>
+                <span class="badge badge-primary">FINANZAS</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="page-shell">
+        <div class="page-card-wrap">
+            <div class="page-card dashboard-view">
+
+                <!-- STATE: LOADING -->
+                <div id="page-card-loading" class="page-card-loading">
+                    <div class="state-block loading">
+                        <div class="state-spinner" aria-hidden="true"></div>
+                        <div class="state-loader"></div>
+                        <p class="state-title">Cargando pagos...</p>
+                        <p class="state-desc">Sincronizando con el sector contable</p>
+                    </div>
+                </div>
+
+                <!-- STATE: EMPTY -->
+                <div id="page-card-empty" class="page-card-empty">
+                    <div class="state-block">
+                        <div class="state-icon">📭</div>
+                        <h3 class="state-title">Sin Pagos Pendientes</h3>
+                        <p class="state-desc">No se encontraron registros para el filtro seleccionado.</p>
+                        <button class="btn-ghost btn-sm mt-2" onclick="location.reload()">Refrescar</button>
+                    </div>
+                </div>
+
+                <div id="module-content">
+                    <!-- DASHBOARD HEADER -->
+                    <div class="dashboard-header align-start">
+                        <div>
+                            <h2 class="dashboard-title">Tesorería & Pagos</h2>
+                            <p class="dashboard-subtitle">Control de egresos, pedidos aprobados y costos recurrentes.
+                            </p>
+                        </div>
+                        <div class="actions-bar">
+                            <!-- Calendar Mini could go here or in a separate row -->
+                            <div class="cal-mini-wrap" style="min-width: 200px;">
+                                <div class="cal-mini-header">
+                                    <div class="cal-mini-month font-bold text-xs" id="calMonthMini">—</div>
+                                </div>
+                                <div class="cal-mini-grid" id="calGridMini"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TABS -->
+                    <div class="filter-bar">
+                        <div class="filter-group" id="mainTabs">
+                            <button type="button" class="filter-pill is-active" data-tab="TODOS">General</button>
+                            <button type="button" class="filter-pill" data-tab="PEDIDOS">Pedidos</button>
+                            <button type="button" class="filter-pill" data-tab="APERTURA">Apertura</button>
+                            <button type="button" class="filter-pill" data-tab="RECURRENTES">Recurrentes</button>
+                            <button type="button" class="filter-pill" data-tab="EXTRAS">Extras</button>
+                            <button type="button" class="filter-pill" data-tab="CONFIG">⚙️</button>
+                        </div>
+                    </div>
+
+                    <!-- VIEW: TODOS -->
+                    <section id="panelCalendario" class="view-container dashboard-view">
+                        <div class="filter-bar filter-bar-compact">
+                            <div class="filter-group">
+                                <input id="queueSearch" type="search" class="input input-compact filter-input"
+                                    placeholder="Buscar pago / proveedor..." />
+                                <div class="row-flex gap-1" id="bulkActionsPending" style="display: none;">
+                                    <span class="badge badge-warning" id="bulkCount">0 sel</span>
+                                    <button type="button" class="btn btn-primary btn-xs" id="btnBulkPay">PAGAR
+                                        LOTE</button>
+                                </div>
+                            </div>
+                            <div class="filter-actions">
+                                <div class="btn-group btn-group-xs">
+                                    <button type="button" class="btn btn-primary"
+                                        id="btnViewPending">PENDIENTES</button>
+                                    <button type="button" class="btn btn-ghost" id="btnViewDone">REALIZADOS</button>
+                                </div>
+                                <button type="button" class="btn btn-ghost btn-xs" id="btnClearDay">VER TODO</button>
+                            </div>
+                        </div>
+
+                        <!-- Pending Table -->
+                        <div class="table-viewport table-shell" id="pendingQueueWrap">
+                            <div class="table-scroll">
+                                <table class="table table-sticky" id="pendingQueueTable">
+                                    <thead>
+                                        <tr class="table-head">
+                                            <th class="table-cell is-header cell-pad w-40 text-center">
+                                                <input type="checkbox" id="checkAllPending" />
+                                            </th>
+                                            <th class="table-cell is-header cell-pad">PAGO</th>
+                                            <th class="table-cell is-header text-center">TIPO</th>
+                                            <th class="table-cell is-header text-center">VENCE</th>
+                                            <th class="table-cell is-header text-right">TOTAL</th>
+                                            <th class="table-cell is-header text-center">ESTADO</th>
+                                            <th class="table-cell is-header text-center cell-pad">ACCIONES</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Injected -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Done Table -->
+                        <div class="table-viewport table-shell hidden" id="doneRecentWrap">
+                            <div class="table-scroll">
+                                <table class="table table-sticky" id="doneRecentTable">
+                                    <thead>
+                                        <tr class="table-head">
+                                            <th class="table-cell is-header cell-pad">PAGO</th>
+                                            <th class="table-cell is-header text-center">TIPO</th>
+                                            <th class="table-cell is-header text-center">VENCE</th>
+                                            <th class="table-cell is-header text-right">TOTAL</th>
+                                            <th class="table-cell is-header text-center">COMPROBANTE</th>
+                                            <th class="table-cell is-header text-center">MÉTODO</th>
+                                            <th class="table-cell is-header text-center cell-pad">ACCIONES</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Injected -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- VIEW: RECURRENTES -->
+                    <section id="panelRecurrentes" class="view-container dashboard-view hidden">
+                        <div class="filter-bar filter-bar-compact">
+                            <div class="filter-group">
+                                <span class="dashboard-subtitle muted">Reglas automáticas de generación</span>
+                            </div>
+                            <div class="filter-actions">
+                                <button type="button" class="btn btn-ghost btn-xs" id="btnGenerateRules">GENERAR 8
+                                    SEM</button>
+                                <button type="button" class="btn btn-primary btn-xs" id="btnOpenRuleModal">+ Nueva
+                                    Regla</button>
+                            </div>
+                        </div>
+
+                        <div class="table-viewport table-shell">
+                            <div class="table-scroll">
+                                <table class="table table-sticky" id="rulesTable">
+                                    <thead>
+                                        <tr class="table-head">
+                                            <th class="table-cell is-header cell-pad">REGLA</th>
+                                            <th class="table-cell is-header text-center">TIPO</th>
+                                            <th class="table-cell is-header text-right">MONTO</th>
+                                            <th class="table-cell is-header text-center">PROVEEDOR</th>
+                                            <th class="table-cell is-header text-center">ACTIVA</th>
+                                            <th class="table-cell is-header text-center cell-pad">ACCIONES</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Injected -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- VIEW: APERTURA -->
+                    <section id="panelApertura" class="view-container dashboard-view hidden">
+                        <div class="filter-bar filter-bar-compact">
+                            <div class="filter-group">
+                                <span class="dashboard-subtitle muted">Costos base pre-jornada</span>
+                            </div>
+                            <div class="filter-actions align-center">
+                                <label class="row-flex align-center gap-1 text-xs muted pointer">
+                                    <input type="checkbox" id="openingShowInactive" /> Inactivos
+                                </label>
+                                <button type="button" class="btn btn-primary btn-xs" id="btnNewOpeningDef">+ Nuevo
+                                    Costo</button>
+                            </div>
+                        </div>
+
+                        <div class="table-viewport table-shell">
+                            <div class="table-scroll">
+                                <table class="table table-sticky" id="openingDefsTable">
+                                    <thead>
+                                        <tr class="table-head">
+                                            <th class="table-cell is-header cell-pad">COSTO</th>
+                                            <th class="table-cell is-header text-center">MODO</th>
+                                            <th class="table-cell is-header text-right">MONTO</th>
+                                            <th class="table-cell is-header text-center">DÍAS ANTES</th>
+                                            <th class="table-cell is-header text-center cell-pad">ACCIONES</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Injected -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- VIEW: EXTRAS -->
+                    <section id="panelExtras" class="view-container dashboard-view hidden">
+                        <div class="filter-bar filter-bar-compact">
+                            <div class="filter-group">
+                                <span class="dashboard-subtitle muted">Pagos manuales / eventuales</span>
+                            </div>
+                            <div class="filter-actions">
+                                <button type="button" class="btn btn-primary btn-xs" id="btnNewExtra">+ Nuevo
+                                    Extra</button>
+                            </div>
+                        </div>
+
+                        <div class="table-viewport table-shell">
+                            <div class="table-scroll">
+                                <table class="table table-sticky" id="extrasTable">
+                                    <thead>
+                                        <tr class="table-head">
+                                            <th class="table-cell is-header cell-pad">EXTRA</th>
+                                            <th class="table-cell is-header text-center">VENCE</th>
+                                            <th class="table-cell is-header text-right">TOTAL</th>
+                                            <th class="table-cell is-header text-center">ESTADO</th>
+                                            <th class="table-cell is-header text-center cell-pad">ACCIONES</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Injected -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- VIEW: PEDIDOS -->
+                    <section id="panelPedidos" class="view-container dashboard-view hidden">
+                        <div class="filter-bar filter-bar-compact">
+                            <div class="filter-group">
+                                <span class="dashboard-subtitle muted">Compras aprobadas pendientes de cobro</span>
+                            </div>
+                        </div>
+                        <div class="table-viewport table-shell">
+                            <div class="table-scroll">
+                                <table class="table table-sticky" id="pedidosTable">
+                                    <thead>
+                                        <tr class="table-head">
+                                            <th class="table-cell is-header cell-pad">SOLICITUD / ITEM</th>
+                                            <th class="table-cell is-header text-center">PACKS</th>
+                                            <th class="table-cell is-header text-center">RESTANTE</th>
+                                            <th class="table-cell is-header text-center cell-pad">ESTADO</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Injected -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- VIEW: CONFIG -->
+                    <section id="panelConfig" class="view-container dashboard-view hidden">
+                        <div class="table-wrap p-4">
+                            <h4 class="mb-4">Herramientas Avanzadas</h4>
+                            <div class="row-flex gap-2">
+                                <button class="btn btn-secondary btn-sm" id="btnGenerateRulesAll">GENERAR TODO
+                                    (Reglas)</button>
+                            </div>
+                        </div>
+                    </section>
+
+                </div> <!-- /module-content -->
+            </div>
+        </div>
+    </main>
+
+    <!-- OVERLAYS & SLIDE PANELS -->
+    <div class="panel-overlay" id="panelOverlay"></div>
+
+    <!-- PANEL DATALIST FOR SUPPLIERS -->
+    <datalist id="suppliersList"></datalist>
+
+    <!-- Panel: Rule -->
+    <aside class="slide-panel" id="rulePanel">
+        <div class="panel-header">
+            <h3 class="panel-title">Regla Recurrente</h3>
+            <button class="btn-close-panel" onclick="closeAllPanels()">×</button>
+        </div>
+        <div class="panel-body custom-scroll">
+            <form id="ruleForm">
+                <input type="hidden" id="ruleId" />
+                <div class="form-group">
+                    <label class="form-label">Título</label>
+                    <input id="ruleTitle" class="input" placeholder="Ej: Pago de Alquiler" required />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tipo</label>
+                    <select id="ruleType" class="input">
+                        <option value="WEEKLY">Semanal</option>
+                        <option value="MONTHLY">Mensual</option>
+                    </select>
+                </div>
+                <div class="form-group hidden" id="weeklyWrap">
+                    <label class="form-label">Día de la semana</label>
+                    <select id="ruleWeekday" class="input">
+                        <option value="0">Lunes</option>
+                        <option value="1">Martes</option>
+                        <option value="2">Miércoles</option>
+                        <option value="3">Jueves</option>
+                        <option value="4">Viernes</option>
+                        <option value="5">Sábado</option>
+                        <option value="6">Domingo</option>
+                    </select>
+                </div>
+                <div class="form-group hidden" id="monthlyWrap">
+                    <label class="form-label">Día del mes</label>
+                    <input id="ruleDayOfMonth" type="number" class="input" min="1" max="31" value="1" />
+                </div>
+                <!-- Smart Rule Logic -->
+                <div class="form-group">
+                    <label class="form-label">Si cae feriado / no hábil:</label>
+                    <select id="ruleOnHoliday" class="input">
+                        <option value="IGNORE">Mantener fecha original</option>
+                        <option value="PREV">Mover al día hábil anterior</option>
+                        <option value="NEXT">Mover al día hábil siguiente</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Proveedor</label>
+                    <input list="suppliersList" id="ruleSupplierInput" class="input"
+                        placeholder="Buscar proveedor..." />
+                    <input type="hidden" id="ruleSupplier" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Monto</label>
+                    <div class="row-flex gap-1">
+                        <select id="ruleAmountMode" class="input w-100">
+                            <option value="FIXED">Fijo</option>
+                            <option value="VARIABLE">Variable</option>
+                        </select>
+                        <input id="ruleFixedAmount" type="number" class="input" step="0.01" placeholder="0.00" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-row pointer">
+                        <input type="checkbox" id="ruleIsActive" checked /> Activa
+                    </label>
+                </div>
+            </form>
+        </div>
+        <div class="panel-footer">
+            <button class="btn btn-ghost" id="btnCancelRule">Cancelar</button>
+            <button class="btn btn-primary" id="btnSaveRule">Guardar</button>
+        </div>
+    </aside>
+
+    <!-- Panel: Opening -->
+    <aside class="slide-panel" id="openingPanel">
+        <div class="panel-header">
+            <h3 class="panel-title">Costo Apertura</h3>
+            <button class="btn-close-panel" onclick="closeAllPanels()">×</button>
+        </div>
+        <div class="panel-body custom-scroll">
+            <form id="openingForm">
+                <input type="hidden" id="openingId" />
+                <div class="form-group">
+                    <label class="form-label">Título</label>
+                    <input id="openingTitle" class="input" placeholder="Ej: Personal de Limpieza" required />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Proveedor</label>
+                    <input list="suppliersList" id="openingSupplierInput" class="input" placeholder="Buscar..." />
+                    <input type="hidden" id="openingSupplier" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Monto Default</label>
+                    <input id="openingDefaultAmount" type="number" class="input" step="0.01" placeholder="0.00" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Vencimiento (Días antes de jornada)</label>
+                    <input id="openingDueDays" type="number" class="input" value="0" />
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-row pointer">
+                        <input type="checkbox" id="openingIsActive" checked /> Activo
+                    </label>
+                </div>
+            </form>
+        </div>
+        <div class="panel-footer">
+            <button class="btn btn-ghost" id="btnCancelOpening">Cancelar</button>
+            <button class="btn btn-primary" id="btnSaveOpening">Guardar</button>
+        </div>
+    </aside>
+
+    <!-- Panel: Extra -->
+    <aside class="slide-panel" id="extraPanel">
+        <div class="panel-header">
+            <h3 class="panel-title">Extra Manual</h3>
+            <button class="btn-close-panel" onclick="closeAllPanels()">×</button>
+        </div>
+        <div class="panel-body custom-scroll">
+            <form id="extraForm">
+                <input type="hidden" id="extraId" />
+                <div class="form-group">
+                    <label class="form-label">Título</label>
+                    <input id="extraTitle" class="input" placeholder="Ej: Arreglo de Heladera" required />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Proveedor</label>
+                    <input list="suppliersList" id="extraSupplierInput" class="input" placeholder="Buscar..." />
+                    <input type="hidden" id="extraSupplier" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Vencimiento</label>
+                    <input id="extraDueDate" type="date" class="input" required />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Monto Total</label>
+                    <input id="extraAmount" type="number" class="input" step="0.01" required placeholder="0.00" />
+                </div>
+            </form>
+        </div>
+        <div class="panel-footer">
+            <button class="btn btn-ghost" id="btnCancelExtra">Cancelar</button>
+            <button class="btn btn-primary" id="btnSaveExtra">Guardar</button>
+        </div>
+    </aside>
+
+    <!-- Modal Pay -->
+    <div class="modal-overlay hidden" id="payModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title">Confirmar Pago</h3>
+                <button class="btn-close-panel" id="btnClosePayModal">×</button>
+            </div>
+
+            <div class="modal-body custom-scroll">
+                <input type="hidden" id="payPaymentId" />
+                <div class="mb-4">
+                    <h4 id="payTitle" class="m-0 font-bold">—</h4>
+                    <p id="payDue" class="muted text-sm">—</p>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Monto a pagar</label>
+                    <input id="payAmount" type="number" class="input" step="0.01" />
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="form-group">
+                        <label class="form-label">Comprobante</label>
+                        <select id="payVoucher" class="input">
+                            <option value="">Seleccionar...</option>
+                            <option value="Factura A">Factura A</option>
+                            <option value="Factura C">Factura C</option>
+                            <option value="Recibo">Recibo</option>
+                            <option value="Sin Comprobante">Sin Comprobante</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Método</label>
+                        <select id="payMethod" class="input">
+                            <option value="">Seleccionar...</option>
+                            <option value="Efectivo">Efectivo</option>
+                            <option value="Transferencia">Transferencia</option>
+                            <option value="Débito">Débito</option>
+                            <option value="Crédito">Crédito</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nota observacional (opcional)</label>
+                    <input id="payNote" class="input" placeholder="Ej: Pago parcial, observación..." />
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-ghost" id="btnCancelPay">Cancelar</button>
+                <button class="btn btn-primary" id="btnConfirmPay">REGISTRAR PAGO</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script defer src="../../assets/js/core/config.js"></script>
+    <script defer src="../../assets/js/core/constants.js"></script>
+    <script defer src="../../assets/js/core/supabase-client.js"></script>
+    <script defer src="../../assets/js/core/utils.js"></script>
+    <script defer src="../../assets/js/core/toast.js"></script>
+    <script defer src="../../assets/js/core/auth.js"></script>
+    <script src="../../assets/js/core/navigation.js"></script>
+    <script defer src="../../assets/js/modules/admin/admin-pagos.js"></script>
+</body>
+
+</html>

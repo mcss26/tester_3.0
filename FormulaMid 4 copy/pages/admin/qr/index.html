@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión QR - Midnight</title>
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+</head>
+<body class="app-shell admin-shell" data-allowed-roles="admin,encargado_caja">
+
+    <!-- Header -->
+    <header class="app-topbar">
+        <div class="topbar-left">
+            <h1 class="topbar-brand">Gestión de Accesos QR</h1>
+        </div>
+        <nav class="topbar-center"></nav>
+        <div class="topbar-right">
+            <a href="../admin-index.html" class="topbar-link">Volver</a>
+        </div>
+    </header>
+
+    <main class="dashboard-content">
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <p class="stat-label">Total Generados</p>
+                <p class="stat-value" id="stat-total">0</p>
+            </div>
+            <div class="stat-card">
+                <p class="stat-label text-success">Acreditados</p>
+                <p class="stat-value" id="stat-accredited">0</p>
+            </div>
+            <div class="stat-card">
+                <p class="stat-label text-danger">Pendientes</p>
+                <p class="stat-value" id="stat-pending">0</p>
+            </div>
+            <div class="stat-card">
+                <p class="stat-label">Lotes Activos</p>
+                <p class="stat-value" id="stat-batches">0</p>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="action-bar">
+            <a href="generator.html" class="btn btn-primary">
+                + Nuevo Lote
+            </a>
+        </div>
+
+        <!-- Batches List -->
+        <div class="section-header">
+            <h2 class="section-title">Lotes Recientes</h2>
+        </div>
+        <div class="table-scroll">
+                <table class="batches-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Tipo</th>
+                            <th>Origen</th>
+                            <th>Precio</th>
+                            <th>Generados</th>
+                            <th>Acreditados</th>
+                            <th>Fecha</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="batches-list">
+                        <tr><td colspan="8" class="text-center p-8 text-white/40">Cargando...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Recent Activity (Optional / Secondary) -->
+        <div class="section-header">
+             <h2 class="section-title">Últimos Accesos</h2>
+        </div>
+        <div id="activity-list" class="list-stack">
+             <!-- Injected by JS -->
+        </div>
+
+    </main>
+
+    <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script defer src="../../../assets/js/core/config.js"></script>
+    <script defer src="../../../assets/js/core/supabase-client.js"></script>
+    <script defer src="../../../assets/js/core/auth.js"></script>
+    <script defer src="../../../assets/js/modules/admin/qr-dashboard.js"></script>
+
+</body>
+</html>

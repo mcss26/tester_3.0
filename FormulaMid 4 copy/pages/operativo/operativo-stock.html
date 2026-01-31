@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Stock Operativo - FormulaMid</title>
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+
+<body class="app-shell stock-shell admin-scroll admin-stock" data-allowed-roles="operativo,logistico">
+  <header class="app-topbar">
+    <div class="topbar-left">
+      <button class="btn-icon btn-icon-flat" data-go="pages/operativo/operativo-erp.html" aria-label="Volver">←</button>
+      <span class="topbar-back">ERP</span>
+    </div>
+    <nav class="topbar-center topbar-nav-split">
+      <div class="topbar-nav-group left">
+        <button class="topbar-link is-fade-1" data-go="pages/operativo/operativo-solicitudes.html">Solicitudes</button>
+      </div>
+      <div class="topbar-nav-group center">
+        <button class="topbar-link is-center active" data-go="pages/operativo/operativo-stock.html">Stock</button>
+      </div>
+      <div class="topbar-nav-group right"></div>
+    </nav>
+    <div class="topbar-right">
+      <span class="system-status-pill status-open topbar-pill topbar-pill-quiet">ESTADO: OK</span>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <div class="page-card-wrap">
+      <div class="page-card">
+        <div class="page-card-loading" id="page-card-loading">
+          <div class="state-block loading">
+            <div class="state-spinner" aria-hidden="true"></div>
+            <div class="state-loader"></div>
+            <p class="state-title">Cargando stock...</p>
+            <p class="state-desc">Consultando inventario</p>
+          </div>
+        </div>
+        <div class="page-card-empty" id="page-card-empty">
+          <div class="state-block loading">
+            <p class="state-title">Sin resultados</p>
+            <p class="state-desc">No hay stock disponible.</p>
+          </div>
+        </div>
+
+        <div id="module-content">
+          <div class="staff-dashboard">
+            <div class="dashboard-header align-start">
+              <div>
+                <h2 class="dashboard-title dashboard-title-soft">Stock</h2>
+                <p class="dashboard-subtitle dashboard-subtitle-soft">
+                  Vista global de stock y estados
+                </p>
+              </div>
+            </div>
+
+            <div class="filter-bar filter-bar-compact" aria-label="Filtros de stock">
+              <div id="stock-tabs" class="filter-group tab-bar"></div>
+              <div class="filter-actions">
+                <input type="search" id="stock-search" class="input input-compact filter-input"
+                  placeholder="Buscar SKU..." aria-label="Buscar SKU" />
+                <button class="btn-ghost btn-sm" id="btn-refresh">Refrescar</button>
+              </div>
+            </div>
+
+            <div class="staff-list table-viewport table-shell" id="list-container">
+              <div class="empty-state">Cargando...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script defer src="../../assets/js/core/config.js"></script>
+  <script defer src="../../assets/js/core/supabase-client.js"></script>
+  <script defer src="../../assets/js/core/auth.js"></script>
+  <script defer src="../../assets/js/core/utils.js"></script>
+  <script src="../../assets/js/core/navigation.js"></script>
+  <script defer src="../../assets/js/modules/operativo/operativo-stock.js"></script>
+</body>
+
+</html>

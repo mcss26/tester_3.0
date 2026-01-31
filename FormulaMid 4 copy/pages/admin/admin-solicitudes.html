@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Pedidos - FormulaMid</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+
+<body class="app-shell admin-shell admin-scroll" data-allowed-roles="admin,contable">
+
+    <header class="app-topbar">
+        <div class="topbar-left">
+            <nav id="breadcrumbs" class="breadcrumbs"></nav>
+        </div>
+        <div class="topbar-right">
+            <span class="area-brand">ADMIN</span>
+        </div>
+    </header>
+
+    <!-- Overlay de Carga Standar -->
+    <div id="page-card-loading" class="page-card-loading">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <h3 class="loading-title">Cargando Solicitudes...</h3>
+            <p class="loading-msg">Sincronizando con proveedores y stock...</p>
+        </div>
+    </div>
+
+    <!-- Empty State Standar -->
+    <div id="page-card-empty" class="page-card-empty hidden">
+        <div class="empty-content">
+            <div class="empty-icon">📦</div>
+            <h3 class="empty-title">Sin Pedidos Pendientes</h3>
+            <p class="empty-msg">No hay solicitudes que requieran tu atención en este momento.</p>
+            <button class="btn btn-primary btn-sm mt-4" onclick="location.reload()">Refrescar</button>
+        </div>
+    </div>
+
+    <main class="page-shell">
+        <div id="module-content" class="page-card-wrap hidden">
+            <div class="page-card overflow-visible">
+
+                <div class="staff-dashboard">
+                    <div id="dashboard-header-fixed" class="dashboard-header flex-col items-start gap-4">
+                        <div class="w-full flex justify-between items-center">
+                            <div>
+                                <h2 class="dashboard-title">Gestión de Reposición</h2>
+                                <p class="dashboard-subtitle">Control de pre-aprobación y órdenes de compra finales</p>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="system-status-pill status-open">PEDIDOS</span>
+                                <button class="btn-icon btn-icon-flat" id="btn-refresh" title="Refrescar">↻</button>
+                            </div>
+                        </div>
+
+                        <!-- Tabs Moved Here -->
+                        <div class="filter-bar filter-bar-compact" id="solicitudes-tabs">
+                            <button class="filter-pill is-active" data-tab="pre-aprobacion">PRE-APROBACIÓN</button>
+                            <button class="filter-pill" data-tab="pendientes">APROBACIÓN FINAL</button>
+                            <button class="filter-pill" data-tab="sin-asignar">SIN ASIGNAR</button>
+                            <button class="filter-pill" data-tab="historial">HISTORIAL</button>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2" id="global-stats-container">
+                        <!-- Stats for Pre-Aprobacion -->
+                        <div class="hidden flex gap-2" id="preapproval-stats">
+                            <span class="badge status-warning">Items: <span id="preapproval-count">0</span></span>
+                            <span class="badge status-neutral">Presupuesto: <span
+                                    id="preapproval-total-budget">$0,00</span></span>
+                        </div>
+                        <!-- Stats for Unassigned -->
+                        <div class="hidden" id="unassigned-stats">
+                            <span class="badge status-neutral">Total Est: <span
+                                    id="unassigned-total-budget">$0,00</span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- View: Pre-Aprobación -->
+                <div id="view-pre-aprobacion" class="dashboard-view p-4">
+                    <div class="flex-between mb-4">
+                        <div class="flex gap-2">
+                            <button class="filter-pill pill-sm is-active" id="subtab-por-item" data-subtab="item">POR
+                                ITEM</button>
+                            <button class="filter-pill pill-sm" id="subtab-por-proveedor" data-subtab="proveedor">POR
+                                PROVEEDOR</button>
+                        </div>
+
+                        <div class="flex gap-2 items-center" id="preapproval-bulk-actions">
+                            <span class="text-xs muted" id="preapproval-selection-info">0 seleccionados</span>
+                            <button class="btn btn-primary btn-xs" id="btn-preapprove-selected" disabled>APROBAR
+                                SELECCIÓN</button>
+                            <button class="btn btn-ghost btn-xs text-error" id="btn-prereject-selected"
+                                disabled>RECHAZAR</button>
+                        </div>
+                    </div>
+
+                    <div class="table-viewport min-h-400">
+                        <div class="table-scroll" id="subview-por-item">
+                            <!-- Injected by JS -->
+                        </div>
+                        <div class="table-scroll hidden" id="subview-por-proveedor">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- View: Pendientes (Aprobación Final) -->
+                <div id="view-pendientes" class="dashboard-view p-4 hidden">
+                    <div class="table-viewport min-h-400">
+                        <div class="table-scroll" id="list-container">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- View: Sin Asignar -->
+                <div id="view-unassigned" class="dashboard-view p-4 hidden">
+                    <div class="table-viewport min-h-400">
+                        <div class="table-scroll" id="unassigned-container">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- View: Historial -->
+                <div id="view-historial" class="dashboard-view p-4 hidden">
+                    <div class="table-viewport min-h-400">
+                        <div class="table-scroll" id="historial-container">
+                            <div class="p-8 text-center muted italic text-sm">Próximamente: Historial de pedidos
+                                procesados.</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        </div>
+    </main>
+
+    <!-- Slide Panel: Detalle de Pedido -->
+    <div id="slide-panel" class="slide-panel">
+        <div class="panel-overlay"></div>
+        <div class="panel-content shadow-premium">
+            <header class="panel-header">
+                <div class="panel-header-info">
+                    <h2 class="panel-title" id="panel-title">Detalle de Pedido</h2>
+                    <p class="panel-subtitle">Verifica los costos finales antes de aprobar</p>
+                </div>
+                <button class="btn-icon btn-close-panel" aria-label="Cerrar">×</button>
+            </header>
+
+            <div class="panel-body custom-scroll" id="panel-body">
+                <div id="order-detail-content">
+                    <!-- Content injected by JS -->
+                </div>
+
+                <!-- Rejection Logic Section -->
+                <div id="reject-reason-container" class="state-block hidden mt-6 p-4 bg-surface-2 border-error">
+                    <label class="form-label text-error font-bold mb-2">Motivo de Rechazo</label>
+                    <textarea id="reject-reason" class="input w-full" rows="3"
+                        placeholder="Indica la razón del rechazo..."></textarea>
+                </div>
+            </div>
+
+            <footer class="panel-footer flex-right gap-2">
+                <button class="btn btn-secondary btn-sm btn-close-panel">CANCELAR</button>
+                <div id="panel-actions" class="flex gap-2">
+                    <!-- JS will inject actions -->
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Modal: Rechazo Pre-Aprobación -->
+    <div class="modal-overlay hidden" id="modal-prereject">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title">Rechazar Items</h3>
+                <button class="modal-close" data-modal-close>×</button>
+            </div>
+            <form id="form-prereject">
+                <div class="modal-body">
+                    <p class="text-sm muted mb-4">Se rechazarán <strong id="prereject-count">0</strong> items de la
+                        planificación. Por favor, indica el motivo:</p>
+                    <div class="form-group">
+                        <label class="form-label">Motivo de Rechazo</label>
+                        <textarea id="prereject-reason" class="input w-full" rows="3"
+                            placeholder="Ej: No es prioritario, presupuesto excedido..." required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer flex-right gap-2">
+                    <button type="button" class="btn btn-secondary btn-sm" data-modal-close>CANCELAR</button>
+                    <button type="submit" class="btn btn-primary btn-sm bg-error">CONFIRMAR RECHAZO</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script defer src="../../assets/js/core/config.js"></script>
+    <script defer src="../../assets/js/core/constants.js"></script>
+    <script defer src="../../assets/js/core/supabase-client.js"></script>
+    <script defer src="../../assets/js/core/auth.js"></script>
+    <script defer src="../../assets/js/core/utils.js"></script>
+    <script defer src="../../assets/js/core/toast.js"></script>
+
+    <!-- Navigation Core -->
+    <script defer src="../../assets/js/core/navigation-state.js"></script>
+    <script defer src="../../assets/js/core/navigation-analytics.js"></script>
+    <script defer src="../../assets/js/core/navigation-history.js"></script>
+    <script defer src="../../assets/js/core/keyboard-nav.js"></script>
+    <script defer src="../../assets/js/core/navigation-debug.js"></script>
+    <script defer src="../../assets/js/core/breadcrumbs.js"></script>
+    <script defer src="../../assets/js/core/tab-manager.js"></script>
+
+    <!-- Shared Navigation -->
+    <script src="../../assets/js/core/navigation.js"></script>
+    <script defer src="../../assets/js/modules/panel.js"></script>
+
+    <!-- Module Specific -->
+    <script defer src="../../assets/js/modules/admin/admin-solicitudes.js"></script>
+
+    <script>
+        // Auto-render breadcrumbs
+        const breadcrumbContainer = document.getElementById("breadcrumbs");
+        if (breadcrumbContainer && window.Breadcrumbs) {
+            window.Breadcrumbs.render(breadcrumbContainer);
+        }
+    </script>
+</body>
+
+</html>

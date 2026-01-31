@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Caja - Midnight Club</title>
+  <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+<body class="welcome-screen staff-landing" data-allowed-roles="staff_caja,admin,operativo">
+
+  <main class="center-content">
+      
+      <!-- Welcome Section -->
+      <section class="welcome-section">
+          <p class="label-welcome">BIENVENIDO STAFF</p>
+          <h1 id="user-name" class="title-name">Cargando...</h1>
+          <p class="role-subtitle" id="role-subtitle">STAFF <strong>CAJA</strong></p>
+      </section>
+
+      <!-- Operational Content -->
+      <section class="action-section container-narrow">
+          
+          <!-- Status Alert -->
+          <div id="status-message" class="alert hidden mb-4 text-center text-sm font-bold"></div>
+
+          <!-- Convocations -->
+          <div id="convocation-card" class="action-card hidden flex-col mb-4 cursor-default p-6">
+              <div class="status-pill status-success text-sm font-bold tracking-wider mb-3">
+                  PRÓXIMA FECHA
+              </div>
+              <h3 class="text-2xl font-bold mb-1" id="convocation-date">...</h3>
+              <p class="faint text-sm mb-6" id="convocation-role">...</p>
+              
+              <button id="btn-confirm-convocation" class="btn-success w-full">
+                  CONFIRMAR ASISTENCIA
+              </button>
+          </div>
+
+          <!-- Step 2: Dashboard (Direct Access) -->
+          <div id="step-dashboard" class="hidden fade-in w-full">
+              
+              <!-- Active Terminal Card -->
+              <div class="action-card cursor-default mb-6 flex-col items-start !text-left p-5 w-full">
+                  <div class="flex justify-between items-center w-full mb-2">
+                       <p class="text-sm uppercase tracking-widest faint">Terminal Activa</p>
+                  </div>
+                  <h2 class="text-2xl font-bold accent" id="active-terminal-name">...</h2>
+              </div>
+
+              <!-- Closing Form -->
+              <form id="closing-form" class="w-full space-y-4">
+                  
+                  <div class="bg-white/5 border border-white/10 rounded-2xl p-5">
+                      <p class="label-welcome text-center mb-4">Declaración</p>
+                      
+                      <div class="mb-4">
+                          <label for="input-cash" class="block text-sm uppercase faint mb-1">Total Efectivo</label>
+                          <input type="number" id="input-cash" class="input-full text-lg font-mono" placeholder="0.00" step="0.01" required>
+                      </div>
+
+                      <div class="mb-4">
+                          <label for="input-zoco" class="block text-sm uppercase faint mb-1">Total Zoco / QR</label>
+                          <input type="number" id="input-zoco" class="input-full text-lg font-mono" placeholder="0.00" step="0.01" required>
+                      </div>
+
+                      <!-- Firma Digital -->
+                      <div class="mb-2">
+                          <label class="block text-sm uppercase faint mb-2">Firma Digital</label>
+                          <div class="signature-container relative bg-white/5 border border-white/10 rounded-xl overflow-hidden" style="height: 150px; position: relative;">
+                              <canvas id="signature-canvas" class="w-full h-full touch-none"></canvas>
+                              <div id="signature-placeholder" class="signature-placeholder absolute inset-0 flex items-center justify-center text-white/20 pointer-events-none">
+                                  Firma aquí
+                              </div>
+                          </div>
+                          <button type="button" id="btn-clear-signature" class="btn-ghost btn-sm mt-2 text-xs w-full">
+                              Limpiar Firma
+                          </button>
+                      </div>
+                  </div>
+
+                  <button type="submit" id="btn-submit-close" class="btn-primary w-full py-4 text-sm tracking-widest">
+                      CERRAR TURNO
+                  </button>
+              </form>
+
+          </div>
+
+      </section>
+
+  </main>
+<!-- Scripts -->
+  <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script defer src="../../assets/js/core/config.js"></script>
+  <script defer src="../../assets/js/core/supabase-client.js"></script>
+  <script defer src="../../assets/js/core/utils.js"></script>
+  <script defer src="../../assets/js/core/auth.js"></script>
+  <script defer src="../../assets/js/core/toast.js"></script>
+  
+  <!-- App Logic -->
+  <script defer src="../../assets/js/modules/staff/staff-caja-index.js"></script>
+  <footer class="footer">
+    <button id="btn-logout" class="footer-link">Cerrar Sesión</button>
+  </footer>
+
+</body>
+</html>

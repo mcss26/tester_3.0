@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recepción de Pedidos - Encargado</title>
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body class="app-shell" data-allowed-roles="encargado_barra">
+
+    <!-- Top Navigation Bar -->
+    <header class="top-bar">
+        <button class="btn-icon" data-go="pages/encargados/encargado-barra-index.html" aria-label="Volver">
+            ←
+        </button>
+        <h1 class="page-title">Recepción</h1>
+        <div class="top-actions">
+            <!-- Espacio para acciones futuras o pills de estado -->
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <!-- List Container -->
+        <section id="list-container" class="content-section">
+            <div class="loading-spinner">Cargando pedidos...</div>
+            <!--
+                Aquí se inyectará la tabla de pedidos aprobados:
+                - Proveedor
+                - Skus count
+                - Final Cost
+                - ETA
+                - Action Button (Recibir)
+             -->
+        </section>
+
+    </main>
+
+    <!-- Modal Recepción (Hidden by default) -->
+    <div id="modal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <header class="modal-header">
+                <h2 id="modal-title">Recibir Pedido</h2>
+                <button id="modal-close" class="btn-icon">×</button>
+            </header>
+
+            <div id="modal-body" class="modal-body">
+                <!-- 
+                    Tabla de items para ajustar cantidad recibida vs esperada
+                 -->
+            </div>
+
+            <footer id="modal-actions" class="modal-footer">
+                <button id="modal-cancel" class="btn-secondary">Cancelar</button>
+                <button id="modal-confirm" class="btn-primary">Confirmar Recepción</button>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Scripts Core -->
+    <script src="../../assets/js/core/config.js"></script>
+    <script src="../../assets/js/core/supabase-client.js"></script>
+    <script src="../../assets/js/core/auth.js"></script>
+
+    <!-- Modules -->
+    <script src="../../assets/js/core/utils.js"></script>
+    <script src="../../assets/js/core/navigation.js"></script>
+
+    <script src="../../assets/js/core/toast.js"></script>
+    <!-- Page Specific Logic -->
+    <script src="../../assets/js/modules/encargados/encargado-recepcion.js"></script>
+
+</body>
+
+</html>

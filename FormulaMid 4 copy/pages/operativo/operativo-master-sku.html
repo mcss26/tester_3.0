@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitudes SKU Operativo - FormulaMid</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+
+<body class="app-shell admin-shell admin-scroll admin-sku" data-allowed-roles="operativo,staff_barra,staff_operativo">
+
+    <header class="app-topbar">
+        <div class="topbar-left">
+            <button class="btn-icon btn-icon-flat" data-go="pages/operativo/operativo-erp.html"
+                aria-label="Volver">←</button>
+            <span class="topbar-back">ERP</span>
+        </div>
+
+        <nav class="topbar-center topbar-nav-split">
+            <div class="topbar-nav-group left">
+                <button class="topbar-link is-fade-1"
+                    data-go="pages/operativo/operativo-master-proveedores.html">Proveedores</button>
+            </div>
+            <div class="topbar-nav-group center">
+                <button class="topbar-link is-center active"
+                    data-go="pages/operativo/operativo-master-sku.html">SKU</button>
+            </div>
+            <div class="topbar-nav-group right"></div>
+        </nav>
+
+        <div class="topbar-right">
+            <span class="system-status-pill status-open topbar-pill topbar-pill-quiet">ESTADO: OK</span>
+        </div>
+    </header>
+
+    <main class="page-shell">
+        <div class="page-card-wrap">
+            <div class="page-card">
+                <div class="page-card-loading" id="page-card-loading">
+                    <div class="state-block loading">
+                        <div class="state-spinner" aria-hidden="true"></div>
+                        <div class="state-loader"></div>
+                        <p class="state-title">Cargando solicitudes...</p>
+                        <p class="state-desc">Esto puede tardar unos segundos</p>
+                    </div>
+                </div>
+                <div class="page-card-empty" id="page-card-empty">
+                    <div class="state-block loading">
+                        <p class="state-title">Sin resultados</p>
+                        <p class="state-desc">No hay solicitudes registradas.</p>
+                    </div>
+                </div>
+
+                <div id="module-content">
+                    <div class="staff-dashboard">
+                        <div class="filter-bar" style="margin-bottom: 16px;">
+                            <div class="tab-bar" id="sku-view-tabs">
+                                <button class="tab-chip active" data-view="requests">Solicitudes</button>
+                                <button class="tab-chip" data-view="master">Maestro</button>
+                            </div>
+                        </div>
+
+                        <div id="view-requests">
+                            <div class="dashboard-header align-start">
+                                <div>
+                                    <h2 class="dashboard-title dashboard-title-soft">Solicitudes de SKU</h2>
+                                    <p class="dashboard-subtitle dashboard-subtitle-soft">Cambios pendientes de
+                                        aprobación admin</p>
+                                </div>
+                                <div class="actions-bar">
+                                    <button class="btn-ghost btn-sm" id="btn-refresh">Refrescar</button>
+                                    <button class="btn-icon btn-icon-flat btn-icon-plus" id="btn-new"
+                                        aria-label="Nueva solicitud">+</button>
+                                </div>
+                            </div>
+
+                            <div class="staff-list table-viewport table-shell" id="requests-list-container">
+                                <!-- Content injected by JS -->
+                            </div>
+                        </div>
+
+                        <div id="view-master" class="hidden">
+                            <div class="dashboard-header align-start">
+                                <div>
+                                    <h2 class="dashboard-title dashboard-title-soft">Listado Maestro de SKUs</h2>
+                                    <p class="dashboard-subtitle dashboard-subtitle-soft">Vista de lectura del catálogo
+                                        activo</p>
+                                </div>
+                                <div class="actions-bar">
+                                    <button class="btn-ghost btn-sm" id="btn-refresh-master">Refrescar</button>
+                                </div>
+                            </div>
+                            <div class="staff-list table-viewport table-shell" id="master-list-container">
+                                <div class="empty-state">Cargando catálogo...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Slide Panel -->
+    <div class="panel-overlay" id="panel-overlay"></div>
+    <div class="slide-panel" id="slide-panel">
+        <div class="panel-header">
+            <h3 class="panel-title" id="panel-title">Nueva Solicitud</h3>
+            <button class="panel-close" id="btn-close-panel" aria-label="Cerrar panel">×</button>
+        </div>
+        <div class="panel-body" id="panel-form-container">
+            <div id="panel-error" class="panel-error"></div>
+
+            <div class="form-group" data-section="action">
+                <label for="req-type" class="form-label">Tipo de Solicitud *</label>
+                <select id="req-type" class="input">
+                    <option value="">Seleccionar</option>
+                    <option value="create">Agregar SKU</option>
+                    <option value="update">Editar SKU</option>
+                    <option value="deactivate">Quitar SKU</option>
+                    <option value="price_update">Modificar precio</option>
+                    <option value="pack_update">Modificar pack</option>
+                    <option value="supplier_update">Cambiar proveedor favorito</option>
+                </select>
+            </div>
+
+            <div class="form-group" data-section="sku">
+                <label for="req-sku" class="form-label">SKU existente *</label>
+                <select id="req-sku" class="input">
+                    <option value="">Seleccionar SKU</option>
+                </select>
+            </div>
+
+            <div data-section="core">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="req-nombre" class="form-label">Nombre SKU</label>
+                        <input type="text" id="req-nombre" class="input" placeholder="Ej: Red Bull Lata 250ml">
+                    </div>
+                    <div class="form-group">
+                        <label for="req-ml" class="form-label">ML por unidad</label>
+                        <input type="number" id="req-ml" class="input" min="0" step="0.01" placeholder="Ej: 330">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="req-external-id" class="form-label">ID externo</label>
+                        <input type="text" id="req-external-id" class="input" placeholder="Código de integración">
+                    </div>
+                </div>
+            </div>
+
+            <div data-section="pack">
+                <div class="form-group">
+                    <label for="req-pack" class="form-label">Cantidad por pack</label>
+                    <input type="number" id="req-pack" class="input" min="0" step="1" placeholder="Ej: 24">
+                </div>
+            </div>
+
+            <div data-section="price">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="req-costo" class="form-label">Costo unitario</label>
+                        <input type="number" id="req-costo" class="input" min="0" step="0.01" placeholder="Ej: 1200.50">
+                    </div>
+                    <div class="form-group">
+                        <label for="req-costo-pack" class="form-label">Costo por pack</label>
+                        <input type="number" id="req-costo-pack" class="input" min="0" step="0.01"
+                            placeholder="Ej: 28800">
+                    </div>
+                </div>
+            </div>
+
+            <div data-section="supplier">
+                <div class="form-group">
+                    <label for="req-proveedor" class="form-label">Proveedor favorito</label>
+                    <select id="req-proveedor" class="input">
+                        <option value="">Seleccionar proveedor</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group" data-section="justification">
+                <label for="req-justification" class="form-label">Justificación *</label>
+                <textarea id="req-justification" class="input" rows="3" placeholder="Motivo del cambio..."></textarea>
+            </div>
+        </div>
+        <div class="panel-footer">
+            <button class="btn-secondary" id="btn-cancel">Cancelar</button>
+            <button class="btn-primary" id="btn-save">Enviar Solicitud</button>
+        </div>
+    </div>
+    <!-- Scripts -->
+    <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script defer src="../../assets/js/core/config.js"></script>
+    <script defer src="../../assets/js/core/supabase-client.js"></script>
+    <script defer src="../../assets/js/core/auth.js"></script>
+    <script defer src="../../assets/js/core/utils.js"></script>
+    <!-- Shared Panel Logic -->
+    <script defer src="../../assets/js/modules/panel.js"></script>
+    <!-- Page Specific Script -->
+    <script defer src="../../assets/js/modules/operativo/operativo-master-sku.js"></script>
+    <!-- Shared Navigation Script -->
+    <script src="../../assets/js/core/navigation.js"></script>
+</body>
+
+</html>

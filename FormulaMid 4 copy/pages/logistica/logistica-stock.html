@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logística - Stock Depósito</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+
+<body class="app-shell stock-shell admin-scroll admin-stock" data-allowed-roles="logistico,admin">
+
+    <header class="app-topbar">
+        <div class="topbar-left">
+            <button class="btn-icon btn-icon-flat" data-go="pages/logistica/logistica-index.html"
+                aria-label="Volver">←</button>
+            <span class="topbar-back">LOGÍSTICA</span>
+        </div>
+
+        <nav class="topbar-center topbar-nav-split">
+            <div class="topbar-nav-group left">
+                <button class="topbar-link active" data-go="pages/logistica/logistica-stock.html">Stock</button>
+            </div>
+            <div class="topbar-nav-group center">
+                <button class="topbar-link" data-go="pages/logistica/logistica-distribucion.html">Distribución</button>
+            </div>
+            <div class="topbar-nav-group right">
+                <button class="topbar-link is-fade-1"
+                    data-go="pages/logistica/logistica-recepcion.html">Recepción</button>
+            </div>
+        </nav>
+
+        <div class="topbar-right">
+            <span class="system-status-pill status-open topbar-pill topbar-pill-quiet">ESTADO: OK</span>
+        </div>
+    </header>
+
+    <main class="page-shell">
+        <div class="page-card-wrap">
+            <div class="page-card">
+                <div class="page-card-loading" id="page-card-loading">
+                    <div class="state-block loading">
+                        <div class="state-spinner" aria-hidden="true"></div>
+                        <div class="state-loader"></div>
+                        <p class="state-title">Cargando stock...</p>
+                        <p class="state-desc">Consultando inventario</p>
+                    </div>
+                </div>
+
+                <div class="page-card-empty" id="page-card-empty">
+                    <div class="state-block loading">
+                        <p class="state-title">Sin resultados</p>
+                        <p class="state-desc">No hay registros de stock.</p>
+                    </div>
+                </div>
+
+                <div id="module-content">
+                    <div class="staff-dashboard">
+                        <div class="dashboard-header align-start">
+                            <div>
+                                <h2 class="dashboard-title dashboard-title-soft">Control de Stock</h2>
+                                <p class="dashboard-subtitle dashboard-subtitle-soft">Inventario del depósito central
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="filter-bar filter-bar-compact" aria-label="Filtros de stock">
+                            <div id="category-tabs" class="filter-group tab-bar"></div>
+                            <div class="filter-actions">
+                                <input type="search" id="stock-search" class="input input-compact filter-input"
+                                    placeholder="Buscar SKU..." aria-label="Buscar SKU">
+                                <button class="btn-ghost btn-sm" id="btn-refresh">Refrescar</button>
+                            </div>
+                        </div>
+
+                        <div class="staff-list table-viewport table-shell" id="list-container">
+                            <!-- contenido por JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal de Ajuste -->
+    <div class="modal-overlay hidden" id="modal-adjust">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2>Ajuste de Stock</h2>
+                <button class="btn-icon" id="close-modal">✕</button>
+            </div>
+            <div class="modal-body">
+                <p id="adjust-sku-name" class="muted mb-4"></p>
+                <div class="form-group">
+                    <label>Stock Actual Sistema</label>
+                    <input type="text" id="adjust-current" class="input" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Cantidad Real (Conteo)</label>
+                    <input type="number" id="adjust-real" class="input" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label>Diferencia</label>
+                    <input type="text" id="adjust-diff" class="input" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Motivo</label>
+                    <select id="adjust-reason" class="input" required>
+                        <option value="">Seleccionar...</option>
+                        <option value="conteo">Conteo Físico</option>
+                        <option value="rotura">Rotura</option>
+                        <option value="merma">Merma</option>
+                        <option value="vencimiento">Vencimiento</option>
+                        <option value="devolucion">Devolución</option>
+                        <option value="otro">Otro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Notas</label>
+                    <textarea id="adjust-notes" class="input" rows="2" placeholder="Detalles del ajuste..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" id="btn-cancel-adjust">Cancelar</button>
+                <button class="btn btn-primary" id="btn-confirm-adjust">Confirmar Ajuste</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script defer src="../../assets/js/core/config.js"></script>
+    <script defer src="../../assets/js/core/supabase-client.js"></script>
+    <script defer src="../../assets/js/core/auth.js"></script>
+    <script defer src="../../assets/js/core/utils.js"></script>
+    <script defer src="../../assets/js/modules/work-day-helper.js"></script>
+    <script defer src="../../assets/js/modules/logistica/logistica-stock.js"></script>
+    <script src="../../assets/js/core/navigation.js"></script>
+</body>
+
+</html>

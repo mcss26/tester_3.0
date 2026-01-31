@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logística - Distribución</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+
+<body class="app-shell stock-shell" data-allowed-roles="logistico,admin">
+
+    <header class="app-topbar">
+        <div class="topbar-left">
+            <button class="topbar-link" data-go="pages/logistica/logistica-index.html">← Volver</button>
+        </div>
+
+        <nav class="topbar-center">
+            <button class="topbar-link" data-go="pages/logistica/logistica-stock.html">Stock</button>
+            <button class="topbar-link active"
+                data-go="pages/logistica/logistica-distribucion.html">Distribución</button>
+            <button class="topbar-link" data-go="pages/logistica/logistica-recepcion.html">Recepción</button>
+        </nav>
+
+        <div class="topbar-right">
+            <div class="topbar-brand">LOGÍSTICA</div>
+        </div>
+    </header>
+
+    <main class="page-shell">
+        <div class="page-card-wrap">
+            <div class="page-card">
+
+                <div class="staff-dashboard">
+                    <div class="dashboard-header">
+                        <div>
+                            <h2 class="dashboard-title">Distribución a Barras</h2>
+                            <p class="dashboard-subtitle">Gestión de pedidos y despachos</p>
+                        </div>
+                    </div>
+
+                    <div class="tabs-row">
+                        <div id="status-tabs" class="tab-bar">
+                            <button class="tab-chip status-tab active" data-status="">Todos</button>
+                            <button class="tab-chip status-tab" data-status="PENDING">Pendientes</button>
+                            <button class="tab-chip status-tab" data-status="APPROVED">Aprobados</button>
+                            <button class="tab-chip status-tab" data-status="DISPATCHED">Despachados</button>
+                        </div>
+                        <div class="tabs-actions">
+                            <button class="btn-ghost" id="btn-refresh">Refrescar</button>
+                        </div>
+                    </div>
+
+                    <div class="staff-list table-viewport" id="list-container">
+                        <!-- contenido por JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal de Despacho -->
+    <div class="modal-overlay hidden" id="modal-dispatch">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2>Despachar Pedido</h2>
+                <button class="btn-icon" id="close-modal">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-4 info-block">
+                    <p><strong>Solicitante:</strong> <span id="dispatch-requester">-</span></p>
+                    <p><strong>Fecha Deseada:</strong> <span id="dispatch-date">-</span></p>
+                    <p><strong>Prioridad:</strong> <span id="dispatch-priority">-</span></p>
+                    <p class="muted"><span id="dispatch-notes"></span></p>
+                </div>
+                <div class="table-scroll" id="dispatch-items-container">
+                    <!-- items por JS -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" id="btn-cancel-dispatch">Cancelar</button>
+                <button class="btn btn-primary" id="btn-confirm-dispatch">Confirmar Despacho</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script defer src="../../assets/js/core/config.js"></script>
+    <script defer src="../../assets/js/core/supabase-client.js"></script>
+    <script defer src="../../assets/js/core/auth.js"></script>
+    <script defer src="../../assets/js/core/utils.js"></script>
+    <script defer src="../../assets/js/modules/logistica/logistica-distribucion.js"></script>
+    <script src="../../assets/js/core/navigation.js"></script>
+</body>
+
+</html>

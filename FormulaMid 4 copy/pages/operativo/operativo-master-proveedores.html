@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Proveedores Operativo - FormulaMid</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+
+<body class="app-shell admin-shell admin-scroll admin-proveedores"
+    data-allowed-roles="operativo,staff_barra,staff_operativo">
+
+    <header class="app-topbar">
+        <div class="topbar-left">
+            <button class="btn-icon btn-icon-flat" data-go="pages/operativo/operativo-erp.html"
+                aria-label="Volver">←</button>
+            <span class="topbar-back">ERP</span>
+        </div>
+
+        <nav class="topbar-center topbar-nav-split">
+            <div class="topbar-nav-group left">
+                <button class="topbar-link is-fade-1" data-go="pages/operativo/operativo-master-sku.html">SKU</button>
+            </div>
+            <div class="topbar-nav-group center">
+                <button class="topbar-link is-center active"
+                    data-go="pages/operativo/operativo-master-proveedores.html">Proveedores</button>
+            </div>
+            <div class="topbar-nav-group right"></div>
+        </nav>
+
+        <div class="topbar-right">
+            <span class="system-status-pill status-open topbar-pill topbar-pill-quiet">ESTADO: OK</span>
+        </div>
+    </header>
+
+    <main class="page-shell">
+        <div class="page-card-wrap">
+            <div class="page-card">
+                <div class="page-card-loading" id="page-card-loading">
+                    <div class="state-block loading">
+                        <div class="state-spinner" aria-hidden="true"></div>
+                        <div class="state-loader"></div>
+                        <p class="state-title">Cargando proveedores...</p>
+                        <p class="state-desc">Esto puede tardar unos segundos</p>
+                    </div>
+                </div>
+                <div class="page-card-empty" id="page-card-empty">
+                    <div class="state-block loading">
+                        <p class="state-title">Sin resultados</p>
+                        <p class="state-desc">No hay proveedores registrados.</p>
+                    </div>
+                </div>
+                <div id="module-content">
+                    <div class="staff-dashboard">
+                        <div class="dashboard-header align-start">
+                            <div>
+                                <h2 class="dashboard-title dashboard-title-soft">Gestión de proveedores</h2>
+                                <p class="dashboard-subtitle dashboard-subtitle-soft">Alta y edición de contactos de
+                                    proveedor</p>
+                            </div>
+                            <button class="btn-icon btn-icon-flat btn-icon-plus" id="btn-new"
+                                aria-label="Nuevo proveedor">+</button>
+                        </div>
+
+                        <!-- List Container (Managed by JS) -->
+                        <div class="staff-list table-viewport table-shell" id="list-container">
+                            <!-- Content injected by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Slide Panel -->
+    <div class="panel-overlay" id="panel-overlay"></div>
+    <div class="slide-panel" id="slide-panel">
+        <div class="panel-header">
+            <h3 class="panel-title" id="panel-title">Nuevo Proveedor</h3>
+            <button class="panel-close" id="btn-close-panel" aria-label="Cerrar panel">×</button>
+        </div>
+        <div class="panel-body" id="panel-form-container">
+            <div id="panel-error" class="panel-error"></div>
+
+            <div class="form-group">
+                <label for="prov-nombre" class="form-label">Nombre Fantasía *</label>
+                <input type="text" id="prov-nombre" class="input" placeholder="Ej: Distribuidora Central" required>
+            </div>
+
+            <div class="form-group">
+                <label for="prov-razon-social" class="form-label">Razón Social</label>
+                <input type="text" id="prov-razon-social" class="input" placeholder="Ej: Distribuidora Central S.A.">
+            </div>
+
+            <div class="form-group">
+                <label for="prov-cuit" class="form-label">CUIT</label>
+                <input type="text" id="prov-cuit" class="input" placeholder="Ej: 30-12345678-9">
+            </div>
+
+            <div class="form-group">
+                <label for="prov-telefono" class="form-label">Teléfono de contacto</label>
+                <input type="text" id="prov-telefono" class="input" placeholder="Ej: +54 11 4444 5555">
+            </div>
+
+            <div class="form-group">
+                <label for="prov-email" class="form-label">Email</label>
+                <input type="email" id="prov-email" class="input" placeholder="contacto@proveedor.com">
+            </div>
+
+            <div class="form-group">
+                <label for="prov-banco" class="form-label">Banco</label>
+                <input type="text" id="prov-banco" class="input" placeholder="Ej: BBVA">
+            </div>
+
+            <div class="form-group">
+                <label for="prov-cbu" class="form-label">CBU / Alias</label>
+                <input type="text" id="prov-cbu" class="input" placeholder="Alias o CBU">
+            </div>
+
+            <div class="form-group">
+                <label for="prov-contacto-nombre" class="form-label">Nombre de contacto</label>
+                <input type="text" id="prov-contacto-nombre" class="input" placeholder="Ej: Juan Pérez">
+            </div>
+
+            <div class="form-group">
+                <label for="prov-notas" class="form-label">Notas</label>
+                <textarea id="prov-notas" class="input" rows="3" placeholder="Información adicional..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="prov-active">Estado</label>
+                <label class="checkbox-row">
+                    <input type="checkbox" id="prov-active" checked>
+                    <span>Activo</span>
+                </label>
+            </div>
+        </div>
+        <div class="panel-footer">
+            <button class="btn-secondary" id="btn-cancel">Cancelar</button>
+            <button class="btn-primary" id="btn-save">Guardar</button>
+        </div>
+    </div>
+    <!-- Scripts -->
+    <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script defer src="../../assets/js/core/config.js"></script>
+    <script defer src="../../assets/js/core/supabase-client.js"></script>
+    <script defer src="../../assets/js/core/auth.js"></script>
+    <script defer src="../../assets/js/core/utils.js"></script>
+    <!-- Shared Panel Logic -->
+    <script defer src="../../assets/js/modules/panel.js"></script>
+    <!-- Page Specific Script -->
+    <script defer src="../../assets/js/modules/operativo/operativo-master-proveedores.js"></script>
+    <!-- Shared Navigation Script -->
+    <script src="../../assets/js/core/navigation.js"></script>
+</body>
+
+</html>

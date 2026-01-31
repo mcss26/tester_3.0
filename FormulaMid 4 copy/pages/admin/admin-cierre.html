@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FormulaMid — Cierre Admin</title>
+
+    <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+
+<body class="app-shell admin-shell admin-scroll admin-cierre" data-allowed-roles="admin,contable">
+
+    <header class="app-topbar">
+        <div class="topbar-left">
+            <button class="btn-icon btn-icon-flat" data-go="pages/admin/admin-index.html" aria-label="Volver">←</button>
+            <span class="topbar-back">INICIO</span>
+        </div>
+        <nav class="topbar-center topbar-nav-split">
+            <div class="topbar-nav-group center">
+                <button class="topbar-link is-center active" data-go="pages/admin/admin-cierre.html">Cierre</button>
+            </div>
+        </nav>
+        <div class="topbar-right">
+            <span class="system-status-pill status-open topbar-pill topbar-pill-quiet" id="current-closing-status"
+                aria-live="polite">ESTADO: —</span>
+        </div>
+    </header>
+
+    <main class="page-shell">
+        <div class="page-card-wrap">
+            <div class="page-card">
+                <div class="page-card-loading" id="page-card-loading">
+                    <div class="state-block loading">
+                        <div class="state-spinner" aria-hidden="true"></div>
+                        <div class="state-loader"></div>
+                        <p class="state-title">Cargando cierre...</p>
+                        <p class="state-desc">Esto puede tardar unos segundos</p>
+                    </div>
+                </div>
+                <div class="page-card-empty" id="page-card-empty">
+                    <div class="state-block loading">
+                        <p class="state-title">Sin datos</p>
+                        <p class="state-desc" id="page-card-empty-message">Selecciona una fecha para cargar datos.</p>
+                    </div>
+                </div>
+                <div id="cierre-content">
+                    <div class="staff-dashboard">
+                        <div class="dashboard-header align-start">
+                            <div>
+                                <h2 class="dashboard-title dashboard-title-soft">Cierre de Caja</h2>
+                                <p class="dashboard-subtitle dashboard-subtitle-soft">Conciliación diaria de ventas y
+                                    rendiciones</p>
+                            </div>
+                        </div>
+
+                        <!-- Toolbar -->
+                        <div class="filter-bar filter-bar-compact">
+                            <div class="filter-group">
+                                <input type="date" id="input-date" class="input input-auto-width"
+                                    aria-label="Seleccionar fecha">
+                                <button id="btn-load" class="btn-icon btn-icon-flat" aria-label="Cargar datos">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" aria-hidden="true">
+                                        <circle cx="11" cy="11" r="7"></circle>
+                                        <line x1="16.65" y1="16.65" x2="21" y2="21"></line>
+                                    </svg>
+                                    <span class="visually-hidden">Cargar</span>
+                                </button>
+                            </div>
+
+                            <div class="filter-actions">
+                                <!-- Import Actions -->
+                                <div class="filter-group">
+                                    <button data-trigger="file-extracciones"
+                                        class="btn-import btn-ghost btn-sm">RETIROS</button>
+                                    <button data-trigger="file-gbol" class="btn-import btn-ghost btn-sm">GBOL</button>
+                                    <button data-trigger="file-passline"
+                                        class="btn-import btn-ghost btn-sm">PASSLINE</button>
+                                    <button data-trigger="file-afip"
+                                        class="btn-import btn-ghost btn-sm">TERMINALES</button>
+                                </div>
+
+                                <!-- Close Action -->
+                                <button id="btn-close-night" class="btn-danger">
+                                    CERRAR NOCHE
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Main Reconciliation Table -->
+                        <div class="staff-list table-viewport table-shell table-viewport-limited">
+                            <div class="table-scroll">
+                                <table class="table table-sticky">
+                                    <thead>
+                                        <tr class="table-head">
+                                            <th class="table-cell is-header">Terminal</th>
+                                            <th class="table-cell is-header text-right">Efectivo (Decl)</th>
+                                            <th class="table-cell is-header text-right">Zoco (Decl)</th>
+                                            <th class="table-cell is-header text-right muted">Efectivo (GBol)</th>
+                                            <th class="table-cell is-header text-right muted">Zoco (GBol)</th>
+                                            <th class="table-cell is-header text-right">Diferencia</th>
+                                            <th class="table-cell is-header text-center">Estado</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="table-body">
+                                        <tr>
+                                            <td colspan="7" class="cell-pad text-center muted">Selecciona una fecha para
+                                                cargar datos</td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot class="table-head table-foot-sticky">
+                                        <tr>
+                                            <td class="table-cell is-header">Totales</td>
+                                            <td class="table-cell is-header text-right" id="total-cash-decl">$0.00</td>
+                                            <td class="table-cell is-header text-right" id="total-zoco-decl">$0.00</td>
+                                            <td class="table-cell is-header text-right muted" id="total-cash-sys">$0.00
+                                            </td>
+                                            <td class="table-cell is-header text-right muted" id="total-zoco-sys">$0.00
+                                            </td>
+                                            <td class="table-cell is-header text-right font-bold" id="total-diff">$0.00
+                                            </td>
+                                            <td class="table-cell is-header"></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Detail Grid -->
+                        <div class="reconcile-grid">
+
+                            <!-- QR Reconciliation -->
+                            <div class="staff-dashboard reconcile-card">
+                                <div class="dashboard-header cell-pad">
+                                    <h3 class="dashboard-subtitle muted">Conciliación Entradas QR</h3>
+                                    <span class="dashboard-subtitle muted">Ingresos x Acreditación</span>
+                                </div>
+                                <div class="table-wrap">
+                                    <table class="table">
+                                        <thead>
+                                            <tr class="table-head">
+                                                <th class="table-cell is-header">Origen</th>
+                                                <th class="table-cell is-header text-center">Cant.</th>
+                                                <th class="table-cell is-header text-right">Sistema ($)</th>
+                                                <th class="table-cell is-header text-right">Declarado ($)</th>
+                                                <th class="table-cell is-header text-right">Diff</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Passline -->
+                                            <tr class="table-row">
+                                                <td class="table-cell font-bold text-accent">Passline</td>
+                                                <td class="table-cell text-center" id="qr-passline-qty">0</td>
+                                                <td class="table-cell text-right muted" id="qr-passline-sys">$0</td>
+                                                <td class="table-cell text-right">
+                                                    <input type="number" id="qr-passline-decl"
+                                                        class="input input-reconcile-compact" value="0">
+                                                </td>
+                                                <td class="table-cell text-right font-mono font-bold"
+                                                    id="qr-passline-diff">$0</td>
+                                            </tr>
+                                            <!-- Boleteria -->
+                                            <tr class="table-row">
+                                                <td class="table-cell font-bold text-success">Boletería</td>
+                                                <td class="table-cell text-center" id="qr-boleteria-qty">0</td>
+                                                <td class="table-cell text-right muted" id="qr-boleteria-sys">$0</td>
+                                                <td class="table-cell text-right">
+                                                    <input type="number" id="qr-boleteria-decl"
+                                                        class="input input-reconcile-compact" value="0">
+                                                </td>
+                                                <td class="table-cell text-right font-mono font-bold"
+                                                    id="qr-boleteria-diff">$0</td>
+                                            </tr>
+                                            <!-- RRPP/Cortesía -->
+                                            <tr class="table-row">
+                                                <td class="table-cell font-bold muted">RRPP / Cortesía</td>
+                                                <td class="table-cell text-center" id="qr-rrpp-qty">0</td>
+                                                <td class="table-cell text-right muted" id="qr-rrpp-sys">$0</td>
+                                                <td class="table-cell text-right muted">-</td>
+                                                <td class="table-cell text-right">-</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Notes -->
+                        <div class="staff-dashboard notes-panel">
+                            <h3 class="dashboard-subtitle font-bold muted">Notas de Cierre</h3>
+                            <textarea id="closing-notes" class="input notes-input"
+                                placeholder="Observaciones de la noche..." aria-label="Notas de cierre"></textarea>
+                            <div class="notes-actions">
+                                <button id="btn-save-notes" class="btn-ghost btn-sm">Guardar Notas</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modals -->
+    <div class="modal-overlay hidden" id="confirmModal">
+        <div class="modal-card modal-card-sm">
+            <div class="modal-header">
+                <h2 class="dashboard-title">Confirmar Cierre</h2>
+            </div>
+            <div class="modal-body">
+                <p class="text-center" style="margin-bottom: 16px;">¿Estás seguro de cerrar la noche permanentemente?
+                </p>
+                <div class="state-block">
+                    <p class="state-title">Diferencia Total</p>
+                    <p class="dashboard-title" id="confirm-diff-display">$0.00</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="btnCancelModal">Cancelar</button>
+                <button class="btn-primary" id="btnConfirmModal">Confirmar Cierre</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay hidden" id="infoModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2 class="dashboard-title">Información</h2>
+                <button class="btn-icon" id="btnCloseInfo" aria-label="Cerrar modal">×</button>
+            </div>
+            <div class="modal-body">
+                <pre id="infoContent" class="font-mono" style="white-space: pre-wrap;"></pre>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script defer src="../../assets/js/core/config.js"></script>
+    <script defer src="../../assets/js/core/supabase-client.js"></script>
+    <script defer src="../../assets/js/core/auth.js"></script>
+    <script defer src="../../assets/js/core/utils.js"></script>
+    <script defer src="../../assets/js/core/toast.js"></script>
+    <script src="../../assets/js/core/navigation.js"></script>
+
+    <!-- Hidden Inputs for CSV Import -->
+    <input type="file" id="file-extracciones" hidden accept=".csv">
+    <input type="file" id="file-gbol" hidden accept=".csv">
+    <input type="file" id="file-passline" hidden accept=".csv">
+    <input type="file" id="file-afip" hidden accept=".csv">
+
+    <!-- Importers & Logic -->
+    <script defer src="../../assets/js/importers/importer-utils.js"></script>
+    <script defer src="../../assets/js/importers/importer-extracciones.js"></script>
+    <script defer src="../../assets/js/importers/importer-gbol.js"></script>
+    <script defer src="../../assets/js/importers/importer-passline.js"></script>
+    <script defer src="../../assets/js/importers/importer-afip.js"></script>
+    <script defer src="../../assets/js/modules/admin/admin-cierre.js"></script>
+
+</body>
+
+</html>

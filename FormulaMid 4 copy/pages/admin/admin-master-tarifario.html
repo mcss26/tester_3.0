@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Tarifario - FormulaMid</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+
+<body class="app-shell admin-shell admin-scroll admin-tarifario" data-allowed-roles="admin,contable">
+
+    <header class="app-topbar">
+        <div class="topbar-left">
+            <button class="btn-icon btn-icon-flat" data-go="pages/admin/admin-index.html" aria-label="Volver">←</button>
+            <span class="topbar-back">INICIO</span>
+        </div>
+
+        <nav class="topbar-center topbar-nav-split">
+            <div class="topbar-nav-group left">
+                <button class="topbar-link is-fade-1" data-go="pages/admin/admin-master-sku.html">SKU</button>
+                <button class="topbar-link is-fade-2" data-go="pages/admin/barras/recipes.html">Recetas</button>
+                <button class="topbar-link is-fade-3"
+                    data-go="pages/admin/admin-master-proveedores.html">Proveedores</button>
+            </div>
+            <div class="topbar-nav-group center">
+                <button class="topbar-link is-center active"
+                    data-go="pages/admin/admin-master-tarifario.html">Tarifario</button>
+            </div>
+            <div class="topbar-nav-group right">
+                <button class="topbar-link is-fade-1" data-go="pages/admin/admin-pagos.html">Pagos</button>
+                <button class="topbar-link is-fade-2" data-go="pages/admin/admin-master-pos.html">POS</button>
+                <button class="topbar-link is-fade-3"
+                    data-go="pages/admin/admin-master-categorias.html">Categorías</button>
+            </div>
+        </nav>
+
+        <div class="topbar-right">
+            <span class="system-status-pill status-open topbar-pill topbar-pill-quiet">ESTADO: OK</span>
+        </div>
+    </header>
+
+    <main class="page-shell">
+        <div class="page-card-wrap">
+            <div class="page-card">
+                <!-- Loading State -->
+                <div class="page-card-loading" id="page-card-loading">
+                    <div class="state-block loading">
+                        <div class="state-spinner" aria-hidden="true"></div>
+                        <div class="state-loader"></div>
+                        <p class="state-title">Cargando cargos...</p>
+                        <p class="state-desc">Esto puede tardar unos segundos</p>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div class="page-card-empty" id="page-card-empty">
+                    <div class="state-block loading">
+                        <p class="state-title">Sin resultados</p>
+                        <p class="state-desc">No se encontraron cargos con los filtros actuales.</p>
+                        <button class="btn-ghost btn-sm mt-2" onclick="window.location.reload()">Recargar</button>
+                    </div>
+                </div>
+
+                <div id="module-content">
+                    <div class="staff-dashboard">
+                        <div class="dashboard-header align-start">
+                            <div>
+                                <h2 class="dashboard-title dashboard-title-soft">Roles y Tarifas</h2>
+                                <p class="dashboard-subtitle dashboard-subtitle-soft">Gestión de cargos y tarifas base
+                                </p>
+                            </div>
+                            <button class="btn-icon btn-icon-flat btn-icon-plus" id="btn-new"
+                                aria-label="Nuevo Cargo">+</button>
+                        </div>
+
+                        <!-- Filter Bar -->
+                        <div class="filter-bar filter-bar-compact" aria-label="Filtros de cargos">
+                            <div class="filter-group">
+                                <button
+                                    class="status-pill status-neutral topbar-pill topbar-pill-quiet filter-pill active"
+                                    data-area="all">Todo</button>
+                                <button class="status-pill status-neutral topbar-pill topbar-pill-quiet filter-pill"
+                                    data-area="Barra">Barra</button>
+                                <button class="status-pill status-neutral topbar-pill topbar-pill-quiet filter-pill"
+                                    data-area="Caja">Caja</button>
+                                <button class="status-pill status-neutral topbar-pill topbar-pill-quiet filter-pill"
+                                    data-area="Seguridad">Seguridad</button>
+                                <button class="status-pill status-neutral topbar-pill topbar-pill-quiet filter-pill"
+                                    data-area="Operativo">Operativo</button>
+                                <button class="status-pill status-neutral topbar-pill topbar-pill-quiet filter-pill"
+                                    data-area="Limpieza">Limpieza</button>
+                            </div>
+                            <div class="filter-actions">
+                                <input type="search" id="roles-search" class="input input-compact filter-input"
+                                    placeholder="Buscar cargo..." aria-label="Buscar cargo" />
+                            </div>
+                        </div>
+
+                        <!-- List Container (Managed by JS) -->
+                        <div class="staff-list table-viewport table-shell" id="list-container">
+                            <!-- Content injected by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Slide Panel -->
+    <div class="panel-overlay" id="panel-overlay"></div>
+    <div class="slide-panel" id="slide-panel">
+        <div class="panel-header">
+            <h3 class="panel-title" id="panel-title">Nuevo Cargo</h3>
+            <button class="btn-icon panel-close" id="btn-close-panel" aria-label="Cerrar">×</button>
+        </div>
+        <div class="panel-body" id="panel-form-container">
+            <div id="panel-error" class="panel-error"></div>
+
+            <form id="role-form" onsubmit="return false;">
+                <div class="form-group">
+                    <label class="form-label" for="input-name">Nombre del Cargo *</label>
+                    <input type="text" id="input-name" class="input" placeholder="Ej: Barra Principal" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="input-area">Área</label>
+                    <select id="input-area" class="input">
+                        <option value="Barra">Barra</option>
+                        <option value="Caja">Caja</option>
+                        <option value="Seguridad">Seguridad</option>
+                        <option value="Operativo">Operativo</option>
+                        <option value="Limpieza">Limpieza</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="input-rate">Tarifa Base ($)</label>
+                    <input type="number" id="input-rate" class="input" placeholder="0" min="0" step="100">
+                </div>
+            </form>
+        </div>
+        <div class="panel-footer">
+            <button class="btn-danger hidden" id="btn-delete-role" type="button">Eliminar</button>
+            <button class="btn-secondary" id="btn-cancel">Cancelar</button>
+            <button class="btn-primary" id="btn-save">Guardar</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script defer src="../../assets/js/core/config.js"></script>
+    <script defer src="../../assets/js/core/supabase-client.js"></script>
+    <script defer src="../../assets/js/core/auth.js"></script>
+    <script defer src="../../assets/js/core/utils.js"></script>
+    <script defer src="../../assets/js/core/toast.js"></script>
+    <!-- Shared Panel Logic -->
+    <script defer src="../../assets/js/modules/panel.js"></script>
+    <!-- Page Specific Script -->
+    <script defer src="../../assets/js/modules/admin/admin-master-tarifario.js"></script>
+
+    <!-- Shared Navigation Script -->
+    <script src="../../assets/js/core/navigation.js"></script>
+</body>
+
+</html>

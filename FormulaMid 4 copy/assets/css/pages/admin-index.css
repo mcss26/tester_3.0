@@ -1,0 +1,325 @@
+/* =========================================================================
+   ADMIN INDEX / DASHBOARD PORTAL
+   Refined Layout (Grid + Segments) matching Project Aesthetics
+   ========================================================================= */
+
+/* 1. Layout Overrides */
+/* Removed .admin-shell background override to use global components.css style */
+
+/* 2. Welcome Header (Simplified) */
+/* 2. Welcome Header (Centered Stack - STATIC) */
+.dashboard-header {
+  margin-top: 50px;
+  /* Slight increase for elegance */
+  margin-bottom: 24px;
+  padding: 0 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+  /* Static minimal height to prevent layout shift */
+  min-height: 120px;
+  justify-content: center;
+}
+
+.welcome-text .label-welcome {
+  font-size: 10px;
+  letter-spacing: 3px;
+  /* Premium spacing */
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 700;
+  margin-bottom: 8px;
+  opacity: 0.9;
+}
+
+.welcome-text h1 {
+  font-size: 44px;
+  /* Slightly smaller */
+  font-weight: 700;
+  /* Less heavy */
+  color: var(--text-1);
+  margin: 0;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  /* Softer shadow */
+  text-transform: uppercase;
+}
+
+.welcome-text .role-subtitle {
+  color: var(--text-2);
+  margin-top: 6px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 500;
+  opacity: 0.7;
+  /* Subtle hierarchy */
+}
+
+/* 3. Status Widgets (KPI Style) */
+.status-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  /* Center pills */
+}
+
+.kpi-widget {
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid var(--border-1);
+  border-radius: 999px;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.2s ease;
+}
+
+.kpi-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-3);
+  box-shadow: 0 0 10px var(--text-3);
+}
+
+.kpi-widget.live .kpi-dot {
+  background: var(--success);
+  box-shadow: 0 0 10px var(--success);
+  animation: pulse-green 2s infinite;
+}
+
+.kpi-dot.kpi-dot-success {
+  background: var(--success);
+  box-shadow: 0 0 10px var(--success);
+}
+
+.kpi-dot.kpi-dot-info {
+  background: var(--info);
+  box-shadow: 0 0 10px var(--info);
+}
+
+.kpi-value {
+  color: var(--text-1);
+  font-weight: 800;
+  margin-left: 4px;
+}
+
+@keyframes pulse-green {
+  0% {
+    box-shadow: 0 0 0 0 rgba(48, 209, 88, 0.4);
+  }
+
+  70% {
+    box-shadow: 0 0 0 6px rgba(48, 209, 88, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(48, 209, 88, 0);
+  }
+}
+
+/* 4. Segmented Control (Glass & Pill) */
+.segmented-control {
+  display: inline-flex;
+  background: rgba(20, 20, 20, 0.5);
+  padding: 4px;
+  border-radius: 99px;
+  border: 1px solid var(--white-alpha-12);
+  margin-bottom: 48px;
+  backdrop-filter: blur(16px);
+  /* Static positioning */
+  position: relative;
+  z-index: 10;
+  min-height: 42px;
+  /* Prevent collapse */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.segment-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-2);
+  padding: 8px 24px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 99px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.segment-btn:hover {
+  color: var(--text-1);
+  opacity: 1;
+}
+
+.segment-btn.active {
+  background: var(--surface-2);
+  color: var(--text-1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--white-alpha-12);
+  opacity: 1;
+  font-weight: 700;
+}
+
+/* 5. Module Grid (Centered Text Mode - STATIC) */
+.page-shell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.module-grid {
+  display: grid;
+  /* ALWAYS VISIBLE */
+  grid-template-columns: repeat(3, minmax(200px, 1fr));
+  gap: 48px;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  opacity: 1;
+  /* Fully visible */
+  transform: none;
+  /* No transform */
+  text-align: center;
+  /* Prevent layout jump when switching tabs with few items */
+  min-height: 60vh;
+  align-content: start;
+}
+
+/* Force scrollbar to prevent horizontal jump on content change */
+html {
+  overflow-y: scroll;
+}
+
+/* Removed .module-grid.active animation */
+
+.module-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.module-column h3 {
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--text-2);
+  /* Muted headers */
+  letter-spacing: 3px;
+  margin-bottom: 24px;
+  padding: 0;
+  border-bottom: 1px solid var(--white-alpha-12);
+  padding-bottom: 12px;
+  width: 100%;
+  text-align: center;
+  font-weight: 600;
+  opacity: 0.6;
+}
+
+/* 6. Module Links (Text Only, No Cards) */
+.module-card {
+  /* Anti-FOUC: hide until CSS fully loads, then fade in */
+  visibility: hidden;
+  animation: moduleCardFadeIn 0.15s ease forwards;
+  animation-delay: 0.05s;
+
+  display: block;
+  padding: 10px 16px;
+  color: var(--text-2);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 13px;
+  transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  text-align: center;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+@keyframes moduleCardFadeIn {
+  to {
+    visibility: visible;
+  }
+}
+
+.module-card::after {
+  content: none;
+}
+
+/* Remove arrow */
+
+.module-card:hover {
+  color: var(--text-1);
+  background: var(--surface-2);
+  border-color: var(--white-alpha-12);
+  transform: translateY(-1px);
+  /* Lift */
+  letter-spacing: 1.5px;
+  /* Expand on hover */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.module-card:active {
+  transform: scale(0.98);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-header {
+    flex-direction: column;
+    align-items: center;
+    /* Center header on mobile */
+    text-align: center;
+    gap: 20px;
+    padding: 24px 0;
+  }
+
+  .status-row {
+    justify-content: center;
+  }
+
+  .segmented-control {
+    width: auto;
+    max-width: 100%;
+    margin: 0 auto 32px;
+    overflow-x: auto;
+  }
+
+  .module-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    padding-bottom: 40px;
+  }
+}
+
+/* Utility for dynamic JS hiding */
+.hidden {
+  display: none !important;
+}
