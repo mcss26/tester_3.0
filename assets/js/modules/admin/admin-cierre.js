@@ -4,7 +4,7 @@
  * Refactored to 'logic-engineer' standards.
  */
 
-(async function() {
+(async function () {
     'use strict';
 
     // 1. Auth Guard
@@ -24,14 +24,14 @@
         notesInput: document.getElementById('closing-notes'),
         statusPill: document.getElementById('current-closing-status'),
         tableBody: document.getElementById('table-body'),
-        
+
         // Totals
         totalCashDecl: document.getElementById('total-cash-decl'),
         totalZocoDecl: document.getElementById('total-zoco-decl'),
         totalCashSys: document.getElementById('total-cash-sys'),
         totalZocoSys: document.getElementById('total-zoco-sys'),
         totalDiff: document.getElementById('total-diff'),
-        
+
         // QR Inputs
         qrPassline: {
             qty: document.getElementById('qr-passline-qty'),
@@ -153,12 +153,12 @@
     function bindEvents() {
         refs.btnLoad.addEventListener('click', loadData);
         refs.btnCloseNight.addEventListener('click', closeNight);
-        
+
         // Modal Handlers
-        if(refs.btnConfirmModal) refs.btnConfirmModal.addEventListener('click', performCloseNight);
-        if(refs.btnCancelModal) refs.btnCancelModal.addEventListener('click', () => toggleModal(refs.modalConfirm, false));
-        if(refs.btnCloseInfo) refs.btnCloseInfo.addEventListener('click', () => toggleModal(refs.modalInfo, false));
-        
+        if (refs.btnConfirmModal) refs.btnConfirmModal.addEventListener('click', performCloseNight);
+        if (refs.btnCancelModal) refs.btnCancelModal.addEventListener('click', () => toggleModal(refs.modalConfirm, false));
+        if (refs.btnCloseInfo) refs.btnCloseInfo.addEventListener('click', () => toggleModal(refs.modalInfo, false));
+
         refs.btnSaveNotes.addEventListener('click', async () => {
             if (!state.closingId) return;
             const notes = refs.notesInput.value.trim();
@@ -271,7 +271,7 @@
         state.isLoading = true;
         setButtonLoading(refs.btnLoad, true);
         setPageState({ loading: true, empty: false });
-        
+
         try {
             // A. Get WorkDay
             const { data: wd, error: wdError } = await window.sb
@@ -361,7 +361,7 @@
     // 8. Render Logic
     function renderMainTable(terminals, details) {
         refs.tableBody.innerHTML = '';
-        
+
         // Accumulators
         let acc = { cashDecl: 0, zocoDecl: 0, cashSys: 0, zocoSys: 0, diff: 0 };
 
@@ -420,7 +420,7 @@
         refs.totalCashSys.textContent = window.Utils.formatARS(acc.cashSys);
         refs.totalZocoSys.textContent = window.Utils.formatARS(acc.zocoSys);
         refs.totalDiff.textContent = window.Utils.formatARS(acc.diff);
-        
+
         // Color coding for total diff
         applyDiffClass(refs.totalDiff, acc.diff);
     }
@@ -442,7 +442,7 @@
 
         refs.btnCloseNight.disabled = isClosed;
         refs.btnCloseNight.textContent = isClosed ? 'CERRADO' : 'CERRAR NOCHE';
-        
+
         // Disable imports if closed? Maybe allow for review.
     }
 
@@ -468,7 +468,7 @@
         qrs.forEach(q => {
             const source = (q.qr_batches?.market_source || '').toUpperCase();
             const price = Number(q.qr_batches?.unit_price) || 0;
-            
+
             if (source === 'PASSLINE') {
                 stats.passline.qty++;
                 stats.passline.sys += price;
@@ -516,7 +516,7 @@
             total += amt;
         }
         msg += `\nTotal Fiscal: ${window.Utils.formatARS(total)}`;
-        
+
         refs.infoContent.textContent = msg;
         toggleModal(refs.modalInfo, true);
     }
@@ -534,24 +534,116 @@
         state.isLoading = true;
         setButtonLoading(refs.btnCloseNight, true);
 
-        const { error } = await window.sb
-            .from('cash_closings')
-            .update({ 
-                status: 'closed',
-                closed_at: new Date().toISOString(),
-                closed_by: window.Auth.user.id
-            })
-            .eq('id', state.closingId);
+        try {
+            // ──────────────────────────────────────────────────────────
+            // Checkpoints en Paralelo: Validar Bar Sessions + Closing Terminals
+            // ──────────────────────────────────────────────────────────
+            const [barResult, termResult] = await Promise.all([
+                window.sb
+                    .from('bar_sessions')
+                    .select('id, location, opened_by, profiles(full_name)')
+                    .eq('work_day_id', state.workDayId)
+                    .neq('status', 'closed'),
+                window.sb
+                    .from('closing_terminals')
+                    .select('id, terminal_id, pos_terminals(friendly_name)')
+                    .eq('cash_closing_id', state.closingId)
+                    .not('status', 'in', '(submitted,verified)')
+            ]);
 
-        state.isLoading = false;
-        setButtonLoading(refs.btnCloseNight, false);
+            // Validar resultados de bar_sessions
+            if (barResult.error) throw barResult.error;
+            if (barResult.data && barResult.data.length > 0) {
+                const barList = barResult.data.map(b =>
+                    `${b.location || 'Barra'} (${b.profiles?.full_name || 'Sin asignar'})`
+                ).join(', ');
+                throw new Error(
+                    `No se puede cerrar la noche. Hay ${barResult.data.length} sesión(es) de barra sin cerrar: ${barList}. ` +
+                    `Todas las barras deben completar su auditoría antes del cierre administrativo.`
+                );
+            }
 
-        if (error) {
-            console.error(error);
-            window.Toast.error('Error al cerrar noche');
+            // Validar resultados de closing_terminals
+            if (termResult.error) throw termResult.error;
+            if (termResult.data && termResult.data.length > 0) {
+                const termNames = termResult.data
+                    .map(t => t.pos_terminals?.friendly_name || 'Terminal')
+                    .join(', ');
+                throw new Error(
+                    `No se puede cerrar la noche. Las siguientes cajas no han sido cerradas: ${termNames}. ` +
+                    `Todos los encargados de caja deben completar sus arqueos antes del cierre.`
+                );
+            }
+
+            // ──────────────────────────────────────────────────────────
+            // Cerrar Cash Closing y Work Day en Paralelo
+            // ──────────────────────────────────────────────────────────
+            const closedAt = new Date().toISOString();
+            const userId = window.Auth.user.id;
+
+            const [closingResult, workDayResult] = await Promise.all([
+                window.sb
+                    .from('cash_closings')
+                    .update({
+                        status: 'closed',
+                        closed_at: closedAt,
+                        closed_by: userId
+                    })
+                    .eq('id', state.closingId),
+                window.sb
+                    .from('work_days')
+                    .update({
+                        status: 'closed',
+                        closed_at: closedAt,
+                        closed_by: userId
+                    })
+                    .eq('id', state.workDayId)
+            ]);
+
+            if (closingResult.error) throw closingResult.error;
+            if (workDayResult.error) throw workDayResult.error;
+
+            // ──────────────────────────────────────────────────────────
+            // Generar Reporte Integral Automáticamente
+            // ──────────────────────────────────────────────────────────
+            window.Toast.success('Noche cerrada exitosamente. Generando reporte integral...');
+
+            try {
+                await generateNightReport(state.workDayId);
+                window.Toast.success('Reporte integral generado correctamente.');
+            } catch (reportError) {
+                console.error('[admin-cierre] Error generando reporte:', reportError);
+                window.Toast.warning('Noche cerrada, pero hubo un error al generar el reporte. Puedes descargarlo manualmente.');
+            }
+
+            setTimeout(() => window.location.reload(), 2000);
+
+        } catch (error) {
+            console.error('[admin-cierre] Error al cerrar noche:', error);
+            window.Toast.error(error.message || 'Error al cerrar noche');
+        } finally {
+            state.isLoading = false;
+            setButtonLoading(refs.btnCloseNight, false);
+        }
+    }
+
+    async function generateNightReport(workDayId) {
+        // Llamar al generador de PDF integral
+        // Esta función debe existir en tu sistema para generar el reporte
+        if (typeof window.ReportGenerator !== 'undefined' && window.ReportGenerator.generateIntegralReport) {
+            const pdfBlob = await window.ReportGenerator.generateIntegralReport(workDayId);
+
+            // Descargar automáticamente
+            const url = URL.createObjectURL(pdfBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Reporte_Integral_${state.workDate}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         } else {
-            window.Toast.success('Noche cerrada exitosamente');
-            setTimeout(() => window.location.reload(), 1500);
+            console.warn('[admin-cierre] ReportGenerator no disponible');
         }
     }
 

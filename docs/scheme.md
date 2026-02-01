@@ -1,6 +1,14 @@
 # Esquema de Base de Datos - FormulaMid 4
 
-Listado actualizado automáticamente al 30/01/2026.
+Listado actualizado automáticamente al 01/02/2026.
+
+> **Actualización Fase 2** (01/02/2026): Se agregaron 2 vistas SQL consolidadas:
+> - `vw_daily_sales` - Consolidación financiera diaria
+> - `vw_bar_efficiency` - Análisis de eficiencia de barra
+> 
+> **Actualización Fase 3** (01/02/2026): Mejoras a importadores CSV:
+> - Agregada columna `cash_movements.external_id` para deduplicación de importaciones
+
 
 ## Tablas Publicas
 
@@ -89,8 +97,10 @@ _Movimientos de caja (ingresos/egresos)._
 - **amount** (numeric)
 - **reason** (text)
 - **status** (text)
+- **external_id** (text) - Unique ID from external CSV import (deduplication)
 - **created_at** (timestamp with time zone)
 - **confirmed_at** (timestamp with time zone)
+
 
 ### closing_terminals
 
@@ -695,3 +705,67 @@ _Reporte fiscal mensual estimado._
 ### vw_work_day_summary
 
 - **open_day**, **planned_days**, **closed_days**
+
+### vw_daily_sales
+
+_Consolidación financiera diaria (Fase 2 - 01/02/2026)._
+
+Integra automáticamente todos los flujos financieros de una jornada.
+
+**Fuentes**: `cash_closings`, `closing_terminals`, `bar_sessions`, `bar_session_sales`, `qr_codes`, `qr_batches`, `cash_movements`, `accounts_payable`
+
+- **work_day_id** (uuid) - FK → work_days.id
+- **work_date** (date)
+- **work_day_status** (text)
+- **opened_at** (timestamp)
+- **closed_at** (timestamp)
+- **cash_system** (numeric) - Total efectivo sistema
+- **cash_declared** (numeric) - Total efectivo declarado
+- **cash_difference** (numeric) - Diferencia efectivo
+- **zoco_system** (numeric) - Total digital sistema
+- **zoco_declared** (numeric) - Total digital declarado
+- **zoco_difference** (numeric) - Diferencia digital
+- **bar_sales_system** (numeric) - Ventas de barra
+- **bar_transaction_count** (bigint) - Cantidad transacciones barra
+- **qr_total** (numeric) - Ingresos por QR/boletería
+- **qr_people_count** (bigint) - Personas acreditadas
+- **withdrawals** (numeric) - Retiros de tesorería
+- **withdrawal_count** (bigint) - Cantidad de retiros
+- **expenses** (numeric) - Gastos
+- **expense_count** (bigint) - Cantidad de gastos
+- **total_system** (numeric) - **Total ingresos sistema**
+- **total_declared** (numeric) - **Total declarado**
+- **total_difference** (numeric) - **Diferencia total**
+- **net_to_render** (numeric) - **Neto a rendir** (ingresos - retiros - gastos)
+- **closing_notes** (text)
+- **closing_status** (text)
+- **closed_by** (uuid)
+
+### vw_bar_efficiency
+
+_Análisis de eficiencia de barra: Físico vs. Teórico (Fase 2 - 01/02/2026)._
+
+Compara consumo físico (conteos) vs. consumo teórico (ventas × recetas).
+
+**Fuentes**: `bar_sessions`, `bar_stock_snapshots`, `bar_session_sales`, `master_recipes`, `master_sku`, `profiles`
+
+- **session_id** (uuid) - FK → bar_sessions.id
+- **work_day_id** (uuid) - FK → work_days.id
+- **work_date** (date)
+- **location** (text) - Ubicación de barra
+- **status** (text)
+- **opened_at** (timestamp)
+- **closed_at** (timestamp)
+- **opened_by_name** (text)
+- **closed_by_name** (text)
+- **cost_physical** (numeric) - Costo del stock consumido físicamente
+- **cost_theoretical** (numeric) - Costo según ventas × recetas
+- **cost_difference** (numeric) - Diferencia (físico - teórico)
+- **variance_percentage** (numeric) - % de varianza
+- **efficiency_rating** (text) - Clasificación: EXCELENTE (≤3%), BUENO (≤5%), ACEPTABLE (≤10%), CRÍTICO (>10%), SIN_DATOS
+- **skus_with_variance** (bigint) - SKUs con diferencias
+- **revenue_total** (numeric) - Ingresos por ventas
+- **transaction_count** (bigint) - Cantidad de transacciones
+- **gross_margin** (numeric) - Margen bruto (ventas - costo teórico)
+- **gross_margin_percentage** (numeric) - % margen bruto
+- **loss_amount** (numeric) - Pérdida valorizada (solo si hay faltante)

@@ -636,6 +636,27 @@
         btn.textContent = 'Finalizando...';
 
         try {
+            // ──────────────────────────────────────────────────────────
+            // Checkpoint: Verificar bar_sessions antes de permitir cierre
+            // ──────────────────────────────────────────────────────────
+            const { data: openBars, error: barError } = await window.sb
+                .from('bar_sessions')
+                .select('id, location, profiles(full_name)', { count: 'exact' })
+                .eq('work_day_id', state.currentWorkDayId)
+                .neq('status', 'closed');
+
+            if (barError) throw barError;
+
+            if (openBars && openBars.length > 0) {
+                const barList = openBars.map(b =>
+                    `${b.location || 'Barra'} (${b.profiles?.full_name || 'Sin asignar'})`
+                ).join(', ');
+                throw new Error(
+                    `No puedes cerrar la noche hasta que se cierren ${openBars.length} sesión(es) de barra pendientes: ${barList}`
+                );
+            }
+
+            // Cálculo de total_declared
             const submitted = state.terminals.filter(t =>
                 t.closing && (t.closing.status === 'submitted' || t.closing.status === 'verified')
             );
@@ -643,25 +664,41 @@
                 acc + (t.closing.declared_cash || 0) + (t.closing.declared_zoco || 0), 0
             );
 
-            const { error } = await window.sb
-                .from('cash_closings')
-                .update({
-                    status: 'closed',
-                    closed_at: new Date().toISOString(),
-                    closed_by: user.id,
-                    total_declared: totalDeclared,
-                    notes: notes
-                })
-                .eq('id', state.closingId);
+            // ──────────────────────────────────────────────────────────
+            // Cerrar cash_closings y work_day en paralelo
+            // ──────────────────────────────────────────────────────────
+            const closedAt = new Date().toISOString();
 
-            if (error) throw error;
+            const [closingResult, workDayResult] = await Promise.all([
+                window.sb
+                    .from('cash_closings')
+                    .update({
+                        status: 'closed',
+                        closed_at: closedAt,
+                        closed_by: user.id,
+                        total_declared: totalDeclared,
+                        notes: notes
+                    })
+                    .eq('id', state.closingId),
+                window.sb
+                    .from('work_days')
+                    .update({
+                        status: 'closed',
+                        closed_at: closedAt,
+                        closed_by: user.id
+                    })
+                    .eq('id', state.currentWorkDayId)
+            ]);
+
+            if (closingResult.error) throw closingResult.error;
+            if (workDayResult.error) throw workDayResult.error;
 
             closeModal(ui.modalCloseNight);
-            window.Toast?.success('Cierre de noche exitoso.');
+            window.Toast?.success('Cierre de noche exitoso. Jornada finalizada.');
             loadCurrentClosing();
         } catch (err) {
-            console.error(err);
-            window.Toast?.error('Error al cerrar la noche.');
+            console.error('[encargado-caja-noche] Error al cerrar noche:', err);
+            window.Toast?.error(err.message || 'Error al cerrar la noche.');
         } finally {
             btn.disabled = false;
             btn.textContent = 'FINALIZAR';

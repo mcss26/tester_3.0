@@ -1,8 +1,8 @@
 // assets/js/importers/importer-extracciones.js
-(function() {
+(function () {
 
     const ImporterExtracciones = {
-        
+
         /**
          * Main entry point
          * @param {File} file 
@@ -11,11 +11,11 @@
         process: async (file, workDayId) => {
             const content = await window.ImporterUtils.readFileAsText(file);
             const lines = content.split(/\r?\n/);
-            
+
             const transactions = [];
             let currentTerminalName = null;
             let importCount = 0;
-            
+
             // 1. Get Terminal Map
             const terminalMap = await ImporterExtracciones.getTerminalMap();
             const closingId = await ImporterExtracciones.getClosingId(workDayId);
@@ -50,33 +50,33 @@
 
                 const firstCol = cols[0];
                 const isTime = firstCol.includes(':') && firstCol.length <= 8;
-                
+
                 if (isTime) {
                     // It's a transaction
                     if (!currentTerminalName) continue; // Skip orphaned rows
 
                     const rawAmount = cols[3]; // Assumption: Col 3 is Amount
                     const monto = window.ImporterUtils.parseCurrency(rawAmount);
-                    
+
                     if (monto === 0) continue; // Filter 0s as per rules
 
                     const concepto = cols[1]; // "Efectivo" or "Retiro"
-                    const usuario = cols[6] || 'System'; 
-                    
+                    const usuario = cols[6] || 'System';
+
                     const terminalId = terminalMap[currentTerminalName] || terminalMap[ImporterExtracciones.normalizeName(currentTerminalName)];
-                    
+
                     if (terminalId) {
+                        // PHASE 3: FIX GAP-08 (negative amount) + GAP-09 (deduplication)
                         transactions.push({
                             cash_closing_id: closingId,
                             terminal_id: terminalId,
-                            amount: -Math.abs(monto), // Withdrawals are negative in this context? 
-                                                      // "Sangría" / "Retiro" = Money leaving the box -> Negative flow? 
-                                                      // Or Positive flow to "Treasurer"? 
-                                                      // In 'cash_movements', 'withdrawal' reduces 'closing_terminals.system_cash'.
-                                                      // Usually we store absolute amount and type='withdrawal'.
+                            amount: Math.abs(monto),  // ✅ FIX: Always positive (type='withdrawal' indicates direction)
                             type: 'withdrawal',
+                            reason: concepto,
+                            external_id: `EXT-${currentTerminalName}-${firstCol}-${monto}`,  // ✅ NEW: Unique hash for deduplication
                             description: `[Import] ${concepto} (${usuario})`,
-                            created_at: new Date().toISOString() // Ideally parse "DD/MM/YYYY HH:MM" from file if available, else now.
+                            status: 'confirmed',
+                            created_at: new Date().toISOString()
                         });
                         importCount++;
                     } else {
@@ -85,10 +85,24 @@
                 }
             }
 
-            // 3. Batch Insert
+            // 3. Batch Upsert (PHASE 3: Handle duplicates)
             if (transactions.length > 0) {
-                const { error } = await window.sb.from('cash_movements').insert(transactions);
-                if (error) throw error;
+                const { error } = await window.sb
+                    .from('cash_movements')
+                    .upsert(transactions, {
+                        onConflict: 'external_id',
+                        ignoreDuplicates: true
+                    });
+
+                if (error) {
+                    if (error.code === '23505') {
+                        window.Toast?.warning(
+                            `Se detectaron ${transactions.length} retiros duplicados. No se importaron nuevamente.`
+                        );
+                        return { count: 0, skipped: transactions.length };
+                    }
+                    throw error;
+                }
             }
 
             return { count: importCount, ignored: 0 }; // TODO: track ignored

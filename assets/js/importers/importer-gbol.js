@@ -1,22 +1,32 @@
 // assets/js/importers/importer-gbol.js
-(function() {
-    
+(function () {
+
     const ImporterGbol = {
 
         process: async (file, workDayId) => {
             const content = await window.ImporterUtils.readFileAsText(file);
             const rows = window.ImporterUtils.parseCSV(content, ';'); // Gbol native often ;
-            
+
             if (!rows.length) throw new Error("Archivo vacío o formato incorrecto.");
 
             // 1. Resolve Session
             const sessionId = await ImporterGbol.getSessionId(workDayId);
             if (!sessionId) throw new Error("No hay Sesión de Barra (Bar Session) para este WorkDay.");
 
-            const salesPayload = [];
+            // ──────────────────────────────────────────────────────────
+            // PHASE 3 - GAP-10: Pre-load recipes for validation
+            // ──────────────────────────────────────────────────────────
+            const { data: recipes, error: recError } = await window.sb
+                .from('master_recipes')
+                .select('external_id, name');
+
+            if (recError) throw recError;
+
+            const recipeMap = new Map(recipes?.map(r => [r.external_id, r.name]) || []);
             const missingRecipes = [];
-            // Optimistic approach: we don't block import if recipes missing, we just warn.
-            
+
+            const salesPayload = [];
+
             // 2. Process Rows
             for (const row of rows) {
                 // Expected Headers: "Codigo", "Articulo", "Q Paga", "Total Caja"
@@ -30,13 +40,25 @@
 
                 if (!codigo) continue; // Skip totals footer or weird lines
 
-                const cantidad = parseFloat((qPaga||"0").replace(',', '.'));
+                const cantidad = parseFloat((qPaga || "0").replace(',', '.'));
                 const total = window.ImporterUtils.parseCurrency(totalCaja);
 
                 if (cantidad === 0 && total === 0) continue;
 
+                // ──────────────────────────────────────────────────────────
+                // PHASE 3: Check if recipe exists
+                // ──────────────────────────────────────────────────────────
+                if (!recipeMap.has(codigo)) {
+                    missingRecipes.push({
+                        codigo,
+                        articulo,
+                        cantidad,
+                        total
+                    });
+                }
+
                 salesPayload.push({
-                    bar_session_id: sessionId,
+                    session_id: sessionId,  // ✅ Changed from bar_session_id
                     external_id: codigo,
                     product_name: articulo || 'Unknown',
                     quantity: cantidad,
@@ -51,19 +73,35 @@
                 if (error) throw error;
             }
 
-            // 4. Update Terminal Closings? 
-            // The Roadmap says Phase 1 only puts data in bar_session_sales. 
-            // Admin Cierre UI compares "System Gbol" vs "Decl Gbol".
-            // Implementation Detail: we should probably update `closing_terminals.system_zoco` somehow?
-            // Or `admin-cierre.js` calculates `system_zoco` by summing `bar_session_sales`?
-            // "Admin Cierre" usually handles Cash. Gbol sales might be cash or card.
-            // If Gbol tracks "Total Caja", is that Cash? Usually yes.
-            // But we need to distinguish payment methods if Gbol supports checks/QR.
-            // For now, assume Gbol = Sales System.
-            // We will leave the "Update closing_terminals" logic to the UI or a separate trigger.
-            // This importer just dumps raw data.
+            // ──────────────────────────────────────────────────────────
+            // PHASE 3: Warn about missing recipes
+            // ──────────────────────────────────────────────────────────
+            if (missingRecipes.length > 0) {
+                console.warn('[importer-gbol] Productos sin receta mapeada:', missingRecipes);
 
-            return { count: salesPayload.length, warning: null };
+                const summary = missingRecipes
+                    .slice(0, 5)  // Show first 5
+                    .map(r => `• ${r.codigo}: ${r.articulo} (${r.cantidad} unidades)`)
+                    .join('\n');
+
+                const moreText = missingRecipes.length > 5 ? `\n... y ${missingRecipes.length - 5} más` : '';
+
+                window.Toast?.warning(
+                    `⚠️ Se importaron ${salesPayload.length} ventas exitosamente.\n\n` +
+                    `Sin embargo, ${missingRecipes.length} productos NO tienen receta mapeada.\n` +
+                    `El cálculo de eficiencia de barra será INCOMPLETO:\n\n${summary}${moreText}`,
+                    { duration: 10000 }
+                );
+            }
+
+            return {
+                count: salesPayload.length,
+                warnings: missingRecipes.length > 0 ? {
+                    type: 'missing_recipes',
+                    count: missingRecipes.length,
+                    details: missingRecipes
+                } : null
+            };
         },
 
         getSessionId: async (workDayId) => {
@@ -71,7 +109,7 @@
                 .select('id')
                 .eq('work_day_id', workDayId)
                 .maybeSingle();
-            
+
             // If no session exists, create one auto?
             if (!data) {
                 const { data: stringNew, error } = await window.sb.from('bar_sessions')

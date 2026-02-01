@@ -1,13 +1,13 @@
 // assets/js/importers/importer-passline.js
-(function() {
+(function () {
 
     const ImporterPassline = {
-        
+
         process: async (file, workDayId) => {
             const content = await window.ImporterUtils.readFileAsText(file);
             const rows = window.ImporterUtils.parseCSV(content, ';'); // Check if Passline uses ; or ,
             // Passline exports often use semicolon if spanish regional settings
-            
+
             if (!rows.length) throw new Error("Archivo vacío.");
 
             const tickets = [];
@@ -28,6 +28,16 @@
                 const customerName = row['Nombre'] || row['Comprador'] || 'Unknown';
                 const email = row['Email'] || row['Correo'];
 
+                // ──────────────────────────────────────────────────────────
+                // PHASE 3 - GAP-13: Read dynamic status from CSV
+                // ──────────────────────────────────────────────────────────
+                const rawStatus = row['Estado'] || row['estado_ticket'] || row['Estado Ticket'] || row['Estado QR'];
+                const normalizedStatus = rawStatus ? rawStatus.toUpperCase().trim() : 'ACREDITADO';
+
+                // Validate against allowed statuses
+                const validStatuses = ['ACREDITADO', 'PENDIENTE', 'CANCELADO', 'REEMBOLSADO', 'USADO'];
+                const status = validStatuses.includes(normalizedStatus) ? normalizedStatus : 'ACREDITADO';
+
                 if (!extId) continue;
 
                 const monto = window.ImporterUtils.parseCurrency(montoRaw);
@@ -41,30 +51,35 @@
 
                 tickets.push({
                     work_day_id: workDayId,
-                    qr_batch_id: batchId,
+                    batch_id: batchId,  // ✅ Changed from qr_batch_id
                     external_id: extId,
-                    status: 'ACREDITADO', // If in access flow, it's used.
-                    source_platform: 'Passline',
-                    scanned_at: new Date().toISOString(), // Or from CSV "Hora"
-                    customer_email: email, // Optional CRM
-                    customer_name: customerName,
-                    price_paid: monto
+                    status: status,  // ✅ DYNAMIC (was hardcoded 'ACREDITADO')
+                    code: extId,  // QR code string
+                    created_at: new Date().toISOString()
                 });
                 count++;
             }
 
-            // Batch Upsert
-            // Chunking if too big? Supabase limit is generous but good practice.
+            // 3. Batch Upsert with error handling
             const chunkSize = 100;
+            let processedCount = 0;
+
             for (let i = 0; i < tickets.length; i += chunkSize) {
                 const chunk = tickets.slice(i, i + chunkSize);
-                const { error } = await window.sb.from('qr_codes')
-                    .upsert(chunk, { onConflict: 'external_id' });
-                
+                const { data, error } = await window.sb
+                    .from('qr_codes')
+                    .upsert(chunk, {
+                        onConflict: 'external_id',
+                        ignoreDuplicates: false  // Update existing
+                    })
+                    .select();
+
                 if (error) {
-                    console.error("Batch error", error);
-                    // Continue? Or throw?
+                    console.error('[importer-passline] Error en chunk:', error);
+                    throw error;  // Stop on error
                 }
+
+                processedCount += chunk.length;
             }
 
             return { count };
@@ -77,7 +92,7 @@
                 .eq('work_day_id', workDayId)
                 .eq('name', name)
                 .maybeSingle();
-            
+
             if (data) return data.id;
 
             // Create new
@@ -91,7 +106,7 @@
                 })
                 .select()
                 .single();
-            
+
             if (error) throw error;
             return stringNew.id;
         }
