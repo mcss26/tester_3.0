@@ -4,6 +4,13 @@
     const ImporterPassline = {
 
         process: async (file, workDayId) => {
+            // PHASE 4: Wrap with import logging
+            return await window.ImportLogger.wrap('passline', file, workDayId, async () => {
+                return await ImporterPassline.doImport(file, workDayId);
+            });
+        },
+
+        doImport: async (file, workDayId) => {
             const content = await window.ImporterUtils.readFileAsText(file);
             const rows = window.ImporterUtils.parseCSV(content, ';'); // Check if Passline uses ; or ,
             // Passline exports often use semicolon if spanish regional settings

@@ -9,6 +9,13 @@
          * @param {string} workDayId 
          */
         process: async (file, workDayId) => {
+            // PHASE 4: Wrap with import logging
+            return await window.ImportLogger.wrap('extracciones', file, workDayId, async () => {
+                return await ImporterExtracciones.doImport(file, workDayId);
+            });
+        },
+
+        doImport: async (file, workDayId) => {
             const content = await window.ImporterUtils.readFileAsText(file);
             const lines = content.split(/\r?\n/);
 

@@ -4,6 +4,13 @@
     const ImporterGbol = {
 
         process: async (file, workDayId) => {
+            // PHASE 4: Wrap with import logging
+            return await window.ImportLogger.wrap('gbol', file, workDayId, async () => {
+                return await ImporterGbol.doImport(file, workDayId);
+            });
+        },
+
+        doImport: async (file, workDayId) => {
             const content = await window.ImporterUtils.readFileAsText(file);
             const rows = window.ImporterUtils.parseCSV(content, ';'); // Gbol native often ;
 
@@ -57,12 +64,18 @@
                     });
                 }
 
+                // ──────────────────────────────────────────────────────────
+                // PHASE 4 - GAP-11: Detect payment method
+                // ──────────────────────────────────────────────────────────
+                const paymentMethod = ImporterGbol.detectPaymentMethod(articulo, codigo);
+
                 salesPayload.push({
                     session_id: sessionId,  // ✅ Changed from bar_session_id
                     external_id: codigo,
                     product_name: articulo || 'Unknown',
                     quantity: cantidad,
                     total_amount: total,
+                    payment_method: paymentMethod,  // ✅ NEW: Auto-detect payment method
                     imported_at: new Date().toISOString()
                 });
             }
@@ -120,6 +133,28 @@
                 return stringNew.id;
             }
             return data.id;
+        },
+
+        /**
+         * PHASE 4: Detect payment method from product name
+         * @param {string} productName
+         * @param {string} codigo
+         * @returns {'cash'|'card'|'other'}
+         */
+        detectPaymentMethod: (productName, codigo) => {
+            if (!productName) return 'cash';
+
+            const lower = productName.toLowerCase();
+
+            // Keywords indicating card/digital payment
+            const cardKeywords = ['zoco', 'qr', 'tarjeta', 'digital', 'mercadopago', 'mp'];
+
+            if (cardKeywords.some(keyword => lower.includes(keyword))) {
+                return 'card';
+            }
+
+            // Default to cash
+            return 'cash';
         }
     };
 

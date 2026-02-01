@@ -38,7 +38,9 @@ _Ventas importadas sistema externo (Gbol) para conciliación._
 - **product_name** (text)
 - **quantity** (numeric)
 - **total_amount** (numeric)
+- **payment_method** (text) - Payment method: 'cash', 'card', 'transfer', 'other' (Fase 4)
 - **imported_at** (timestamp without time zone)
+
 
 ### bar_sessions
 
