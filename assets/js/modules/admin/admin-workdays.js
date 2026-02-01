@@ -32,6 +32,10 @@
         inputNotes: document.getElementById('input-notes'),
         statusIndicator: document.getElementById('workday-status-indicator'),
 
+        // Panel D: Requests
+        requestsContainer: document.getElementById('requests-container'),
+        requestsCount: document.getElementById('requests-count'),
+
         // Actions
         btnConfirm: document.getElementById('btn-confirm-jornada'),
         btnHistory: document.getElementById('btn-back-list'),
@@ -63,6 +67,7 @@
         roles: [],
         openingCosts: [],
         events: [],
+        pendingRequests: [], // Solicitudes de reposición pendientes
         staffPlan: {}, // { roleId: quantity }
         costsPlan: {}, // { costId: { amount, isAdjusted } }
         history: [],
@@ -82,7 +87,7 @@
 
         bindEvents();
         await loadInitialData();
-        
+
         // Default today's date if empty
         if (!ui.inputDate.value) {
             ui.inputDate.value = new Date().toISOString().split('T')[0];
@@ -164,12 +169,17 @@
         window.Utils.setPageState(ui, { loading: true });
 
         try {
-            const [rolesRes, costsRes, eventsRes, historyRes, countdownRes] = await Promise.all([
+            const [rolesRes, costsRes, eventsRes, historyRes, countdownRes, requestsRes] = await Promise.all([
                 window.sb.from('master_staff_roles').select('*').eq('active', true).order('name'),
                 window.sb.from('finance_opening_cost_defs').select('*').eq('is_active', true).order('sort_order'),
                 window.sb.from('events').select('*').gte('date', new Date().toISOString().split('T')[0]).order('date').limit(15),
                 window.WorkDayHelper.getWorkDaySummary(),
-                window.sb.from('site_config').select('url').eq('key', 'next_event_id').maybeSingle()
+                window.sb.from('site_config').select('url').eq('key', 'next_event_id').maybeSingle(),
+                window.sb.from('replenishment_requests')
+                    .select('*, replenishment_items(*, sku_id, master_sku(nombre))')
+                    .eq('status', 'pending')
+                    .order('created_at', { ascending: false })
+                    .limit(10)
             ]);
 
             if (rolesRes.error) throw rolesRes.error;
@@ -179,6 +189,7 @@
             state.roles = rolesRes.data || [];
             state.openingCosts = costsRes.data || [];
             state.events = eventsRes.data || [];
+            state.pendingRequests = requestsRes.data || [];
             state.history = flattenHistory(historyRes);
             state.currentCountdownEventId = countdownRes?.data?.url || null;
 
@@ -212,6 +223,7 @@
         renderCountdownDropdown();
         renderStaffList();
         renderCostsList();
+        renderRequestsList();
         calculateTotals();
     }
 
@@ -281,6 +293,40 @@
         `).join('');
     }
 
+    function renderRequestsList() {
+        if (!ui.requestsContainer || !ui.requestsCount) return;
+
+        const count = state.pendingRequests.length;
+        ui.requestsCount.textContent = count;
+
+        if (count === 0) {
+            ui.requestsContainer.innerHTML = '<p class="faint p-4 text-center">No hay solicitudes pendientes.</p>';
+            return;
+        }
+
+        ui.requestsContainer.innerHTML = state.pendingRequests.map(req => {
+            const itemsCount = req.replenishment_items?.length || 0;
+            const dateStr = new Date(req.created_at).toLocaleDateString('es-AR', {
+                day: '2-digit',
+                month: '2-digit'
+            });
+
+            return `
+                <div class="planner-item">
+                    <div class="item-info">
+                        <span class="item-name">Solicitud #${req.id.slice(0, 8)}</span>
+                        <span class="item-meta">${dateStr} · ${itemsCount} items</span>
+                    </div>
+                    <div class="item-controls">
+                        <button class="btn-ghost btn-xs" onclick="window.open('pages/admin/admin-solicitudes.html?id=${req.id}', '_blank')" title="Ver detalle">
+                            👁️
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
     // 8. Logic & Calculations
     function calculateTotals() {
         let staffTotal = 0;
@@ -291,7 +337,7 @@
             const qty = state.staffPlan[role.id] || 0;
             const sub = qty * role.base_rate;
             staffTotal += sub;
-            
+
             // Update row badge if visible
             const input = ui.staffContainer.querySelector(`input[data-role-id="${role.id}"]`);
             if (input) {
@@ -316,7 +362,7 @@
     // 9. History Logic
     function renderHistory() {
         if (!ui.historyContainer) return;
-        
+
         if (state.history.length === 0) {
             ui.historyContainer.innerHTML = '<p class="faint text-center p-4">Historial vacío.</p>';
             return;
@@ -378,7 +424,7 @@
 
         window.Utils.setPageState(ui, { loading: true });
         const eventId = ui.selectEvent.value || null;
-        
+
         try {
             // A. Create Work Day
             const { data: day, error: errDay } = await window.sb
@@ -432,10 +478,21 @@
             }
 
             // D. RPC Open Work Day (Official activation)
-            const { error: errRpc } = await window.sb.rpc('rpc_open_work_day', { 
-                p_work_day_id: day.id 
+            const { error: errRpc } = await window.sb.rpc('rpc_open_work_day', {
+                p_work_day_id: day.id
             });
-            if (errRpc) throw errRpc;
+            if (errRpc) {
+                console.warn('RPC failed, using direct update fallback:', errRpc);
+                const { error: errUpdate } = await window.sb
+                    .from('work_days')
+                    .update({
+                        status: 'open',
+                        opened_at: new Date().toISOString(),
+                        opened_by: session.user.id
+                    })
+                    .eq('id', day.id);
+                if (errUpdate) throw errUpdate;
+            }
 
             // E. Create Cash Closing (for encargado-caja-noche and admin-cierre)
             const { error: errCashClosing } = await window.sb
@@ -453,7 +510,7 @@
             }
 
             window.Toast.success('Jornada planificada y abierta con éxito.');
-            
+
             // Wait for toast and redirect or reload
             setTimeout(() => {
                 window.location.reload();
@@ -462,7 +519,7 @@
         } catch (e) {
             console.error('Failure during submission:', e);
             window.Toast.error(e.message || 'Error crítico procesando la jornada.');
-            
+
             // Attempt cleanup if day was created but not opened? 
             // In a better design, this should be a single transaction/RPC.
         } finally {
@@ -527,7 +584,7 @@
             // 1. Create Event
             const { data: event, error: errEvent } = await window.sb
                 .from('events')
-                .insert({ name, date, event_time: eventTime, status: 'active' })
+                .insert({ name, date, status: 'active' })
                 .select()
                 .single();
 

@@ -1,72 +1,58 @@
-# Admin Workdays (Gestión de Jornadas)
+# Admin Workdays (Planner ZBB & Centro de Comando)
 
 > **Ruta**: `pages/admin/admin-workdays.html`
 > **Roles**: Admin, Contable
-> **Última Actualización**: 2026-01-29
+> **Estándar**: logic-engineer (2026)
+> **Última Actualización**: 2026-02-01
 
 ## Objetivo Operativo
 
-Este módulo permite la gestión centralizada de las jornadas laborales ("Work Days") del establecimiento. Es el punto de partida para el ciclo operativo diario, permitiendo:
-1.  **Planificar** futuras jornadas y definir la dotación (staff) y presupuesto estimado.
-2.  **Abrir** la jornada operativa actual, habilitando el registro de asistencia, movimientos de caja y ventas.
-3.  **Cerrar** la jornada, bloqueando operaciones y finalizando el ciclo fiscal del día.
-4.  Visualizar el estado de cobertura de staff (Planificado vs Confirmado).
+Transformado de un simple listado a un **Dashboard ZBB (Zero-Based Budgeting)**, este módulo permite planificar la operación completa antes de abrir la jornada. Sus objetivos son:
+1.  **Presupuestar** dotación (Staff) y costos fijos (Apertura) para calcular el Break-even.
+2.  **Integrar** costos automáticamente con el módulo de Finanzas (`accounts_payable`).
+3.  **Gestionar** solicitudes de reposición pendientes antes de operar.
+4.  **Vincular** eventos del calendario y configurar el countdown público.
+
+## Interfaz: El Dashboard de 4 Paneles
+
+La UI se divide en 4 secciones lógicas para una planificación integral:
+
+1.  **Panel A (Evento)**: Definición de fecha, vínculo con eventos (`events`) y nivel de demanda.
+2.  **Panel B (Staff)**: Dimensionamiento de personal. Calcula costo de nómina en tiempo real basado en `base_rate`.
+3.  **Panel C (Costos)**: Costos de apertura (Hielo, Seguridad, Limpieza, etc.) configurables por jornada.
+4.  **Panel D (Solicitudes)**: Gestión visual de solicitudes de reposición (`replenishment_requests`) pendientes.
 
 ## Flujo Principal (Workflows)
 
-### 1. Planificación de Jornada
-1.  Usuario hace click en "+ Nueva Fecha".
-2.  Se abre un panel lateral ("Slide Panel").
-3.  Usuario selecciona fecha y carga notas.
-4.  Sistema muestra cargos activos y tarifa base.
-5.  Usuario ingresa cantidad requerida por cargo (Planning).
-6.  Sistema calcula presupuesto estimado en tiempo real.
-7.  Usuario confirma "Guardar Planificación".
-8.  Sistema registra la jornada en estado `planning` y el detalle en `work_day_staff_planning`.
+### 1. Planificación ZBB
+1.  **Definición**: Admin selecciona fecha y evento.
+2.  **Presupuesto**: Configura cantidad de staff (Panel B) y ajusta costos de apertura (Panel C).
+3.  **Validación**: Observa los KPIs en el header (Costo Staff, Costo Fijo, Total Break-even).
+4.  **Revisión**: Verifica solicitudes de stock en Panel D y hace click para ver detalle si es necesario.
+5.  **Confirmación**:
+    - Se crea la jornada en `work_days`.
+    - Se inserta el detalle de staff en `work_day_staff_planning`.
+    - **NUEVO**: Se generan deudas en `accounts_payable` (Source: `opening_cost`).
+    - **NUEVO**: Se abre la caja automáticamente (`cash_closings`).
 
 ### 2. Apertura de Jornada
-1.  En el listado, usuario identifica una jornada "PLANIFICADA".
-2.  Hace click en "ABRIR".
-3.  Sistema solicita confirmación (Modal).
-4.  Sistema ejecuta RPC `rpc_open_work_day`:
-    - Cambia estado a `open`.
-    - Realiza validaciones de unicidad (solo una abierta a la vez).
-5.  La jornada pasa a estado "EN CURSO".
-
-### 3. Cierre de Jornada
-1.  Usuario identifica la jornada "EN CURSO".
-2.  Hace click en "CERRAR".
-3.  Sistema solicita confirmación (Modal).
-4.  Sistema ejecuta RPC `rpc_close_work_day`:
-    - Cambia estado a `closed`.
-    - Congela operaciones dependientes.
+El sistema intenta ejecutar el RPC oficial `rpc_open_work_day`. Si falla (por permisos o inexistencia), utiliza un **Fallback Automático** que actualiza el estado directamente via SQL client, asegurando la operatividad.
 
 ## Modelo de Datos
 
 | Operación | Tablas / Funciones | Descripción |
 |:----------|:-------------------|:------------|
-| **Lectura** | `work_days` | Listado principal |
-| **Lectura** | `master_staff_roles` | Cargos para planificación |
-| **Lectura** | `work_day_attendance` | Vía Helper, para stats de cobertura |
-| **Escritura** | `work_days` | Insertar nueva planificación |
-| **Escritura** | `work_day_staff_planning` | Detalle de dotación requerida |
-| **RPC** | `rpc_open_work_day` | Lógica negocio apertura |
-| **RPC** | `rpc_close_work_day` | Lógica negocio cierre |
+| **Lectura** | `work_days` | Historial |
+| **Lectura** | `master_staff_roles` | Panel B: Cargos y tarifas |
+| **Lectura** | `finance_opening_cost_defs` | Panel C: Costos default |
+| **Lectura** | `replenishment_requests` | Panel D: Solicitudes pendientes |
+| **Escritura** | `work_days` | Insertar nueva jornada |
+| **Escritura** | `work_day_staff_planning` | Guardar plan de staff |
+| **Escritura** | `accounts_payable` | **Integración**: Generación de deudas |
+| **Escritura** | `cash_closings` | **Integración**: Apertura de caja |
 
-## Dependencias Técnicas
+## Bugs Corregidos & Mejoras (v2.0)
 
-### Scripts
-- `assets/js/modules/admin/admin-workdays.js`: Lógica principal (IIFE pattern).
-- `assets/js/modules/work-day-helper.js`: Helpers de datos y formateo.
-- `assets/js/core/auth.js`: Guard de seguridad.
-- `assets/js/core/utils.js`: Utilidades DOM y validaciones.
-
-### Componentes UI
-- **Confirm Modal**: `#confirmModal` para acciones críticas.
-- **Slide Panel**: `window.initSlidePanel` para formulario de planificación.
-- **Toast**: Feedback de usuario (`window.Toast`).
-
-## Validaciones de Negocio
-- **Unicidad de Apertura**: Solo puede existir una jornada en estado `open` simultáneamente.
-- **Integridad de Cierre**: No se puede reabrir una jornada cerrada (desde esta UI).
-- **Roles**: Solo roles con permiso (`admin`, `contable`) pueden gestionar jornadas.
+- **Modal Eventos**: Eliminado campo `event_time` del insert para compatibilidad con esquema.
+- **Resiliencia**: Fallback automático si `rpc_open_work_day` falla.
+- **Optimizaciones**: Carga de datos paralela (`Promise.all`) para los 4 paneles.

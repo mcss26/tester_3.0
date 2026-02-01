@@ -1,3 +1,6 @@
+ 
+**DESACTUALIZADO**
+
 # Estado Presente del Proyecto - FormulaMid 4
 
 > **Fecha**: 30/01/2026
