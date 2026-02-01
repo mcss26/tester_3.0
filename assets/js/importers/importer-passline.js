@@ -21,10 +21,10 @@
             let count = 0;
 
             for (const row of rows) {
-                // Columns: "ID", "Nombre", "Email", "Ticket", "Monto" (approx)
-                const extId = row['ID'] || row['id'];
-                const ticketName = row['Ticket'] || row['Tipo Ticket'] || row['ticket'];
-                const montoRaw = row['Monto'] || row['Precio'] || '0';
+                // Pasline real columns: "ID ticket", "Tipo", "Email", "Nombre" 
+                const extId = row['ID ticket'] || row['ID'] || row['id'];
+                const ticketName = row['Tipo'] || row['Ticket'] || row['Tipo Ticket'] || row['ticket'];
+                const montoRaw = row['Total'] || row['Monto'] || row['Precio'] || '0';
                 const customerName = row['Nombre'] || row['Comprador'] || 'Unknown';
                 const email = row['Email'] || row['Correo'];
 

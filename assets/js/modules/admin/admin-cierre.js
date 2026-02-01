@@ -295,7 +295,7 @@
             state.workDayId = wd.id;
 
             // B. Get Cash Closing
-            const { data: closing, error: cError } = await window.sb
+            let { data: closing, error: cError } = await window.sb
                 .from('cash_closings')
                 .select('*')
                 .eq('work_day_id', wd.id)
@@ -304,12 +304,31 @@
             if (cError) throw cError;
 
             if (!closing) {
-                renderEmpty("No hay Caja (CashClosing) iniciada.");
-                setStatusPill('ESTADO: NO INICIADO');
-                state.closingId = null;
-                setImportsEnabled(wd.id);
-                setCloseNightVisibility(false);
-                return;
+                // Fallback: Create cash_closing on-demand if missing
+                const { data: newClosing, error: createError } = await window.sb
+                    .from('cash_closings')
+                    .insert({
+                        work_day_id: wd.id,
+                        status: 'open',
+                        total_system: 0,
+                        total_declared: 0,
+                        total_difference: 0
+                    })
+                    .select()
+                    .single();
+
+                if (createError) {
+                    console.error('Failed to create cash_closing:', createError);
+                    renderEmpty("No hay Caja (CashClosing) y no se pudo crear.");
+                    setStatusPill('ESTADO: ERROR');
+                    state.closingId = null;
+                    setImportsEnabled(wd.id);
+                    setCloseNightVisibility(false);
+                    return;
+                }
+
+                closing = newClosing;
+                window.Toast.info('Se creó el cierre de caja automáticamente.');
             }
 
             // Set Context

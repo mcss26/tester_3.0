@@ -75,7 +75,7 @@
             // If no session exists, create one auto?
             if (!data) {
                 const { data: stringNew, error } = await window.sb.from('bar_sessions')
-                    .insert({ work_day_id: workDayId, status: 'active', name: 'Auto-Import Session' })
+                    .insert({ work_day_id: workDayId, status: 'active' })
                     .select()
                     .single();
                 if (error) throw error;

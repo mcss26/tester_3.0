@@ -437,6 +437,21 @@
             });
             if (errRpc) throw errRpc;
 
+            // E. Create Cash Closing (for encargado-caja-noche and admin-cierre)
+            const { error: errCashClosing } = await window.sb
+                .from('cash_closings')
+                .insert({
+                    work_day_id: day.id,
+                    status: 'open',
+                    total_system: 0,
+                    total_declared: 0,
+                    total_difference: 0
+                });
+            if (errCashClosing) {
+                console.warn('cash_closing creation failed:', errCashClosing);
+                // Non-blocking: encargado-caja-noche can create on-demand as fallback
+            }
+
             window.Toast.success('Jornada planificada y abierta con éxito.');
             
             // Wait for toast and redirect or reload

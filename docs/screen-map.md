@@ -1,14 +1,14 @@
 # 🗺️ Mapa de Pantallas - FormulaMid 4
 
-> **Última Actualización**: 2026-01-29  
-> **Total Pantallas**: 46  
+> **Última Actualización**: 2026-02-01  
+> **Total Pantallas**: 47  
 > **Documento**: Arquitectura de navegación y contextos de usuario
 
 ---
 
 ## 🎯 Propósito
 
-Este documento visualiza la **topografía completa** del sistema FormulaMid 4, organizando las 46 pantallas por rol operativo y contexto funcional. Útil para:
+Este documento visualiza la **topografía completa** del sistema FormulaMid 4, organizando las 47 pantallas por rol operativo y contexto funcional. Útil para:
 
 - Desarrolladores que necesitan entender el flujo de navegación
 - QA para validar cobertura de tests por módulo
@@ -32,6 +32,7 @@ graph TD
     Portal --> E_CAJ
     Portal --> S_BAR
     Portal --> G_BAL
+    Portal --> M_QR
 
     %% ═══════════════════════════════════════════════════════════════
     %% ADMINISTRACIÓN (21 pantallas)
@@ -153,6 +154,14 @@ graph TD
     end
 
     %% ═══════════════════════════════════════════════════════════════
+    %% MEMBERS (1 pantalla)
+    %% ═══════════════════════════════════════════════════════════════
+    subgraph FM4_MEM [🔴 MEMBERS · 1 pantalla]
+        direction TB
+        M_QR[📱 Mi QR<br/><small><i>my-qr</i></small>]
+    end
+
+    %% ═══════════════════════════════════════════════════════════════
     %% CONEXIONES INTERNAS
     %% ═══════════════════════════════════════════════════════════════
     A_IDX --> ADM_OPS
@@ -185,6 +194,7 @@ graph TD
     classDef staff fill:#1e293b,stroke:#eab308,color:#fefce8,stroke-width:2px;
     classDef gerencia fill:#1e293b,stroke:#a855f7,color:#faf5ff,stroke-width:2px;
     classDef portal fill:#0f172a,stroke:#ef4444,color:#fff,stroke-width:3px;
+    classDef members fill:#1e293b,stroke:#ef4444,color:#fee2e2,stroke-width:2px;
 
     class Portal portal;
     class A_IDX,A_WD,A_SOL,A_CIE,A_REP,A_HER,A_STK,A_STKAJ,A_SKU,A_PRV,A_CAT,A_TAR,A_NOM,A_PAG,A_POS,AB_IDX,AB_REC,AB_SES,QR_IDX,QR_GEN,QR_MON admin;
@@ -193,6 +203,7 @@ graph TD
     class E_BAR,E_BNO,E_BPE,E_CAJ,E_CNO,E_CPE,E_REP supervisor;
     class S_BAR,S_CAJ staff;
     class G_BAL gerencia;
+    class M_QR members;
 ```
 
 ---
@@ -207,7 +218,8 @@ graph TD
 | 🟠 **Encargados** | 7 | `pages/encargados/*` | `encargado_barra`, `encargado_caja` |
 | 🟡 **Staff** | 2 | `pages/staff/*` | `staff_barra`, `staff_caja` |
 | 🟣 **Gerencia** | 1 | `pages/gerencia/*` | `gerencia`, `admin` |
-| **TOTAL** | **46** | — | — |
+| 🔴 **Members** | 1 | `pages/members/*` | `member` |
+| **TOTAL** | **47** | — | — |
 
 ---
 
@@ -280,12 +292,17 @@ graph TD
 
 ### 🟣 Gerencia (1)
 | # | Archivo | Propósito |
-|:-:|:--------|:----------|
+|:-:|:-------|
 | 1 | `balance-semanal.html` | Balance consolidado semanal |
+
+### 🔴 Members (1)
+| # | Archivo | Propósito |
+|:-:|:-------|
+| 1 | `my-qr.html` | Visualización QR personal del miembro |
 
 ---
 
-## � Conclusión Operativa
+##  Conclusión Operativa
 
 La arquitectura FM4 implementa una **separación clara por rol y contexto**:
 

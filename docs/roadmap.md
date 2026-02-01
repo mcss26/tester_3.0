@@ -1,37 +1,80 @@
 # Roadmap FormulaMid 4
 
-> **Última Actualización**: 2026-01-29
+> **Última Actualización**: 2026-02-01
 
 ---
 
 ## Visión General
 
-Este documento actúa como el **Índice Maestro** para la planificación del proyecto FormulaMid 4. Los detalles de implementación específicos se gestionan en hojas de ruta dedicadas dentro del directorio `planning/`.
+Documento maestro de planificación. Los roadmaps detallados para módulos en desarrollo se encuentran en `planning/`.
 
 ---
 
-## 🗺️ Mapa de Ruta por Módulo
+## 🗺️ Módulos en Desarrollo
 
-| Módulo / Área                   | Roadmap Detallado                                                        | Estado         | Prioridad |
-| :------------------------------ | :----------------------------------------------------------------------- | :------------- | :-------- |
-| **Admin Modules**               | [Admin Modules Roadmap](./planning/roadmap_admin_modules.md)             | 🟡 En Progreso | Alta      |
-| **Admin Solicitudes**           | [Solicitudes Remediation](./planning/roadmap_solicitudes_remediation.md) | 🟡 En Progreso | Alta      |
-| **Admin Solicitudes (General)** | [Admin Solicitudes](./planning/roadmap_admin_solicitudes.md)             | ⚪️ Planeado    | Media     |
-| **Admin Workdays**              | [Workdays Planner](./planning/roadmap_admin_workdays_planner.md)         | 🟡 En Progreso | Alta      |
-| **Balance Semanal**             | [Balance Semanal](./planning/roadmap_balance_semanal.md)                 | 🟡 En Progreso | Alta      |
-| **Staff Caja**                  | [Staff Caja](./planning/roadmap_staff_caja.md)                           | 🟢 Completando | Alta      |
-| **UI/UX Remediation**           | [UI/UX General](./planning/roadmap_remediation_uiux.md)                  | 🟡 En Progreso | Media     |
-| **Estandarización**             | [Standardization Plan](./planning/estandarización-ui.md)                 | 🟢 Completado  | Baja      |
-| **Navigation System**           | [Phase 1 & 2](./planning/roadmap_navigation_phase2.md) (Completed)       | 🟢 Completado  | Alta      |
+| Módulo                          | Roadmap Detallado                                                | Estado         | Prioridad |
+| :------------------------------ | :--------------------------------------------------------------- | :------------- | :-------- |
+| **Admin Solicitudes**           | [Remediation](./planning/roadmap_solicitudes_remediation.md)     | 🟡 En Progreso | Alta      |
+| **Admin Workdays**              | [Planner](./planning/roadmap_admin_workdays_planner.md)          | 🟡 En Progreso | Alta      |
+| **Balance Semanal**             | [Plan](./planning/roadmap_balance_semanal.md)                    | 🔴 Pendiente   | Media     |
+| **UI/UX Remediation**           | [General](./planning/roadmap_remediation_uiux.md)                | 🟡 En Progreso | Media     |
+| **Admin Solicitudes (General)** | [Roadmap](./planning/roadmap_admin_solicitudes.md)               | 🟡 En Progreso | Media     |
 
 ---
 
 ## 🎯 Prioridades Q1 2026
 
-1.  **Consolidación UI/UX**: Estandarizar todos los módulos administrativos bajo el "Golden Standard" (ver `admin-master-proveedores`).
-2.  **Cierre de Caja & Balance**: Finalizar la lógica contable y de reportes.
-3.  **Seguridad**: Auditoría y remediación de vulnerabilidades XSS y roles.
-4.  **Integración MCO**: Refinar la sincronización de miembros entre MCO y FM4.
+1. **Consolidación UI/UX**: Estandarizar módulos bajo "Golden Standard" (`admin-master-proveedores`)
+2. **Cierre de Caja & Balance**: Finalizar lógica contable y reportes
+3. **Seguridad**: Auditoría y remediación de vulnerabilidades XSS y roles
+4. **Integración MCO**: Refinar sincronización de miembros MCO ↔ FM4
+
+---
+
+## ✅ Hitos Completados
+
+### Navigation System (Phases 1 & 2)
+
+**Completado**: 2026-01-29
+
+- Unificación de `navigation.js` (reemplazo de 2 módulos legacy)
+- Estandarización de roles (`logistica`→`logistico`, mapping `manager`)
+- State persistence, breadcrumbs, scroll restoration
+- Migración de inline scripts a módulos externos
+
+### Admin Modules Remediation
+
+**Completado**: 2026-01-30
+
+- ~50 inconsistencias corregidas en 13 módulos
+- Estados globales (loading/empty) en todos los módulos
+- Eliminación de `confirm()`/`alert()` nativos
+- Eliminación de pseudo-Tailwind
+- Accesibilidad (`aria-label` en botones icon-only)
+
+### Staff Caja Module
+
+**Completado**: 2026-01-30
+
+- Flujo completo: convocaciones → selección terminal → dashboard → cierre
+- Firma digital con canvas
+- Realtime para movimientos de caja
+- Edge cases y validaciones
+
+### Estandarización UI
+
+**Completado**: 2026-01-29
+
+- Tokens CSS consolidados
+- Componentes estandarizados
+- Golden Standard documented
+
+### Remodelación Topbar
+
+**Completado**: 2026-01-29
+
+- Nuevo diseño de topbar unificado
+- Navegación consistente
 
 ---
 
