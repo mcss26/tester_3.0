@@ -347,6 +347,7 @@
 
             renderMainTable(terminals || [], details || []);
             loadQrStats(wd.id);
+            loadBreakdown(wd.id);
 
         } catch (err) {
             console.error(err);
@@ -629,15 +630,12 @@
 
     async function generateNightReport(workDayId) {
         // Llamar al generador de PDF integral
-        // Esta función debe existir en tu sistema para generar el reporte
         if (typeof window.ReportGenerator !== 'undefined' && window.ReportGenerator.generateIntegralReport) {
             const pdfBlob = await window.ReportGenerator.generateIntegralReport(workDayId);
-
-            // Descargar automáticamente
             const url = URL.createObjectURL(pdfBlob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `Reporte_Integral_${state.workDate}.pdf`;
+            a.download = `Reporte_Integral_${state.workDayId}.pdf`; // Fixed variable name
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -645,6 +643,69 @@
         } else {
             console.warn('[admin-cierre] ReportGenerator no disponible');
         }
+    }
+
+    // 11. Breakdown Logic (Phase 5)
+    async function loadBreakdown(workDayId) {
+        const { data: summary, error } = await window.sb
+            .from('vw_daily_sales')
+            .select('*')
+            .eq('work_day_id', workDayId)
+            .single();
+
+        if (error) {
+            console.error('Error loading breakdown:', error);
+            return;
+        }
+        renderBreakdown(summary);
+    }
+
+    function renderBreakdown(summary) {
+        if (!summary) return;
+
+        // Elements
+        const els = {
+            barCash: document.getElementById('breakdown-bar-cash'),
+            barCard: document.getElementById('breakdown-bar-card'),
+            barTotal: document.getElementById('breakdown-bar-total'),
+            qrZoco: document.getElementById('breakdown-qr-zoco'),
+            qrTotal: document.getElementById('breakdown-qr-total'),
+            totalCash: document.getElementById('breakdown-total-cash'),
+            totalZoco: document.getElementById('breakdown-total-zoco'),
+            totalGlobal: document.getElementById('breakdown-total-global')
+        };
+
+        // Bars
+        const barCash = summary.bar_sales_cash || 0;
+        const barCard = summary.bar_sales_card || 0;
+        const barTotal = summary.bar_sales_system || (barCash + barCard);
+
+        if (els.barCash) els.barCash.textContent = window.Utils.formatARS(barCash);
+        if (els.barCard) els.barCard.textContent = window.Utils.formatARS(barCard);
+        if (els.barTotal) els.barTotal.textContent = window.Utils.formatARS(barTotal);
+
+        // QR (Assume all QR is digital/zoco/card for now, or use logic)
+        // qr_income from view is total accredited
+        const qrTotal = summary.qr_total || 0;
+
+        if (els.qrZoco) els.qrZoco.textContent = window.Utils.formatARS(qrTotal);
+        if (els.qrTotal) els.qrTotal.textContent = window.Utils.formatARS(qrTotal);
+
+        // System Totals
+        // Cash System = Bar Cash + (Any other cash). Note: view has cash_system from terminals usually.
+        // But here verify consistency:
+        // View cash_system comes from closing_terminals.
+        // View zoco_system comes from closing_terminals.
+        // BUT bar_sales_cash/card comes from bar_session_sales.
+        // We want to show the COMPONENT breakdown.
+
+        const totalCash = barCash; // + other sources if any
+        const totalZoco = barCard + qrTotal; // + other sources
+        const globalTotal = totalCash + totalZoco;
+
+        if (els.totalCash) els.totalCash.textContent = window.Utils.formatARS(totalCash);
+        if (els.totalZoco) els.totalZoco.textContent = window.Utils.formatARS(totalZoco);
+        if (els.totalGlobal) els.totalGlobal.textContent = window.Utils.formatARS(globalTotal);
     }
 
     // Start

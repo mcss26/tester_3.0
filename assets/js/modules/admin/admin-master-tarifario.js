@@ -218,7 +218,8 @@
   }
 
   async function deleteRole(id) {
-    if (!confirm("¿Estás seguro de eliminar este cargo?")) return;
+    const confirmed = await window.Utils.confirmModal("¿Estás seguro de eliminar este cargo?");
+    if (!confirmed) return;
 
     try {
       const { error } = await window.sb

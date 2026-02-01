@@ -32,7 +32,7 @@
         closerInfo: document.getElementById('closer-info'),
         closerName: document.getElementById('closer-name'),
         headerActions: document.getElementById('header-actions'),
-        
+
         stockSection: document.getElementById('stock-section'),
         stockTitle: document.getElementById('stock-title'),
         skuList: document.getElementById('sku-list'),
@@ -41,7 +41,7 @@
 
         reportSection: document.getElementById('report-section'),
         reportList: document.getElementById('report-list'),
-        
+
         modalImport: document.getElementById('modal-import'),
         inputImportJson: document.getElementById('input-import-json'),
         btnConfirmImport: document.getElementById('btn-save-import'),
@@ -83,7 +83,7 @@
 
             state.sessionData = data;
             renderHeader();
-            
+
             // Determine State
             if (data.status === 'open') {
                 // Check if opening snapshot exists
@@ -110,7 +110,7 @@
         ui.location.textContent = state.sessionData.location;
         ui.status.textContent = state.sessionData.status === 'open' ? 'EN CURSO' : 'CERRADA';
         ui.status.className = `status-pill ${state.sessionData.status === 'open' ? 'status-success' : 'status-neutral'}`;
-        
+
         ui.opener.textContent = state.sessionData.opened_by_user?.full_name || state.sessionData.opened_by_user?.email || 'N/A';
         ui.openTime.textContent = new Date(state.sessionData.opened_at).toLocaleTimeString();
 
@@ -122,7 +122,7 @@
 
     async function enterPhase(phase) {
         state.currentPhase = phase;
-        
+
         // Hide all major sections first
         ui.stockSection.classList.add('hidden');
         ui.reportSection.classList.add('hidden');
@@ -170,16 +170,16 @@
             if (error) throw error;
             state.products = data || [];
         } catch (err) {
-             console.error('Error loadProducts:', err);
-             // Fallback attempt with 'name' if 'nombre' fails? 
-             // Actually, let's use the property from the data if 'nombre' is missing.
+            console.error('Error loadProducts:', err);
+            // Fallback attempt with 'name' if 'nombre' fails? 
+            // Actually, let's use the property from the data if 'nombre' is missing.
         }
     }
 
     function renderStockInput() {
         ui.skuList.innerHTML = state.products.map(p => {
-             const name = p.nombre || p.name || 'Sin nombre';
-             return `
+            const name = p.nombre || p.name || 'Sin nombre';
+            return `
                 <tr class="table-row">
                     <td class="table-cell cell-pad">
                         <div class="font-bold">${window.Utils.escapeHtml(name)}</div>
@@ -211,11 +211,11 @@
             }
         });
 
-        const confirmMessage = items.length === 0 
-            ? '¿Guardar inventario VACÍO (0 productos cargados)?' 
+        const confirmMessage = items.length === 0
+            ? '¿Guardar inventario VACÍO (0 productos cargados)?'
             : `¿Confirmas el inventario cargado con ${items.length} ítems?`;
-        
-        const confirmed = await window.Utils.confirmModal?.(confirmMessage) || confirm(confirmMessage);
+
+        const confirmed = await window.Utils.confirmModal(confirmMessage);
         if (!confirmed) return;
 
         ui.btnSaveStock.disabled = true;
@@ -235,11 +235,11 @@
                     closed_at: new Date().toISOString(),
                     closed_by: user.id
                 }).eq('id', sessionId);
-                
+
                 if (closeErr) throw closeErr;
-                
+
                 window.Toast.success("Barra cerrada correctamente.");
-                setTimeout(() => window.location.reload(), 1000); 
+                setTimeout(() => window.location.reload(), 1000);
             } else {
                 window.Toast.success("Apertura guardada correctamente.");
                 setTimeout(() => window.location.href = 'index.html', 1000);
@@ -256,7 +256,7 @@
     async function viewReport() {
         ui.reportSection.classList.remove('hidden');
         ui.reportList.innerHTML = `<tr><td colspan="6" class="p-8 text-center muted">Procesando reporte...</td></tr>`;
-        
+
         try {
             const [snapRes, salesRes, recipesRes] = await Promise.all([
                 window.sb.from('bar_stock_snapshots').select('*, master_sku(nombre, name)').eq('session_id', sessionId),
@@ -269,13 +269,13 @@
             const recipes = recipesRes.data || [];
 
             const report = {};
-            const skus = {}; 
+            const skus = {};
 
             // Physical Consumption
             snapshots.forEach(s => {
                 if (!report[s.sku_id]) report[s.sku_id] = { phys: 0, theo: 0 };
                 skus[s.sku_id] = s.master_sku?.nombre || s.master_sku?.name || 'SKU Desconocido';
-                
+
                 if (s.type === 'opening') report[s.sku_id].phys += parseFloat(s.quantity);
                 if (s.type === 'closing') report[s.sku_id].phys -= parseFloat(s.quantity);
             });
@@ -284,7 +284,7 @@
             sales.forEach(sale => {
                 let recipe = recipes.find(r => r.external_id && String(r.external_id) === String(sale.external_id));
                 if (!recipe && sale.product_name) {
-                     recipe = recipes.find(r => r.name.toLowerCase() === sale.product_name.toLowerCase());
+                    recipe = recipes.find(r => r.name.toLowerCase() === sale.product_name.toLowerCase());
                 }
 
                 if (recipe && recipe.ingredients) {
@@ -301,11 +301,11 @@
             Object.keys(report).forEach(skuId => {
                 const item = report[skuId];
                 const name = skus[skuId] || 'SKU sin Stock Inicial';
-                const diff = item.theo - item.phys; 
+                const diff = item.theo - item.phys;
 
                 let diffClass = 'muted';
-                if (diff < -0.05) diffClass = 'text-error font-bold'; 
-                if (diff > 0.05) diffClass = 'text-success font-bold'; 
+                if (diff < -0.05) diffClass = 'text-error font-bold';
+                if (diff > 0.05) diffClass = 'text-success font-bold';
 
                 totalPhys += item.phys;
                 totalTheo += item.theo;
@@ -326,7 +326,7 @@
             document.getElementById('rep-theo-total').textContent = totalTheo.toFixed(1);
 
             if (Object.keys(report).length === 0) {
-                 ui.reportList.innerHTML = `<tr><td colspan="6" class="p-8 text-center muted italic">Sin datos para generar el reporte.</td></tr>`;
+                ui.reportList.innerHTML = `<tr><td colspan="6" class="p-8 text-center muted italic">Sin datos para generar el reporte.</td></tr>`;
             }
 
         } catch (err) {

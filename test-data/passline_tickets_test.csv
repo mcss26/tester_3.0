@@ -1,0 +1,11 @@
+Codigo,Nombre,Email,Total,Estado
+QR001,Juan Perez,juan.perez@email.com,5000,ACREDITADO
+QR002,Maria Lopez,maria.lopez@email.com,5000,ACREDITADO
+QR003,Carlos Ruiz,carlos.ruiz@email.com,5000,PENDIENTE
+QR004,Ana Martinez,ana.martinez@email.com,5000,ACREDITADO
+QR005,Luis Gonzalez,luis.gonzalez@email.com,5000,ANULADO
+QR006,Sofia Rodriguez,sofia.rodriguez@email.com,5000,ACREDITADO
+QR007,Diego Fernandez,diego.fernandez@email.com,5000,PENDIENTE
+QR008,Laura Sanchez,laura.sanchez@email.com,5000,ACREDITADO
+QR009,Pablo Garcia,pablo.garcia@email.com,5000,ACREDITADO
+QR010,Carmen Diaz,carmen.diaz@email.com,5000,ANULADO

@@ -76,7 +76,7 @@
                 .select('id, nombre, measure_unit')
                 .eq('active', true)
                 .order('nombre');
-                
+
             if (error) throw error;
             state.allSkus = data.map(s => ({
                 id: s.id,
@@ -92,7 +92,7 @@
         try {
             let query = window.sb.from('master_recipes').select('*').order('name');
             if (filter) query = query.ilike('name', `%${filter}%`);
-            
+
             const { data, error } = await query;
             if (error) throw error;
 
@@ -108,9 +108,9 @@
 
     function renderList() {
         ui.list.innerHTML = '';
-        
+
         state.recipes.forEach(r => {
-            const ingDesc = r.ingredients ? 
+            const ingDesc = r.ingredients ?
                 r.ingredients.map(i => {
                     const sku = state.allSkus.find(s => String(s.id) === String(i.sku_id));
                     return sku ? `${sku.name} (${i.amount})` : 'SKU ?';
@@ -132,7 +132,7 @@
 
             row.querySelector('.btn-edit').onclick = () => openModal(r);
             row.querySelector('.btn-delete').onclick = () => deleteRecipe(r);
-            
+
             ui.list.appendChild(row);
         });
     }
@@ -142,13 +142,13 @@
         ui.modalTitle.textContent = recipe ? 'Editar Receta' : 'Nueva Receta';
         ui.inpName.value = recipe ? recipe.name : '';
         ui.inpExtId.value = recipe ? recipe.external_id || '' : '';
-        
+
         ui.ingContainer.innerHTML = '';
-        
+
         if (recipe && recipe.ingredients) {
             recipe.ingredients.forEach(i => addIngredientRow(i.sku_id, i.amount));
         } else {
-            addIngredientRow(); 
+            addIngredientRow();
         }
 
         ui.modal.classList.remove('hidden');
@@ -162,7 +162,7 @@
 
     function addIngredientRow(skuId = null, amount = null) {
         if (!ui.tplIng) return;
-        
+
         const clone = ui.tplIng.content.cloneNode(true);
         const row = clone.querySelector('.ingredient-row');
         const sel = row.querySelector('.input-sku');
@@ -187,7 +187,7 @@
     async function saveRecipe() {
         const name = ui.inpName.value.trim();
         const extId = ui.inpExtId.value.trim();
-        
+
         if (!name) {
             window.Toast.warning("Nombre de receta requerido");
             return;
@@ -195,7 +195,7 @@
 
         const rows = ui.ingContainer.querySelectorAll('.ingredient-row');
         const ingredients = [];
-        
+
         rows.forEach(row => {
             const skuId = row.querySelector('.input-sku').value;
             const amount = parseFloat(row.querySelector('.input-amount').value);
@@ -242,7 +242,7 @@
     }
 
     async function deleteRecipe(recipe) {
-        const confirmed = await window.Utils.confirmModal?.(`¿Confirma eliminar la receta "${recipe.name}"?`) || confirm('¿Eliminar receta?');
+        const confirmed = await window.Utils.confirmModal(`¿Confirma eliminar la receta "${recipe.name}"?`);
         if (!confirmed) return;
 
         try {
@@ -262,7 +262,7 @@
         ui.btnCloseModal.onclick = closeModal;
         ui.btnAddIng.onclick = addIngredientRow;
         ui.btnSave.onclick = saveRecipe;
-        
+
         ui.searchInput.addEventListener('input', window.Utils.debounce((e) => {
             loadRecipes(e.target.value);
         }, 300));

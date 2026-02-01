@@ -8,7 +8,7 @@
         currentUser: null,
         currentWorkDay: null,
         cashClosingId: null,
-        
+
         // Terminal Data
         assignedTerminal: null, // { id, terminal_id, status, ... }
         isAssigned: false,
@@ -25,10 +25,10 @@
         userName: document.getElementById('user-name'),
         roleSubtitle: document.getElementById('role-subtitle'),
         btnLogout: document.getElementById('btn-logout'),
-        
+
         // Status & Feedback
         statusMessage: document.getElementById('status-message'),
-        
+
         // Convocations
         convocationCard: document.getElementById('convocation-card'),
         convocationDate: document.getElementById('convocation-date'),
@@ -38,7 +38,7 @@
         // Dashboard
         stepDashboard: document.getElementById('step-dashboard'),
         activeTerminalName: document.getElementById('active-terminal-name'),
-        
+
         // Closing Form
         closingForm: document.getElementById('closing-form'),
         inputCash: document.getElementById('input-cash'),
@@ -63,15 +63,15 @@
 
     // Load Profile Name
     await loadUserProfile();
-    
+
     // Check Work Day first
     const workDay = await loadCurrentWorkDay();
-    
+
     if (workDay) {
         // Start App Flow inside Work Day
         await loadConvocations();
         await initSignaturePad();
-        
+
         // Start Realtime to listen for assignments
         startAssignmentWatcher();
     }
@@ -79,7 +79,7 @@
     /**
      * DOM LOGIC & RENDERERS
      */
-    
+
     function renderConvocationCard(convocation) {
         if (!convocation) return;
 
@@ -94,12 +94,12 @@
         // Update UI
         ui.convocationDate.textContent = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
         ui.convocationRole.textContent = `Rol asignado: ${convocation.role.toUpperCase().replace('_', ' ')}`;
-        
+
         ui.btnConfirmConvocation.onclick = () => handleConfirmConvocation(convocation.id);
 
         ui.convocationCard.classList.remove('hidden');
         ui.convocationCard.classList.add('flex');
-        
+
         // If pending convocation exists, hide dashboard until confirmed
         ui.stepDashboard.classList.add('hidden');
     }
@@ -117,10 +117,10 @@
             if (error) throw error;
 
             window.Toast.success('Asistencia confirmada');
-            
+
             ui.convocationCard.classList.add('hidden');
             ui.convocationCard.classList.remove('flex');
-            
+
             // Proceed to check assignment
             checkForAssignment();
 
@@ -138,7 +138,7 @@
 
     async function loadConvocations() {
         ui.statusMessage.classList.add('hidden');
-        
+
         try {
             const today = new Date().toISOString().split('T')[0];
 
@@ -150,7 +150,7 @@
                 `)
                 .eq('staff_id', state.currentUser.id)
                 .eq('status', 'pending')
-                .gte('work_days.work_date', today) 
+                .gte('work_days.work_date', today)
                 .order('work_days(work_date)', { ascending: true })
                 .limit(1);
 
@@ -176,18 +176,18 @@
                 .select('id, work_date, status')
                 .eq('status', 'open')
                 .single();
-            
+
             if (error && error.code !== 'PGRST116') throw error;
-            
+
             if (!data) {
                 ui.statusMessage.textContent = 'NO HAY JORNADA ACTIVA';
                 ui.statusMessage.className = 'alert alert-error mb-4 font-bold text-center block';
                 ui.statusMessage.classList.remove('hidden');
                 return null;
             }
-            
+
             state.currentWorkDay = data;
-            
+
             // Get generic Cash Closing ID for this day
             const { data: closingData, error: closingError } = await window.sb
                 .from('cash_closings')
@@ -206,10 +206,10 @@
 
     async function checkForAssignment() {
         if (!state.cashClosingId) {
-             ui.statusMessage.textContent = 'ESPERANDO APERTURA DE CAJA...';
-             ui.statusMessage.className = 'alert alert-warning mb-4 font-bold text-center block';
-             ui.statusMessage.classList.remove('hidden');
-             return;
+            ui.statusMessage.textContent = 'ESPERANDO APERTURA DE CAJA...';
+            ui.statusMessage.className = 'alert alert-warning mb-4 font-bold text-center block';
+            ui.statusMessage.classList.remove('hidden');
+            return;
         }
 
         ui.statusMessage.classList.add('hidden');
@@ -241,7 +241,7 @@
                 state.assignedTerminal = null;
                 state.isAssigned = false;
                 ui.stepDashboard.classList.add('hidden');
-                
+
                 ui.statusMessage.textContent = 'ESPERANDO ASIGNACIÓN DE TERMINAL...';
                 ui.statusMessage.className = 'alert alert-info mb-4 font-bold text-center block animate-pulse';
                 ui.statusMessage.classList.remove('hidden');
@@ -266,14 +266,14 @@
 
         // Check Read Only
         const isReadOnly = ['submitted', 'verified', 'closed'].includes(state.assignedTerminal.status);
-        
+
         if (isReadOnly) {
             ui.inputCash.disabled = true;
             ui.inputZoco.disabled = true;
             ui.btnSubmitClose.disabled = true;
             ui.btnSubmitClose.textContent = 'CIERRE ENVIADO / VERIFICADO';
             ui.btnSubmitClose.classList.add('btn-disabled');
-            
+
             // Lock signature
             const ctx = ui.signatureCanvas.getContext('2d');
             ctx.clearRect(0, 0, ui.signatureCanvas.width, ui.signatureCanvas.height);
@@ -292,59 +292,59 @@
             ui.signatureCanvas.classList.remove('pointer-events-none', 'opacity-50');
             ui.btnClearSignature.style.display = 'block';
         }
-        
+
         // Resize canvas
         setTimeout(resizeCanvas, 100);
     }
-    
+
     // Signature Logic
     let isSignatureEmpty = true;
     let isDrawing = false;
 
     function initSignaturePad() {
-         if (!ui.signatureCanvas) return;
-         
-         const ctx = ui.signatureCanvas.getContext('2d');
-         ctx.lineWidth = 2;
-         ctx.lineCap = 'round';
-         ctx.strokeStyle = '#fff';
+        if (!ui.signatureCanvas) return;
 
-         function getPos(e) {
-             const rect = ui.signatureCanvas.getBoundingClientRect();
-             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-             const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-             return { x: clientX - rect.left, y: clientY - rect.top };
-         }
+        const ctx = ui.signatureCanvas.getContext('2d');
+        ctx.lineWidth = 2;
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = '#fff';
 
-         function start(e) {
-             e.preventDefault();
-             isDrawing = true;
-             const pos = getPos(e);
-             const ctx = ui.signatureCanvas.getContext('2d');
-             ctx.beginPath();
-             ctx.moveTo(pos.x, pos.y);
-             ui.signaturePlaceholder.classList.add('hidden');
-         }
+        function getPos(e) {
+            const rect = ui.signatureCanvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return { x: clientX - rect.left, y: clientY - rect.top };
+        }
 
-         function move(e) {
-             if (!isDrawing) return;
-             e.preventDefault();
-             const pos = getPos(e);
-             const ctx = ui.signatureCanvas.getContext('2d');
-             ctx.lineTo(pos.x, pos.y);
-             ctx.stroke();
-             isSignatureEmpty = false;
-         }
+        function start(e) {
+            e.preventDefault();
+            isDrawing = true;
+            const pos = getPos(e);
+            const ctx = ui.signatureCanvas.getContext('2d');
+            ctx.beginPath();
+            ctx.moveTo(pos.x, pos.y);
+            ui.signaturePlaceholder.classList.add('hidden');
+        }
 
-         function end() { isDrawing = false; }
+        function move(e) {
+            if (!isDrawing) return;
+            e.preventDefault();
+            const pos = getPos(e);
+            const ctx = ui.signatureCanvas.getContext('2d');
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
+            isSignatureEmpty = false;
+        }
 
-         ui.signatureCanvas.addEventListener('mousedown', start);
-         ui.signatureCanvas.addEventListener('mousemove', move);
-         ui.signatureCanvas.addEventListener('mouseup', end);
-         ui.signatureCanvas.addEventListener('mouseleave', end);
-         ui.signatureCanvas.addEventListener('touchstart', start, { passive: false });
-         ui.signatureCanvas.addEventListener('touchmove', move, { passive: false });
-         ui.signatureCanvas.addEventListener('touchend', end);
+        function end() { isDrawing = false; }
+
+        ui.signatureCanvas.addEventListener('mousedown', start);
+        ui.signatureCanvas.addEventListener('mousemove', move);
+        ui.signatureCanvas.addEventListener('mouseup', end);
+        ui.signatureCanvas.addEventListener('mouseleave', end);
+        ui.signatureCanvas.addEventListener('touchstart', start, { passive: false });
+        ui.signatureCanvas.addEventListener('touchmove', move, { passive: false });
+        ui.signatureCanvas.addEventListener('touchend', end);
     }
 
     function clearSignature() {
@@ -359,7 +359,7 @@
         const container = ui.signatureCanvas.parentElement;
         ui.signatureCanvas.width = container.offsetWidth;
         ui.signatureCanvas.height = container.offsetHeight;
-        
+
         const ctx = ui.signatureCanvas.getContext('2d');
         ctx.lineWidth = 2;
         ctx.lineCap = 'round';
@@ -375,26 +375,27 @@
         }
 
         if (state.assignedTerminal.status !== 'open' && state.assignedTerminal.status !== 'rejected') {
-             window.Toast.error('Estado de terminal inválido');
-             return;
+            window.Toast.error('Estado de terminal inválido');
+            return;
         }
 
-        if (isSignatureEmpty && !state.assignedTerminal.declared_cash) { 
+        if (isSignatureEmpty && !state.assignedTerminal.declared_cash) {
             window.Toast.error('La firma digital es obligatoria');
             return;
         }
-        
+
         const cash = parseFloat(ui.inputCash.value) || 0;
         const zoco = parseFloat(ui.inputZoco.value) || 0;
 
         if (cash < 0 || zoco < 0) {
-             window.Toast.error('Los montos no pueden ser negativos');
-             return;
+            window.Toast.error('Los montos no pueden ser negativos');
+            return;
         }
-        
+
         const signatureData = ui.signatureCanvas.toDataURL();
 
-        if (!confirm('¿CONFIRMAR CIERRE DE CAJA?\n\nVerifica que los montos coincidan con tu conteo físico. Esta acción notificará al encargado.')) return;
+        const confirmed = await window.Utils.confirmModal('¿CONFIRMAR CIERRE DE CAJA?\n\nVerifica que los montos coincidan con tu conteo físico. Esta acción notificará al encargado.');
+        if (!confirmed) return;
 
         try {
             ui.btnSubmitClose.disabled = true;
@@ -414,7 +415,7 @@
             if (error) throw error;
 
             window.Toast.success('Cierre enviado exitosamente');
-            
+
             // Reload to update state and lock UI
             checkForAssignment();
 
@@ -445,13 +446,13 @@
                 (payload) => {
                     // Check if update relates to me
                     if (payload.new && payload.new.staff_id === state.currentUser.id) {
-                         console.log('[Realtime] My assignment updated', payload);
-                         checkForAssignment();
-                         window.Toast.info('Estado de terminal actualizado');
+                        console.log('[Realtime] My assignment updated', payload);
+                        checkForAssignment();
+                        window.Toast.info('Estado de terminal actualizado');
                     } else if (payload.eventType === 'DELETE' && payload.old.id === state.assignedTerminal?.id) {
-                         // I was unassigned
-                         checkForAssignment();
-                         window.Toast.warning('Asignación removida');
+                        // I was unassigned
+                        checkForAssignment();
+                        window.Toast.warning('Asignación removida');
                     }
                 }
             )
@@ -472,18 +473,18 @@
     }
 
     if (ui.btnLogout) {
-         ui.btnLogout.addEventListener('click', () => {
-             if (window.Auth) window.Auth.signOutAndGoLogin();
-         });
+        ui.btnLogout.addEventListener('click', () => {
+            if (window.Auth) window.Auth.signOutAndGoLogin();
+        });
     }
 
     if (ui.btnClearSignature) ui.btnClearSignature.onclick = clearSignature;
     if (ui.closingForm) ui.closingForm.onsubmit = handleSubmitClosing;
 
     window.addEventListener('resize', () => {
-         if (!ui.stepDashboard.classList.contains('hidden')) {
-             resizeCanvas(); 
-         }
+        if (!ui.stepDashboard.classList.contains('hidden')) {
+            resizeCanvas();
+        }
     });
 
 })();

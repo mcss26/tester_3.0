@@ -315,7 +315,7 @@
     }
 
     if (status === "activo") {
-       actionsHtml += `<button class="btn-ghost btn-sm" data-action="resend" data-id="${m.id}">RESEND</button>`;
+      actionsHtml += `<button class="btn-ghost btn-sm" data-action="resend" data-id="${m.id}">RESEND</button>`;
     }
 
     if (credsIssue) {
@@ -432,7 +432,8 @@
     if (action === "resend")
       confirmMsg = `¿Reenviar credenciales a ${member.nombre}? (No regenera pass)`;
 
-    if (!confirm(confirmMsg)) return;
+    const confirmed = await window.Utils.confirmModal(confirmMsg);
+    if (!confirmed) return;
 
     const authFnUrl = `${window.APP_CONFIG.SUPABASE_URL}/functions/v1/auth-member`;
 
@@ -489,7 +490,7 @@
         // Mostrar credenciales como fallback (por si el email falla)
         if (result.credentials) {
           const msg = `✅ MIEMBRO APROBADO\n\nID: ${result.credentials.member_id}\nPASS: ${result.credentials.password}\n\nURL: midnightclub.com.ar\n\n${result.warning ? '⚠️ ' + result.warning : 'Email enviado correctamente'}\n\n(Copia estos datos por seguridad)`;
-          alert(msg);
+          await window.Utils.alertModal(msg, "Credenciales Generadas");
         }
 
         if (result.warning) {
@@ -538,12 +539,8 @@
     const member = state.members.find((m) => m.id === memberId);
     if (!member) return;
 
-    if (
-      !confirm(
-        `¿Enviar saludo de cumpleaños a ${member.nombre} (${member.email})?`,
-      )
-    )
-      return;
+    const confirmed = await window.Utils.confirmModal(`¿Enviar saludo de cumpleaños a ${member.nombre} (${member.email})?`);
+    if (!confirmed) return;
 
     if (!window.APP_CONFIG?.EMAILJS?.TEMPLATE_CUMPLE) {
       window.Toast.error("Configuración de EmailJS faltante");

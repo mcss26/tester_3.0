@@ -59,7 +59,7 @@ const WorkDayHelper = {
     if (!day) {
       if (autoRedirect) {
         console.warn("WorkDayHelper: No open work day found. Redirecting...");
-        alert("Se requiere una jornada abierta para acceder a esta sección.");
+        window.Toast.error("Se requiere una jornada abierta para acceder a esta sección.");
         const relPath = this.resolveRedirectPath();
         const target = window.Auth?.toAppPath ? window.Auth.toAppPath(relPath) : relPath;
         window.location.href = target;
@@ -109,22 +109,22 @@ const WorkDayHelper = {
 
       // 3. Aggregate
       const stats = {};
-      
+
       // Initialize
       workDayIds.forEach(id => { stats[id] = { planned: 0, confirmed: 0 }; });
 
       // Sum Planned
       (plannedData || []).forEach(row => {
-          if (stats[row.work_day_id]) {
-              stats[row.work_day_id].planned += (row.quantity || 0);
-          }
+        if (stats[row.work_day_id]) {
+          stats[row.work_day_id].planned += (row.quantity || 0);
+        }
       });
 
       // Count Confirmed
       (confirmedData || []).forEach(row => {
-          if (stats[row.work_day_id]) {
-              stats[row.work_day_id].confirmed += 1;
-          }
+        if (stats[row.work_day_id]) {
+          stats[row.work_day_id].confirmed += 1;
+        }
       });
 
       return stats;

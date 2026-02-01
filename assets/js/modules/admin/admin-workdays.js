@@ -104,10 +104,15 @@
 
         // History Item Click (Event Delegation)
         ui.historyContainer?.addEventListener('click', (e) => {
-            const btn = e.target.closest('.js-view-workday');
-            if (btn) {
+            const btnView = e.target.closest('.js-view-workday');
+            if (btnView) {
                 // For now, reload page - in future could load specific workday
                 window.location.reload();
+            }
+
+            const btnClose = e.target.closest('.js-close-workday');
+            if (btnClose) {
+                handleCloseWorkday(btnClose.dataset.id, btnClose.dataset.date);
             }
         });
 
@@ -373,6 +378,7 @@
                 <td class="table-cell cell-pad">${window.WorkDayHelper.formatDate(item.work_date)}</td>
                 <td class="table-cell cell-pad">${window.Utils.renderStatusBadge(item._status)}</td>
                 <td class="table-cell cell-pad text-right">
+                    ${item._status === 'open' ? `<button class="btn-secondary btn-xs js-close-workday" data-id="${item.id}" data-date="${item.work_date}" style="margin-right: 4px;">Cerrar</button>` : ''}
                     <button class="btn-ghost btn-xs js-view-workday" data-id="${item.id}">Ver</button>
                 </td>
             </tr>
@@ -640,6 +646,56 @@
         } finally {
             ui.btnCreateEvent.disabled = false;
             ui.btnCreateEvent.textContent = 'Crear Evento';
+        }
+    }
+
+    // 13. Close Work Day (Manual)
+    async function handleCloseWorkday(id, date) {
+        const confirmed = await window.Utils.confirmAction(
+            `¿CERRAR jornada del ${window.WorkDayHelper.formatDate(date)}?\nEsta acción es irreversible y finalizará la operación.`,
+            { confirmText: 'Cerrar Jornada', isDanger: true }
+        );
+
+        if (!confirmed) return;
+
+        window.Utils.setPageState(ui, { loading: true });
+
+        try {
+            const userId = session.user.id;
+            const closedAt = new Date().toISOString();
+
+            // 1. Close Work Day
+            const { error: errDay } = await window.sb
+                .from('work_days')
+                .update({
+                    status: 'closed',
+                    closed_at: closedAt,
+                    closed_by: userId
+                })
+                .eq('id', id);
+
+            if (errDay) throw errDay;
+
+            // 2. Try to close associated Cash Closing (Best Effort)
+            const { error: errCash } = await window.sb
+                .from('cash_closings')
+                .update({
+                    status: 'closed',
+                    closed_at: closedAt,
+                    closed_by: userId
+                })
+                .eq('work_day_id', id)
+                .neq('status', 'closed'); // Only if not already closed
+
+            if (errCash) console.warn('Could not auto-close cash_closing:', errCash);
+
+            window.Toast.success('Jornada cerrada exitosamente.');
+            setTimeout(() => window.location.reload(), 1000);
+
+        } catch (e) {
+            console.error('Error closing workday:', e);
+            window.Toast.error('Error al cerrar la jornada.');
+            window.Utils.setPageState(ui, { loading: false });
         }
     }
 

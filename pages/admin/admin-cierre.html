@@ -185,6 +185,64 @@
                                 </div>
                             </div>
 
+
+                            <!-- System Sales Breakdown (New Phase 5) -->
+                            <div class="staff-dashboard reconcile-card">
+                                <div class="dashboard-header cell-pad">
+                                    <h3 class="dashboard-subtitle muted">Desglose de Ventas (Sistema)</h3>
+                                    <span class="dashboard-subtitle muted">Ventas Barra + Entradas</span>
+                                </div>
+                                <div class="table-wrap">
+                                    <table class="table">
+                                        <thead>
+                                            <tr class="table-head">
+                                                <th class="table-cell is-header">Concepto</th>
+                                                <th class="table-cell is-header text-right">Efectivo</th>
+                                                <th class="table-cell is-header text-right">Zoco/Card</th>
+                                                <th class="table-cell is-header text-right">Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Bar Sales -->
+                                            <tr class="table-row">
+                                                <td class="table-cell font-bold">Ventas Barra</td>
+                                                <td class="table-cell text-right font-mono" id="breakdown-bar-cash">$0
+                                                </td>
+                                                <td class="table-cell text-right font-mono" id="breakdown-bar-card">$0
+                                                </td>
+                                                <td class="table-cell text-right font-bold font-mono"
+                                                    id="breakdown-bar-total">$0</td>
+                                            </tr>
+                                            <!-- QR / Entradas -->
+                                            <tr class="table-row">
+                                                <td class="table-cell font-bold">Entradas QR</td>
+                                                <td class="table-cell text-right font-mono muted">-</td>
+                                                <td class="table-cell text-right font-mono" id="breakdown-qr-zoco">$0
+                                                </td>
+                                                <td class="table-cell text-right font-bold font-mono"
+                                                    id="breakdown-qr-total">$0</td>
+                                            </tr>
+                                            <!-- Totals Row -->
+                                            <tr class="table-row" style="border-top: 1px solid var(--border-1);">
+                                                <td class="table-cell font-bold text-accent">TOTAL SISTEMA</td>
+                                                <td class="table-cell text-right font-bold font-mono"
+                                                    id="breakdown-total-cash">$0</td>
+                                                <td class="table-cell text-right font-bold font-mono"
+                                                    id="breakdown-total-zoco">$0</td>
+                                                <td class="table-cell text-right font-bold font-mono text-lg"
+                                                    id="breakdown-total-global">$0</td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot class="table-head">
+                                            <tr>
+                                                <td class="table-cell muted text-xs" colspan="4">
+                                                    * Datos calculados automáticamente desde vw_daily_sales
+                                                </td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Notes -->
