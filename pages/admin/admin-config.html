@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Configuración de Costos - FormulaMid</title>
+ <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+
+<body class="app-shell admin-shell admin-scroll" data-allowed-roles="admin,contable">
+
+ <header class="app-topbar">
+  <div class="topbar-left">
+   <button class="btn-icon btn-icon-flat" data-go="pages/admin/admin-index.html" aria-label="Volver">←</button>
+   <span class="topbar-back">INICIO</span>
+  </div>
+
+  <nav class="topbar-center">
+   <h1 class="topbar-title">Configuración de Costos</h1>
+  </nav>
+
+  <div class="topbar-right">
+   <span class="system-status-pill status-open topbar-pill topbar-pill-quiet">⚙️ CONFIG</span>
+  </div>
+ </header>
+
+ <main class="page-shell">
+  <div class="page-card-wrap">
+   <div class="page-card overflow-visible">
+
+    <!-- 1. Loading Overlay -->
+    <div id="page-card-loading" class="page-card-loading is-visible">
+     <div class="state-block loading">
+      <div class="state-spinner" aria-hidden="true"></div>
+      <div class="state-loader"></div>
+      <p class="state-title">Cargando Configuración...</p>
+      <p class="state-desc">Obteniendo tasas y canales...</p>
+     </div>
+    </div>
+
+    <!-- 2. Empty State Overlay -->
+    <div id="page-card-empty" class="page-card-empty">
+     <div class="state-block loading">
+      <p class="state-title">Sin Datos</p>
+      <p class="state-desc">No se encontró configuración de costos.</p>
+      <button id="btn-retry" class="btn btn-primary btn-sm">Reintentar</button>
+     </div>
+    </div>
+
+    <!-- 3. Module Content -->
+    <div id="module-content">
+     <div class="staff-dashboard">
+
+      <!-- Dashboard Header -->
+      <div class="dashboard-header align-start">
+       <div>
+        <h2 class="dashboard-title">Impuestos y Canales de Pago</h2>
+        <p class="muted text-xs">Configuración de tasas fiscales y comisiones por canal</p>
+       </div>
+      </div>
+
+      <!-- TABS -->
+      <div class="tab-group mb-4">
+       <button class="tab-btn is-active" data-tab="taxes">🏛️ Impuestos</button>
+       <button class="tab-btn" data-tab="channels">💳 Canales</button>
+       <button class="tab-btn" data-tab="sku-types">📦 Tipos SKU</button>
+      </div>
+
+      <!-- TAB: IMPUESTOS -->
+      <div id="tab-taxes" class="tab-content is-active">
+       <div class="table-shell table-viewport table-viewport-md">
+        <table class="table">
+         <thead>
+          <tr class="table-head">
+           <th class="table-cell is-header cell-pad">Impuesto</th>
+           <th class="table-cell is-header cell-pad text-center">Tasa %</th>
+           <th class="table-cell is-header cell-pad">Aplica sobre</th>
+           <th class="table-cell is-header cell-pad">Notas</th>
+           <th class="table-cell is-header cell-pad text-center">Activo</th>
+          </tr>
+         </thead>
+         <tbody id="taxes-table-body">
+          <!-- Filled by JS -->
+         </tbody>
+        </table>
+       </div>
+      </div>
+
+      <!-- TAB: CANALES -->
+      <div id="tab-channels" class="tab-content">
+       <div class="table-shell table-viewport table-viewport-lg">
+        <table class="table">
+         <thead>
+          <tr class="table-head">
+           <th class="table-cell is-header cell-pad">Canal</th>
+           <th class="table-cell is-header cell-pad text-center">Arancel %</th>
+           <th class="table-cell is-header cell-pad text-center">Anticipo %</th>
+           <th class="table-cell is-header cell-pad text-center">Costo Tx %</th>
+           <th class="table-cell is-header cell-pad text-center">Ret IIBB %</th>
+           <th class="table-cell is-header cell-pad text-center">Recargo %</th>
+          </tr>
+         </thead>
+         <tbody id="channels-table-body">
+          <!-- Filled by JS -->
+         </tbody>
+        </table>
+       </div>
+       <p class="text-xs muted mt-2">💡 Click en cualquier celda para editar. Los cambios se guardan automáticamente.
+       </p>
+      </div>
+
+      <!-- TAB: TIPOS SKU -->
+      <div id="tab-sku-types" class="tab-content">
+       <div class="filter-bar mb-4">
+        <div class="filter-group">
+         <label class="form-label-xs">Filtrar por tipo</label>
+         <select id="filter-sku-type" class="input input-xs">
+          <option value="">Todos</option>
+          <option value="bar">🍺 Bar</option>
+          <option value="limpieza">🧹 Limpieza</option>
+          <option value="descartables">📦 Descartables</option>
+          <option value="otros">❓ Otros</option>
+         </select>
+        </div>
+        <div class="filter-actions">
+         <button id="btn-bulk-bar" class="btn btn-secondary btn-xs">Marcar Bar</button>
+         <button id="btn-bulk-limpieza" class="btn btn-secondary btn-xs">Marcar Limpieza</button>
+        </div>
+       </div>
+       <div class="table-shell table-viewport table-viewport-lg">
+        <table class="table">
+         <thead>
+          <tr class="table-head">
+           <th class="table-cell is-header cell-pad" style="width: 40px;">
+            <input type="checkbox" id="select-all-sku">
+           </th>
+           <th class="table-cell is-header cell-pad">SKU</th>
+           <th class="table-cell is-header cell-pad text-center">Tipo</th>
+           <th class="table-cell is-header cell-pad text-right">Costo</th>
+          </tr>
+         </thead>
+         <tbody id="sku-types-table-body">
+          <!-- Filled by JS -->
+         </tbody>
+        </table>
+       </div>
+      </div>
+
+     </div>
+    </div>
+   </div>
+  </div>
+ </main>
+
+ <!-- SCRIPTS -->
+ <script src="../../assets/js/core/supabase-client.js"></script>
+ <script src="../../assets/js/core/auth.js"></script>
+ <script src="../../assets/js/core/utils.js"></script>
+ <script src="../../assets/js/core/router.js"></script>
+ <script src="../../assets/js/modules/admin/admin-config.js"></script>
+</body>
+
+</html>

@@ -10,6 +10,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const pageCardLoading = document.getElementById("page-card-loading");
   const pageCardEmpty = document.getElementById("page-card-empty");
 
+  const ui = { pageCardLoading, pageCardEmpty, moduleContent };
+
   // Modal elements
   const modalAdjust = document.getElementById("modal-adjust");
   const closeModal = document.getElementById("close-modal");
@@ -56,30 +58,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const errorState = (msg) =>
     `<div class="empty-state accent">Error: ${msg}</div>`;
 
-  function setLoading(isLoading) {
-    if (!pageCardLoading || !moduleContent) return;
-    if (isLoading) {
-      pageCardLoading.classList.add("is-visible");
-      moduleContent.classList.add("hidden");
-      if (pageCardEmpty) pageCardEmpty.classList.remove("is-visible");
-    } else {
-      pageCardLoading.classList.remove("is-visible");
-      if (!pageCardEmpty?.classList.contains("is-visible")) {
-        moduleContent.classList.remove("hidden");
-      }
-    }
-  }
 
-  function toggleEmptyState(show) {
-    if (!pageCardEmpty || !moduleContent) return;
-    if (show) {
-      pageCardEmpty.classList.add("is-visible");
-      moduleContent.classList.add("hidden");
-    } else {
-      pageCardEmpty.classList.remove("is-visible");
-      moduleContent.classList.remove("hidden");
-    }
-  }
 
   const debounce = (window.Utils && window.Utils.debounce) || ((fn, w) => fn);
 
@@ -88,7 +67,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ─────────────────────────────────────────────────────────────────────────
 
   async function loadData() {
-    setLoading(true);
+    window.Utils.setPageState(ui, { loading: true });
     try {
       const { data: stockData, error: stockError } = await window.sb
         .from("vw_stock_global")
@@ -110,17 +89,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       if (rows.length === 0) {
         if (listContainer) listContainer.innerHTML = "";
-        toggleEmptyState(true);
+        window.Utils.setPageState(ui, { loading: false, empty: true });
       } else {
-        toggleEmptyState(false);
+        window.Utils.setPageState(ui, { loading: false, empty: false });
         renderList(filteredRows());
       }
     } catch (err) {
       console.error("Error loading stock:", err);
-      if (listContainer) listContainer.innerHTML = errorState(err.message);
-      toggleEmptyState(false);
+      // In case of error, maybe show empty state or handle differently
+       window.Utils.setPageState(ui, { loading: false });
     } finally {
-      setLoading(false);
+       // Handled above
     }
   }
 

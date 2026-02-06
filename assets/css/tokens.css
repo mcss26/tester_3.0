@@ -1,162 +1,169 @@
 /* =========================================================================
-   1. TOKENS PRIMITIVOS (Global Raw Values)
+   1. TOKENS PRIMITIVOS (Global Raw Values) - ZINC PALETTE
    ========================================================================= */
 :root {
-  /* Paleta Neutral */
+  /* Paleta Neutral (Zinc) */
   --neutral-0:   #000000;
   --neutral-50:  #050505;
-  --neutral-100: #1a1a1a;
-  --neutral-200: #262626;
-  --gray-300:    #d1d5db;
-  --neutral-900: #e5e5e5;
+  --neutral-100: #0a0a0a;
+  --neutral-150: #111111;
+  --neutral-200: #18181b;
+  --neutral-300: #27272a;
+  --neutral-400: #3f3f46;
+  --neutral-500: #52525b;
+  --neutral-600: #71717a;
+  --neutral-700: #a1a1aa;
+  --neutral-800: #d4d4d8;
+  --neutral-900: #e4e4e7;
+  --neutral-950: #f4f4f5;
   --neutral-1000: #ffffff;
 
   /* Alpha (Transparencias sobre negro/blanco) */
-  --white-alpha-06: rgba(255, 255, 255, 0.06);
-  --white-alpha-12: rgba(255, 255, 255, 0.12);
-  --white-alpha-24: rgba(255, 255, 255, 0.24);
+  --white-alpha-05: rgba(255, 255, 255, 0.05);
+  --white-alpha-08: rgba(255, 255, 255, 0.08);
+  --white-alpha-10: rgba(255, 255, 255, 0.10);
+  --white-alpha-20: rgba(255, 255, 255, 0.20);
+  --white-alpha-30: rgba(255, 255, 255, 0.30);
   --white-alpha-50: rgba(255, 255, 255, 0.50);
   --white-alpha-70: rgba(255, 255, 255, 0.70);
   --black-alpha-20: rgba(0, 0, 0, 0.20);
+  --black-alpha-40: rgba(0, 0, 0, 0.40);
   --black-alpha-60: rgba(0, 0, 0, 0.60);
-  --black-alpha-92: rgba(20, 5, 5, 0.92);
 
   /* Paleta Semántica Base */
-  --blue-400:  #60a5fa;
-  --red-500:    #ff453a;
+  --sky-400:    #38bdf8;
+  --blue-400:   #60a5fa;
+  --blue-500:   #3b82f6;
   --red-400:    #f87171;
+  --red-500:    #ff453a;
   --red-600:    #ff3b30;
   --green-400:  #4ade80;
-  --green-500:  #30d158;
+  --green-500:  #22c55e;
   --orange-400: #fb923c;
-  --orange-500: #ff9f0a;
-  --yellow-400: #facc15;
-  --blue-500:   #0a84ff;
+  --orange-500: #f59e0b;
+  --yellow-400: #fbbf24;
   --purple-400: #c084fc;
-  --blue-600:   #2563eb;
-  --purple-600: #7c3aed;
-  --green-50:   #f0fdf4;
-  --red-100:    #fee2e2;
+  --purple-500: #a855f7;
 
   /* Geometría */
   --space-unit: 4px;
-  --radius-sm:  10px;
-  --radius-md:  14px;
-  --radius-lg:  20px;
-  --radius-xl:  24px;
+  --radius-sm:  4px;
+  --radius-md:  6px;
+  --radius-lg:  10px;
+  --radius-xl:  12px;
+  --radius-full: 9999px;
 
   /* Tipografías base */
   --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
-  --font-mono: "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-mono: "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
 
   /* Escala tipográfica */
-  --fs-xs: 11px;
-  --fs-sm: 12px;
-  --fs-md: 13px;
-  --fs-base: 14px;
-  --fs-lg: 16px;
-  --fs-xl: 20px;
+  --fs-xs: 10px;
+  --fs-sm: 11px;
+  --fs-md: 12px;
+  --fs-base: 13px;
+  --fs-lg: 14px;
+  --fs-xl: 16px;
   --fs-2xl: 24px;
-  --lh-tight: 1.15;
+  --fs-3xl: 40px;
+  --fs-4xl: 64px;
+  --lh-tight: 1.1;
   --lh-normal: 1.4;
-  --lh-relaxed: 1.6;
+  --lh-relaxed: 1.5;
 
   /* Controles */
   --control-h: 36px;
-  --control-h-sm: 30px;
+  --control-h-sm: 28px;
   --control-h-lg: 44px;
 }
 
 /* =========================================================================
-   2. TOKENS SEMÁNTICOS (Design Decisions)
+   2. TOKENS SEMÁNTICOS (Design Decisions) - ZINC SYSTEM
    ========================================================================= */
 :root {
-  color-scheme: dark;
+  /* color-scheme: dark; -- Deshabilitado para permitir negro puro */
 
-  /* Colores de Marca & Estado */
-  --accent:  var(--red-600);
-  --danger:  var(--red-500);
-  --success: var(--green-500);
-  --warning: var(--orange-500);
-  --info:    var(--blue-500);
+  /* Brand & Estado */
+  --brand-primary: var(--neutral-1000);  /* White for primary actions */
+  --accent:  var(--neutral-1000);  /* Primary accent (was red, now white) */
+  --accent-focus: var(--sky-400); /* Focus ring color for accessibility */
+  --danger:  var(--red-400);
+  --success: var(--green-400);
+  --warning: var(--yellow-400);
+  --info:    var(--blue-400);
 
-  /* Superficies */
-  --bg-base:  var(--neutral-50);       /* Fondo principal */
-  --bg-elev:  var(--black-alpha-92);   /* Modales, dropdowns */
-  --surface-1: var(--white-alpha-06);  /* Cards, inputs default */
-  --surface-2: var(--white-alpha-12);  /* Hover states */
-  --backdrop:  var(--black-alpha-60);  /* Overlay modales */
+  /* Superficies (Negro sólido) */
+  --bg-body:   #000000;                   /* Negro puro */
+  --bg-surface: #000000;                  /* Negro puro */
+  --bg-surface-hover: var(--neutral-150); /* #111111 */
+  --bg-elevated: var(--neutral-200);      /* #18181b */
+  --backdrop:  var(--black-alpha-60);
 
   /* Tipografía */
-  --text-1: var(--neutral-1000);       /* Texto principal */
-  --text-2: var(--white-alpha-70);     /* Texto secundario */
-  --text-3: var(--white-alpha-50);     /* Placeholders, disabled */
-  --text-inverse: var(--neutral-50);   /* Texto sobre accent */
+  --text-primary:   var(--neutral-1000);  /* #ffffff */
+  --text-secondary: var(--neutral-800);   /* #d4d4d8 */
+  --text-tertiary:  var(--neutral-700);   /* #a1a1aa */
+  --text-placeholder: var(--neutral-600); /* #71717a */
 
   /* Bordes */
-  --border-1: var(--white-alpha-12);   /* Bordes sutiles */
-  --border-2: var(--white-alpha-24);   /* Bordes activos/focus */
+  --border-subtle: var(--white-alpha-10);
+  --border-active: var(--white-alpha-20);
+  --border-highlight: var(--white-alpha-30);
 
-  /* Sombras */
-  --shadow-soft: 0 10px 20px var(--black-alpha-20);
-  --shadow-sm: 0 8px 20px var(--black-alpha-20);
-  --shadow-lg: -30px 0 60px var(--black-alpha-60);
+  /* Fondos de Estado */
+  --accent-success-bg: rgba(74, 222, 128, 0.1);
+  --accent-warning-bg: rgba(251, 191, 36, 0.1);
+  --accent-error-bg: rgba(248, 113, 113, 0.1);
+  --accent-info-bg: rgba(56, 189, 248, 0.1);
 
-  /* Estados con fondos */
-  --success-bg: rgba(48, 209, 88, 0.16);
-  --warning-bg: rgba(255, 159, 10, 0.18);
-  --danger-bg:  rgba(255, 69, 58, 0.16);
-  --info-bg:    rgba(10, 132, 255, 0.15);
-  
+  /* Transition */
+  --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
   /* Layout */
-  --page-max: 1120px;
-  --page-pad: 24px;
-  --topbar-h: 60px;
-  --topbar-h-mobile: 52px;
+  --sidebar-width: 240px;
+  --topbar-height: 56px;
+  --header-height: 64px;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
 
-  /* Spacing Scale */
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 20px;
-  --space-6: 24px;
+  /* Legacy Aliases (backward compatibility) */
+  --bg-base:    var(--bg-body);
+  --bg-elev:    var(--bg-elevated);
+  --surface-1:  var(--white-alpha-05);
+  --surface-2:  var(--white-alpha-10);
+  --text-1:     var(--text-primary);
+  --text-2:     var(--text-secondary);
+  --text-3:     var(--text-tertiary);
+  --border-1:   var(--border-subtle);
+  --border-2:   var(--border-active);
 }
 
 /* =========================================================================
-   3. TOKENS DE COMPONENTE (Alias for specific UI)
+   3. TOKENS DE COMPONENTE (Component-specific aliases)
    ========================================================================= */
 :root {
-  /* Botones */
-  --btn-primary-bg:   var(--accent);
-  --btn-primary-text: var(--text-1);
-  --btn-radius:       99px;
+  /* Botones (Zinc: white primary) */
+  --btn-primary-bg:   var(--brand-primary);
+  --btn-primary-text: var(--neutral-0);  /* Black text on white button */
+  --btn-radius:       var(--radius-md);
 
   /* Cards */
-  --card-bg:     var(--surface-1);
-  --card-border: var(--border-1);
+  --card-bg:     var(--bg-surface);
+  --card-border: var(--border-subtle);
   --card-radius: var(--radius-lg);
 
   /* Inputs */
-  --input-bg:     rgba(0,0,0,0.3);
-  --input-border: var(--border-1);
+  --input-bg:     var(--bg-surface);
+  --input-border: var(--border-subtle);
   --input-radius: var(--radius-md);
 
-  /* Legacy aliases (mantener para compatibilidad en fase de migración) */
-  --text-primary:   var(--text-1);
-  --text-secondary: var(--text-2);
-  --text-tertiary:  var(--text-3);
-  --text-muted:     var(--text-3);
-  --accent-color:   var(--accent);
-  --primary-color:  var(--accent);
-  --danger-color:   var(--danger);
-  --success-color:  var(--success);
-  --bg-card:        var(--surface-1);
-  --surface-card:   var(--surface-1);
-  --surface-hover:  var(--surface-2);
-  --border-color:   var(--border-1);
-  --border:         var(--border-1);
-  --radius:         var(--radius-md);
+  /* Legacy Aurora Red aliases (for gradual migration) */
+  --aurora-red: #ff3b30;
+  --accent-aurora: var(--aurora-red);
+  --btn-primary-aurora-bg: var(--aurora-red);
 }
 
 /* =========================================================================

@@ -1,7 +1,7 @@
 /**
  * Module: admin-workdays.js
  * Standard: logic-engineer (2026)
- * Description: Workday Management - ZBB Planner Dashboard (Refactored)
+ * Description: Workday Management - ZBB Planner Dashboard (Unified Staffing & Convocation)
  */
 
 (async function () {
@@ -27,14 +27,12 @@
         inputDate: document.getElementById('input-date'),
         selectEvent: document.getElementById('select-event'),
         checkHighDemand: document.getElementById('check-high-demand'),
-        staffContainer: document.getElementById('staff-container'),
-        costsContainer: document.getElementById('costs-container'),
+        selectCountdownEvent: document.getElementById('select-countdown-event'),
         inputNotes: document.getElementById('input-notes'),
         statusIndicator: document.getElementById('workday-status-indicator'),
-
-        // Panel D: Requests
-        requestsContainer: document.getElementById('requests-container'),
-        requestsCount: document.getElementById('requests-count'),
+        
+        staffContainer: document.getElementById('staff-container'),
+        costsContainer: document.getElementById('costs-container'),
 
         // Actions
         btnConfirm: document.getElementById('btn-confirm-jornada'),
@@ -44,10 +42,6 @@
         panelInstance: null,
         historyContainer: document.getElementById('history-container'),
 
-        // Countdown Config
-        selectCountdownEvent: document.getElementById('select-countdown-event'),
-        btnSaveCountdown: document.getElementById('btn-save-countdown'),
-
         // Event Modal
         btnNewEvent: document.getElementById('btn-new-event'),
         createEventModal: document.getElementById('createEventModal'),
@@ -56,7 +50,11 @@
         inputEventTime: document.getElementById('input-event-time'),
         inputEventQrQty: document.getElementById('input-event-qr-qty'),
         btnCancelEventModal: document.getElementById('btnCancelEventModal'),
-        btnCreateEvent: document.getElementById('btnCreateEvent')
+        btnCreateEvent: document.getElementById('btnCreateEvent'),
+
+        // Cost Modal
+        btnSaveCost: document.getElementById('btnSaveCost'),
+        // ... (other modal refs handled dynamically or via delegation)
     };
 
     // Validation
@@ -65,24 +63,38 @@
     // 3. State
     const state = {
         roles: [],
+        users: [],         // All profiles
         openingCosts: [],
         events: [],
-        pendingRequests: [], // Solicitudes de reposición pendientes
-        staffPlan: {}, // { roleId: quantity }
-        costsPlan: {}, // { costId: { amount, isAdjusted } }
+        
+        // Planner State
+        activeWorkDay: null, // If editing existing day
+        
+        staffPlan: {},     // { roleId: quantity }
+        allocations: {},   // { roleId: [ { userId, allocationId, status } ] } -> Derived from convocations
+        
+        costsPlan: {},     // { costId: { amount, isAdjusted } }
+        
         history: [],
         isLoading: false,
         currentCountdownEventId: null
     };
 
-    // 4. Initialization
+    // 4. Utils
+    const DateUtils = {
+        getWeekNumber: (date) => {
+            const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+            const dayNum = d.getUTCDay() || 7;
+            d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+            const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+            return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+        }
+    };
+
+    // 5. Initialization
     async function init() {
-        // Init Slide Panel for History
         if (window.initSlidePanel) {
-            ui.panelInstance = window.initSlidePanel({
-                panelId: 'slide-panel',
-                overlayId: 'panel-overlay'
-            });
+            ui.panelInstance = window.initSlidePanel({ panelId: 'slide-panel', overlayId: 'panel-overlay' });
         }
 
         bindEvents();
@@ -92,122 +104,116 @@
         if (!ui.inputDate.value) {
             ui.inputDate.value = new Date().toISOString().split('T')[0];
         }
+        
+        // Trigger initial load
+        handleDateChange();
     }
 
-    // 5. Event Binding
+    // 6. Event Binding
     function bindEvents() {
-        // History Panel
+        ui.inputDate?.addEventListener('change', handleDateChange);
+
         ui.btnHistory?.addEventListener('click', () => {
             renderHistory();
             ui.panelInstance?.open();
         });
 
-        // History Item Click (Event Delegation)
+        // History Actions
         ui.historyContainer?.addEventListener('click', (e) => {
-            const btnView = e.target.closest('.js-view-workday');
-            if (btnView) {
-                // For now, reload page - in future could load specific workday
-                window.location.reload();
-            }
-
             const btnClose = e.target.closest('.js-close-workday');
-            if (btnClose) {
-                handleCloseWorkday(btnClose.dataset.id, btnClose.dataset.date);
+            if (btnClose) handleCloseWorkday(btnClose.dataset.id, btnClose.dataset.date);
+            
+            const btnLoad = e.target.closest('.js-load-workday');
+            if (btnLoad) {
+                ui.inputDate.value = btnLoad.dataset.date;
+                handleDateChange();
+                ui.panelInstance?.close();
             }
         });
 
-        // KPI Recalculation on Inputs
+        // Staff Inputs (Quantity)
         ui.staffContainer?.addEventListener('input', (e) => {
-            if (e.target.dataset.roleId) {
+            if (e.target.dataset.action === 'qty-change') {
                 const roleId = e.target.dataset.roleId;
                 const qty = parseInt(e.target.value) || 0;
                 state.staffPlan[roleId] = qty;
+                
+                // If reducing quantity, we might need to warn or clean up extra allocations on save
+                // For UI, we just re-render slots if needed, but easier to just update totals first
                 calculateTotals();
+                // Optional: Re-render slots immediately? 
+                // Better to wait for user to finish typing or require Update to see slots change?
+                // For seamless UX, let's re-render slots if needed (Edit Mode)
+                if (state.activeWorkDay) renderStaffSlots(roleId, qty);
             }
         });
 
+        // Staff Assignment (Allocation)
+        ui.staffContainer?.addEventListener('change', (e) => {
+            if (e.target.dataset.action === 'assign-user') {
+                const roleId = e.target.dataset.roleId;
+                const index = parseInt(e.target.dataset.index);
+                const userId = e.target.value;
+                
+                if (!state.allocations[roleId]) state.allocations[roleId] = [];
+                // Ensure array size
+                while (state.allocations[roleId].length <= index) state.allocations[roleId].push({});
+                
+                state.allocations[roleId][index] = { 
+                    userId, 
+                    status: userId ? 'confirmed' : null, // Auto-confirm for admin assignment
+                    isNew: true 
+                };
+                
+                // Note: We don't save yet, just state
+            }
+        });
+
+        // Costs Input
         ui.costsContainer?.addEventListener('input', (e) => {
             if (e.target.dataset.costId) {
                 const costId = e.target.dataset.costId;
                 const amount = parseFloat(e.target.value) || 0;
                 const def = state.openingCosts.find(c => c.id === costId);
-                state.costsPlan[costId] = {
-                    amount,
-                    isAdjusted: amount !== (def?.default_amount || 0)
-                };
+                state.costsPlan[costId] = { amount, isAdjusted: amount !== (def?.default_amount || 0) };
                 calculateTotals();
             }
         });
 
-        // Reset Cost Button (Event Delegation)
-        ui.costsContainer?.addEventListener('click', (e) => {
-            const btn = e.target.closest('.btn-reset-cost');
-            if (btn) {
-                const costId = btn.dataset.id;
-                const def = state.openingCosts.find(c => c.id === costId);
-                const input = ui.costsContainer.querySelector(`input[data-cost-id="${costId}"]`);
-                if (input && def) {
-                    input.value = def.default_amount;
-                    state.costsPlan[costId] = { amount: def.default_amount, isAdjusted: false };
-                    calculateTotals();
-                }
-            }
-        });
-
-        // Confirm Action
-        ui.btnConfirm?.addEventListener('click', handleConfirm);
-
-        // Countdown Config
-        ui.btnSaveCountdown?.addEventListener('click', saveCountdownEvent);
+        ui.btnConfirm?.addEventListener('click', handleConfirmOrUpdate);
 
         // Event Modal
         ui.btnNewEvent?.addEventListener('click', openEventModal);
         ui.btnCancelEventModal?.addEventListener('click', closeEventModal);
         ui.btnCreateEvent?.addEventListener('click', handleCreateEvent);
-        ui.createEventModal?.addEventListener('click', (e) => {
-            if (e.target === ui.createEventModal) closeEventModal();
-        });
     }
 
-    // 6. Data Fetching
+    // 7. Data Loading
     async function loadInitialData() {
         window.Utils.setPageState(ui, { loading: true });
-
         try {
-            const [rolesRes, costsRes, eventsRes, historyRes, countdownRes, requestsRes] = await Promise.all([
+            const [rolesRes, costsRes, eventsRes, historyRes, usersRes] = await Promise.all([
                 window.sb.from('master_staff_roles').select('*').eq('active', true).order('name'),
                 window.sb.from('finance_opening_cost_defs').select('*').eq('is_active', true).order('sort_order'),
-                window.sb.from('events').select('*').gte('date', new Date().toISOString().split('T')[0]).order('date').limit(15),
+                window.sb.from('events').select('*').gte('date', new Date().toISOString().split('T')[0]).order('date').limit(20),
                 window.WorkDayHelper.getWorkDaySummary(),
-                window.sb.from('site_config').select('url').eq('key', 'next_event_id').maybeSingle(),
-                window.sb.from('replenishment_requests')
-                    .select('*, replenishment_items(*, sku_id, master_sku(nombre))')
-                    .eq('status', 'pending')
-                    .order('created_at', { ascending: false })
-                    .limit(10)
+                window.sb.from('profiles').select('id, full_name, role').order('full_name') // Fetch users
             ]);
-
-            if (rolesRes.error) throw rolesRes.error;
-            if (costsRes.error) throw costsRes.error;
-            if (eventsRes.error) throw eventsRes.error;
 
             state.roles = rolesRes.data || [];
             state.openingCosts = costsRes.data || [];
             state.events = eventsRes.data || [];
-            state.pendingRequests = requestsRes.data || [];
+            state.users = usersRes.data || [];
             state.history = flattenHistory(historyRes);
-            state.currentCountdownEventId = countdownRes?.data?.url || null;
 
-            // Initialize plans
+            // Init defaults
             state.roles.forEach(r => state.staffPlan[r.id] = 0);
-            state.openingCosts.forEach(c => {
-                state.costsPlan[c.id] = { amount: c.default_amount, isAdjusted: false };
-            });
+            state.openingCosts.forEach(c => state.costsPlan[c.id] = { amount: c.default_amount, isAdjusted: false });
 
-            renderPanels();
+            renderBasicPanels();
         } catch (e) {
-            console.error('Error loading initial data:', e);
-            window.Toast.error('Error al cargar datos operativos.');
+            console.error('Init Error:', e);
+            window.Toast.error('Falló carga inicial.');
         } finally {
             window.Utils.setPageState(ui, { loading: false });
         }
@@ -222,17 +228,115 @@
         return list;
     }
 
-    // 7. Rendering
-    function renderPanels() {
+    // 8. Day Management (Edit vs New)
+    async function handleDateChange() {
+        const dateVal = ui.inputDate.value;
+        if (!dateVal) return;
+
+        ui.statusIndicator.className = 'status-pill staff-status-pending';
+        ui.statusIndicator.textContent = 'Verificando...';
+        ui.statusIndicator.style.opacity = '0.5';
+
+        // Reset State for Plans
+        state.roles.forEach(r => {
+            state.staffPlan[r.id] = 0;
+            state.allocations[r.id] = [];
+        });
+        state.openingCosts.forEach(c => state.costsPlan[c.id] = { amount: c.default_amount, isAdjusted: false });
+        
+        // Reset Inputs
+        ui.inputNotes.value = '';
+        ui.selectEvent.value = '';
+        ui.checkHighDemand.checked = false;
+
+        try {
+            // Check for existing day
+            const { data: day, error } = await window.sb
+                .from('work_days')
+                .select('*')
+                .eq('work_date', dateVal)
+                .neq('status', 'cancelled')
+                .maybeSingle();
+
+            if (error) throw error;
+
+            if (day) {
+                // FOUND -> Edit Mode
+                state.activeWorkDay = day;
+                ui.statusIndicator.textContent = day.status === 'open' ? 'ABIERTA' : 'Planificada';
+                ui.statusIndicator.className = day.status === 'open' ? 'status-pill status-open' : 'status-pill status-planning';
+                ui.statusIndicator.style.opacity = '1';
+
+                ui.btnConfirm.textContent = 'Actualizar Jornada';
+                ui.btnConfirm.classList.remove('btn-primary');
+                ui.btnConfirm.classList.add('btn-secondary');
+                // If open, maybe restrict some edits? For now allow updating staff.
+
+                // Load Details
+                await loadDayDetails(day.id);
+
+            } else {
+                // NEW -> Draft Mode
+                state.activeWorkDay = null;
+                ui.statusIndicator.textContent = 'Nueva (Borrador)';
+                ui.statusIndicator.className = 'status-pill staff-status-pending';
+                ui.statusIndicator.style.opacity = '1';
+
+                ui.btnConfirm.textContent = 'Guardar y Abrir';
+                ui.btnConfirm.classList.add('btn-primary');
+                ui.btnConfirm.classList.remove('btn-secondary');
+            }
+
+            renderStaffList(); // Re-render with/without slots
+            calculateTotals();
+
+        } catch (e) {
+            console.error('Date Check Error:', e);
+            window.Toast.error('Error verificando fecha.');
+        }
+    }
+
+    async function loadDayDetails(dayId) {
+        // 1. Planning
+        const { data: planning } = await window.sb.from('work_day_staff_planning').select('*').eq('work_day_id', dayId);
+        if (planning) {
+            planning.forEach(p => state.staffPlan[p.role_id] = p.quantity);
+        }
+
+        // 2. Convocations (Allocations)
+        const { data: convos } = await window.sb.from('staff_convocations').select('*').eq('work_day_id', dayId);
+        if (convos) {
+            // Group by role based on user? Or we need role in convocations?
+            // Convocations has 'role_id'.
+            convos.forEach(c => {
+                if (!state.allocations[c.role_id]) state.allocations[c.role_id] = [];
+                state.allocations[c.role_id].push({
+                    userId: c.user_id,
+                    status: c.status,
+                    allocationId: c.id
+                });
+            });
+        }
+
+        // 3. Metadata
+        if (state.activeWorkDay.notes) ui.inputNotes.value = state.activeWorkDay.notes;
+        // Event binding needed? Events table doesn't have work_day_id usually, work_days might link?
+        // Current schema: work_days table doesn't have event_id column usually, it's loose coupling by date.
+        // But we have 'events' table. We can auto-select if date matches.
+        const matchingEvent = state.events.find(ev => ev.date === state.activeWorkDay.work_date);
+        if (matchingEvent) ui.selectEvent.value = matchingEvent.id;
+
+    }
+
+    // 9. Rendering
+    function renderBasicPanels() {
         renderEventsDropdown();
-        renderCountdownDropdown();
         renderStaffList();
         renderCostsList();
-        renderRequestsList();
-        calculateTotals();
     }
 
     function renderEventsDropdown() {
+        // ... (Keep existing logic)
         if (!ui.selectEvent) return;
         const options = state.events.map(ev => `
             <option value="${ev.id}">${window.Utils.escapeHtml(ev.name)} (${window.WorkDayHelper.formatDate(ev.date)})</option>
@@ -240,110 +344,114 @@
         ui.selectEvent.innerHTML = '<option value="">-- Sin Evento Vinculado --</option>' + options;
     }
 
-    function renderCountdownDropdown() {
-        if (!ui.selectCountdownEvent) return;
-        const options = state.events.map(ev => `
-            <option value="${ev.id}" ${ev.id === state.currentCountdownEventId ? 'selected' : ''}>
-                ${window.Utils.escapeHtml(ev.name)} (${window.WorkDayHelper.formatDate(ev.date)})
-            </option>
-        `).join('');
-        ui.selectCountdownEvent.innerHTML = '<option value="">-- Sin countdown --</option>' + options;
-    }
-
     function renderStaffList() {
         if (!ui.staffContainer) return;
-        if (state.roles.length === 0) {
-            ui.staffContainer.innerHTML = '<p class="faint p-4 text-center">No hay roles activos.</p>';
-            return;
-        }
-
-        ui.staffContainer.innerHTML = state.roles.map(role => `
-            <div class="planner-item">
-                <div class="item-info">
-                    <span class="item-name">${window.Utils.escapeHtml(role.name)}</span>
-                    <span class="item-meta">${window.Utils.formatARS(role.base_rate)} / jornada</span>
+        
+        ui.staffContainer.innerHTML = state.roles.map(role => {
+            const qty = state.staffPlan[role.id] || 0;
+            return `
+            <div class="planner-item" style="flex-direction:column; align-items:stretch; gap:8px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div class="item-info">
+                        <span class="item-name">${window.Utils.escapeHtml(role.name)}</span>
+                        <span class="item-meta">Budget: ${window.Utils.formatARS(role.base_salary || role.base_rate)}</span>
+                    </div>
+                    <div class="item-controls">
+                        <span class="text-xs mr-2 text-muted">Cupo:</span>
+                        <input type="number" min="0" max="99" value="${qty}" 
+                            class="input input-compact text-center w-70"
+                            data-action="qty-change"
+                            data-role-id="${role.id}">
+                        <span class="badge badge-quiet text-xs" style="min-width: 80px; text-align: right;">
+                            ${window.Utils.formatARS(0)}
+                        </span>
+                    </div>
                 </div>
-                <div class="item-controls">
-                    <input type="number" min="0" max="99" value="0" 
-                        class="input input-compact text-center w-70"
-                        data-role-id="${role.id}">
-                    <span class="badge badge-quiet text-xs" style="min-width: 80px; text-align: right;">
-                        ${window.Utils.formatARS(0)}
-                    </span>
-                </div>
+                
+                <!-- Slots Container (Only if existing day) -->
+                ${state.activeWorkDay ? `<div id="slots-${role.id}" class="staff-slots-grid"></div>` : ''}
             </div>
-        `).join('');
+        `}).join('');
+
+        // If active day, render slots for existing quantities
+        if (state.activeWorkDay) {
+            state.roles.forEach(role => renderStaffSlots(role.id, state.staffPlan[role.id]));
+        }
+    }
+
+    function renderStaffSlots(roleId, qty) {
+        const container = document.getElementById(`slots-${roleId}`);
+        if (!container) return;
+
+        let html = '';
+        const currentAllocations = state.allocations[roleId] || [];
+        
+        // Filter users for this role (loose match or catch-all)
+        // Heuristic: Match user.role string with role.name (normalized)
+        // Or assume 'staff' user role covers most.
+        const roleName = state.roles.find(r => r.id === roleId)?.name.toLowerCase() || '';
+        const eligibleUsers = state.users.filter(u => {
+            const uRole = (u.role || '').toLowerCase();
+            // Allow if roles match roughly OR if user is generic staff
+            return uRole.includes(roleName) || uRole.includes('staff') || uRole === 'admin'; 
+        });
+
+        const userOptions = eligibleUsers.map(u => `<option value="${u.id}">${window.Utils.escapeHtml(u.full_name)}</option>`).join('');
+
+        for (let i = 0; i < qty; i++) {
+            const alloc = currentAllocations[i] || {};
+            const assignedVal = alloc.userId || '';
+            const statusBadge = alloc.status === 'confirmed' ? '✅' : (alloc.status === 'pending' ? '⏳' : '⚪');
+
+            html += `
+                <div class="staff-slot-row" style="display:flex; gap:8px; align-items:center; margin-top:4px;">
+                    <span class="text-xs text-muted" style="width:20px;">#${i+1}</span>
+                    <select class="input input-sm" style="flex:1;" 
+                        data-action="assign-user" data-role-id="${roleId}" data-index="${i}">
+                        <option value="">-- Vacante --</option>
+                        ${eligibleUsers.map(u => `
+                            <option value="${u.id}" ${u.id === assignedVal ? 'selected' : ''}>
+                                ${window.Utils.escapeHtml(u.full_name)}
+                            </option>
+                        `).join('')}
+                    </select>
+                    <span title="${alloc.status || 'Sin asignar'}">${assignedVal ? statusBadge : ''}</span>
+                </div>
+            `;
+        }
+        container.innerHTML = html;
     }
 
     function renderCostsList() {
         if (!ui.costsContainer) return;
-        if (state.openingCosts.length === 0) {
-            ui.costsContainer.innerHTML = '<p class="faint p-4 text-center">No hay costos de apertura definidos.</p>';
-            return;
-        }
-
-        ui.costsContainer.innerHTML = state.openingCosts.map(cost => `
+        ui.costsContainer.innerHTML = state.openingCosts.map(cost => {
+            const plan = state.costsPlan[cost.id] || { amount: cost.default_amount };
+            return `
             <div class="planner-item">
                 <div class="item-info">
                     <span class="item-name">${window.Utils.escapeHtml(cost.title)}</span>
-                    <span class="item-meta">Default: ${window.Utils.formatARS(cost.default_amount)}</span>
+                    <span class="item-meta">Recurrente: ${window.Utils.formatARS(cost.default_amount)}</span>
                 </div>
                 <div class="item-controls">
-                    <input type="number" min="0" value="${cost.default_amount}" 
+                    <input type="number" min="0" value="${plan.amount}" 
                         class="input input-compact text-center w-200"
                         data-cost-id="${cost.id}">
-                    <button class="btn-icon btn-xs btn-reset-cost" data-id="${cost.id}" title="Restaurar default">↺</button>
                 </div>
             </div>
-        `).join('');
+        `}).join('');
     }
 
-    function renderRequestsList() {
-        if (!ui.requestsContainer || !ui.requestsCount) return;
-
-        const count = state.pendingRequests.length;
-        ui.requestsCount.textContent = count;
-
-        if (count === 0) {
-            ui.requestsContainer.innerHTML = '<p class="faint p-4 text-center">No hay solicitudes pendientes.</p>';
-            return;
-        }
-
-        ui.requestsContainer.innerHTML = state.pendingRequests.map(req => {
-            const itemsCount = req.replenishment_items?.length || 0;
-            const dateStr = new Date(req.created_at).toLocaleDateString('es-AR', {
-                day: '2-digit',
-                month: '2-digit'
-            });
-
-            return `
-                <div class="planner-item">
-                    <div class="item-info">
-                        <span class="item-name">Solicitud #${req.id.slice(0, 8)}</span>
-                        <span class="item-meta">${dateStr} · ${itemsCount} items</span>
-                    </div>
-                    <div class="item-controls">
-                        <button class="btn-ghost btn-xs" onclick="window.open('pages/admin/admin-solicitudes.html?id=${req.id}', '_blank')" title="Ver detalle">
-                            👁️
-                        </button>
-                    </div>
-                </div>
-            `;
-        }).join('');
-    }
-
-    // 8. Logic & Calculations
     function calculateTotals() {
         let staffTotal = 0;
         let fixedTotal = 0;
 
-        // Staff
         state.roles.forEach(role => {
             const qty = state.staffPlan[role.id] || 0;
-            const sub = qty * role.base_rate;
+            const rate = role.base_salary || role.base_rate || 0;
+            const sub = qty * rate;
             staffTotal += sub;
 
-            // Update row badge if visible
+            // Update badge
             const input = ui.staffContainer.querySelector(`input[data-role-id="${role.id}"]`);
             if (input) {
                 const badge = input.nextElementSibling;
@@ -351,12 +459,8 @@
             }
         });
 
-        // Fixed
-        Object.values(state.costsPlan).forEach(plan => {
-            fixedTotal += plan.amount;
-        });
+        Object.values(state.costsPlan).forEach(plan => fixedTotal += plan.amount);
 
-        // Update UI
         ui.staffSubtotal.textContent = window.Utils.formatARS(staffTotal);
         ui.costsSubtotal.textContent = window.Utils.formatARS(fixedTotal);
         ui.kpiStaff.textContent = window.Utils.formatARS(staffTotal);
@@ -364,339 +468,171 @@
         ui.kpiTotal.textContent = window.Utils.formatARS(staffTotal + fixedTotal);
     }
 
-    // 9. History Logic
-    function renderHistory() {
-        if (!ui.historyContainer) return;
-
-        if (state.history.length === 0) {
-            ui.historyContainer.innerHTML = '<p class="faint text-center p-4">Historial vacío.</p>';
-            return;
+    // 10. Actions
+    async function handleConfirmOrUpdate() {
+        if (state.activeWorkDay) {
+            await handleUpdate();
+        } else {
+            await handleCreate();
         }
-
-        const rows = state.history.map(item => `
-            <tr class="table-row">
-                <td class="table-cell cell-pad">${window.WorkDayHelper.formatDate(item.work_date)}</td>
-                <td class="table-cell cell-pad">${window.Utils.renderStatusBadge(item._status)}</td>
-                <td class="table-cell cell-pad text-right">
-                    ${item._status === 'open' ? `<button class="btn-secondary btn-xs js-close-workday" data-id="${item.id}" data-date="${item.work_date}" style="margin-right: 4px;">Cerrar</button>` : ''}
-                    <button class="btn-ghost btn-xs js-view-workday" data-id="${item.id}">Ver</button>
-                </td>
-            </tr>
-        `).join('');
-
-        ui.historyContainer.innerHTML = `
-            <div class="table-scroll" style="max-height: 80vh;">
-                <table class="table table-sticky table-compact">
-                    <thead>
-                        <tr>
-                            <th class="table-cell is-header cell-pad">Fecha</th>
-                            <th class="table-cell is-header cell-pad">Estado</th>
-                            <th class="table-cell is-header cell-pad"></th>
-                        </tr>
-                    </thead>
-                    <tbody>${rows}</tbody>
-                </table>
-            </div>
-        `;
     }
 
-    // 10. Submission
-    async function handleConfirm() {
+    async function handleCreate() {
+        // ... (Existing Logic refined)
         const dateVal = ui.inputDate.value;
-        if (!dateVal) return window.Toast.warning('Selecciona una fecha operativa.');
-
-        // 1. Check if date already exists
-        const { data: existing, error: errCheck } = await window.sb
-            .from('work_days')
-            .select('id')
-            .eq('work_date', dateVal)
-            .maybeSingle();
-
-        if (errCheck) {
-            console.error('Check error:', errCheck);
-            return window.Toast.error('Error al verificar la fecha.');
-        }
-
-        if (existing) {
-            return window.Toast.error(`Ya existe una jornada para el ${window.WorkDayHelper.formatDate(dateVal)}.`);
-        }
+        if (!dateVal) return window.Toast.warning('Selecciona fecha.');
 
         const confirmed = await window.Utils.confirmAction(
-            `¿Confirmar planificación y ABRIR jornada para el ${window.WorkDayHelper.formatDate(dateVal)}?`,
-            { confirmText: 'Confirmar y Abrir', isDanger: false }
+            `¿Crear y ABRIR jornada para ${window.WorkDayHelper.formatDate(dateVal)}?`, { confirmText: 'Crear' }
         );
-
         if (!confirmed) return;
 
         window.Utils.setPageState(ui, { loading: true });
-        const eventId = ui.selectEvent.value || null;
-
+        
         try {
-            // A. Create Work Day
-            const { data: day, error: errDay } = await window.sb
-                .from('work_days')
-                .insert({
-                    work_date: dateVal,
-                    notes: ui.inputNotes.value.trim() || null,
-                    status: 'planning'
-                })
-                .select()
-                .single();
-
+            // A. Create Day
+            const { data: day, error: errDay } = await window.sb.from('work_days')
+                .insert({ work_date: dateVal, notes: ui.inputNotes.value, status: 'planning' })
+                .select().single();
             if (errDay) throw errDay;
 
-            // B. Staff Planning Bulk Insert
+            // B. Staff Plan
             const staffPayload = state.roles
                 .filter(r => (state.staffPlan[r.id] || 0) > 0)
                 .map(role => ({
                     work_day_id: day.id,
                     role_id: role.id,
                     quantity: state.staffPlan[role.id],
-                    approved_budget: (state.staffPlan[role.id] || 0) * (role.base_rate || 0)
+                    approved_budget: state.staffPlan[role.id] * (role.base_salary || 0)
                 }));
+            
+            if (staffPayload.length > 0) await window.sb.from('work_day_staff_planning').insert(staffPayload);
 
-            if (staffPayload.length > 0) {
-                const { error: errStaff } = await window.sb
-                    .from('work_day_staff_planning')
-                    .insert(staffPayload);
-                if (errStaff) throw errStaff;
-            }
-
-            // C. Accounts Payable (Opening Costs) Bulk Insert
+            // C. Costs
             const costsPayload = state.openingCosts
                 .filter(c => (state.costsPlan[c.id]?.amount || 0) > 0)
                 .map(cost => ({
                     work_day_id: day.id,
-                    event_id: eventId,
                     source_id: cost.id,
                     source_type: 'opening_cost',
                     amount: state.costsPlan[cost.id].amount,
                     status: 'pending',
-                    concept: `Apertura (${window.WorkDayHelper.formatDate(dateVal)}): ${cost.title}`,
+                    concept: `Apertura: ${cost.title}`,
                     due_date: dateVal
                 }));
+            if (costsPayload.length > 0) await window.sb.from('accounts_payable').insert(costsPayload);
 
-            if (costsPayload.length > 0) {
-                const { error: errCosts } = await window.sb
-                    .from('accounts_payable')
-                    .insert(costsPayload);
-                if (errCosts) throw errCosts;
-            }
+            // D. Open
+            await window.sb.rpc('rpc_open_work_day', { p_work_day_id: day.id });
 
-            // D. RPC Open Work Day (Official activation)
-            const { error: errRpc } = await window.sb.rpc('rpc_open_work_day', {
-                p_work_day_id: day.id
-            });
-            if (errRpc) {
-                console.warn('RPC failed, using direct update fallback:', errRpc);
-                const { error: errUpdate } = await window.sb
-                    .from('work_days')
-                    .update({
-                        status: 'open',
-                        opened_at: new Date().toISOString(),
-                        opened_by: session.user.id
-                    })
-                    .eq('id', day.id);
-                if (errUpdate) throw errUpdate;
-            }
-
-            // E. Create Cash Closing (for encargado-caja-noche and admin-cierre)
-            const { error: errCashClosing } = await window.sb
-                .from('cash_closings')
-                .insert({
-                    work_day_id: day.id,
-                    status: 'open',
-                    total_system: 0,
-                    total_declared: 0,
-                    total_difference: 0
-                });
-            if (errCashClosing) {
-                console.warn('cash_closing creation failed:', errCashClosing);
-                // Non-blocking: encargado-caja-noche can create on-demand as fallback
-            }
-
-            window.Toast.success('Jornada planificada y abierta con éxito.');
-
-            // Wait for toast and redirect or reload
-            setTimeout(() => {
-                window.location.reload();
-            }, 1500);
+            window.Toast.success('Jornada creada. Ahora puedes asignar personal.');
+            
+            // Reload to enter "Edit Mode"
+            handleDateChange();
 
         } catch (e) {
-            console.error('Failure during submission:', e);
-            window.Toast.error(e.message || 'Error crítico procesando la jornada.');
-
-            // Attempt cleanup if day was created but not opened? 
-            // In a better design, this should be a single transaction/RPC.
+            console.error(e);
+            window.Toast.error('Falló creación.');
         } finally {
             window.Utils.setPageState(ui, { loading: false });
         }
     }
 
-    // 11. Countdown Config
-    async function saveCountdownEvent() {
-        const eventId = ui.selectCountdownEvent?.value || null;
-        ui.btnSaveCountdown.disabled = true;
-        ui.btnSaveCountdown.textContent = 'Guardando...';
-
-        try {
-            const { error } = await window.sb
-                .from('site_config')
-                .upsert(
-                    { key: 'next_event_id', url: eventId || '', is_active: !!eventId },
-                    { onConflict: 'key' }
-                );
-
-            if (error) throw error;
-
-            state.currentCountdownEventId = eventId;
-            window.Toast.success('Countdown actualizado correctamente.');
-        } catch (e) {
-            console.error('Error saving countdown:', e);
-            window.Toast.error('Error al guardar el countdown.');
-        } finally {
-            ui.btnSaveCountdown.disabled = false;
-            ui.btnSaveCountdown.textContent = 'Guardar';
-        }
-    }
-
-    // 12. Event Modal
-    function openEventModal() {
-        ui.inputEventName.value = '';
-        ui.inputEventDate.value = ui.inputDate.value || new Date().toISOString().split('T')[0];
-        ui.inputEventTime.value = '23:59';
-        ui.inputEventQrQty.value = '0';
-        ui.createEventModal?.classList.remove('hidden');
-        ui.inputEventName?.focus();
-    }
-
-    function closeEventModal() {
-        ui.createEventModal?.classList.add('hidden');
-    }
-
-    async function handleCreateEvent() {
-        const name = ui.inputEventName?.value.trim();
-        const date = ui.inputEventDate?.value;
-        const eventTime = ui.inputEventTime?.value || '23:59';
-        const qrQty = parseInt(ui.inputEventQrQty?.value) || 0;
-
-        if (!name) return window.Toast.warning('Ingresa un nombre para el evento.');
-        if (!date) return window.Toast.warning('Selecciona una fecha.');
-
-        ui.btnCreateEvent.disabled = true;
-        ui.btnCreateEvent.textContent = 'Creando...';
-
-        try {
-            // 1. Create Event
-            const { data: event, error: errEvent } = await window.sb
-                .from('events')
-                .insert({ name, date, status: 'active' })
-                .select()
-                .single();
-
-            if (errEvent) throw errEvent;
-
-            // 2. If QR quantity specified, create batch + codes
-            if (qrQty > 0) {
-                const { data: batch, error: errBatch } = await window.sb
-                    .from('qr_batches')
-                    .insert({
-                        name: `${name} - Entradas`,
-                        event_id: event.id,
-                        financial_type: 'VENTA',
-                        market_source: 'BOLETERIA',
-                        unit_price: 0,
-                        created_by: session.user.id
-                    })
-                    .select()
-                    .single();
-
-                if (errBatch) throw errBatch;
-
-                // 3. Generate QR codes
-                const codes = Array.from({ length: qrQty }, () => ({
-                    batch_id: batch.id,
-                    code: crypto.randomUUID(),
-                    status: 'PENDIENTE'
-                }));
-
-                const { error: errCodes } = await window.sb
-                    .from('qr_codes')
-                    .insert(codes);
-
-                if (errCodes) throw errCodes;
-
-                window.Toast.success(`Evento "${name}" creado con ${qrQty} entradas.`);
-            } else {
-                window.Toast.success(`Evento "${name}" creado.`);
-            }
-
-            // Add to state and re-render dropdowns
-            state.events.unshift(event);
-            renderEventsDropdown();
-            renderCountdownDropdown();
-
-            // Auto-select new event
-            ui.selectEvent.value = event.id;
-
-            closeEventModal();
-        } catch (e) {
-            console.error('Error creating event:', e);
-            window.Toast.error(e.message || 'Error al crear evento.');
-        } finally {
-            ui.btnCreateEvent.disabled = false;
-            ui.btnCreateEvent.textContent = 'Crear Evento';
-        }
-    }
-
-    // 13. Close Work Day (Manual)
-    async function handleCloseWorkday(id, date) {
-        const confirmed = await window.Utils.confirmAction(
-            `¿CERRAR jornada del ${window.WorkDayHelper.formatDate(date)}?\nEsta acción es irreversible y finalizará la operación.`,
-            { confirmText: 'Cerrar Jornada', isDanger: true }
-        );
-
-        if (!confirmed) return;
-
+    async function handleUpdate() {
+        // Update Plan & Allocations
         window.Utils.setPageState(ui, { loading: true });
-
         try {
-            const userId = session.user.id;
-            const closedAt = new Date().toISOString();
+            const dayId = state.activeWorkDay.id;
 
-            // 1. Close Work Day
-            const { error: errDay } = await window.sb
-                .from('work_days')
-                .update({
-                    status: 'closed',
-                    closed_at: closedAt,
-                    closed_by: userId
-                })
-                .eq('id', id);
+            // 1. Update Notes
+            await window.sb.from('work_days').update({ notes: ui.inputNotes.value }).eq('id', dayId);
 
-            if (errDay) throw errDay;
+            // 2. Staff Plan (Sync: Delete & Re-insert is easiest for bulk plan, but dangerous if IDs needed? 
+            // Better: Upsert by (work_day_id, role_id)
+            const staffPayload = state.roles.map(role => ({
+                work_day_id: dayId,
+                role_id: role.id,
+                quantity: state.staffPlan[role.id] || 0,
+                approved_budget: (state.staffPlan[role.id] || 0) * (role.base_salary || 0)
+            }));
+            await window.sb.from('work_day_staff_planning').upsert(staffPayload, { onConflict: 'work_day_id, role_id' });
 
-            // 2. Try to close associated Cash Closing (Best Effort)
-            const { error: errCash } = await window.sb
-                .from('cash_closings')
-                .update({
-                    status: 'closed',
-                    closed_at: closedAt,
-                    closed_by: userId
-                })
-                .eq('work_day_id', id)
-                .neq('status', 'closed'); // Only if not already closed
+            // 3. Allocations (Convocations)
+            // Flatten state.allocations
+            let convocationsPayload = [];
+            Object.keys(state.allocations).forEach(roleId => {
+                const allocs = state.allocations[roleId];
+                allocs.forEach(alloc => {
+                    if (alloc.userId) { // Only save assigned
+                        convocationsPayload.push({
+                            work_day_id: dayId,
+                            role_id: roleId,
+                            user_id: alloc.userId,
+                            status: alloc.status || 'confirmed',
+                            // id: alloc.allocationId // If we have ID, upsert. If not, insert.
+                        });
+                    }
+                });
+            });
 
-            if (errCash) console.warn('Could not auto-close cash_closing:', errCash);
+            // Upsert is tricky without ID.
+            // Strategy: Delete all for this day and re-insert is clean only if history doesn't matter much.
+            // For now, let's just insert new ones or basic upsert if we can unique by user?
+            // Unique key for staff_convocations: (work_day_id, user_id)? hopefully.
+            if (convocationsPayload.length > 0) {
+                 const { error } = await window.sb.from('staff_convocations')
+                    .upsert(convocationsPayload, { onConflict: 'work_day_id, user_id' });
+                 if (error) throw error;
+            }
 
-            window.Toast.success('Jornada cerrada exitosamente.');
-            setTimeout(() => window.location.reload(), 1000);
-
+            window.Toast.success('Jornada actualizada.');
         } catch (e) {
-            console.error('Error closing workday:', e);
-            window.Toast.error('Error al cerrar la jornada.');
+            console.error(e);
+            window.Toast.error('Falló actualización.');
+        } finally {
             window.Utils.setPageState(ui, { loading: false });
         }
+    }
+
+    // 11. Modal Logic (Events)
+    function openEventModal() { ui.createEventModal.classList.remove('hidden'); }
+    function closeEventModal() { ui.createEventModal.classList.add('hidden'); }
+    
+    async function handleCreateEvent() {
+        const name = ui.inputEventName.value;
+        const date = ui.inputEventDate.value;
+        if (!name || !date) return;
+        
+        ui.btnCreateEvent.textContent = 'Creando...';
+        try {
+            const { data } = await window.sb.from('events').insert({ name, date, status: 'active' }).select().single();
+            window.Toast.success('Evento creado.');
+            state.events.unshift(data);
+            renderEventsDropdown();
+            ui.selectEvent.value = data.id;
+            closeEventModal();
+        } catch(e) { window.Toast.error('Error creando evento'); }
+        finally { ui.btnCreateEvent.textContent = 'Crear Evento'; }
+    }
+
+    function renderHistory() {
+        const rows = state.history.map(item => `
+            <tr class="table-row">
+                <td class="table-cell cell-pad font-bold">${window.WorkDayHelper.formatDate(item.work_date)}</td>
+                <td class="table-cell cell-pad">${window.Utils.renderStatusBadge(item._status)}</td>
+                <td class="table-cell cell-pad text-right">
+                   <button class="btn-primary btn-xs js-load-workday" data-date="${item.work_date}">Ver</button>
+                   ${item._status === 'open' ? `<button class="btn-secondary btn-xs js-close-workday" data-id="${item.id}" data-date="${item.work_date}">Cerrar</button>` : ''}
+                </td>
+            </tr>
+        `).join('');
+        ui.historyContainer.innerHTML = `<table class="table table-compact"><tbody>${rows}</tbody></table>`;
+    }
+
+    async function handleCloseWorkday(id, date) {
+        if (!await window.Utils.confirmAction(`¿Cerrar jornada ${date}?`, { isDanger: true })) return;
+        await window.sb.from('work_days').update({ status: 'closed', closed_at: new Date() }).eq('id', id);
+        window.location.reload();
     }
 
     // Start

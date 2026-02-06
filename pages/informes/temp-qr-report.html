@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Reporte QR - Tickets Impresos</title>
+ <link rel="stylesheet" href="../../assets/css/main.css">
+ <style>
+  .report-summary {
+   display: grid;
+   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+   gap: 1rem;
+   margin-bottom: 2rem;
+  }
+
+  .summary-card {
+   background: var(--surface-2);
+   padding: 1.5rem;
+   border-radius: var(--radius-md);
+   border: 1px solid var(--border-color);
+   display: flex;
+   flex-direction: column;
+   align-items: flex-start;
+  }
+
+  .summary-value {
+   font-size: 2.5rem;
+   font-weight: 700;
+   color: var(--primary);
+   line-height: 1;
+   margin-bottom: 0.5rem;
+  }
+
+  .summary-label {
+   color: var(--text-secondary);
+   font-size: 0.875rem;
+   text-transform: uppercase;
+   letter-spacing: 0.05em;
+   font-weight: 600;
+  }
+
+  .table th,
+  .table td {
+   padding: 0.35rem 0.75rem;
+   font-size: 0.9rem;
+  }
+
+  .badge {
+   padding: 0.1rem 0.4rem;
+   font-size: 0.75rem;
+  }
+
+  .user-pill {
+   display: inline-flex;
+   align-items: center;
+   gap: 0.5rem;
+   background: var(--surface-3);
+   padding: 2px 8px;
+   border-radius: 99px;
+   font-family: monospace;
+   font-size: 0.8rem;
+  }
+ </style>
+</head>
+
+<body class="app-shell" data-allowed-roles="admin,encargado_barra">
+ <header class="app-topbar">
+  <div class="topbar-left">
+   <button class="topbar-link" onclick="history.back()">← Volver</button>
+  </div>
+  <div class="topbar-center">
+   <span class="topbar-title">Reporte de Tickets QR</span>
+  </div>
+  <div class="topbar-right">
+   <div class="topbar-brand">MIDNIGHT</div>
+  </div>
+ </header>
+
+ <main class="page-shell">
+  <div class="page-card-wrap">
+   <div class="page-card">
+    <div class="dashboard-header">
+     <div>
+      <h2 class="dashboard-title">Resumen de Tickets</h2>
+      <p class="dashboard-subtitle">Agrupado por Día y Usuario Creador</p>
+     </div>
+     <div class="header-actions">
+      <button onclick="fetchAndRenderReport()" class="btn btn-sm btn-ghost">↻ Refrescar</button>
+     </div>
+    </div>
+
+    <div class="report-summary">
+     <div class="summary-card">
+      <div class="summary-value" id="total-tickets">--</div>
+      <div class="summary-label">Total Impresos</div>
+     </div>
+     <div class="summary-card">
+      <div class="summary-value" id="total-days">--</div>
+      <div class="summary-label">Días Activos</div>
+     </div>
+    </div>
+
+    <div class="table-viewport table-shell">
+     <table class="table">
+      <thead>
+       <tr>
+        <th>Fecha</th>
+        <th>Día</th>
+        <th>Creado Por (Email/ID)</th>
+        <th>Lote / Origen</th>
+        <th class="text-right">Cantidad</th>
+       </tr>
+      </thead>
+      <tbody id="report-body">
+       <tr>
+        <td colspan="5" class="text-center py-4 text-muted">Cargando datos...</td>
+       </tr>
+      </tbody>
+     </table>
+    </div>
+   </div>
+  </div>
+ </main>
+
+ <!-- Essential Scripts for Supabase -->
+ <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+ <script src="../../assets/js/core/config.js"></script>
+ <script src="../../assets/js/core/supabase-client.js"></script>
+
+ <script>
+  // Cache object for User Emails
+  const userCache = {};
+
+  async function resolveUser(userId) {
+   if (!userId) return 'Sistema/Import';
+   if (userCache[userId]) return userCache[userId];
+   // Since we can't easily query auth.users from client without admin rights,
+   // we will try to look for profiles if exists, or just show ID.
+   // But wait, if we are admin maybe we have a view?
+   // Let's assume just showing ID or if user provides a 'profiles' table.
+
+   // Try fetching from public.profiles if exists (Standard Supabase pattern)
+   try {
+    const { data } = await window.sb.from('profiles').select('email, first_name').eq('id', userId).maybeSingle();
+    if (data) {
+     const label = data.email || data.first_name || userId.slice(0, 8);
+     userCache[userId] = label;
+     return label;
+    }
+   } catch (e) { }
+
+   userCache[userId] = userId.slice(0, 8) + '...';
+   return userCache[userId];
+  }
+
+  async function fetchAndRenderReport() {
+   const tbody = document.getElementById('report-body');
+   const totalTicketsEl = document.getElementById('total-tickets');
+   const totalDaysEl = document.getElementById('total-days');
+
+   tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-muted">Cargando...</td></tr>';
+
+   try {
+    // Fetch codes with Batch Info
+    // We assume there is a foreign key from qr_codes.batch_id -> qr_batches.id
+    const { data: codes, error } = await window.sb
+     .from('qr_codes')
+     .select(`
+                        created_at,
+                        batch_id,
+                        qr_batches (
+                            name,
+                            created_by,
+                            market_source
+                        )
+                    `)
+     .order('created_at', { ascending: false })
+     .limit(5000);
+
+    if (error) throw error;
+
+    if (!codes || codes.length === 0) {
+     tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4">No hay registros encontrados</td></tr>';
+     return;
+    }
+
+    // Grouping Logic
+    const groups = {}; // Key: "YYYY-MM-DD__USERID__BATCHNAME"
+
+    for (const row of codes) {
+     const dateObj = new Date(row.created_at);
+     const dateKey = dateObj.toISOString().split('T')[0]; // YYYY-MM-DD
+
+     const batch = row.qr_batches || {};
+     const userId = batch.created_by || 'system';
+     const batchName = batch.name || 'Sin Lote';
+     const market = batch.market_source || 'N/A';
+
+     const groupKey = `${dateKey}__${userId}__${batchName}`;
+
+     if (!groups[groupKey]) {
+      groups[groupKey] = {
+       dateObj: dateObj,
+       userId: userId,
+       batchName: batchName,
+       market: market,
+       count: 0
+      };
+     }
+     groups[groupKey].count++;
+    }
+
+    // Convert to array
+    const rows = Object.values(groups).sort((a, b) => b.dateObj - a.dateObj);
+    const uniqueDays = new Set(rows.map(r => r.dateObj.toISOString().split('T')[0]));
+
+    // Resolve Users (Parallel)
+    const uniqueUserIds = [...new Set(rows.map(r => r.userId))].filter(id => id !== 'system');
+    // Could fetch here if we had an endpoint. For now we use the resolveUser helper lazy or stub.
+
+    // Render
+    tbody.innerHTML = rows.map(row => {
+     const dateStr = row.dateObj.toLocaleDateString('es-AR', { year: '2-digit', month: '2-digit', day: '2-digit' });
+     const dayName = row.dateObj.toLocaleDateString('es-AR', { weekday: 'long' });
+     const dayFormatted = dayName.charAt(0).toUpperCase() + dayName.slice(1);
+
+     // Simple User Display (ID Shortened) or "Import"
+     let userDisplay = row.userId === 'system' ? 'Importación' : `<span class="user-pill" title="${row.userId}">User ${row.userId.slice(0, 6)}..</span>`;
+
+     return `
+                        <tr>
+                            <td class="font-medium">${dateStr}</td>
+                            <td><span class="badge badge-neutral">${dayFormatted}</span></td>
+                            <td>${userDisplay}</td>
+                            <td class="text-sm text-secondary">${row.batchName} <small>(${row.market})</small></td>
+                            <td class="text-right font-bold text-primary">${row.count}</td>
+                        </tr>
+                    `;
+    }).join('');
+
+    totalTicketsEl.textContent = codes.length;
+    totalDaysEl.textContent = uniqueDays.size;
+
+   } catch (err) {
+    console.error('Error fetching report:', err);
+    tbody.innerHTML = `<tr><td colspan="5" class="text-center text-error py-4">Error: ${err.message}</td></tr>`;
+   }
+  }
+
+  document.addEventListener('DOMContentLoaded', fetchAndRenderReport);
+ </script>
+</body>
+
+</html>

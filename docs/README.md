@@ -1,13 +1,14 @@
-# FormulaMid 4
+# tester_3.0
 
 > Sistema de gestión integral para operaciones de club nocturno.
-> **Última Actualización**: 2026-01-28
+> **Última Actualización**: 2026-02-01
 
 ---
 
 ## 📋 Descripción
 
-FormulaMid es un sistema web para gestionar las operaciones diarias de un club/venue:
+tester_3.0 es un sistema web para gestionar las operaciones diarias de un club/venue:
+
 - **Jornadas operativas** (apertura/cierre de días)
 - **Control de caja** (terminales, arqueos, movimientos)
 - **Gestión de stock** (inventario, reposición, proveedores)
@@ -19,19 +20,19 @@ FormulaMid es un sistema web para gestionar las operaciones diarias de un club/v
 
 ## 🛠️ Stack Tecnológico
 
-| Capa | Tecnología |
-|------|------------|
-| **Frontend** | HTML5 + CSS3 + JavaScript (Vanilla) |
-| **Backend** | Supabase (PostgreSQL + Auth + Realtime) |
-| **Estilos** | CSS con tokens (`assets/css/tokens.css`) |
-| **Charts** | Chart.js |
+| Capa         | Tecnología                               |
+| ------------ | ---------------------------------------- |
+| **Frontend** | HTML5 + CSS3 + JavaScript (Vanilla)      |
+| **Backend**  | Supabase (PostgreSQL + Auth + Realtime)  |
+| **Estilos**  | CSS con tokens (`assets/css/tokens.css`) |
+| **Charts**   | Chart.js                                 |
 
 ---
 
 ## 📁 Estructura del Proyecto
 
 ```
-FormulaMid 4/
+tester_3.0/
 ├── .agent/
 │   ├── skills/              # Skills técnicos (FUENTE DE VERDAD)
 │   │   ├── frontend-developer/
@@ -70,28 +71,28 @@ FormulaMid 4/
 
 ## � Jerarquía de Documentación
 
-| Tipo | Ubicación | Propósito |
-|:-----|:----------|:----------|
-| **Estado** | `docs/estado-presente.md` | Métricas actuales |
-| **Roadmap** | `docs/roadmap.md` | Plan estratégico |
-| **Pantallas** | `docs/screen-map.md` | Arquitectura de UI |
-| **BD** | `docs/scheme.md` | Esquema de datos |
-| **Frontend** | `.agent/skills/frontend-developer/` | Reglas de UI/CSS |
-| **Backend** | `.agent/skills/logic-engineer/` | Reglas de JS/lógica |
-| **Database** | `.agent/skills/db-architect/` | Reglas de datos |
+| Tipo          | Ubicación                           | Propósito           |
+| :------------ | :---------------------------------- | :------------------ |
+| **Estado**    | `docs/estado-presente.md`           | Métricas actuales   |
+| **Roadmap**   | `docs/roadmap.md`                   | Plan estratégico    |
+| **Pantallas** | `docs/screen-map.md`                | Arquitectura de UI  |
+| **BD**        | `docs/scheme.md`                    | Esquema de datos    |
+| **Frontend**  | `.agent/skills/frontend-developer/` | Reglas de UI/CSS    |
+| **Backend**   | `.agent/skills/logic-engineer/`     | Reglas de JS/lógica |
+| **Database**  | `.agent/skills/db-architect/`       | Reglas de datos     |
 
 ---
 
 ## � Roles del Sistema
 
-| Rol | Acceso | Landing |
-|-----|--------|---------|
-| **admin** | Completo | `/pages/admin/` |
-| **gerencia** | Reportes, KPIs | `/pages/gerencia/` |
+| Rol           | Acceso               | Landing              |
+| ------------- | -------------------- | -------------------- |
+| **admin**     | Completo             | `/pages/admin/`      |
+| **gerencia**  | Reportes, KPIs       | `/pages/gerencia/`   |
 | **encargado** | Operaciones, cierres | `/pages/encargados/` |
-| **logistica** | Stock, recepciones | `/pages/logistica/` |
-| **staff** | Funciones asignadas | `/pages/staff/` |
-| **operativo** | Scanner, check-in | `/pages/operativo/` |
+| **logistica** | Stock, recepciones   | `/pages/logistica/`  |
+| **staff**     | Funciones asignadas  | `/pages/staff/`      |
+| **operativo** | Scanner, check-in    | `/pages/operativo/`  |
 
 ---
 
@@ -131,13 +132,13 @@ Ver [`docs/roadmap.md`](./roadmap.md) para el plan estratégico v4.0.
 
 ### Cuándo Actualizar
 
-| Evento | Documento a Actualizar |
-|:-------|:-----------------------|
-| Nueva pantalla creada | `docs/screen-map.md` |
-| Nueva tabla/vista en BD | `docs/scheme.md` + `db-architect/SKILL.md` |
-| Cambio de métricas | `docs/estado-presente.md` |
-| Nuevo patrón de código | Skill correspondiente (`frontend-developer`, `logic-engineer`) |
-| Cambio de prioridades | `docs/roadmap.md` |
+| Evento                  | Documento a Actualizar                                         |
+| :---------------------- | :------------------------------------------------------------- |
+| Nueva pantalla creada   | `docs/screen-map.md`                                           |
+| Nueva tabla/vista en BD | `docs/scheme.md` + `db-architect/SKILL.md`                     |
+| Cambio de métricas      | `docs/estado-presente.md`                                      |
+| Nuevo patrón de código  | Skill correspondiente (`frontend-developer`, `logic-engineer`) |
+| Cambio de prioridades   | `docs/roadmap.md`                                              |
 
 ### Prohibiciones
 
@@ -150,7 +151,7 @@ Ver [`docs/roadmap.md`](./roadmap.md) para el plan estratégico v4.0.
 
 ```
 - [ ] docs/estado-presente.md tiene fecha actual
-- [ ] docs/roadmap.md refleja prioridades vigentes  
+- [ ] docs/roadmap.md refleja prioridades vigentes
 - [ ] docs/screen-map.md tiene conteo correcto de pantallas
 - [ ] No hay archivos duplicados (`find . -name "*old*" -o -name "*backup*"`)
 ```

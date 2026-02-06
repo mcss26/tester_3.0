@@ -34,12 +34,9 @@
   const pageCardEmpty = document.getElementById("page-card-empty");
   const btnClearSearch = document.getElementById("btn-clear-search");
 
-  // Page State Management
-  function setPageState({ loading = false, empty = false } = {}) {
-    pageCardLoading?.classList.toggle("is-visible", loading);
-    pageCardEmpty?.classList.toggle("is-visible", empty);
-    moduleContent?.classList.toggle("hidden", loading || empty);
-  }
+  // Page State Management (Global)
+  const ui = { pageCardLoading, pageCardEmpty, moduleContent };
+
 
   if (!window.Utils?.assertSbOrShowBlockingError?.(listContainer)) return;
 
@@ -224,14 +221,14 @@
     listContainer.innerHTML = rows.join("");
   }
 
-  // 4. Fetch Data
+    // 4. Fetch Data
   async function loadList() {
     listContainer.innerHTML = "";
-    pageCardEmpty?.classList.remove("is-visible");
     if (firstLoad) {
-      pageCardLoading?.classList.add("is-visible");
-      firstLoad = false;
+       window.Utils.setPageState(ui, { loading: true });
+       firstLoad = false;
     }
+
     try {
       const { data, error } = await window.sb
         .from("master_proveedores")
@@ -247,12 +244,13 @@
     } catch (err) {
       console.error("Error loading suppliers:", err);
       listContainer.innerHTML = errorState(err.message);
+      window.Utils.setPageState(ui, { loading: false });
     } finally {
       if (overlayTimer) {
         clearTimeout(overlayTimer);
         overlayTimer = null;
       }
-      pageCardLoading?.classList.remove("is-visible");
+      window.Utils.setPageState(ui, { loading: false });
     }
   }
 

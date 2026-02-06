@@ -14,6 +14,7 @@
     moduleContent: document.getElementById("module-content"),
     loadingState: document.getElementById("page-card-loading"),
     emptyState: document.getElementById("page-card-empty"),
+    btnReloadEmpty: document.getElementById("btn-reload-empty"),
 
     // Views containers
     viewPreAprobacion: document.getElementById("view-pre-aprobacion"),
@@ -32,15 +33,13 @@
     tabs: document.querySelectorAll("[data-tab]"),
     subtabs: document.querySelectorAll("[data-subtab]"),
 
-    // Stats
-    preapprovalStats: document.getElementById("preapproval-stats"),
+    // Stats (integrated in tabs/views)
     preapprovalCount: document.getElementById("preapproval-count"),
     preapprovalTotalBudget: document.getElementById("preapproval-total-budget"),
     unassignedStats: document.getElementById("unassigned-stats"),
     unassignedTotalBudget: document.getElementById("unassigned-total-budget"),
 
     // Actions
-    btnRefresh: document.getElementById("btn-refresh"),
     preapprovalBulkActions: document.getElementById("preapproval-bulk-actions"),
     btnPreapproveSelected: document.getElementById("btn-preapprove-selected"),
     btnPrerejectSelected: document.getElementById("btn-prereject-selected"),
@@ -60,6 +59,14 @@
     formPrereject: document.getElementById("form-prereject"),
     prerejectCount: document.getElementById("prereject-count"),
     prerejectReason: document.getElementById("prereject-reason"),
+
+    // Topbar Dropdowns
+    btnNotifications: document.getElementById("btn-notifications"),
+    menuNotifications: document.getElementById("notifications-menu"),
+    btnUserAvatar: document.getElementById("user-avatar"),
+    menuUser: document.getElementById("user-menu"),
+    logoutBtn: document.getElementById("btn-logout"),
+    userNameDisplay: document.getElementById("user-name-display"),
   };
 
   if (!window.Utils?.assertSbOrShowBlockingError?.(ui.listContainer)) return;
@@ -99,70 +106,53 @@
 
   function setPageState(state) {
     if (!window.Utils?.setPageState) return;
-    window.Utils.setPageState(state, {
+    const uiRefs = {
+      loadingState: ui.loadingState,
       moduleContent: ui.moduleContent,
-      loadingOverlay: ui.loadingState,
-      emptyOverlay: ui.emptyState,
-    });
-  }
-
-  // 6. Tab Logic
-  // 6. Tab Logic
-  const tabController = window.TabManager
-    ? window.TabManager.init({
-        tabs: ui.tabs,
-        defaultTab: activeTab,
-        onSwitch: (tabId) => {
-          activeTab = tabId;
-          refreshViews(tabId);
-        },
-      })
-    : null;
-
-  function refreshViews(tabId) {
-    // Hide all views and stats
-    [
-      ui.viewPreAprobacion,
-      ui.viewPendientes,
-      ui.viewUnassigned,
-      ui.viewHistorial,
-    ].forEach((v) => v?.classList.add("hidden"));
-    [ui.preapprovalStats, ui.unassignedStats].forEach((s) =>
-      s?.classList.add("hidden"),
-    );
-
-    if (tabId === "pre-aprobacion") {
-      ui.viewPreAprobacion?.classList.remove("hidden");
-      ui.preapprovalStats?.classList.remove("hidden");
-      loadPreApprovalItems();
-    } else if (tabId === "pendientes") {
-      ui.viewPendientes?.classList.remove("hidden");
-      loadOrders();
-    } else if (tabId === "sin-asignar") {
-      ui.viewUnassigned?.classList.remove("hidden");
-      ui.unassignedStats?.classList.remove("hidden");
-      loadUnassigned();
-    } else if (tabId === "historial") {
-      ui.viewHistorial?.classList.remove("hidden");
+      emptyState: ui.emptyState,
+    };
+    if (state === "loading") {
+      window.Utils.setPageState(uiRefs, { loading: true, empty: false });
+    } else if (state === "empty") {
+      window.Utils.setPageState(uiRefs, { loading: false, empty: true });
+    } else {
+      window.Utils.setPageState(uiRefs, { loading: false, empty: false });
     }
   }
 
-  // Initial load
-  refreshViews(activeTab);
+  // 6. Tab Logic (Custom implementation for is-active support)
+  function initTabs() {
+    ui.tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const newTab = tab.dataset.tab;
+            if (newTab === activeTab) return;
+            switchTab(newTab);
+        });
+    });
+    // Set initial state
+    switchTab(activeTab);
+  }
+
+  function switchTab(tabId) {
+    activeTab = tabId;
+    ui.tabs.forEach((t) => {
+      t.classList.toggle("is-active", t.dataset.tab === tabId);
+      // Remove legacy active class just in case
+      t.classList.remove("active");
+    });
+    refreshViews(tabId);
+  }
 
   function switchSubtab(subtabId) {
     activeSubtab = subtabId;
 
     ui.subtabs.forEach((t) => {
       t.classList.toggle("is-active", t.dataset.subtab === subtabId);
+      t.classList.remove("active");
     });
 
     ui.subviewPorItem?.classList.toggle("hidden", subtabId !== "item");
-    ui.subviewPorProveedor?.classList.toggle(
-      "hidden",
-      subtabId !== "proveedor",
-    );
-
+    ui.subviewPorProveedor?.classList.toggle("hidden", subtabId !== "proveedor");
     ui.preapprovalBulkActions?.classList.toggle("hidden", subtabId !== "item");
 
     if (subtabId === "item") renderPreApprovalByItem(preapprovalItems);
@@ -193,6 +183,7 @@
         preapprovalItems = [];
         renderPreApprovalByItem([]);
         updatePreApprovalStats([]);
+        setPageState("empty");
         return;
       }
 
@@ -326,22 +317,24 @@
       .join("");
 
     ui.subviewPorItem.innerHTML = `
-            <table class="table table-sticky">
-                <thead>
-                    <tr class="table-head">
-                        <th class="table-cell is-header cell-pad text-center" style="width: 40px;">
-                            <input type="checkbox" id="select-all-items" title="Seleccionar todos">
-                        </th>
-                        <th class="table-cell is-header cell-pad">SKU</th>
-                        <th class="table-cell is-header cell-pad text-center">Packs</th>
-                        <th class="table-cell is-header cell-pad text-center">Unidades</th>
-                        <th class="table-cell is-header cell-pad text-right">Costo Est.</th>
-                        <th class="table-cell is-header cell-pad">Proveedor</th>
-                        <th class="table-cell is-header cell-pad text-right">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>${rows}</tbody>
-            </table>
+            <div class="table-scroll">
+                <table class="table table-sticky table-compact">
+                    <thead>
+                        <tr class="table-head">
+                            <th class="table-cell is-header cell-pad text-center" style="width: 40px;">
+                                <input type="checkbox" id="select-all-items" title="Seleccionar todos">
+                            </th>
+                            <th class="table-cell is-header cell-pad">SKU</th>
+                            <th class="table-cell is-header cell-pad text-center">Packs</th>
+                            <th class="table-cell is-header cell-pad text-center">Unidades</th>
+                            <th class="table-cell is-header cell-pad text-right">Costo Est.</th>
+                            <th class="table-cell is-header cell-pad">Proveedor</th>
+                            <th class="table-cell is-header cell-pad text-right">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>${rows}</tbody>
+                </table>
+            </div>
         `;
   }
 
@@ -448,6 +441,7 @@
 
       if (requestIds.length === 0) {
         renderOrders([]);
+        setPageState("empty");
         return;
       }
 
@@ -546,20 +540,22 @@
       .join("");
 
     ui.listContainer.innerHTML = `
-            <table class="table table-sticky">
-                <thead>
-                    <tr class="table-head">
-                        <th class="table-cell is-header cell-pad">Proveedor</th>
-                        <th class="table-cell is-header cell-pad text-center">Items</th>
-                        <th class="table-cell is-header cell-pad text-right">Presupuesto Est.</th>
-                        <th class="table-cell is-header cell-pad text-right">Costo Final</th>
-                        <th class="table-cell is-header cell-pad text-center">Fecha Entrega</th>
-                        <th class="table-cell is-header cell-pad text-center">Estado</th>
-                        <th class="table-cell is-header cell-pad text-right">Acción</th>
-                    </tr>
-                </thead>
-                <tbody>${rows}</tbody>
-            </table>
+            <div class="table-scroll">
+                <table class="table table-sticky table-compact">
+                    <thead>
+                        <tr class="table-head">
+                            <th class="table-cell is-header cell-pad">Proveedor</th>
+                            <th class="table-cell is-header cell-pad text-center">Items</th>
+                            <th class="table-cell is-header cell-pad text-right">Presupuesto Est.</th>
+                            <th class="table-cell is-header cell-pad text-right">Costo Final</th>
+                            <th class="table-cell is-header cell-pad text-center">Fecha Entrega</th>
+                            <th class="table-cell is-header cell-pad text-center">Estado</th>
+                            <th class="table-cell is-header cell-pad text-right">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>${rows}</tbody>
+                </table>
+            </div>
         `;
   }
 
@@ -582,6 +578,7 @@
       const requestIds = (requests || []).map((r) => r.id);
       if (requestIds.length === 0) {
         renderUnassigned([], {});
+        setPageState("empty");
         return;
       }
 
@@ -671,18 +668,20 @@
       .join("");
 
     ui.unassignedContainer.innerHTML = `
-            <table class="table table-sticky">
-                <thead>
-                    <tr class="table-head">
-                        <th class="table-cell is-header cell-pad">SKU</th>
-                        <th class="table-cell is-header cell-pad text-center">Unidades</th>
-                        <th class="table-cell is-header cell-pad text-center">Pack</th>
-                        <th class="table-cell is-header cell-pad text-center">Total</th>
-                        <th class="table-cell is-header cell-pad text-right">Presupuesto</th>
-                    </tr>
-                </thead>
-                <tbody>${rows}</tbody>
-            </table>
+            <div class="table-scroll">
+                <table class="table table-sticky table-compact">
+                    <thead>
+                        <tr class="table-head">
+                            <th class="table-cell is-header cell-pad">SKU</th>
+                            <th class="table-cell is-header cell-pad text-center">Unidades</th>
+                            <th class="table-cell is-header cell-pad text-center">Pack</th>
+                            <th class="table-cell is-header cell-pad text-center">Total</th>
+                            <th class="table-cell is-header cell-pad text-right">Presupuesto</th>
+                        </tr>
+                    </thead>
+                    <tbody>${rows}</tbody>
+                </table>
+            </div>
         `;
 
     if (ui.unassignedTotalBudget)
@@ -726,8 +725,7 @@
     pendingRejectIds = itemIds;
     if (ui.prerejectCount) ui.prerejectCount.textContent = itemIds.length;
     if (ui.prerejectReason) ui.prerejectReason.value = "";
-    ui.modalPrereject?.classList.remove("hidden");
-    ui.modalPrereject?.classList.add("active");
+    ui.modalPrereject?.showModal();
   }
 
   async function submitPreReject(e) {
@@ -752,8 +750,7 @@
       if (error) throw error;
 
       window.Toast.success("Items rechazados");
-      ui.modalPrereject.classList.remove("active");
-      ui.modalPrereject.classList.add("hidden");
+      ui.modalPrereject.close();
       pendingRejectIds = [];
       selectedItemIds.clear();
       updateSelectionUI();
@@ -870,6 +867,35 @@
         .eq("id", id);
       if (error) throw error;
 
+      // Fase 5: Crear pago automático en finance_payments al aprobar
+      if (newStatus === "approved") {
+        const order = orders.find(o => o.id === id);
+        if (order) {
+          const paymentAmount = order.final_cost || order.presupuesto || 0;
+          const dueDate = order.eta_date || new Date().toISOString().split("T")[0];
+          
+          const { error: paymentError } = await window.sb
+            .from("finance_payments")
+            .insert({
+              supplier_id: order.items[0]?.master_sku?.proveedor_default_id || null,
+              supplier_order_id: order.id,
+              amount: paymentAmount,
+              due_date: dueDate,
+              status: "pending",
+              concept: `Pedido #${order.id.slice(0, 8)} - ${order.proveedor}`,
+              created_by: session.user.id,
+              created_at: new Date().toISOString(),
+            });
+
+          if (paymentError) {
+            console.error("Error creating automatic payment:", paymentError);
+            window.Toast?.warning("Orden aprobada, pero hubo error creando el pago: " + paymentError.message);
+          } else {
+            window.Toast?.info("💰 Pago agregado al calendario");
+          }
+        }
+      }
+
       panelCtrl.close();
       loadOrders();
       window.Toast.success("Estado actualizado");
@@ -897,6 +923,9 @@
       else if (activeTab === "sin-asignar") loadUnassigned();
     });
 
+    // Empty State Reload
+    ui.btnReloadEmpty?.addEventListener("click", () => location.reload());
+
     // Bulk Actions
     ui.btnPreapproveSelected?.addEventListener("click", () =>
       preApproveItems(Array.from(selectedItemIds)),
@@ -907,12 +936,6 @@
 
     // Modal Pre-Reject
     ui.formPrereject?.addEventListener("submit", submitPreReject);
-    ui.modalPrereject?.querySelectorAll("[data-modal-close]").forEach((b) => {
-      b.addEventListener("click", () => {
-        ui.modalPrereject.classList.remove("active");
-        ui.modalPrereject.classList.add("hidden");
-      });
-    });
 
     // View Selection: Pre-Aprobacion
     ui.viewPreAprobacion?.addEventListener("change", (e) => {
@@ -986,9 +1009,35 @@
     });
 
     // Logout
-    document
-      .getElementById("btn-logout")
-      ?.addEventListener("click", () => window.Auth.signOutAndGoLogin());
+    ui.logoutBtn?.addEventListener("click", () =>
+      window.Auth.signOutAndGoLogin(),
+    );
+
+    // Topbar Dropdowns
+    setupDropdown(ui.btnNotifications, ui.menuNotifications);
+    setupDropdown(ui.btnUserAvatar, ui.menuUser);
+  }
+
+  function setupDropdown(trigger, menu) {
+    if (!trigger || !menu) return;
+    
+    trigger.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const isHidden = menu.classList.contains("hidden");
+      // Close all others first
+      document.querySelectorAll(".dropdown-menu").forEach(m => m.classList.add("hidden"));
+      
+      if (isHidden) {
+        menu.classList.remove("hidden");
+      }
+    });
+
+    // Close on click outside
+    document.addEventListener("click", (e) => {
+        if (!menu.contains(e.target) && !trigger.contains(e.target)) {
+            menu.classList.add("hidden");
+        }
+    });
   }
 
   // Init

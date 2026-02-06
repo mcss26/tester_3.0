@@ -5,23 +5,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Midnight - Jornadas</title>
-    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/tokens.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
 </head>
 
 <body class="app-shell admin-shell admin-scroll" data-allowed-roles="admin,contable">
 
-    <!-- Topbar -->
-    <header class="app-topbar">
+    <!-- Topbar (layout_patterns standard) -->
+    <header class="topbar" style="background: var(--bg-surface); border-bottom: 1px solid var(--border-subtle);">
         <div class="topbar-left">
-            <button class="btn-icon btn-icon-flat" data-go="pages/admin/admin-index.html" aria-label="Volver">←</button>
-            <span class="topbar-back">Inicio</span>
+            <nav class="breadcrumb">
+                <a href="admin-index.html" class="breadcrumb-item">Admin</a>
+                <span class="breadcrumb-sep">/</span>
+                <span class="breadcrumb-item current">Workdays</span>
+            </nav>
         </div>
-        <nav class="topbar-center">
-            <!-- Title or Tabs -->
-            <span class="topbar-brand">Gestión de Jornadas</span>
-        </nav>
+
+        <!-- Date Badge (centered status indicator) -->
+        <div id="date-badge" class="status-pill status-open">Cargando...</div>
+
         <div class="topbar-right">
-            <span class="system-status-pill status-open topbar-pill topbar-pill-quiet">Estado: OK</span>
+            <div class="avatar" id="user-avatar">JS</div>
         </div>
     </header>
 
@@ -49,61 +53,114 @@
                 </div>
 
                 <div id="module-content">
-                    <div class="planner-dashboard">
-                        <!-- Header KPIs -->
-                        <div class="kpi-strip">
-                            <div class="kpi-badge">
-                                <span class="kpi-label">Costo Staff (Est.)</span>
-                                <span class="kpi-value" id="kpi-staff-cost">$0</span>
-                            </div>
-                            <div class="kpi-badge kpi-fixed">
-                                <span class="kpi-label">Costo Apertura</span>
-                                <span class="kpi-value" id="kpi-fixed-cost">$0</span>
-                            </div>
-                            <div class="kpi-badge kpi-total">
-                                <span class="kpi-label">Break-even Total</span>
-                                <span class="kpi-value" id="kpi-total-cost">$0</span>
-                            </div>
+                    <!-- Dashboard Header -->
+                    <header class="dashboard-header">
+                        <div class="dashboard-title-block">
+                            <h1>Planificación de Jornada</h1>
+                            <p id="dashboard-subtitle">Selecciona una fecha para comenzar</p>
                         </div>
+                        <div class="dashboard-actions">
+                            <button class="btn btn-outline" id="btn-back-list">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M3 12h18M3 6h18M3 18h18"></path>
+                                </svg>
+                                Historial
+                            </button>
+                        </div>
+                    </header>
 
-                        <!-- PANEL A: Definición del Evento -->
-                        <section class="planner-section">
-                            <div class="panel-title-row">
-                                <span>A. Definición de la Jornada</span>
-                                <span class="status-pill staff-status-pending" id="workday-status-indicator">Estado:
-                                    Planning</span>
-                            </div>
-                            <div class="planner-row" style="margin-top:16px;">
-                                <div class="planner-col">
+                    <!-- Historial Compacto (últimas 3 jornadas) -->
+                    <div class="history-compact" id="history-compact">
+                        <button class="history-chip" data-offset="-1">← Anterior</button>
+                        <button class="history-chip active" data-offset="0">Hoy</button>
+                        <button class="history-chip" data-offset="1">Siguiente →</button>
+                    </div>
+
+                    <!-- Stats Grid (4 KPIs) -->
+                    <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr);">
+                        <div class="stat-card">
+                            <div class="stat-label">Costo Staff</div>
+                            <div class="stat-value" id="kpi-staff-cost">$0</div>
+                            <div class="stat-delta" id="kpi-staff-delta"></div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Costo Apertura</div>
+                            <div class="stat-value" id="kpi-fixed-cost">$0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Break-even</div>
+                            <div class="stat-value" id="kpi-total-cost">$0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Convocatoria</div>
+                            <div class="stat-value" id="kpi-staff-status">—/—</div>
+                            <div class="stat-delta text-warning" id="kpi-staff-pending"></div>
+                        </div>
+                    </div>
+
+                    <div class="planner-layout">
+
+                        <!-- SIDEBAR: Configuración y Costos -->
+                        <aside class="planner-sidebar">
+
+                            <!-- PANEL A: Definición -->
+                            <section class="planner-section">
+                                <div class="panel-title-row">
+                                    <span>A. Definición</span>
+                                    <div style="display:flex; gap:8px; align-items:center;">
+                                        <span class="status-pill staff-status-pending"
+                                            id="workday-status-indicator">Draft</span>
+                                        <button class="btn-secondary btn-sm" id="btn-new-event"
+                                            title="Crear nuevo evento">+
+                                            Evento</button>
+                                    </div>
+                                </div>
+
+                                <div class="planner-col mt-4">
                                     <label class="form-label">Fecha Operativa</label>
                                     <input type="date" id="input-date" class="input" required>
                                 </div>
-                                <div class="planner-col">
-                                    <label class="form-label">Evento (Calendario)</label>
-                                    <div style="display:flex; gap:8px;">
-                                        <select id="select-event" class="input" style="flex:1;">
-                                            <option value="">-- Sin Evento Vinculado --</option>
-                                        </select>
-                                        <button class="btn-secondary btn-sm" id="btn-new-event" title="Crear evento">+</button>
-                                    </div>
-                                </div>
-                                <div class="planner-col"
-                                    style="flex:0; min-width:140px; display:flex; align-items:center; gap:8px; padding-top:24px;">
-                                    <input type="checkbox" id="check-high-demand" class="checkbox">
-                                    <label for="check-high-demand" class="form-label"
-                                        style="margin:0; font-size:12px;">Alta Demanda</label>
-                                </div>
-                            </div>
-                        </section>
 
-                        <div class="planner-grid">
-                            <!-- PANEL B: Recursos Humanos -->
-                            <div class="planner-panel">
+                                <div class="planner-col mt-4">
+                                    <label class="form-label">Evento Vinculado</label>
+                                    <select id="select-event" class="input">
+                                        <option value="">-- Sin Evento --</option>
+                                    </select>
+                                </div>
+
+                                <div class="planner-col mt-4" style="display:flex; align-items:center; gap:8px;">
+                                    <input type="checkbox" id="check-high-demand" class="checkbox">
+                                    <label for="check-high-demand" class="form-label" style="margin:0;">Alta
+                                        Demanda</label>
+                                </div>
+
+                                <div class="planner-col mt-4">
+                                    <label class="form-label">Countdown Web</label>
+                                    <select id="select-countdown-event" class="input">
+                                        <option value="">-- Sin countdown --</option>
+                                    </select>
+                                </div>
+
+                                <div class="planner-col mt-4">
+                                    <label class="form-label">Notas</label>
+                                    <textarea id="input-notes" class="input" rows="2"
+                                        placeholder="Notas internas..."></textarea>
+                                </div>
+                            </section>
+
+                        </aside>
+
+                        <!-- MAIN CANVAS: Staff + Costos -->
+                        <main class="planner-canvas">
+
+                            <!-- PANEL B: Staff -->
+                            <div class="planner-panel panel-staff">
                                 <div class="panel-title-row">
                                     <span>B. Dimensionamiento de Staff</span>
                                     <span class="badge" id="staff-subtotal">$0</span>
                                 </div>
-                                <div class="panel-scroll" id="staff-container">
+                                <div class="panel-scroll scroll-staff" id="staff-container">
                                     <div class="state-block loading">
                                         <div class="state-loader"></div>
                                         <p class="state-title">Cargando roles...</p>
@@ -111,13 +168,17 @@
                                 </div>
                             </div>
 
-                            <!-- PANEL C: Costos de Apertura -->
-                            <div class="planner-panel">
+                            <!-- PANEL C: Costos -->
+                            <div class="planner-panel panel-costs">
                                 <div class="panel-title-row">
-                                    <span>C. Costos de Apertura</span>
-                                    <span class="badge" id="costs-subtotal">$0</span>
+                                    <span>C. Costos Apertura</span>
+                                    <div style="display:flex; gap:8px; align-items:center;">
+                                        <span class="badge" id="costs-subtotal">$0</span>
+                                        <button class="btn-secondary btn-sm" id="btn-add-cost" title="Agregar costo">+
+                                            Costo</button>
+                                    </div>
                                 </div>
-                                <div class="panel-scroll" id="costs-container">
+                                <div class="panel-scroll scroll-costs" id="costs-container">
                                     <div class="state-block loading">
                                         <div class="state-loader"></div>
                                         <p class="state-title">Cargando costos...</p>
@@ -125,52 +186,38 @@
                                 </div>
                             </div>
 
-                            <!-- PANEL D: Solicitudes Pendientes -->
-                            <div class="planner-panel">
-                                <div class="panel-title-row">
-                                    <span>D. Solicitudes Pendientes</span>
-                                    <span class="badge" id="requests-count">0</span>
-                                </div>
-                                <div class="panel-scroll" id="requests-container">
-                                    <div class="state-block loading">
-                                        <div class="state-loader"></div>
-                                        <p class="state-title">Cargando solicitudes...</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        </main>
 
-                        <!-- FOOTER: Notas y Acciones -->
-                        <footer class="planner-footer">
-                            <div class="form-group" style="margin:0">
-                                <label class="form-label">Notas de Planificación</label>
-                                <textarea id="input-notes" class="input" rows="2"
-                                    placeholder="Detalles específicos para esta jornada..."></textarea>
-                            </div>
-
-                            <!-- Configuración Web: Countdown -->
-                            <div class="form-group" style="margin-top:16px; padding-top:16px; border-top:1px solid var(--border-subtle);">
-                                <label class="form-label">Evento Countdown (Web pública)</label>
-                                <div style="display:flex; gap:8px; align-items:center;">
-                                    <select id="select-countdown-event" class="input" style="flex:1;">
-                                        <option value="">-- Sin countdown --</option>
-                                    </select>
-                                    <button class="btn-secondary btn-sm" id="btn-save-countdown">Guardar</button>
-                                </div>
-                                <small style="color:var(--text-muted); font-size:11px; margin-top:4px; display:block;">Este evento aparecerá en el contador regresivo de la web pública.</small>
-                            </div>
-
-                            <div class="footer-actions">
-                                <button class="btn-secondary" id="btn-back-list">Ver Historial</button>
-                                <button class="btn-primary" id="btn-confirm-jornada">Confirmar y Abrir Jornada</button>
-                            </div>
-                        </footer>
                     </div>
-                </div>
 
+                </div> <!-- /module-content -->
             </div>
         </div>
     </main>
+
+    <!-- Sticky Footer -->
+    <footer class="sticky-footer">
+        <div class="footer-status">
+            <span class="status-pill staff-status-pending" id="sticky-status">Draft</span>
+            <span id="sticky-date">Sin fecha seleccionada</span>
+        </div>
+        <div class="footer-actions">
+            <button class="btn btn-outline" id="btn-save-planning" disabled>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                    <polyline points="7 3 7 8 15 8"></polyline>
+                </svg>
+                Guardar
+            </button>
+            <button class="btn btn-primary" id="btn-confirm-jornada" disabled>
+                Abrir Jornada
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"></path>
+                </svg>
+            </button>
+        </div>
+    </footer>
 
     <!-- Slide Panel (List View para Historial) -->
     <div class="panel-overlay" id="panel-overlay"></div>
@@ -224,13 +271,39 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Cantidad de QRs a generar</label>
-                    <input type="number" id="input-event-qr-qty" class="input" min="0" max="500" value="0" placeholder="0 = sin QRs">
-                    <small style="color:var(--text-muted); font-size:11px;">Dejar en 0 para no generar entradas automáticamente.</small>
+                    <input type="number" id="input-event-qr-qty" class="input" min="0" max="500" value="0"
+                        placeholder="0 = sin QRs">
+                    <small style="color:var(--text-muted); font-size:11px;">Dejar en 0 para no generar entradas
+                        automáticamente.</small>
                 </div>
             </div>
             <div class="modal-footer">
                 <button class="btn-secondary" id="btnCancelEventModal">Cancelar</button>
                 <button class="btn-primary" id="btnCreateEvent">Crear Evento</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Cost Modal -->
+    <div class="modal-overlay hidden" id="costModal">
+        <div class="modal-card modal-sm">
+            <div class="modal-header">
+                <h2 class="modal-title" id="costModalTitle">Agregar Costo de Apertura</h2>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Nombre del costo</label>
+                    <input type="text" id="input-cost-name" class="input" placeholder="Ej: Alquiler de equipo">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Monto ($)</label>
+                    <input type="number" id="input-cost-amount" class="input" min="0" step="100" placeholder="0">
+                </div>
+                <input type="hidden" id="input-cost-id">
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="btnCancelCostModal">Cancelar</button>
+                <button class="btn-primary" id="btnSaveCost">Guardar Costo</button>
             </div>
         </div>
     </div>
@@ -243,8 +316,8 @@
     <script src="../../assets/js/core/auth.js"></script>
     <script src="../../assets/js/core/utils.js"></script>
     <script src="../../assets/js/core/toast.js"></script>
-    <script src="../../assets/js/modules/work-day-helper.js"></script>
-    <script src="../../assets/js/modules/panel.js"></script>
+    <script src="../../assets/js/core/work-day-helper.js"></script>
+    <script src="../../assets/js/core/panel.js"></script>
     <script src="../../assets/js/core/navigation.js"></script>
     <script src="../../assets/js/modules/admin/admin-workdays.js"></script>
 

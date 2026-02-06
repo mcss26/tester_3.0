@@ -8,6 +8,11 @@ let importFileName = ''
 // Ensure Supabase client is available
 const sb = window.sb;
 
+// Helper to access CSS Theme Colors
+function getThemeColor(varName, fallback) {
+    return getComputedStyle(document.documentElement).getPropertyValue(varName).trim() || fallback;
+}
+
 // --- INITIALIZATION ---
 
 window.loadOperativoAnalysis = function() {
@@ -633,6 +638,14 @@ window.loadHistoryChart = async function() {
         .slice(0, 5)
 
     // 4. Build Datasets
+    const themeColors = [
+        getThemeColor('--color-danger', '#ff3b30'),
+        getThemeColor('--color-warning', '#ff9500'),
+        getThemeColor('--color-success', '#34c759'),
+        getThemeColor('--color-info', '#007aff'),
+        getThemeColor('--color-primary', '#5856d6')
+    ]
+
     const datasets = top5.map((sku, index) => {
         const data = dates.map(date => {
             // Find report ID for this date
@@ -644,19 +657,13 @@ window.loadHistoryChart = async function() {
             return det ? det.quantity : 0
         })
 
-        const colors = [
-            '#ff3b30', // Red
-            '#ff9500', // Orange
-            '#ff6b5b', // Soft red
-            '#ffb347', // Amber
-            '#ff7a1a'  // Deep orange
-        ]
+        const color = themeColors[index % themeColors.length];
 
         return {
             label: sku.name,
             data: data,
-            borderColor: colors[index % colors.length],
-            backgroundColor: colors[index % colors.length],
+            borderColor: color,
+            backgroundColor: color,
             tension: 0.1,
             fill: false
         }
@@ -666,6 +673,9 @@ window.loadHistoryChart = async function() {
          // Fallback if no data
          datasets.push({ label: 'Sin Datos', data: [] })
     }
+
+    const textColor = getThemeColor('--color-text-muted', '#a0a0a0');
+    const gridColor = getThemeColor('--color-border', 'rgba(255,255,255,0.06)');
 
     chartInstance = new Chart(ctx, {
         type: 'line',
@@ -683,24 +693,24 @@ window.loadHistoryChart = async function() {
                 title: {
                     display: true,
                     text: 'Top 5 Productos Más Consumidos (Últimos 30 días)',
-                    color: '#e0e0e0'
+                    color: getThemeColor('--color-text-main', '#e0e0e0')
                 },
                 legend: {
                     position: 'top',
                     labels: {
                         usePointStyle: true,
-                        color: '#e0e0e0'
+                        color: textColor
                     }
                 }
             },
             scales: {
                 x: {
-                    ticks: { color: '#a0a0a0' },
-                    grid: { color: 'rgba(255,255,255,0.06)' }
+                    ticks: { color: textColor },
+                    grid: { color: gridColor }
                 },
                 y: {
-                    ticks: { color: '#a0a0a0' },
-                    grid: { color: 'rgba(255,255,255,0.06)' }
+                    ticks: { color: textColor },
+                    grid: { color: gridColor }
                 }
             }
         }

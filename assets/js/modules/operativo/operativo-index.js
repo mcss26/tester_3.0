@@ -20,7 +20,11 @@
     // New references for widget
     statusWidget: document.getElementById("system-status-widget"),
     statusValue: document.getElementById("system-status-value"),
+    moduleContent: document.querySelector(".module-grid") || document.body, // Fallback
+    pageCardLoading: document.getElementById("page-card-loading")
   };
+
+  if (!window.Utils.assertSbOrShowBlockingError()) return;
 
   // 3. Fetch User Profile
   async function loadProfile() {
@@ -109,6 +113,10 @@
   }
 
   // Init
-  await Promise.all([loadProfile(), loadSystemStatus()]);
-  initMcoQrWidget();
+  window.Utils.setPageState(ui, { loading: true });
+  try {
+    await Promise.all([loadProfile(), loadSystemStatus()]);
+    initMcoQrWidget();
+  } catch(e) { console.error(e); }
+  window.Utils.setPageState(ui, { loading: false });
 })();

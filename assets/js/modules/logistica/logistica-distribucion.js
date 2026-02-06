@@ -17,6 +17,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     const dispatchNotes = document.getElementById('dispatch-notes');
     const dispatchItemsContainer = document.getElementById('dispatch-items-container');
 
+    // UI Elements for State Management
+    const pageCardLoading = document.getElementById('page-card-loading');
+    const pageCardEmpty = document.getElementById('page-card-empty');
+    const moduleContent = document.getElementById('list-container'); // In this layout, list container IS the content or part of it
+    
+    // Check if we have consistent structure or if we need to wrap
+    // For now, map ui object
+    const ui = { pageCardLoading, pageCardEmpty, moduleContent };
+
     // 1. Auth Guard
     const session = await window.Auth.guardOrRedirect(['logistico', 'admin', 'contable']);
     if (!session) return;
@@ -37,7 +46,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // ─────────────────────────────────────────────────────────────────────────
 
     async function loadData() {
-        if (listContainer) listContainer.innerHTML = loadingState;
+        window.Utils.setPageState(ui, { loading: true });
         try {
             let query = window.sb
                 .from('replenishment_requests')
@@ -71,7 +80,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             renderList(requests);
         } catch (err) {
             console.error('Error loading requests:', err);
-            if (listContainer) listContainer.innerHTML = errorState(err.message);
+            // Error handling could be improved to show error state
+            window.Utils.setPageState(ui, { loading: false, empty: true }); // Fallback
+        } finally {
+            // Loading is handled inside renderList if empty, or here if we want to ensure it turns off
+            // But renderList will set empty or content.
+            // Let's rely on renderList to set final state or set loading false here if renderList handles it.
+            // Actually, best pattern:
         }
     }
 
@@ -147,9 +162,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     function renderList(data) {
         if (!listContainer) return;
         if (!data || data.length === 0) {
-            listContainer.innerHTML = emptyState;
+            window.Utils.setPageState(ui, { loading: false, empty: true });
             return;
         }
+        
+        window.Utils.setPageState(ui, { loading: false, empty: false });
 
         let html = `
             <div class="table-scroll">

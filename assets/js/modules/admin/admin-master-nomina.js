@@ -34,6 +34,9 @@
     const pageCardLoading = document.getElementById('page-card-loading');
     const pageCardEmpty = document.getElementById('page-card-empty');
     const btnClearSearch = document.getElementById('btn-clear-search');
+    
+    const ui = { pageCardLoading, pageCardEmpty, moduleContent: listContainer };
+
 
     // Tabs & View Containers
     const tabNomina = document.getElementById('tab-nomina');
@@ -298,9 +301,8 @@
     // 4. Fetch Data
     async function loadList() {
         listContainer.innerHTML = '';
-        pageCardEmpty?.classList.remove('is-visible');
         if (firstLoad) {
-            pageCardLoading?.classList.add('is-visible');
+            window.Utils.setPageState(ui, { loading: true });
             firstLoad = false;
         }
         try {
@@ -323,7 +325,7 @@
                 clearTimeout(overlayTimer);
                 overlayTimer = null;
             }
-            pageCardLoading?.classList.remove('is-visible');
+            window.Utils.setPageState(ui, { loading: false });
         }
     }
 

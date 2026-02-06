@@ -13,7 +13,27 @@ window.Auth = {
   },
 
   toAppPath(relPath) {
-    const clean = String(relPath || "").replace(/^\/+/, "");
+    let clean = String(relPath || "").replace(/^\/+/, "");
+
+    // Auto-append .html for local dev if missing
+    // Logic: If on localhost/file and path looks like a page (no extension), add .html
+    // This allows cleaner code usage like 'pages/admin/index' while validating locally.
+    const isLocal =
+      ["localhost", "127.0.0.1", "", "0.0.0.0"].includes(
+        window.location.hostname,
+      ) || window.location.protocol === "file:";
+
+    if (isLocal) {
+      // Ignore if already has extension, or query/hash
+      if (
+        !clean.match(/\.[a-z0-9]+$/i) &&
+        !clean.includes("?") &&
+        !clean.includes("#")
+      ) {
+        clean += ".html";
+      }
+    }
+
     return this.appBasePath() + clean;
   },
 

@@ -1,7 +1,8 @@
 {
     "builder.serverUrl": "https://localhost8000",
     "builder.command": "npm\n",
-    "builder.runDevServer": true,
+    "builder.runDevServer": false,
     "builder.autoDetectDevServer": true,
-    "builder.launchType": "editor"
+    "builder.launchType": "editor",
+    "pdf-preview.default.sidebar": false
 }

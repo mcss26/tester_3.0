@@ -161,19 +161,23 @@
   const setPageState = (ui, { loading = false, empty = false }) => {
     if (!ui) return;
     
+    const loader = ui.loadingState || ui.pageCardLoading;
+    const content = ui.moduleContent || ui.contentWrap;
+    const emptyState = ui.emptyState || ui.pageCardEmpty;
+
     // Toggle containers
     if (loading) {
-      if (ui.loadingState) ui.loadingState.classList.add('is-visible');
-      if (ui.moduleContent) ui.moduleContent.classList.add('hidden');
-      if (ui.emptyState) ui.emptyState.classList.remove('is-visible');
+      if (loader) loader.classList.add('is-visible');
+      if (content) content.classList.add('hidden');
+      if (emptyState) emptyState.classList.remove('is-visible');
     } else if (empty) {
-      if (ui.loadingState) ui.loadingState.classList.remove('is-visible');
-      if (ui.moduleContent) ui.moduleContent.classList.add('hidden');
-      if (ui.emptyState) ui.emptyState.classList.add('is-visible');
+      if (loader) loader.classList.remove('is-visible');
+      if (content) content.classList.add('hidden');
+      if (emptyState) emptyState.classList.add('is-visible');
     } else {
-      if (ui.loadingState) ui.loadingState.classList.remove('is-visible');
-      if (ui.moduleContent) ui.moduleContent.classList.remove('hidden');
-      if (ui.emptyState) ui.emptyState.classList.remove('is-visible');
+      if (loader) loader.classList.remove('is-visible');
+      if (content) content.classList.remove('hidden');
+      if (emptyState) emptyState.classList.remove('is-visible');
     }
   };
 

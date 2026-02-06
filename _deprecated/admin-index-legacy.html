@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Midnight - Administración</title>
+
+  <!-- Estilo Base -->
+  <link rel="stylesheet" href="../../assets/css/main.css">
+
+
+  <!-- Estilo Específico -->
+  <link rel="stylesheet" href="../../assets/css/pages/admin-index.css">
+
+</head>
+
+<body class="app-shell admin-shell">
+
+
+  <main class="page-shell">
+
+    <!-- 1. HEADER (Glassmorphism) -->
+    <header class="dashboard-header fade-in">
+      <div class="welcome-text">
+        <p class="label-welcome">Bienvenido</p>
+        <h1 id="user-name">...</h1>
+        <p class="role-subtitle">Administración de <strong>MIDNIGHT CLUB</strong></p>
+      </div>
+
+      <!-- System Status KPIs -->
+      <div class="status-row">
+        <!-- Work Day Status -->
+        <div id="system-status" class="kpi-widget hidden">
+          <span class="kpi-dot"></span>
+          <span class="kpi-text">JORNADA: <span id="work-day-date" class="kpi-value">--</span></span>
+        </div>
+
+        <!-- QR Widget -->
+        <div id="qr-live-widget" class="kpi-widget live hidden" aria-live="polite">
+          <span class="kpi-dot"></span>
+          <span class="kpi-text">INGRESOS: <span id="qr-live-count" class="kpi-value">0</span></span>
+        </div>
+
+        <!-- MCO QR Widget -->
+        <div id="mco-qr-widget" class="kpi-widget hidden" style="border-color: var(--accent-gold, #e4d2a8);">
+          <span class="kpi-dot" style="background: var(--accent-gold, #e4d2a8);"></span>
+          <span class="kpi-text">MCO: <span id="mco-qr-generated" class="kpi-value">0</span> / <span
+              id="mco-qr-validated" class="kpi-value" style="color: var(--success, #4ade80);">0</span></span>
+        </div>
+      </div>
+    </header>
+
+    <!-- 2. NAVIGATION (Segmented Control) -->
+    <nav class="segmented-control fade-in" style="animation-delay: 0.1s;">
+      <button class="segment-btn active" data-role="admin">ADMIN</button>
+      <button class="segment-btn" data-role="operativo">OPERATIVO</button>
+      <button class="segment-btn" data-role="logistica">LOGÍSTICA</button>
+      <button class="segment-btn" data-role="encargado">ENCARGADO</button>
+      <button class="segment-btn" data-role="staff">STAFF</button>
+    </nav>
+
+    <!-- 3. SIMPLIFIED MODULE GRID -->
+    <section id="main-grid" class="module-grid active">
+
+      <!-- SINGLE COLUMN: CORE MODULES -->
+      <div class="module-column">
+        <h3>MÓDULOS PRINCIPALES</h3>
+
+        <a href="#" data-go="pages/admin/admin-workdays.html" class="module-card" data-visible-roles="admin">Jornadas
+          (Workdays)</a>
+        <a href="#" data-go="pages/admin/admin-central-stock.html" class="module-card" data-visible-roles="admin">Stock
+          Central</a>
+        <a href="#" data-go="pages/admin/admin-pagos.html" class="module-card" data-visible-roles="admin">Pagos
+          (Payments)</a>
+      </div>
+
+    </section>
+
+  </main>
+  <!-- Scripts -->
+  <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script defer src="../../assets/js/core/config.js"></script>
+  <script defer src="../../assets/js/core/supabase-client.js"></script>
+  <script defer src="../../assets/js/core/utils.js"></script>
+  <script defer src="../../assets/js/core/auth.js"></script>
+  <script defer src="../../assets/js/core/toast.js"></script>
+  <script defer src="../../assets/js/core/work-day-helper.js"></script>
+  <script src="../../assets/js/core/navigation.js"></script>
+  <script defer src="../../assets/js/modules/admin/admin-index.js"></script>
+  <footer class="footer">
+    <button id="btn-logout" class="footer-link">Cerrar Sesión</button>
+  </footer>
+
+</body>
+
+</html>

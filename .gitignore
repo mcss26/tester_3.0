@@ -1,10 +1,29 @@
-.agent/
+# Build/Dependencies
 node_modules/
-.DS_Store
-.env
-.vscode/settings.json
-/.vscode
-/.vscode
-.vscode/settings.json
-
 .config/
+
+# Environment
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Agent/AI
+.agent/
+
+# Logs
+*.log
+
+# Sandbox Dev Tools (local only)
+assets/sandbox.html
+assets/sandbox.md
+assets/preview.html
+assets/preview.md
+assets/preview-demo.html
+assets/Midnight UI Kit*.jpg

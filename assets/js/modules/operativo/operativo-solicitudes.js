@@ -109,35 +109,36 @@
   async function populateItems() {
     if (!state.currentRequestId) return;
 
-    const { data: existingSample, error: existingSampleError } = await window.sb
+    // 1. Get all currently existing SKU IDs in this request to avoid duplicates
+    // We fetch ALL (or a large limit) to ensure we don't duplicate.
+    const { data: existingItems, error: existingItemsError } = await window.sb
       .from("replenishment_items")
-      .select("id")
-      .eq("request_id", state.currentRequestId)
-      .limit(1);
-    if (existingSampleError) throw existingSampleError;
-    if (existingSample && existingSample.length > 0) return;
+      .select("sku_id")
+      .eq("request_id", state.currentRequestId);
+    
+    if (existingItemsError) throw existingItemsError;
 
+    const existingIds = new Set(
+      (existingItems || []).map((i) => String(i.sku_id)),
+    );
+
+    // 2. Fetch all Low Stock items from the view
+    // "Bajo" implies current < required (or min/ideal logic in the view)
     const { data: lowStock, error: lowStockError } = await window.sb
       .from("vw_stock_global")
       .select("*")
       .eq("activo", true)
       .eq("estado", "Bajo");
+
     if (lowStockError) throw lowStockError;
     if (!lowStock || lowStock.length === 0) return;
 
-    const { data: existingItems } = await window.sb
-      .from("replenishment_items")
-      .select("sku_id")
-      .eq("request_id", state.currentRequestId);
-    const existingIds = new Set(
-      (existingItems || []).map((i) => String(i.sku_id)),
-    );
-
+    // 3. Filter for items that are NOT in the request yet
     const toInsert = [];
     lowStock.forEach((row) => {
       const skuId = row.sku_id;
       if (!skuId) return;
-      if (existingIds.has(String(skuId))) return;
+      if (existingIds.has(String(skuId))) return; // Already exists
 
       const stockActual = row.stock_actual ?? 0;
       const requerido = row.requerido ?? 0;
@@ -150,13 +151,15 @@
           request_id: state.currentRequestId,
           sku_id: skuId,
           requested_packs: reqPacks,
-          supplier_id: row.proveedor_default_id || null,
+          supplier_id: row.proveedor_default_id || null, // Auto-select default provider if available
           status: "pending",
         });
       }
     });
 
+    // 4. Insert new items found
     if (toInsert.length > 0) {
+      console.log(`[OperativoSolicitudes] Adding ${toInsert.length} new low-stock items.`);
       await window.sb.from("replenishment_items").insert(toInsert);
     }
   }

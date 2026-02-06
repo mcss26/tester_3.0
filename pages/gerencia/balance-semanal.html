@@ -11,57 +11,100 @@
     <div class="center-content">
         <!-- Header -->
         <header class="operativo-header">
-            <div class="flex items-center gap-4">
-                <a href="#" data-go="pages/admin/admin-index.html" class="footer-link back-link">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M15 18l-6-6 6-6" />
-                    </svg>
-                    Volver
-                </a>
+            <div class="row-flex align-center gap-md">
+                <button class="footer-link back-link" onclick="window.history.back()">
+                    <div class="icon-box">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M15 18l-6-6 6-6" />
+                        </svg>
+                    </div>
+                    <span>Volver</span>
+                </button>
                 <h1 class="panel-title">Balance Semanal</h1>
             </div>
         </header>
 
-        <main class="w-full max-w-5xl">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <main class="page-shell w-full max-w-1000">
+
+            <!-- KPI Cards -->
+            <div class="grid-columns gap-md" style="margin-bottom: var(--space-lg); --grid-cols: 3;">
                 <!-- KPI Card -->
-                <div class="bg-white/5 p-6 rounded-2xl border border-white/10">
-                    <h3 class="text-xs uppercase tracking-wider text-white/50 mb-2">Ingresos Totales</h3>
-                    <div class="text-3xl font-mono text-green-400">$0</div>
+                <div class="stat-card">
+                    <h3 class="stat-label">Ingresos Totales</h3>
+                    <div class="stat-value status-success" id="kpi-income">$0.00</div>
+                    <div class="stat-trend" id="kpi-income-trend">--</div>
                 </div>
                 <!-- KPI Card -->
-                <div class="bg-white/5 p-6 rounded-2xl border border-white/10">
-                    <h3 class="text-xs uppercase tracking-wider text-white/50 mb-2">Gastos Operativos</h3>
-                    <div class="text-3xl font-mono text-red-400">$0</div>
+                <div class="stat-card">
+                    <h3 class="stat-label">Gastos Operativos</h3>
+                    <div class="stat-value status-error" id="kpi-expenses">$0.00</div>
+                    <div class="stat-trend" id="kpi-expenses-trend">--</div>
                 </div>
                 <!-- KPI Card -->
-                <div class="bg-white/5 p-6 rounded-2xl border border-white/10 relative overflow-hidden">
-                    <div class="absolute inset-0 bg-gradient-to-br from-accent/20 to-transparent pointer-events-none">
-                    </div>
-                    <h3 class="text-xs uppercase tracking-wider text-white/50 mb-2">Profit Semanal</h3>
-                    <div class="text-3xl font-mono text-white">$0</div>
+                <div class="stat-card is-highlight">
+                    <h3 class="stat-label">Profit Semanal</h3>
+                    <div class="stat-value text-white" id="kpi-profit">$0.00</div>
+                    <div class="stat-trend" id="kpi-profit-margin">Margen: 0%</div>
                 </div>
             </div>
 
-            <!-- Detailed Table Placeholder -->
+            <!-- Detailed Table -->
             <div class="staff-dashboard">
-                <div class="dashboard-header mb-4">
-                    <h2 class="dashboard-title">Detalle de Movimientos</h2>
+                <div class="dashboard-header flex-between align-center" style="margin-bottom: var(--space-md);">
+                    <h2 class="dashboard-title">Detalle Semanal</h2>
+                    <div class="row-flex gap-sm">
+                        <select id="filter-year" class="input input-sm">
+                            <option value="2026">2026</option>
+                            <option value="2025">2025</option>
+                        </select>
+                        <select id="filter-month" class="input input-sm">
+                            <option value="all">Todo el Año</option>
+                            <option value="1">Enero</option>
+                            <option value="2">Febrero</option>
+                            <!-- JS will populate if needed -->
+                        </select>
+                        <button id="btn-refresh" class="btn-icon btn-ghost" title="Actualizar">↻</button>
+                    </div>
                 </div>
-                <div class="p-8 text-center border-t border-white/10">
-                    <p class="text-white/30 text-lg">Módulo de Reportes Avanzados en Desarrollo.</p>
-                    <p class="text-white/20 text-sm mt-2">Próximamente integración con Ventas y Stock Real.</p>
+
+                <div class="table-viewport min-h-400">
+                    <div id="loading-state" class="center-content p-8">
+                        <div class="spinner"></div>
+                        <p class="muted mt-2">Cargando datos financieros...</p>
+                    </div>
+
+                    <div class="table-scroll hidden" id="table-container">
+                        <table class="table table-sticky">
+                            <thead>
+                                <tr class="table-head">
+                                    <th class="table-cell">Semana</th>
+                                    <th class="table-cell text-right">Ingresos</th>
+                                    <th class="table-cell text-right">Gastos</th>
+                                    <th class="table-cell text-right">Impuestos (Est)</th>
+                                    <th class="table-cell text-right">Profit</th>
+                                    <th class="table-cell text-right">Cash Flow</th>
+                                </tr>
+                            </thead>
+                            <tbody id="weekly-table-body">
+                                <!-- Injected by JS -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </main>
     </div>
 
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <script src="../../assets/js/core/config.js"></script>
-    <script src="../../assets/js/core/supabase-client.js"></script>
-    <script src="../../assets/js/core/auth.js"></script>
-    <script src="../../assets/js/core/navigation.js"></script>
+    <!-- Scripts -->
+    <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script defer src="../../assets/js/core/config.js"></script>
+    <script defer src="../../assets/js/core/supabase-client.js"></script>
+    <script defer src="../../assets/js/core/auth.js"></script>
+    <script defer src="../../assets/js/core/utils.js"></script>
+
+    <!-- Module Script -->
+    <script defer src="../../assets/js/modules/gerencia/balance-semanal.js"></script>
 </body>
 
 </html>

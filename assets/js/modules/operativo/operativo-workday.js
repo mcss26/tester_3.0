@@ -220,12 +220,6 @@
               <button class="btn-icon btn-xs btn-edit-link" data-id="${link.id}" title="Editar">
                 ✏️
               </button>
-              <button class="btn-icon btn-xs btn-delete-link"
-                      data-id="${link.id}"
-                      data-name="${safeName}"
-                      title="Eliminar">
-                🗑️
-              </button>
             </div>
           </td>
         </tr>

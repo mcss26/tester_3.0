@@ -13,11 +13,17 @@
   const ui = {
     userName: document.getElementById("user-name"),
     systemStatus: document.getElementById("system-status"),
+    moduleContent: document.getElementById("module-content"), // Generic container if exists
+    pageCardLoading: document.getElementById("page-card-loading") // If exists
   };
+
+  if (!window.Utils.assertSbOrShowBlockingError()) return;
 
   // 3. Load Data
 
   async function init() {
+    window.Utils.setPageState(ui, { loading: true });
+    try {
     // Profile
     if (ui.userName) {
       const { data: profile } = await window.sb
@@ -46,7 +52,13 @@
         ui.systemStatus.style.display = "inline-block";
       }
     }
+    
+    window.Utils.setPageState(ui, { loading: false });
+  } catch (e) {
+    console.error(e);
+    window.Utils.setPageState(ui, { loading: false });
   }
+}
 
   await init();
 })();

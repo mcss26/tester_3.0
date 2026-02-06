@@ -73,7 +73,7 @@
         try {
             const { data, error } = await window.sb
                 .from('master_sku')
-                .select('id, nombre, measure_unit')
+                .select('id, nombre, ml_por_unidad')
                 .eq('active', true)
                 .order('nombre');
 
@@ -81,12 +81,13 @@
             state.allSkus = data.map(s => ({
                 id: s.id,
                 name: s.nombre || 'Sin nombre',
-                unit: s.measure_unit || 'u'
+                unit: s.ml_por_unidad ? `${s.ml_por_unidad}ml` : 'u'
             }));
         } catch (err) {
             console.error('Error loadSkus:', err);
         }
     }
+
 
     async function loadRecipes(filter = '') {
         try {
@@ -110,11 +111,14 @@
         ui.list.innerHTML = '';
 
         state.recipes.forEach(r => {
-            const ingDesc = r.ingredients ?
+        const ingDesc = r.ingredients ?
                 r.ingredients.map(i => {
                     const sku = state.allSkus.find(s => String(s.id) === String(i.sku_id));
-                    return sku ? `${sku.name} (${i.amount})` : 'SKU ?';
+                    if (!sku) console.warn(`[BarRecipes] SKU not found: ${i.sku_id}`, 'Available SKUs:', state.allSkus.length);
+                    const qty = i.amount ?? i.quantity ?? 0;
+                    return sku ? `${sku.name} (${qty})` : 'SKU ?';
                 }).join(', ') : 'Sin ingredientes';
+
 
             const row = document.createElement('tr');
             row.className = 'table-row';
@@ -146,8 +150,9 @@
         ui.ingContainer.innerHTML = '';
 
         if (recipe && recipe.ingredients) {
-            recipe.ingredients.forEach(i => addIngredientRow(i.sku_id, i.amount));
+            recipe.ingredients.forEach(i => addIngredientRow(i.sku_id, i.amount ?? i.quantity));
         } else {
+
             addIngredientRow();
         }
 

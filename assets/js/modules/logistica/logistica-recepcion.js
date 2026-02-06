@@ -15,8 +15,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     const receiveEta = document.getElementById('receive-eta');
     const receiveTotal = document.getElementById('receive-total');
     const receiveInvoice = document.getElementById('receive-invoice');
+    const receiveInvoiceDate = document.getElementById('receive-invoice-date');
+    const receiveInvoiceAmount = document.getElementById('receive-invoice-amount');
     const receiveNotes = document.getElementById('receive-notes');
     const receiveItemsContainer = document.getElementById('receive-items-container');
+
+    // UI Elements for State Management
+    const pageCardLoading = document.getElementById('page-card-loading');
+    const pageCardEmpty = document.getElementById('page-card-empty');
+    const moduleContent = document.getElementById('list-container'); 
+
+    const ui = { pageCardLoading, pageCardEmpty, moduleContent };
 
     // Modal de recepción libre
     const modalFreeReceipt = document.getElementById('modal-free-receipt');
@@ -54,7 +63,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // ─────────────────────────────────────────────────────────────────────────
 
     async function loadData() {
-        if (listContainer) listContainer.innerHTML = loadingState;
+        window.Utils.setPageState(ui, { loading: true });
         try {
             let query = window.sb
                 .from('replenishment_supplier_orders')
@@ -87,7 +96,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             renderList(orders);
         } catch (err) {
             console.error('Error loading orders:', err);
-            if (listContainer) listContainer.innerHTML = errorState(err.message);
+             window.Utils.setPageState(ui, { loading: false });
         }
     }
 
@@ -170,9 +179,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     function renderList(data) {
         if (!listContainer) return;
         if (!data || data.length === 0) {
-            listContainer.innerHTML = emptyState;
+            window.Utils.setPageState(ui, { loading: false, empty: true });
             return;
         }
+        
+        window.Utils.setPageState(ui, { loading: false, empty: false });
 
         let html = `
             <div class="table-scroll">
@@ -319,6 +330,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (receiveEta) receiveEta.textContent = formatDate(selectedOrder.expected_date);
         if (receiveTotal) receiveTotal.textContent = formatCurrency(selectedOrder.total_estimated);
         if (receiveInvoice) receiveInvoice.value = '';
+        if (receiveInvoiceDate) receiveInvoiceDate.value = new Date().toISOString().split('T')[0]; // Default to today
+        if (receiveInvoiceAmount) receiveInvoiceAmount.value = selectedOrder.total_estimated || '';
         if (receiveNotes) receiveNotes.value = '';
 
         renderReceiveItems(receiveItems);
@@ -336,6 +349,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!selectedOrder || receiveItems.length === 0) return;
 
         const invoice = receiveInvoice?.value.trim();
+        const invoiceDate = receiveInvoiceDate?.value || null;
+        const invoiceAmount = parseFloat(receiveInvoiceAmount?.value) || 0;
         const notes = receiveNotes?.value.trim();
 
         if (!invoice) {
@@ -344,6 +359,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         try {
+            // 0. Actualizar la orden con datos de factura
+            await window.sb
+                .from('replenishment_supplier_orders')
+                .update({
+                    invoice_number: invoice,
+                    invoice_date: invoiceDate,
+                    invoice_amount: invoiceAmount,
+                    invoice_received_by: session.user.id,
+                    invoice_received_at: new Date().toISOString()
+                })
+                .eq('id', selectedOrder.id);
             // 1. Crear registro de recepción
             const { data: receipt, error: rcptError } = await window.sb
                 .from('replenishment_receipts')
