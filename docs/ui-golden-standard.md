@@ -1,16 +1,16 @@
-UI/UX Golden Standard Reference
+# UI/UX Golden Standard Reference
 
-## Admin Herramientas - Pattern Library
+## Admin Layout — Pattern Library
 
-**Last Updated**: 2026-02-05 (Phase 5 Complete)
-**Reference File**: `pages/admin/admin-herramientas.html`
-**Status**: ✅ Zero Inline CSS | ✅ UI/UX Consistency | ✅ CSS Architecture | ✅ Accessibility
+**Last Updated**: 2026-02-07 (Phase 6 — CSS Consolidation)
+**Reference Files**: `pages/admin/admin-central-stock.html`, `pages/admin/admin-solicitudes.html`
+**Status**: ✅ Zero Inline CSS | ✅ UI/UX Consistency | ✅ CSS Architecture | ✅ Accessibility | ✅ Consolidated Topbar
 
 ---
 
 ## Overview
 
-This document defines the golden standard UI/UX patterns established in `admin-herramientas.html`. All new pages and components should follow these patterns for consistency.
+This document defines the golden standard UI/UX patterns established in `admin-central-stock.html`. All new pages and components should follow these patterns for consistency.
 
 ---
 
@@ -61,13 +61,45 @@ This document defines the golden standard UI/UX patterns established in `admin-h
 
 ---
 
-## Layout & Spacing Guidelines (Critical)
- 
- ### Page Shell
- - **Class**: `.page-shell`
- - **Usage**: Top-level container for page content.
- - **Padding**: Should generally avoid massive global padding if using full-width cards, but **Main Content** containers typically require `0 24px` horizontal padding to align with the Topbar and logo.
- - **Header Alignment**: When placing the `.dashboard-header` outside a card, verify it has `padding: 0 24px` to visually align with the Breadcrumbs/Logo above.
+## Admin Layout Foundation (Critical — `components.css`)
+
+These styles live in `components.css` as the **single source of truth**. Page-specific CSS files must NOT redefine them.
+
+### Topbar
+
+- **Class**: `.topbar`
+- **Position**: `fixed`, top: 0, full width, z-index: 100
+- **Height**: `var(--topbar-height)` → **56px** (defined in `tokens.css`)
+- **Padding**: `0 24px`
+- **Background**: `#000` (pure black)
+- **Layout**: `display: grid; grid-template-columns: 1fr auto 1fr`
+- **Children**: `.topbar-start` (breadcrumb), `.topbar-center` (search), `.topbar-end` (notifications + avatar)
+
+### Page Shell
+
+- **Class**: `.page-shell`
+- **Usage**: `<main>` element, top-level container for page content below topbar.
+- **Margin-top**: `var(--topbar-height)` — pushes content below fixed topbar
+- **Padding**: `0 100px` — wider margins for content area
+- **Min-height**: `calc(100vh - var(--topbar-height))`
+- **Max-width**: `1440px` (centered via auto margins)
+- **Background**: `var(--bg-body)` → `#000`
+
+### Breadcrumb
+
+- **Classes**: `.breadcrumb`, `.breadcrumb-item`, `.breadcrumb-link`, `.breadcrumb-sep`
+- **Style**: uppercase, 11px, letter-spacing 0.1em
+- **Pattern**: `ADMINISTRACIÓN / CURRENT` — link for parent, plain for current
+
+### Topbar Dropdowns (Notifications + User Menu)
+
+- **Container**: `.dropdown-container` (position: relative)
+- **Bell**: `.icon-btn` > `.icon-notification` + `.notification-badge`
+- **Avatar**: `.avatar.avatar-sm` (32px, purple-500)
+- **Menu**: `.dropdown-container .dropdown-menu` (absolute, #1a1a1a, border-radius 8px)
+- **States**: `.dropdown-menu.hidden` (opacity 0, pointer-events none)
+
+> ⚠️ **Anti-Pattern**: Do NOT redefine `.topbar`, `.page-shell`, `.breadcrumb`, `.icon-btn`, `.avatar`, or `.dropdown-container` in page-specific CSS files. Only add page-specific overrides with higher specificity (e.g., `.cms-members .topbar .breadcrumb { gap: 6px }`).
 
  ---
 
@@ -823,10 +855,36 @@ Use `.state-spinner` for loading indicators:
 
 ```
 assets/css/
-├── tokens.css              # Design tokens (colors, spacing, etc.)
-├── components.css          # Global reusable components
-└── admin-herramientas.css  # Page-specific styles
+├── tokens.css              # Design tokens (colors, spacing, typography)
+├── components.css          # Global reusable components + Admin Layout Foundation
+│                           #   → Topbar, Breadcrumb, Page Shell, Dropdowns, Avatar
+│                           #   → Buttons, Modals, Tables, Progress bars
+├── admin-central-stock.css # Page-specific: Central Stock (sidebar, chart, filters)
+├── admin-solicitudes.css   # Page-specific: Solicitudes (tabs, KPIs, pre-approval)
+├── cms-members.css         # Page-specific: CMS Members (staff list, badges)
+└── admin-workdays.css      # Page-specific: Workdays (planner layout)
 ```
+
+### Consolidation Rules
+
+| Component | Location | Rationale |
+|:--|:--|:--|
+| Topbar `.topbar` | `components.css` | Shared across all admin pages |
+| Page Shell `.page-shell` | `components.css` | Shared layout (max-width 1440px) |
+| Dropdowns | `components.css` | Shared notification/user menus |
+| Chart Section | Page-specific CSS | Unique layout requirements |
+
+### Consolidation Rules
+
+| Component | Location | Rationale |
+|:--|:--|:--|
+| Topbar `.topbar` | `components.css` | Shared across all admin pages |
+| Breadcrumb `.breadcrumb-*` | `components.css` | Shared across all admin pages |
+| Page Shell `.page-shell` | `components.css` | Shared across all admin pages |
+| Dropdowns `.dropdown-*` | `components.css` | Shared across all admin pages |
+| Avatar `.avatar` | `components.css` | Shared across all admin pages |
+| Chart Section `.chart-*` | Page-specific CSS | Only used in stock/solicitudes |
+| Sidebar `.sidebar-filters` | Page-specific CSS | Layout varies per page |
 
 ### Naming Convention
 
@@ -839,8 +897,9 @@ assets/css/
 
 1. Avoid `!important` except for utility overrides
 2. Use single class selectors when possible
-3. Scope page-specific styles with `body.admin-shell`
+3. Scope page-specific styles with `body.admin-shell` or page class (e.g., `.cms-members`)
 4. Descendant selectors max 3 levels deep
+5. **NEVER redefine** `.topbar`, `.page-shell`, `.breadcrumb` in page-specific CSS
 
 ---
 
@@ -887,7 +946,7 @@ assets/css/
 
 Reference patterns for core module structure.
 
-### 1. Standard HTML Anatomy
+### 1. Standard HTML Anatomy (Admin Pages)
 
 ```html
 <!DOCTYPE html>
@@ -896,39 +955,72 @@ Reference patterns for core module structure.
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Module Name - FormulaMid</title>
-    <link rel="stylesheet" href="../../assets/css/main.css" />
+    <link rel="stylesheet" href="../../assets/css/tokens.css" />
+    <link rel="stylesheet" href="../../assets/css/components.css" />
+    <link rel="stylesheet" href="../../assets/css/admin-page-specific.css" />
   </head>
-  <body class="app-shell admin-shell admin-scroll" data-allowed-roles="admin,contable">
-    <!-- Topbar -->
-    <header class="app-topbar">
-      <div class="topbar-left">
-        <nav id="breadcrumbs" class="breadcrumbs"></nav>
+  <body class="admin-shell admin-scroll" data-allowed-roles="admin,contable">
+
+    <!-- Topbar — 3-column grid from components.css -->
+    <header class="topbar">
+      <div class="topbar-start">
+        <nav class="breadcrumb">
+          <span class="breadcrumb-item">
+            <a class="breadcrumb-link" href="admin-index.html">Administración</a>
+          </span>
+          <span class="breadcrumb-sep">/</span>
+          <span class="breadcrumb-item current">Módulo</span>
+        </nav>
       </div>
-      <nav class="topbar-center topbar-nav-split">
-        <!-- Navigation Tabs if applicable -->
-      </nav>
-      <div class="topbar-right">
-        <span class="system-status-pill status-open topbar-pill topbar-pill-quiet">ESTADO: OK</span>
+      <div class="topbar-center">
+        <div class="header-search">
+          <svg class="header-search-icon" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" class="input" placeholder="Buscar...">
+          <span class="header-shortcut">⌘K</span>
+        </div>
+      </div>
+      <div class="topbar-end">
+        <div class="dropdown-container">
+          <button class="icon-btn" id="btn-notifications">
+            <svg class="icon-notification" viewBox="0 0 24 24">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <span class="notification-badge">3</span>
+          </button>
+          <div class="dropdown-menu dropdown-notifications hidden">...</div>
+        </div>
+        <div class="dropdown-container">
+          <div class="avatar avatar-sm">MC</div>
+          <div class="dropdown-menu dropdown-user hidden">...</div>
+        </div>
       </div>
     </header>
 
-    <main class="page-shell">
+    <!-- Main Content -->
+    <main class="page-shell" role="main">
       <div class="page-card-wrap">
-        <!-- Content -->
+        <div class="page-card overflow-visible">
+          <!-- Loading State -->
+          <div id="page-card-loading" class="page-card-loading is-visible">
+            <div class="state-spinner"></div>
+          </div>
+          <!-- Empty State -->
+          <div id="page-card-empty" class="page-card-empty">...</div>
+          <!-- Content -->
+          <div id="module-content" class="hidden">...</div>
+        </div>
       </div>
     </main>
 
     <!-- Dependencies -->
-    <script defer src="../../assets/js/core/navigation-state.js"></script>
-    <script defer src="../../assets/js/core/breadcrumbs.js"></script>
+    <script src="../../assets/js/core/supabase-init.js"></script>
+    <script defer src="../../assets/js/core/auth.js"></script>
     <script defer src="../../assets/js/core/navigation.js"></script>
-    <script defer src="../../assets/js/modules/panel.js"></script>
     <script defer src="../../assets/js/modules/admin/admin-modulo.js"></script>
-
-    <script>
-      const breadcrumbContainer = document.getElementById("breadcrumbs");
-      if (breadcrumbContainer) window.Breadcrumbs.render(breadcrumbContainer);
-    </script>
   </body>
 </html>
 ```
@@ -1117,20 +1209,9 @@ Use this checklist when reviewing or creating tabs:
 
 **Completed**: 2026-02-05
 
-The CSS in `admin-herramientas.css` is now organized into 10 logical FASE (phase) sections:
+The CSS in `admin-central-stock.css` (formerly `admin-herramientas.css`) is organized into FASE sections.
 
-| FASE              | Description                   | Line Range       |
-| :---------------- | :---------------------------- | :--------------- |
-| **FASE 1**  | Visual hierarchy and spacing  | 36-72            |
-| **FASE 2**  | Typography and readability    | 339-417          |
-| **FASE 3**  | Sidebar and filters           | 824-856          |
-| **FASE 4**  | Filter bar and pills          | 858-1030         |
-| **FASE 5**  | Main table (Golden Standard)  | 1032-1217        |
-| **FASE 6**  | Chart section                 | 436-444, 776-822 |
-| **FASE 7**  | Tabs system                   | 1262-1314        |
-| **FASE 8**  | Modals and panels             | 1316-1548        |
-| **FASE 9**  | Buttons and actions           | 1550-1661        |
-| **FASE 10** | Micro-interactions and polish | 1663-1751        |
+> **Note**: Topbar, Breadcrumb, Page Shell, Dropdowns, and Avatar were **consolidated to `components.css`** in Phase 6 (2026-02-07). See "Admin Layout Foundation" section above.
 
 ### Benefits
 
@@ -1181,13 +1262,14 @@ These components are specific to `admin-herramientas` and extend the global Gold
 
 ## Resources
 
-- **Reference Implementation**: [admin-herramientas.html](../pages/admin/admin-herramientas.html)
-- **CSS Source**: [admin-herramientas.css](../assets/css/admin-herramientas.css)
+- **Reference Implementation**: [admin-central-stock.html](../pages/admin/admin-central-stock.html)
+- **CSS Source**: [admin-central-stock.css](../assets/css/admin-central-stock.css)
 - **Design Tokens**: [tokens.css](../assets/css/tokens.css)
-- **Global Components**: [components.css](../assets/css/components.css)
+- **Global Components**: [components.css](../assets/css/components.css) — includes Admin Layout Foundation
 
 ---
 
-**Last Verified**: 2026-02-05
+**Last Verified**: 2026-02-07
 **Zero Inline CSS**: ✅ Confirmed
 **Accessibility**: ✅ WCAG AA Compliant
+**CSS Consolidation**: ✅ Topbar/Breadcrumb/Dropdown in components.css

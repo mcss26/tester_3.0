@@ -1,7 +1,7 @@
 # 🗺️ Mapa de Pantallas - FormulaMid 4
 
-> **Última Actualización**: 2026-02-01  
-> **Total Pantallas**: 47  
+> **Última Actualización**: 2026-02-07  
+> **Total Pantallas**: 45  
 > **Documento**: Arquitectura de navegación y contextos de usuario
 
 ---
@@ -46,16 +46,15 @@ graph TD
             A_SOL[📬 Solicitudes<br/><small><i>admin-solicitudes</i></small>]
             A_CIE[🔒 Cierres<br/><small><i>admin-cierre</i></small>]
             A_REP[📈 Reportes<br/><small><i>admin-reportes</i></small>]
-            A_HER[🛠️ Herramientas<br/><small><i>admin-herramientas</i></small>]
+            A_WKL[📊 Semanal<br/><small><i>admin-semanal</i></small>]
         end
         
-        subgraph ADM_STK [📦 Control de Stock]
-            A_STK[🔍 Auditoría Stock<br/><small><i>admin-stock</i></small>]
-            A_STKAJ[⚖️ Ajustes Stock<br/><small><i>admin-stock-ajustes</i></small>]
+        subgraph ADM_STK [📦 Control de Inventario]
+            A_CEN[🔍 Central Stock<br/><small><i>admin-central-stock</i></small>]
         end
         
         subgraph ADM_MST [🗃️ Maestros de Datos]
-            A_SKU[🏷️ SKUs<br/><small><i>admin-master-sku</i></small>]
+            A_PRV[🏢 Proveedores<br/><small><i>admin-master-proveedores</i></small>]
             A_PRV[🏢 Proveedores<br/><small><i>admin-master-proveedores</i></small>]
             A_CAT[📁 Categorías<br/><small><i>admin-master-categorias</i></small>]
             A_TAR[💰 Tarifario<br/><small><i>admin-master-tarifario</i></small>]
@@ -197,7 +196,7 @@ graph TD
     classDef members fill:#1e293b,stroke:#ef4444,color:#fee2e2,stroke-width:2px;
 
     class Portal portal;
-    class A_IDX,A_WD,A_SOL,A_CIE,A_REP,A_HER,A_STK,A_STKAJ,A_SKU,A_PRV,A_CAT,A_TAR,A_NOM,A_PAG,A_POS,AB_IDX,AB_REC,AB_SES,QR_IDX,QR_GEN,QR_MON admin;
+    class A_IDX,A_WD,A_SOL,A_CIE,A_REP,A_WKL,A_CEN,A_PRV,A_CAT,A_TAR,A_NOM,A_PAG,A_POS,AB_IDX,AB_REC,AB_SES,QR_IDX,QR_GEN,QR_MON admin;
     class O_IDX,O_ERP,O_STK,O_WD,O_SOL,O_ANA,O_SCN,O_CMS,O_MEM,O_SKU,O_PRV operative;
     class L_IDX,L_STK,L_DIS,L_REC logistics;
     class E_BAR,E_BNO,E_BPE,E_CAJ,E_CNO,E_CPE,E_REP supervisor;
@@ -212,14 +211,14 @@ graph TD
 
 | Contexto | Páginas | Directorio | Roles Permitidos |
 |:---------|:-------:|:-----------|:-----------------|
-| 🔵 **Admin** | 21 | `pages/admin/*` | `admin`, `contable` |
+| 🔵 **Admin** | 19 | `pages/admin/*` | `admin`, `contable` |
 | 🟢 **Operativo** | 11 | `pages/operativo/*` | `operativo`, `staff_operativo` |
 | 📦 **Logística** | 4 | `pages/logistica/*` | `logistico`, `admin` |
 | 🟠 **Encargados** | 7 | `pages/encargados/*` | `encargado_barra`, `encargado_caja` |
 | 🟡 **Staff** | 2 | `pages/staff/*` | `staff_barra`, `staff_caja` |
 | 🟣 **Gerencia** | 1 | `pages/gerencia/*` | `gerencia`, `admin` |
 | 🔴 **Members** | 1 | `pages/members/*` | `member` |
-| **TOTAL** | **47** | — | — |
+| **TOTAL** | **45** | — | — |
 
 ---
 
@@ -233,22 +232,20 @@ graph TD
 | 3 | `admin-solicitudes.html` | Centro de solicitudes de insumos |
 | 4 | `admin-cierre.html` | Módulo de cierre de operaciones |
 | 5 | `admin-reportes.html` | Generación de reportes |
-| 6 | `admin-herramientas.html` | Herramientas de análisis |
-| 7 | `admin-stock.html` | Auditoría de stock |
-| 8 | `admin-stock-ajustes.html` | Ajustes y correcciones de stock |
-| 9 | `admin-master-sku.html` | Maestro de SKUs |
-| 10 | `admin-master-proveedores.html` | Maestro de proveedores |
-| 11 | `admin-master-categorias.html` | Maestro de categorías |
-| 12 | `admin-master-tarifario.html` | Tarifario de precios |
-| 13 | `admin-master-nomina.html` | Gestión de personal |
-| 14 | `admin-pagos.html` | Control de pagos |
-| 15 | `admin-master-pos.html` | Terminales punto de venta |
-| 16 | `barras/index.html` | Hub de gestión de barras |
-| 17 | `barras/recipes.html` | Recetario de bebidas |
-| 18 | `barras/session.html` | Sesiones de barra |
-| 19 | `qr/index.html` | Hub del sistema QR |
-| 20 | `qr/generator.html` | Generador de códigos QR |
-| 21 | `qr/monitor.html` | Monitor de escaneos QR |
+| 6 | `admin-semanal.html` | Cierre semanal y balance |
+| 7 | `admin-central-stock.html` | Gestión centralizada: Stock, Recetas, Rentabilidad |
+| 8 | `admin-master-proveedores.html` | Maestro de proveedores |
+| 9 | `admin-master-categorias.html` | Maestro de categorías |
+| 10 | `admin-master-tarifario.html` | Tarifario de precios |
+| 11 | `admin-master-nomina.html` | Gestión de personal |
+| 12 | `admin-pagos.html` | Control de pagos |
+| 13 | `admin-master-pos.html` | Terminales punto de venta |
+| 14 | `barras/index.html` | Hub de gestión de barras |
+| 15 | `barras/recipes.html` | Recetario de bebidas |
+| 16 | `barras/session.html` | Sesiones de barra |
+| 17 | `qr/index.html` | Hub del sistema QR |
+| 18 | `qr/generator.html` | Generador de códigos QR |
+| 19 | `qr/monitor.html` | Monitor de escaneos QR |
 
 ### 🟢 Operativo (11)
 | # | Archivo | Propósito |

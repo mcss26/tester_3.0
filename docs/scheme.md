@@ -1,13 +1,11 @@
 # Esquema de Base de Datos - FormulaMid 4
 
-Listado actualizado automáticamente al 01/02/2026.
+Listado actualizado automáticamente al 07/02/2026.
 
-> **Actualización Fase 2** (01/02/2026): Se agregaron 2 vistas SQL consolidadas:
-> - `vw_daily_sales` - Consolidación financiera diaria
-> - `vw_bar_efficiency` - Análisis de eficiencia de barra
-> 
-> **Actualización Fase 3** (01/02/2026): Mejoras a importadores CSV:
-> - Agregada columna `cash_movements.external_id` para deduplicación de importaciones
+> **Actualización Fase 4** (Updated: 2026-02-07 12:15): Se agregaron tablas de auditoría, configuración de costos y reportes financieros semanales.
+> - `auth_audit_log` - Auditoría de accesos.
+> - `finance_weekly_closings` - Cierres semanales.
+> - `import_logs` - Trazabilidad de importaciones.
 
 
 ## Tablas Publicas
@@ -27,6 +25,21 @@ _Tabla de cuentas por pagar (gastos)._
 - **work_day_id** (uuid) - FK -> work_days.id
 - **source_type** (text)
 - **source_id** (uuid)
+
+### auth_audit_log
+
+_Audit trail de eventos de autenticación._
+
+- **id** (uuid) - PK
+- **created_at** (timestamp with time zone)
+- **action** (text)
+- **member_id** (text)
+- **member_uuid** (uuid) - FK -> members.id
+- **ip_address** (text)
+- **user_agent** (text)
+- **success** (boolean)
+- **error_message** (text)
+- **metadata** (jsonb)
 
 ### bar_session_sales
 
@@ -139,6 +152,45 @@ _Reportes de consumo importados (Excel)._
 - **file_name** (text)
 - **created_at** (timestamp with time zone)
 
+### cost_config
+
+_Configuración de tasas fiscales y comisiones._
+
+- **id** (uuid) - PK
+- **category** (text)
+- **channel_name** (text)
+- **fee_type** (text)
+- **name** (text)
+- **rate** (numeric)
+- **rate_type** (text)
+- **applies_to** (text)
+- **notes** (text)
+- **active** (boolean)
+- **created_at** (timestamp with time zone)
+- **updated_at** (timestamp with time zone)
+
+### cost_definitions
+
+_Definiciones de costos recurrentes y fijos._
+
+- **id** (uuid) - PK
+- **title** (text)
+- **category** (text)
+- **frequency** (text)
+- **base_amount** (numeric)
+- **amount_mode** (text)
+- **tax_rate** (numeric)
+- **total_with_tax** (numeric)
+- **supplier_id** (uuid) - FK -> master_proveedores.id
+- **payment_method** (text)
+- **due_day** (integer)
+- **holiday_rule** (text)
+- **voucher_type** (text)
+- **is_active** (boolean)
+- **notes** (text)
+- **created_at** (timestamp with time zone)
+- **updated_at** (timestamp with time zone)
+
 ### events
 
 _Eventos especiales._
@@ -174,6 +226,7 @@ _Reglas de pago a proveedores._
 - **supplier_id** (uuid) - FK -> master_proveedores.id
 - **rule_type** (text)
 - **amount_mode** (text)
+- **fixed_amount** (numeric)
 - **day_of_month** (integer)
 - **weekday** (integer)
 - **on_holiday_action** (text)
@@ -185,12 +238,57 @@ _Pagos realizados._
 
 - **id** (uuid) - PK
 - **created_at** (timestamp with time zone)
+- **source_type** (text)
+- **title** (text)
 - **supplier_id** (uuid) - FK -> master_proveedores.id
-- **amount** (numeric)
-- **payment_date** (date)
-- **method** (text)
-- **reference** (text)
+- **due_date** (date)
+- **amount_total** (numeric)
 - **status** (text)
+- **done_at** (timestamp with time zone)
+- **voucher_type** (text)
+- **payment_method** (text)
+- **notes** (text)
+- **rule_id** (uuid)
+- **opening_def_id** (uuid)
+
+### finance_weekly_closings
+
+_Cierres semanales financieros (White/Black)._
+
+- **id** (uuid) - PK
+- **week_start** (date)
+- **income_white** (numeric)
+- **income_black** (numeric)
+- **expense_white** (numeric)
+- **expense_black** (numeric)
+- **tax_estimate** (numeric)
+- **status** (text)
+- **notes** (text)
+- **closed_at** (timestamp with time zone)
+- **closed_by** (uuid) - FK -> auth.users.id
+
+### import_logs
+
+_Logs de importaciones CSV._
+
+- **id** (uuid) - PK
+- **work_day_id** (uuid) - FK -> work_days.id
+- **importer_type** (text)
+- **file_name** (text)
+- **file_size_bytes** (bigint)
+- **started_at** (timestamp with time zone)
+- **completed_at** (timestamp with time zone)
+- **duration_ms** (integer)
+- **status** (text)
+- **rows_processed** (integer)
+- **rows_imported** (integer)
+- **rows_skipped** (integer)
+- **rows_failed** (integer)
+- **error_message** (text)
+- **error_details** (jsonb)
+- **warnings** (jsonb)
+- **imported_by** (uuid) - FK -> auth.users.id
+- **metadata** (jsonb)
 
 ### inventory_ideal
 
@@ -280,6 +378,7 @@ _Recetas y fórmulas de conversión para conciliación (Venta -> Stock)._
 - **external_id** (text)
 - **ingredients** (jsonb)
 - **created_at** (timestamp with time zone)
+- **precio_venta** (numeric)
 
 ### master_sku
 
@@ -294,6 +393,7 @@ _Catálogo de productos (SKUs)._
 - **costo** (numeric)
 - **costo_pack** (numeric)
 - **external_id** (numeric)
+- **tipo** (text) - Clasificación: bar, limpieza, descartables, otros
 - **active** (boolean)
 - **created_at** (timestamp with time zone)
 - **updated_at** (timestamp with time zone)
@@ -322,10 +422,19 @@ _Miembros del club._
 - **nacimiento** (text)
 - **status** (text)
 - **access_password** (text)
+- **access_password_hash** (text)
 - **created_at** (timestamp with time zone)
-- **dni** (text)
-- **genero** (text)
-- **ciudad** (text)
+
+### menu_categories
+
+_Categorías del menú._
+
+- **id** (uuid) - PK
+- **name** (text)
+- **slug** (text)
+- **display_order** (integer)
+- **is_active** (boolean)
+- **created_at** (timestamp with time zone)
 
 ### menu_items
 
@@ -367,6 +476,15 @@ _Terminales de Punto de Venta._
 - **provider** (text)
 - **external_id** (text)
 - **is_active** (boolean)
+- **created_at** (timestamp with time zone)
+
+### pos_terminals_alias
+
+_Mapeo de nombres de terminales externos a IDs internos._
+
+- **id** (uuid) - PK
+- **alias** (text)
+- **terminal_id** (uuid) - FK -> pos_terminals.id
 - **created_at** (timestamp with time zone)
 
 ### profile_functions
@@ -428,6 +546,17 @@ _Códigos individuales._
 - **created_at** (timestamp with time zone)
 - **ticket_xml** (text)
 
+### recipe_code_mappings
+
+_Mapeo de códigos POS a recetas._
+
+- **id** (uuid) - PK
+- **pos_code** (text)
+- **recipe_id** (uuid) - FK -> master_recipes.id
+- **notes** (text)
+- **created_at** (timestamp with time zone)
+- **updated_at** (timestamp with time zone)
+
 ### replenishment_items
 
 _Items en solicitudes de reposición._
@@ -448,13 +577,18 @@ _Items en solicitudes de reposición._
 
 ### replenishment_receipt_items
 
-_Items recibidos._
+_Items recibidos + conteo de verificación._
 
 - **id** (uuid) - PK
 - **receipt_id** (uuid) - FK -> replenishment_receipts.id
 - **sku_id** (uuid) - FK -> master_sku.id
 - **quantity_received** (numeric)
 - **cost_at_receipt** (numeric)
+- **counted_qty** (numeric) - Cantidad contada físicamente (Fase 4: encargado-barra-conteo)
+- **counted_by** (uuid) - FK -> auth.users.id - Quién realizó el conteo
+- **counted_at** (timestamp with time zone) - Fecha/hora del conteo
+- **count_notes** (text) - Observaciones del conteo
+- **count_status** (text) - Estado: 'pending', 'counted', 'discrepancy'
 - **created_at** (timestamp with time zone)
 
 ### replenishment_receipts
@@ -487,14 +621,62 @@ _Solicitudes de reposición (pedidos internos)._
 _Órdenes de compra a proveedores._
 
 - **id** (uuid) - PK
+- **request_id** (uuid) - FK -> replenishment_requests.id
 - **supplier_id** (uuid) - FK -> master_proveedores.id
 - **approved_by** (uuid) - FK -> profiles.id
 - **status** (text)
-- **total_estimated** (numeric)
-- **expected_date** (date)
+- **final_cost** (numeric)
+- **eta_date** (date)
 - **notes** (text)
 - **created_at** (timestamp with time zone)
-- **final_cost** (numeric)
+- **updated_at** (timestamp with time zone)
+- **rejection_reason** (text)
+- **invoice_number** (text)
+- **invoice_date** (date)
+- **invoice_amount** (numeric)
+- **invoice_received_by** (uuid) - FK -> profiles.id
+- **invoice_received_at** (timestamp with time zone)
+
+### replenishment_tracking
+
+_Seguimiento de órdenes de compra._
+
+- **id** (uuid) - PK
+- **order_id** (uuid) - FK -> replenishment_supplier_orders.id
+- **status** (text)
+- **notes** (text)
+- **created_by** (uuid) - FK -> profiles.id
+- **created_at** (timestamp with time zone)
+
+### revenue_details
+
+_Detalle de reportes de recaudación._
+
+- **id** (uuid) - PK
+- **report_id** (uuid) - FK -> revenue_reports.id
+- **recipe_id** (uuid) - FK -> master_recipes.id
+- **recipe_name** (text)
+- **external_code** (text)
+- **q_paga** (numeric)
+- **q_sin_cargo** (numeric)
+- **q_vip** (numeric)
+- **total_quantity** (numeric)
+- **total_amount** (numeric)
+- **created_at** (timestamp with time zone)
+
+### revenue_reports
+
+_Reportes de recaudación._
+
+- **id** (uuid) - PK
+- **operational_date** (date)
+- **file_name** (text)
+- **total_revenue** (numeric)
+- **notes** (text)
+- **created_at** (timestamp with time zone)
+- **created_by** (uuid) - FK -> auth.users.id
+- **updated_at** (timestamp with time zone)
+- **updated_by** (uuid) - FK -> auth.users.id
 
 ### site_config
 
@@ -652,6 +834,25 @@ _Mapeo de nombres de terminales externos a IDs internos._
 - **terminal_id** (uuid) - FK -> pos_terminals.id
 - **created_at** (timestamp with time zone)
 
+### staff_accruals
+
+_Devenciones de nómina: convierte asistencia (staff_convocations) en deuda salarial por jornada._
+
+- **id** (uuid) - PK
+- **work_day_id** (uuid) - FK -> work_days.id
+- **user_id** (uuid) - FK -> profiles.id
+- **role_id** (uuid) - FK -> master_staff_roles.id
+- **base_amount** (numeric) - Tarifa del rol (snapshot de base_rate)
+- **adjustments** (numeric) - Ajuste manual (+/-)
+- **total_amount** (numeric) - GENERATED: base_amount + adjustments
+- **status** (text) - 'accrued' | 'exported' | 'paid' | 'cancelled'
+- **notes** (text)
+- **exported_payment_id** (uuid) - FK -> finance_payments.id
+- **created_at** (timestamp with time zone)
+- **created_by** (uuid) - FK -> auth.users.id
+- **updated_at** (timestamp with time zone)
+- **UNIQUE**: (work_day_id, user_id)
+
 ## Vistas
 
 ### v_admin_stock
@@ -670,17 +871,41 @@ _Resumen de ventas diarias (Versión 2 - Reemplaza vw_daily_sales)._
 
 - **work_day_id**, **work_date**, **status**, **cash_system**, **cash_declared**, **cash_difference**, **qr_system**, **bar_sales_system**, **total_income**, **total_declared**, **total_difference**, **closing_notes**
 
+### vw_finance_weekly
+
+_Reporte semanal histórico._
+
+- **week_start**, **income_white**, **expense_white**, **balance_white**, **tax_estimate**
+
+### vw_financial_week_live
+
+_Estado financiero de la semana en curso (tiempo real)._
+
+- **week_start**, **current_income**, **current_expense**, **projected_balance**
+
 ### vw_pnl_monthly_v2
 
 _Reporte P&L mensual (Ingresos vs Egresos por categoría)._
 
 - **month**, **type**, **category**, **amount**
 
+### vw_recipe_profitability
+
+_Análisis de rentabilidad por receta (Costo vs. Precio Venta)._
+
+- **recipe_id**, **name**, **category**, **cost_per_unit**, **sale_price**, **margin_amount**, **margin_percentage**
+
 ### vw_reconcile_afip_gbol
 
 _Conciliación diaria entre AFIP y Gbol (Staging)._
 
 - **noche**, **afip_total**, **gbol_total**, **difference**, **facturas_count**, **items_count**
+
+### vw_sku_ideal_dynamic
+
+_Cálculo dinámico de stock ideal basado en ventas históricas._
+
+- **sku_id**, **product_name**, **avg_weekly_sales**, **safety_stock**, **recommended_order_qty**
 
 ### vw_staff_performance
 
@@ -771,3 +996,20 @@ Compara consumo físico (conteos) vs. consumo teórico (ventas × recetas).
 - **gross_margin** (numeric) - Margen bruto (ventas - costo teórico)
 - **gross_margin_percentage** (numeric) - % margen bruto
 - **loss_amount** (numeric) - Pérdida valorizada (solo si hay faltante)
+
+### vw_staff_accruals_summary
+
+_Resumen de devenciones por persona/rol para reportes de nómina._
+
+**Fuentes**: `staff_accruals`, `profiles`, `master_staff_roles`, `work_days`
+
+- **user_id** (uuid)
+- **full_name** (text)
+- **role_name** (text)
+- **role_id** (uuid)
+- **nights_worked** (int) - Cantidad de noches trabajadas
+- **total_owed** (numeric) - Total devengado
+- **total_paid** (numeric) - Total pagado
+- **total_pending** (numeric) - Total pendiente (accrued + exported)
+- **first_date** (date) - Primera jornada
+- **last_date** (date) - Última jornada

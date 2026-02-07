@@ -19,15 +19,26 @@
     // Views containers
     viewPreAprobacion: document.getElementById("view-pre-aprobacion"),
     viewPendientes: document.getElementById("view-pendientes"),
-    viewUnassigned: document.getElementById("view-unassigned"),
-    viewHistorial: document.getElementById("view-historial"),
+
+    // Audit Chart
+    auditChartContainer: document.getElementById("audit-chart-container"),
+    auditChartCanvas: document.getElementById("audit-chart-canvas"),
+    auditChartDropdown: document.getElementById("audit-chart-dropdown"),
+    auditDropdownTrigger: document.getElementById("audit-dropdown-trigger"),
+    auditDropdownMenu: document.getElementById("audit-dropdown-menu"),
+    auditKpi1Value: document.getElementById("audit-kpi-1-value"),
+    auditKpi1Trend: document.getElementById("audit-kpi-1-trend"),
+    auditKpi2Value: document.getElementById("audit-kpi-2-value"),
+    auditKpi2Trend: document.getElementById("audit-kpi-2-trend"),
+    auditKpi3Value: document.getElementById("audit-kpi-3-value"),
+    auditKpi3Trend: document.getElementById("audit-kpi-3-trend"),
+    auditKpiLabels: document.querySelectorAll("#audit-chart-kpis .chart-kpi-label"),
+    btnHistorial: document.getElementById("btn-historial"),
 
     // List containers (inner scrolls)
     subviewPorItem: document.getElementById("subview-por-item"),
     subviewPorProveedor: document.getElementById("subview-por-proveedor"),
     listContainer: document.getElementById("list-container"),
-    unassignedContainer: document.getElementById("unassigned-container"),
-    historialContainer: document.getElementById("historial-container"),
 
     // Tabs and sub-tabs
     tabs: document.querySelectorAll("[data-tab]"),
@@ -38,8 +49,7 @@
     statTotalCost: document.getElementById("stat-total-cost"),
     statSupplierCount: document.getElementById("stat-supplier-count"),
     preapprovalMetrics: document.getElementById("preapproval-metrics"),
-    unassignedStats: document.getElementById("unassigned-stats"),
-    unassignedTotalBudget: document.getElementById("unassigned-total-budget"),
+
 
     // Actions
     preapprovalBulkActions: document.getElementById("preapproval-bulk-actions"),
@@ -85,6 +95,8 @@
   let pendingRejectIds = [];
 
   // Save state on unload
+  let firstLoad = true; // Controls fullscreen loading on first fetch only
+
   window.addEventListener("beforeunload", () => {
     if (window.NavState) {
       window.NavState.save(PAGE_KEY, {
@@ -147,9 +159,6 @@
       }
     });
 
-    // Show summary metrics only on pre-aprobacion
-    ui.preapprovalMetrics?.classList.toggle('hidden', tabId !== 'pre-aprobacion');
-
     refreshViews(tabId);
   }
 
@@ -173,8 +182,6 @@
     // Hide all
     ui.viewPreAprobacion?.classList.add("hidden");
     ui.viewPendientes?.classList.add("hidden");
-    ui.viewUnassigned?.classList.add("hidden");
-    ui.viewHistorial?.classList.add("hidden");
 
     // Show active & Load Data
     if (tabId === "pre-aprobacion") {
@@ -183,18 +190,14 @@
     } else if (tabId === "pendientes") {
       ui.viewPendientes?.classList.remove("hidden");
       loadOrders();
-    } else if (tabId === "sin-asignar") {
-      ui.viewUnassigned?.classList.remove("hidden");
-      loadUnassigned();
-    } else if (tabId === "historial") {
-      ui.viewHistorial?.classList.remove("hidden");
     }
   }
 
   // 7. Data Fetching (Pre-Aprobación) — Auto-detección con ideal dinámico
   async function loadPreApprovalItems() {
     if (activeTab !== "pre-aprobacion") return;
-    setPageState("loading");
+    if (firstLoad) setPageState("loading");
+    else ui.viewPreAprobacion?.classList.add("tab-loading");
 
     try {
       // ── 1. Date range (last 30 days) ──
@@ -204,16 +207,21 @@
       const startDate = past.toISOString().split("T")[0];
       const endDate = today.toISOString().split("T")[0];
 
-      // ── 2. Fetch ALL active SKUs with provider info ──
-      const { data: skus, error: skuErr } = await window.sb
-        .from("master_sku")
-        .select(
-          "id, nombre, pack_qty, costo, costo_pack, proveedor_default_id, active",
-        )
-        .eq("active", true)
-        .order("nombre");
+      // ── 2. Parallel fetch: SKUs, stock, reports, attendance ──
+      const [skuRes, stockRes, reportRes, workDayRes] = await Promise.all([
+        window.sb.from("master_sku")
+          .select("id, nombre, pack_qty, costo, costo_pack, proveedor_default_id, active")
+          .eq("active", true).order("nombre"),
+        window.sb.from("vw_stock_global")
+          .select("sku_id, stock_actual, requerido"),
+        window.sb.from("consumption_reports")
+          .select("id").gte("operational_date", startDate).lte("operational_date", endDate),
+        window.sb.from("work_days")
+          .select("attendance").gte("work_date", startDate).lte("work_date", endDate).eq("status", "closed"),
+      ]);
 
-      if (skuErr) throw skuErr;
+      if (skuRes.error) throw skuRes.error;
+      const skus = skuRes.data;
       if (!skus || skus.length === 0) {
         preapprovalItems = [];
         renderPreApprovalByItem([]);
@@ -222,67 +230,38 @@
         return;
       }
 
-      // ── 3. Fetch stock levels from vw_stock_global ──
-      const { data: stockData } = await window.sb
-        .from("vw_stock_global")
-        .select("sku_id, stock_actual, requerido");
-
       const stockMap = {};
-      (stockData || []).forEach((s) => (stockMap[s.sku_id] = s));
+      (stockRes.data || []).forEach((s) => (stockMap[s.sku_id] = s));
 
-      // ── 4. Fetch consumption reports in range ──
-      const { data: reports } = await window.sb
-        .from("consumption_reports")
-        .select("id")
-        .gte("operational_date", startDate)
-        .lte("operational_date", endDate);
+      const reportIds = (reportRes.data || []).map((r) => r.id);
 
-      const reportIds = (reports || []).map((r) => r.id);
-
-      // ── 5. Fetch consumption details ──
-      let consumptionMap = {};
-      if (reportIds.length > 0) {
-        const { data: details } = await window.sb
-          .from("consumption_details")
-          .select("sku_id, quantity")
-          .in("report_id", reportIds);
-        (details || []).forEach((d) => {
-          consumptionMap[d.sku_id] =
-            (consumptionMap[d.sku_id] || 0) + (d.quantity || 0);
-        });
-      }
-
-      // ── 6. Get average attendance for ideal calculation ──
-      const { data: workDays } = await window.sb
-        .from("work_days")
-        .select("attendance")
-        .gte("work_date", startDate)
-        .lte("work_date", endDate)
-        .eq("status", "closed");
-
-      const validDays = (workDays || []).filter(
+      const validDays = (workDayRes.data || []).filter(
         (d) => d.attendance && d.attendance > 0,
       );
       const avgPeople =
         validDays.length > 0
-          ? Math.round(
-              validDays.reduce((s, d) => s + d.attendance, 0) /
-                validDays.length,
-            )
-          : 500; // Fallback default
+          ? Math.round(validDays.reduce((s, d) => s + d.attendance, 0) / validDays.length)
+          : 500;
 
-      // ── 7. Get supplier names ──
-      const supplierIds = skus
-        .map((s) => s.proveedor_default_id)
-        .filter(Boolean);
-      let suppliersMap = {};
-      if (supplierIds.length > 0) {
-        const { data: suppliers } = await window.sb
-          .from("master_proveedores")
-          .select("id, nombre_fantasia")
-          .in("id", [...new Set(supplierIds)]);
-        (suppliers || []).forEach((s) => (suppliersMap[s.id] = s));
-      }
+      // ── 3. Dependent parallel fetch: consumption details + suppliers ──
+      const supplierIds = [...new Set(skus.map((s) => s.proveedor_default_id).filter(Boolean))];
+
+      const [detailsRes, suppliersRes] = await Promise.all([
+        reportIds.length > 0
+          ? window.sb.from("consumption_details").select("sku_id, quantity").in("report_id", reportIds)
+          : { data: [] },
+        supplierIds.length > 0
+          ? window.sb.from("master_proveedores").select("id, nombre_fantasia").in("id", supplierIds)
+          : { data: [] },
+      ]);
+
+      const consumptionMap = {};
+      (detailsRes.data || []).forEach((d) => {
+        consumptionMap[d.sku_id] = (consumptionMap[d.sku_id] || 0) + (d.quantity || 0);
+      });
+
+      const suppliersMap = {};
+      (suppliersRes.data || []).forEach((s) => (suppliersMap[s.id] = s));
 
       // ── 8. Build items with dynamic ideal calculation ──
       const allItems = skus.map((sku) => {
@@ -343,10 +322,14 @@
       }
       updatePreApprovalStats(preapprovalItems);
     } catch (err) {
-      console.error("Auto-Detection Load Error:", err);
-      window.Toast?.error("Error cargando stock: " + err.message);
+      console.error("Pre-approval load error:", err);
+      window.Toast?.error("Error cargando datos de stock");
     } finally {
-      setPageState(preapprovalItems.length === 0 ? "empty" : "ready");
+      if (firstLoad) {
+        setPageState(preapprovalItems.length === 0 ? "empty" : "ready");
+        firstLoad = false;
+      }
+      ui.viewPreAprobacion?.classList.remove("tab-loading");
     }
   }
 
@@ -504,7 +487,8 @@
   // 9. Data Fetching (Pendientes/Orders)
   async function loadOrders() {
     if (activeTab !== "pendientes") return;
-    setPageState("loading");
+    if (firstLoad) setPageState("loading");
+    else ui.viewPendientes?.classList.add("tab-loading");
 
     try {
       const today = new Date();
@@ -582,7 +566,11 @@
       console.error("Load Error:", err);
       window.Toast?.error("Error cargando pedidos");
     } finally {
-      setPageState(orders.length === 0 ? "empty" : "ready");
+      if (firstLoad) {
+        setPageState(orders.length === 0 ? "empty" : "ready");
+        firstLoad = false;
+      }
+      ui.viewPendientes?.classList.remove("tab-loading");
     }
   }
 
@@ -640,137 +628,321 @@
         `;
   }
 
-  // 10. Data Fetching (Unassigned)
-  async function loadUnassigned() {
-    if (!ui.unassignedContainer) return;
-    setPageState({ loading: true });
 
-    try {
-      const today = new Date();
-      const past = new Date();
-      past.setDate(today.getDate() - 30);
+  // 11. Actions Logic (Approve/Reject)
 
-      const { data: requests } = await window.sb
-        .from("replenishment_requests")
-        .select("id")
-        .gte("operational_date", past.toISOString().split("T")[0])
-        .neq("status", "cancelled");
+  // =========================================================================
+  //  AUDIT CHART — 3 modes
+  // =========================================================================
+  let auditChartInstance = null;
+  let currentChartMode = 'pedido-vs-consumo';
 
-      const requestIds = (requests || []).map((r) => r.id);
-      if (requestIds.length === 0) {
-        renderUnassigned([], {});
-        setPageState("empty");
-        return;
-      }
+  function getThemeColor(varName, fallback) {
+    return getComputedStyle(document.documentElement).getPropertyValue(varName).trim() || fallback;
+  }
 
-      const { data: items } = await window.sb
-        .from("replenishment_items")
-        .select(`*, master_sku (id, nombre, pack_qty, costo, costo_pack)`)
-        .in("request_id", requestIds)
-        .neq("status", "cancelled")
-        .limit(10000);
+  const CHART_COLORS = [
+    '#ff3b30', '#ff9500', '#34c759', '#007aff', '#5856d6',
+    '#ff2d55', '#af52de', '#5ac8fa', '#ffcc00', '#30d158'
+  ];
 
-      const skuIds = (items || []).map((i) => i.sku_id);
-      let stockMap = {};
-      if (skuIds.length > 0) {
-        const { data: stocks } = await window.sb
-          .from("vw_stock_global")
-          .select("*")
-          .in("sku_id", skuIds);
-        (stocks || []).forEach((s) => (stockMap[s.sku_id] = s));
-      }
-
-      const orderIds = (items || [])
-        .map((i) => i.supplier_order_id)
-        .filter(Boolean);
-      let orderMap = {};
-      if (orderIds.length > 0) {
-        const { data: os } = await window.sb
-          .from("replenishment_supplier_orders")
-          .select("id, eta_date")
-          .in("id", orderIds);
-        (os || []).forEach((o) => (orderMap[o.id] = o));
-      }
-
-      const unassignedItems = (items || []).filter((item) => {
-        if (!item.supplier_id) return true;
-        if (!item.supplier_order_id) return true;
-        const order = orderMap[item.supplier_order_id];
-        if (!order || !order.eta_date) return true;
-        return false;
-      });
-
-      renderUnassigned(unassignedItems, stockMap);
-    } catch (err) {
-      console.error(err);
-      ui.unassignedContainer.innerHTML = `<div class="empty-state">Error: ${err.message}</div>`;
-    } finally {
-      setPageState("ready");
+  function updateKpiLabels(labels) {
+    const kpiLabels = ui.auditKpiLabels;
+    if (kpiLabels?.length >= 3) {
+      kpiLabels[0].textContent = labels[0];
+      kpiLabels[1].textContent = labels[1];
+      kpiLabels[2].textContent = labels[2];
     }
   }
 
-  function renderUnassigned(items, stockMap) {
-    if (items.length === 0) {
-      ui.unassignedContainer.innerHTML = `<div class="empty-state">Todo asignado correctamente.</div>`;
-      if (ui.unassignedTotalBudget)
-        ui.unassignedTotalBudget.textContent = "$0,00";
+  function updateKpis(values, trends, classes) {
+    if (ui.auditKpi1Value) ui.auditKpi1Value.textContent = values[0];
+    if (ui.auditKpi2Value) ui.auditKpi2Value.textContent = values[1];
+    if (ui.auditKpi3Value) ui.auditKpi3Value.textContent = values[2];
+
+    [ui.auditKpi1Trend, ui.auditKpi2Trend, ui.auditKpi3Trend].forEach((el, i) => {
+      if (!el) return;
+      el.textContent = trends?.[i] || '';
+      el.className = 'chart-kpi-trend' + (classes?.[i] ? ' ' + classes[i] : '');
+    });
+
+    // Apply success/warning classes
+    if (ui.auditKpi2Value) {
+      ui.auditKpi2Value.className = 'chart-kpi-value' + (classes?.[1] ? ' chart-kpi-success' : '');
+    }
+  }
+
+  async function loadAuditChart(mode) {
+    currentChartMode = mode;
+    if (auditChartInstance) { auditChartInstance.destroy(); auditChartInstance = null; }
+
+    try {
+      if (mode === 'pedido-vs-consumo') await loadPedidoVsConsumo();
+      else if (mode === 'deficit-recurrente') await loadDeficitRecurrente();
+      else if (mode === 'tendencia-gasto') await loadTendenciaGasto();
+    } catch (err) {
+      console.error('Audit Chart Error:', err);
+      window.Toast?.error('Error al cargar gráfico de auditoría.');
+    }
+  }
+
+  // --- MODE 1: Pedido vs Consumo ---
+  async function loadPedidoVsConsumo() {
+    updateKpiLabels(['Total Pedido', 'Total Consumido', 'Diferencia']);
+
+    // Get last 15 consumption reports
+    const { data: reports } = await window.sb
+      .from('consumption_reports')
+      .select('id, operational_date')
+      .order('operational_date', { ascending: false })
+      .limit(15);
+
+    if (!reports?.length) {
+      updateKpis(['-', '-', '-'], [], []);
+      window.Toast?.info('No hay reportes de consumo cargados.');
       return;
     }
 
-    let totalBudget = 0;
+    const ordered = [...reports].reverse();
+    const reportIds = ordered.map(r => r.id);
+    const labels = ordered.map(r => r.operational_date);
 
-    const rows = items
-      .map((item) => {
-        const stockData = stockMap[item.sku_id];
-        const sku = item.master_sku || {};
-        const calc = window.Utils.calcReplenishment({
-          requerido: stockData?.requerido,
-          stock_actual: stockData?.stock_actual,
-          pack_qty: sku.pack_qty,
-        });
+    // Consumption details
+    const { data: details } = await window.sb
+      .from('consumption_details')
+      .select('report_id, quantity')
+      .in('report_id', reportIds);
 
-        const packCost =
-          sku.costo_pack !== null
-            ? sku.costo_pack
-            : (sku.costo || 0) * (sku.pack_qty || 1);
-        const itemEst = calc.pack * packCost;
-        totalBudget += itemEst;
+    // Replenishment items near same dates
+    const dateMin = labels[0];
+    const dateMax = labels[labels.length - 1];
+    const { data: repItems } = await window.sb
+      .from('replenishment_items')
+      .select('created_at, quantity_requested')
+      .gte('created_at', dateMin)
+      .lte('created_at', dateMax + 'T23:59:59');
 
-        return `
-                <tr class="table-row">
-                    <td class="table-cell cell-pad cell-strong font-medium">${window.Utils.escapeHtml(sku.nombre || "Unknown")}</td>
-                    <td class="table-cell cell-pad text-center">${calc.unidades}</td>
-                    <td class="table-cell cell-pad text-center">${calc.pack}</td>
-                    <td class="table-cell cell-pad text-center cell-strong">${calc.total}</td>
-                    <td class="table-cell cell-pad text-right muted font-mono text-sm">${window.Utils.formatARS(itemEst)}</td>
-                </tr>
-            `;
-      })
-      .join("");
+    // Aggregate by date
+    const consumoByDate = {};
+    const pedidoByDate = {};
+    labels.forEach(d => { consumoByDate[d] = 0; pedidoByDate[d] = 0; });
 
-    ui.unassignedContainer.innerHTML = `
-            <div class="table-scroll">
-                <table class="table table-sticky table-compact">
-                    <thead>
-                        <tr class="table-head">
-                            <th class="table-cell is-header cell-pad">SKU</th>
-                            <th class="table-cell is-header cell-pad text-center">Unidades</th>
-                            <th class="table-cell is-header cell-pad text-center">Pack</th>
-                            <th class="table-cell is-header cell-pad text-center">Total</th>
-                            <th class="table-cell is-header cell-pad text-right">Presupuesto</th>
-                        </tr>
-                    </thead>
-                    <tbody>${rows}</tbody>
-                </table>
-            </div>
-        `;
+    (details || []).forEach(d => {
+      const r = ordered.find(o => o.id === d.report_id);
+      if (r) consumoByDate[r.operational_date] += (d.quantity || 0);
+    });
 
-    if (ui.unassignedTotalBudget)
-      ui.unassignedTotalBudget.textContent =
-        window.Utils.formatARS(totalBudget);
+    (repItems || []).forEach(ri => {
+      const d = ri.created_at?.split('T')[0];
+      if (d && pedidoByDate[d] !== undefined) pedidoByDate[d] += (ri.quantity_requested || 0);
+    });
+
+    const consumoData = labels.map(d => consumoByDate[d]);
+    const pedidoData = labels.map(d => pedidoByDate[d]);
+    const totalConsumo = consumoData.reduce((a, b) => a + b, 0);
+    const totalPedido = pedidoData.reduce((a, b) => a + b, 0);
+    const diff = totalPedido - totalConsumo;
+    const diffPct = totalPedido > 0 ? ((diff / totalPedido) * 100).toFixed(1) : 0;
+
+    updateKpis(
+      [totalPedido.toLocaleString('es-AR'), totalConsumo.toLocaleString('es-AR'), diff >= 0 ? `+${diff.toLocaleString('es-AR')}` : diff.toLocaleString('es-AR')],
+      ['', '', `${diffPct}%`],
+      ['', 'chart-kpi-success', diff >= 0 ? 'trend-up' : 'trend-down']
+    );
+
+    const textColor = getThemeColor('--text-tertiary', '#888');
+    const gridColor = 'rgba(255,255,255,0.06)';
+
+    auditChartInstance = new Chart(ui.auditChartCanvas, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [
+          { label: 'Pedido', data: pedidoData, borderColor: CHART_COLORS[3], backgroundColor: CHART_COLORS[3], tension: 0.3, fill: false, pointRadius: 3 },
+          { label: 'Consumo', data: consumoData, borderColor: CHART_COLORS[2], backgroundColor: CHART_COLORS[2], tension: 0.3, fill: false, pointRadius: 3 }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: '#d4d4d8', usePointStyle: true, font: { size: 11 } } } },
+        scales: {
+          x: { ticks: { color: textColor, font: { size: 10 } }, grid: { color: gridColor } },
+          y: { ticks: { color: textColor }, grid: { color: gridColor } }
+        }
+      }
+    });
   }
 
-  // 11. Actions Logic (Approve/Reject)
+  // --- MODE 2: Déficit Recurrente ---
+  async function loadDeficitRecurrente() {
+    updateKpiLabels(['SKUs en Déficit', 'Mayor Frecuencia', 'Periodicidad']);
+
+    // Count how many times each SKU appears in replenishment_items with deficit
+    const { data: items } = await window.sb
+      .from('replenishment_items')
+      .select('sku_id, sku:master_sku(nombre)')
+      .not('pre_approval_status', 'eq', 'rejected');
+
+    if (!items?.length) {
+      updateKpis(['-', '-', '-'], [], []);
+      window.Toast?.info('No hay datos de déficit.');
+      return;
+    }
+
+    // Count frequency per SKU
+    const freq = {};
+    items.forEach(item => {
+      const name = item.sku?.nombre || `SKU ${item.sku_id}`;
+      if (!freq[name]) freq[name] = 0;
+      freq[name]++;
+    });
+
+    const sorted = Object.entries(freq).sort((a, b) => b[1] - a[1]).slice(0, 10);
+    const skuNames = sorted.map(([name]) => name.length > 18 ? name.substring(0, 18) + '…' : name);
+    const counts = sorted.map(([, count]) => count);
+    const totalSKUs = Object.keys(freq).length;
+    const maxFreq = counts[0] || 0;
+
+    updateKpis(
+      [totalSKUs.toString(), maxFreq + 'x', sorted.length > 1 ? (counts.reduce((a, b) => a + b, 0) / counts.length).toFixed(1) + 'x' : '-'],
+      ['', '', ''],
+      ['', 'chart-kpi-warning', '']
+    );
+
+    const textColor = getThemeColor('--text-tertiary', '#888');
+    const gridColor = 'rgba(255,255,255,0.06)';
+
+    auditChartInstance = new Chart(ui.auditChartCanvas, {
+      type: 'bar',
+      data: {
+        labels: skuNames,
+        datasets: [{
+          label: 'Veces en déficit',
+          data: counts,
+          backgroundColor: counts.map((_, i) => CHART_COLORS[i % CHART_COLORS.length] + '99'),
+          borderColor: counts.map((_, i) => CHART_COLORS[i % CHART_COLORS.length]),
+          borderWidth: 1,
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        indexAxis: 'y',
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { ticks: { color: textColor, stepSize: 1 }, grid: { color: gridColor } },
+          y: { ticks: { color: textColor, font: { size: 10 } }, grid: { display: false } }
+        }
+      }
+    });
+  }
+
+  // --- MODE 3: Tendencia de Gasto ---
+  async function loadTendenciaGasto() {
+    updateKpiLabels(['Gasto Total', 'Promedio Semanal', 'Tendencia']);
+
+    const { data: orders } = await window.sb
+      .from('replenishment_supplier_orders')
+      .select('total_estimated, status, created_at')
+      .in('status', ['approved', 'pre-approved', 'pending']);
+
+    if (!orders?.length) {
+      updateKpis(['-', '-', '-'], [], []);
+      window.Toast?.info('No hay órdenes para analizar.');
+      return;
+    }
+
+    // Group by week (ISO week)
+    const weekMap = {};
+    orders.forEach(o => {
+      const d = new Date(o.created_at);
+      const weekStart = new Date(d);
+      weekStart.setDate(d.getDate() - d.getDay());
+      const key = weekStart.toISOString().split('T')[0];
+      if (!weekMap[key]) weekMap[key] = 0;
+      weekMap[key] += (o.total_estimated || 0);
+    });
+
+    const sortedWeeks = Object.entries(weekMap).sort((a, b) => a[0].localeCompare(b[0]));
+    const labels = sortedWeeks.map(([d]) => d);
+    const values = sortedWeeks.map(([, v]) => v);
+
+    const totalGasto = values.reduce((a, b) => a + b, 0);
+    const avgWeekly = values.length > 0 ? totalGasto / values.length : 0;
+
+    // Trend: compare last 2 weeks
+    let trendText = '-';
+    let trendClass = '';
+    if (values.length >= 2) {
+      const last = values[values.length - 1];
+      const prev = values[values.length - 2];
+      const change = prev > 0 ? (((last - prev) / prev) * 100).toFixed(1) : 0;
+      trendText = (change >= 0 ? '+' : '') + change + '%';
+      trendClass = change > 0 ? 'trend-up' : change < 0 ? 'trend-down' : 'trend-neutral';
+    }
+
+    const fmt = (v) => window.Utils?.formatARS?.(v) || ('$' + v.toLocaleString('es-AR', { minimumFractionDigits: 2 }));
+
+    updateKpis(
+      [fmt(totalGasto), fmt(avgWeekly), trendText],
+      ['', '', ''],
+      ['', '', trendClass]
+    );
+
+    const textColor = getThemeColor('--text-tertiary', '#888');
+    const gridColor = 'rgba(255,255,255,0.06)';
+
+    auditChartInstance = new Chart(ui.auditChartCanvas, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Gasto Semanal',
+          data: values,
+          borderColor: CHART_COLORS[4],
+          backgroundColor: CHART_COLORS[4] + '33',
+          tension: 0.3,
+          fill: true,
+          pointRadius: 4,
+          pointBackgroundColor: CHART_COLORS[4]
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: '#d4d4d8', usePointStyle: true, font: { size: 11 } } } },
+        scales: {
+          x: { ticks: { color: textColor, font: { size: 10 } }, grid: { color: gridColor } },
+          y: { ticks: { color: textColor, callback: v => '$' + (v / 1000).toFixed(0) + 'k' }, grid: { color: gridColor } }
+        }
+      }
+    });
+  }
+
+  // Audit Chart Dropdown
+  function setupAuditChartDropdown() {
+    const dropdown = ui.auditChartDropdown;
+    const trigger = ui.auditDropdownTrigger;
+    const menu = ui.auditDropdownMenu;
+    if (!dropdown || !trigger || !menu) return;
+
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      dropdown.classList.toggle('is-open');
+    });
+
+    menu.querySelectorAll('.custom-dropdown-option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        const val = opt.dataset.value;
+        trigger.querySelector('.custom-dropdown-text').textContent = opt.textContent.trim();
+        dropdown.classList.remove('is-open');
+        loadAuditChart(val);
+      });
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!dropdown.contains(e.target)) dropdown.classList.remove('is-open');
+    });
+  }
 
   // Pre-Approve Items
   async function preApproveItems(itemIds) {
@@ -958,14 +1130,14 @@
           const { error: paymentError } = await window.sb
             .from("finance_payments")
             .insert({
+              title: `Pedido #${order.id.slice(0, 8)} - ${order.proveedor}`,
               supplier_id: order.items[0]?.master_sku?.proveedor_default_id || null,
               supplier_order_id: order.id,
-              amount: paymentAmount,
+              amount_total: paymentAmount,
               due_date: dueDate,
-              status: "pending",
-              concept: `Pedido #${order.id.slice(0, 8)} - ${order.proveedor}`,
+              status: "PENDING",
+              source_type: "PEDIDO",
               created_by: session.user.id,
-              created_at: new Date().toISOString(),
             });
 
           if (paymentError) {
@@ -1001,7 +1173,6 @@
     ui.btnRefresh?.addEventListener("click", () => {
       if (activeTab === "pre-aprobacion") loadPreApprovalItems();
       else if (activeTab === "pendientes") loadOrders();
-      else if (activeTab === "sin-asignar") loadUnassigned();
     });
 
     // Empty State Reload
@@ -1123,6 +1294,13 @@
 
   // Init
   bindEvents();
+  setupAuditChartDropdown();
   switchTab(activeTab);
   if (activeTab === "pre-aprobacion") switchSubtab(activeSubtab);
+  (window.requestIdleCallback || setTimeout)(() => loadAuditChart(currentChartMode));
+
+  // Historial button
+  ui.btnHistorial?.addEventListener('click', () => {
+    window.Toast?.info('Historial de pedidos — Próximamente.');
+  });
 })();

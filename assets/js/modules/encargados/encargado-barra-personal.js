@@ -204,7 +204,6 @@
         }
 
         ui.planningSummary.classList.remove('hidden');
-        ui.planningSummary.style.display = 'grid';
 
         state.requirements.forEach(req => {
             const count = state.convocations.filter(c => c.role_id === req.role.id).length;
@@ -254,10 +253,10 @@
                 const statusClass = statusMap[convocation.status] || 'status-neutral';
 
                 actionHtml = `
-                    <div style="text-align: right;">
+                    <div class="text-right">
                         <span class="status-pill ${statusClass}">${convocation.status.toUpperCase()}</span>
                         ${convocation.status !== 'confirmed' ?
-                            `<button class="btn-ghost btn-sm" data-action="confirm" data-id="${convocation.id}" style="margin-top: var(--space-xs);">Forzar</button>`
+                            `<button class="btn-ghost btn-sm mt-xs" data-action="confirm" data-id="${convocation.id}">Forzar</button>`
                             : ''}
                     </div>
                 `;
@@ -266,11 +265,11 @@
             }
 
             card.innerHTML = `
-                <div style="display: flex; align-items: center; gap: var(--space-sm);">
+                <div class="flex items-center gap-sm">
                     <div class="avatar-initial">${(staff.full_name || 'U').charAt(0)}</div>
                     <div>
-                        <div style="font-weight: 500;">${staff.full_name || 'Sin Nombre'}</div>
-                        <div class="muted" style="font-size: 0.75rem;">${staff.role || 'Staff'}</div>
+                        <div class="font-medium">${staff.full_name || 'Sin Nombre'}</div>
+                        <div class="muted text-sm">${staff.role || 'Staff'}</div>
                     </div>
                 </div>
                 ${actionHtml}
@@ -360,7 +359,7 @@
 
         // Render role options
         ui.roleOptions.innerHTML = state.requirements.map(req => `
-            <button class="btn-secondary w-full" data-role-id="${req.role.id}" style="margin-bottom: var(--space-xs);">
+            <button class="btn-secondary w-full mb-xs" data-role-id="${req.role.id}">
                 ${req.role.name}
             </button>
         `).join('');
@@ -369,11 +368,11 @@
         state.pendingConvocation = { staffId };
 
         // Show modal
-        ui.roleModal.classList.remove('hidden');
+        ui.roleModal.showModal();
     }
 
     function closeRoleModal() {
-        ui.roleModal.classList.add('hidden');
+        ui.roleModal.close();
         state.pendingConvocation = null;
     }
 
@@ -434,7 +433,7 @@
         return new Promise(resolve => {
             ui.confirmTitle.textContent = title;
             ui.confirmMessage.textContent = message;
-            ui.confirmModal.classList.remove('hidden');
+            ui.confirmModal.showModal();
 
             const handleConfirm = () => {
                 cleanup();
@@ -447,13 +446,15 @@
             };
 
             const cleanup = () => {
-                ui.confirmModal.classList.add('hidden');
+                ui.confirmModal.close();
                 ui.btnConfirm.removeEventListener('click', handleConfirm);
                 ui.btnCancelConfirm.removeEventListener('click', handleCancel);
+                ui.confirmModal.removeEventListener('cancel', handleCancel);
             };
 
             ui.btnConfirm.addEventListener('click', handleConfirm);
             ui.btnCancelConfirm.addEventListener('click', handleCancel);
+            ui.confirmModal.addEventListener('cancel', handleCancel);
         });
     }
 

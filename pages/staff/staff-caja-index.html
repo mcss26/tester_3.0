@@ -47,7 +47,7 @@
 
                 <!-- Info Card -->
                 <div class="action-card cursor-default flex-col items-start !text-left p-5 w-full"
-                    style="margin-bottom: var(--space-lg);">
+                    style="margin-bottom: var(--space-md);">
                     <div class="flex-between align-center w-full" style="margin-bottom: var(--space-xs);">
                         <div class="row-flex align-center gap-sm">
                             <div class="icon-box">
@@ -60,10 +60,31 @@
                             </div>
                             <span class="text-lg font-bold" id="active-terminal-name">Cargando...</span>
                         </div>
-                        <div class="status-pill status-active">ASIGNADO</div>
+                        <div id="terminal-status-pill" class="status-pill status-active">ASIGNADO</div>
                     </div>
-                    <p class="faint text-sm mt-2">Tienes una terminal asignada. Al finalizar tu turno, completa la
-                        declaración jurada.</p>
+
+                    <!-- Timeline -->
+                    <div id="status-timeline" class="status-timeline" style="margin-top: var(--space-sm);">
+                        <div class="timeline-step" data-step="waiting">
+                            <div class="timeline-dot"></div>
+                            <span class="timeline-label">Esperando</span>
+                        </div>
+                        <div class="timeline-connector"></div>
+                        <div class="timeline-step" data-step="assigned">
+                            <div class="timeline-dot"></div>
+                            <span class="timeline-label">Asignado</span>
+                        </div>
+                        <div class="timeline-connector"></div>
+                        <div class="timeline-step" data-step="submitted">
+                            <div class="timeline-dot"></div>
+                            <span class="timeline-label">Declarado</span>
+                        </div>
+                        <div class="timeline-connector"></div>
+                        <div class="timeline-step" data-step="verified">
+                            <div class="timeline-dot"></div>
+                            <span class="timeline-label">Verificado</span>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Closing Form -->
@@ -99,11 +120,13 @@
                             </div>
                             <button type="button" id="btn-clear-signature"
                                 class="absolute top-2 right-2 btn-icon btn-ghost btn-sm" title="Borrar firma">✗</button>
-                            <button type="submit" id="btn-submit-close"
-                                class="btn btn-primary w-full py-4 text-sm tracking-widest mt-4">
-                                CERRAR TURNO
-                            </button>
                         </div>
+                    </div>
+
+                    <button type="submit" id="btn-submit-close"
+                        class="btn btn-primary w-full py-4 text-sm tracking-widest mt-4">
+                        CERRAR TURNO
+                    </button>
                 </form>
             </div>
 

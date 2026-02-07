@@ -39,6 +39,9 @@
         statTerminals: document.getElementById('stat-terminals'),
         statSubmitted: document.getElementById('stat-submitted'),
         statPending: document.getElementById('stat-pending-withdrawal'),
+        statTotalCash: document.getElementById('stat-total-cash'),
+        statTotalZoco: document.getElementById('stat-total-zoco'),
+        statTotalDeclared: document.getElementById('stat-total-declared'),
 
         // Grid & Log
         terminalsGrid: document.getElementById('terminals-grid'),
@@ -360,10 +363,16 @@
             // Actions
             let actionHtml = '';
             if (isSubmitted) {
-                const total = (t.closing.declared_cash || 0) + (t.closing.declared_zoco || 0);
+                const cash = t.closing.declared_cash || 0;
+                const zoco = t.closing.declared_zoco || 0;
+                const total = cash + zoco;
                 actionHtml = `
                     <div class="terminal-total">
-                        <span class="label-xs">Total</span>
+                        <div class="row-flex gap-md">
+                            <div><span class="label-xs">Efectivo</span><span class="value-sm">${window.Utils.formatARS(cash)}</span></div>
+                            <div><span class="label-xs">Zoco</span><span class="value-sm">${window.Utils.formatARS(zoco)}</span></div>
+                        </div>
+                        <span class="label-xs" style="margin-top:var(--space-xs)">Total</span>
                         <span class="value-lg text-success">${window.Utils.formatARS(total)}</span>
                     </div>`;
             } else if (isOpened) {
@@ -399,6 +408,16 @@
             btn.addEventListener('click', () => openCloseTerminalModal(btn.dataset.closeTerminal));
         });
 
+        // Update Financial KPIs
+        const submittedTerminals = terminals.filter(t =>
+            t.closing?.status === 'submitted' || t.closing?.status === 'verified'
+        );
+        const totalCash = submittedTerminals.reduce((acc, t) => acc + (t.closing.declared_cash || 0), 0);
+        const totalZoco = submittedTerminals.reduce((acc, t) => acc + (t.closing.declared_zoco || 0), 0);
+        if (ui.statTotalCash) ui.statTotalCash.textContent = window.Utils.formatARS(totalCash);
+        if (ui.statTotalZoco) ui.statTotalZoco.textContent = window.Utils.formatARS(totalZoco);
+        if (ui.statTotalDeclared) ui.statTotalDeclared.textContent = window.Utils.formatARS(totalCash + totalZoco);
+
         // Render Log using map().join('')
         if (movements.length === 0) {
             ui.movementsLog.innerHTML = '<div class="empty-state-text">Sin movimientos recientes</div>';
@@ -427,16 +446,16 @@
     }
 
     function renderClosedState(closingData) {
-        document.body.innerHTML = `
-            <div class="center-content text-center text-white">
-                <h1 class="text-3xl font-bold mb-4">🌙 Noche Cerrada</h1>
-                <p class="mb-4">El cierre de caja ha sido finalizado.</p>
-                <p class="font-mono text-xl text-green-400 mb-8">${window.Utils.formatARS(closingData.total_declared || 0)}</p>
-                <div class="flex justify-center gap-4">
-                    <button class="btn btn-secondary" onclick="window.history.back()">Volver</button>
+        setPageState('empty');
+        if (ui.pageCardEmpty) {
+            ui.pageCardEmpty.innerHTML = `
+                <div class="text-center">
+                    <p class="label-lg">🌙 Noche Cerrada</p>
+                    <p class="label-sm" style="margin-top:var(--space-sm)">El cierre de caja ha sido finalizado.</p>
+                    <p class="label-lg text-success" style="margin-top:var(--space-md)">${window.Utils.formatARS(closingData.total_declared || 0)}</p>
                 </div>
-            </div>
-        `;
+            `;
+        }
     }
 
     function populateTerminalSelect(elementId = 'select-terminal') {
@@ -535,8 +554,9 @@
                     terminal_id: termId,
                     staff_id: staffId,
                     system_cash: 0,
+                    system_zoco: 0,
                     declared_cash: 0,
-                    difference: 0,
+                    declared_zoco: 0,
                     notes: initialFund > 0 ? `Fondo Inicial: $${initialFund}` : ''
                 });
 
@@ -656,13 +676,17 @@
                 );
             }
 
-            // Cálculo de total_declared
+            // Cálculo de totales
             const submitted = state.terminals.filter(t =>
                 t.closing && (t.closing.status === 'submitted' || t.closing.status === 'verified')
             );
             const totalDeclared = submitted.reduce((acc, t) =>
                 acc + (t.closing.declared_cash || 0) + (t.closing.declared_zoco || 0), 0
             );
+            const totalSystem = submitted.reduce((acc, t) =>
+                acc + (t.closing.system_cash || 0) + (t.closing.system_zoco || 0), 0
+            );
+            const totalDifference = totalDeclared - totalSystem;
 
             // ──────────────────────────────────────────────────────────
             // Cerrar cash_closings y work_day en paralelo
@@ -676,7 +700,9 @@
                         status: 'closed',
                         closed_at: closedAt,
                         closed_by: user.id,
+                        total_system: totalSystem,
                         total_declared: totalDeclared,
+                        total_difference: totalDifference,
                         notes: notes
                     })
                     .eq('id', state.closingId),

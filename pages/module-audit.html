@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>🔍 Module Audit — FormulaMid</title>
+ <link rel="stylesheet" href="../assets/css/tokens.css">
+ <link rel="stylesheet" href="../assets/css/components.css">
+ <style>
+  body {
+   padding: var(--space-4);
+   background: var(--bg-base);
+   color: var(--text-primary);
+   font-family: var(--font-primary);
+  }
+
+  h1 {
+   font-size: var(--text-xl);
+   font-weight: 800;
+   margin-bottom: var(--space-2);
+  }
+
+  .subtitle {
+   color: var(--text-muted);
+   font-size: var(--text-sm);
+   margin-bottom: var(--space-4);
+  }
+
+  .summary-bar {
+   display: flex;
+   gap: var(--space-5);
+   padding: var(--space-3) var(--space-4);
+   background: var(--bg-surface);
+   border-radius: var(--radius-md);
+   margin-bottom: var(--space-4);
+   font-weight: 600;
+   font-size: var(--text-sm);
+   flex-wrap: wrap;
+  }
+
+  .summary-bar .stat {
+   display: flex;
+   align-items: center;
+   gap: var(--space-1);
+  }
+
+  .section-header {
+   font-size: var(--text-base);
+   font-weight: 700;
+   margin: var(--space-4) 0 var(--space-2);
+   padding-bottom: var(--space-1);
+   border-bottom: 2px solid var(--border-1);
+   text-transform: uppercase;
+   letter-spacing: 0.5px;
+  }
+
+  table {
+   width: 100%;
+   border-collapse: collapse;
+   margin-bottom: var(--space-4);
+   font-size: var(--text-xs);
+  }
+
+  th {
+   text-align: left;
+   padding: var(--space-2) var(--space-2);
+   background: var(--bg-surface);
+   color: var(--text-muted);
+   font-weight: 600;
+   text-transform: uppercase;
+   letter-spacing: 0.5px;
+   border-bottom: 1px solid var(--border-1);
+  }
+
+  td {
+   padding: var(--space-2);
+   border-bottom: 1px solid var(--border-subtle);
+   vertical-align: top;
+  }
+
+  tr.status-ok td {
+   background: rgba(34, 197, 94, 0.05);
+  }
+
+  tr.status-redirect td {
+   background: rgba(250, 204, 21, 0.05);
+  }
+
+  tr.status-error td {
+   background: rgba(239, 68, 68, 0.08);
+  }
+
+  tr.status-pending td {
+   opacity: 0.5;
+  }
+
+  .badge {
+   display: inline-block;
+   padding: 2px 8px;
+   border-radius: 999px;
+   font-size: 10px;
+   font-weight: 700;
+   text-transform: uppercase;
+  }
+
+  .badge-ok {
+   background: rgba(34, 197, 94, 0.15);
+   color: #22c55e;
+  }
+
+  .badge-redirect {
+   background: rgba(250, 204, 21, 0.15);
+   color: #ca8a04;
+  }
+
+  .badge-error {
+   background: rgba(239, 68, 68, 0.15);
+   color: #ef4444;
+  }
+
+  .badge-pending {
+   background: rgba(148, 163, 184, 0.15);
+   color: #94a3b8;
+  }
+
+  .badge-slow {
+   background: rgba(251, 146, 60, 0.15);
+   color: #fb923c;
+  }
+
+  .detail-list {
+   list-style: none;
+   padding: 0;
+   margin: 0;
+  }
+
+  .detail-list li {
+   margin-bottom: 2px;
+  }
+
+  .detail-list li::before {
+   content: '•';
+   margin-right: 4px;
+   color: var(--text-muted);
+  }
+
+  .mono {
+   font-family: monospace;
+   font-size: 10px;
+  }
+
+  .progress-bar {
+   width: 100%;
+   height: 6px;
+   background: var(--bg-surface);
+   border-radius: 99px;
+   overflow: hidden;
+   margin-bottom: var(--space-2);
+  }
+
+  .progress-fill {
+   height: 100%;
+   background: var(--color-accent);
+   transition: width 0.3s;
+  }
+
+  #progress-text {
+   font-size: var(--text-xs);
+   color: var(--text-muted);
+   margin-bottom: var(--space-3);
+  }
+ </style>
+</head>
+
+<body>
+ <h1>🔍 Module Audit — FormulaMid</h1>
+ <p class="subtitle" id="progress-text">Iniciando scan...</p>
+ <div class="progress-bar">
+  <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+ </div>
+
+ <div class="summary-bar" id="summary-bar" style="display:none;">
+  <div class="stat">📄 Total: <span id="stat-total">0</span></div>
+  <div class="stat">✅ OK: <span id="stat-ok">0</span></div>
+  <div class="stat">🔒 Login: <span id="stat-redirect">0</span></div>
+  <div class="stat">❌ Error: <span id="stat-error">0</span></div>
+  <div class="stat">⏱ Tiempo: <span id="stat-time">0</span>s</div>
+ </div>
+
+ <div id="results"></div>
+
+ <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+ <script src="../assets/js/core/config.js"></script>
+ <script src="../assets/js/core/supabase-client.js"></script>
+ <script src="../assets/js/core/auth.js"></script>
+
+ <script>
+  (async function () {
+   'use strict';
+
+   const resultsDiv = document.getElementById('results');
+   const progressFill = document.getElementById('progress-fill');
+   const progressText = document.getElementById('progress-text');
+   const t0 = performance.now();
+
+   // ── Module Registry ──
+   const MODULES = {
+    'Admin': [
+     { path: 'admin/admin-index.html', name: 'Admin Index', desc: 'Dashboard principal admin' },
+     { path: 'admin/admin-workdays.html', name: 'Admin Workdays', desc: 'Jornadas, planificación ZBB, devenciones' },
+     { path: 'admin/admin-pagos.html', name: 'Admin Pagos', desc: 'Tesorería, pagos, nómina' },
+     { path: 'admin/admin-central-stock.html', name: 'Central Stock', desc: 'Stock global, reabastecimiento' },
+     { path: 'admin/admin-solicitudes.html', name: 'Admin Solicitudes', desc: 'Gestión de pedidos a proveedores' },
+     { path: 'admin/admin-config.html', name: 'Admin Config', desc: 'Configuración del sitio' },
+     { path: 'admin/admin-reportes.html', name: 'Admin Reportes', desc: 'Reportes financieros' },
+     { path: 'admin/admin-semanal.html', name: 'Admin Semanal', desc: 'Cierre semanal consolidado' },
+     { path: 'admin/admin-cierre.html', name: 'Admin Cierre', desc: 'Cierre de caja operativo' },
+     { path: 'admin/admin-master-nomina.html', name: 'Master Nómina', desc: 'Tabla maestra de roles/staff' },
+     { path: 'admin/admin-master-pos.html', name: 'Master POS', desc: 'Terminales de pago' },
+     { path: 'admin/admin-master-proveedores.html', name: 'Master Proveedores', desc: 'Directorio de proveedores' },
+     { path: 'admin/admin-master-tarifario.html', name: 'Master Tarifario', desc: 'Tarifas de entrada' },
+     { path: 'admin/admin-master-categorias.html', name: 'Master Categorías', desc: 'Categorías de productos' },
+    ],
+    'QR System': [
+     { path: 'admin/qr/index.html', name: 'QR Index', desc: 'Dashboard QR' },
+     { path: 'admin/qr/generator.html', name: 'QR Generator', desc: 'Generador de lotes QR' },
+     { path: 'admin/qr/monitor.html', name: 'QR Monitor', desc: 'Monitor en tiempo real' },
+    ],
+    'Encargados': [
+     { path: 'encargados/encargado-caja-index.html', name: 'Encargado Caja Index', desc: 'Hub encargado de caja' },
+     { path: 'encargados/encargado-caja-noche.html', name: 'Encargado Caja Noche', desc: 'Cierre nocturno caja' },
+     { path: 'encargados/encargado-caja-personal.html', name: 'Encargado Caja Personal', desc: 'Staff de caja' },
+     { path: 'encargados/encargado-barra-index.html', name: 'Encargado Barra Index', desc: 'Hub encargado de barra' },
+     { path: 'encargados/encargado-barra-noche.html', name: 'Encargado Barra Noche', desc: 'Conteo nocturno de barra' },
+     { path: 'encargados/encargado-barra-personal.html', name: 'Encargado Barra Personal', desc: 'Staff de barra' },
+     { path: 'encargados/encargado-recepcion.html', name: 'Encargado Recepción', desc: 'Control de puerta' },
+    ],
+    'Gerencia': [
+     { path: 'gerencia/balance-semanal.html', name: 'Balance Semanal', desc: 'Reporte gerencial semanal' },
+    ],
+    'Logística': [
+     { path: 'logistica/logistica-index.html', name: 'Logística Index', desc: 'Hub logístico' },
+     { path: 'logistica/logistica-distribucion.html', name: 'Distribución', desc: 'Distribución a ubicaciones' },
+     { path: 'logistica/logistica-recepcion.html', name: 'Recepción', desc: 'Recepción de mercadería' },
+     { path: 'logistica/logistica-seguimiento.html', name: 'Seguimiento', desc: 'Tracking de pedidos' },
+     { path: 'logistica/logistica-stock.html', name: 'Logística Stock', desc: 'Stock logístico' },
+    ],
+    'Operativo': [
+     { path: 'operativo/operativo-index.html', name: 'Operativo Index', desc: 'Hub operativo' },
+     { path: 'operativo/operativo-workday.html', name: 'Operativo Workday', desc: 'Jornada operativa' },
+     { path: 'operativo/operativo-stock.html', name: 'Operativo Stock', desc: 'Stock operativo' },
+     { path: 'operativo/operativo-solicitudes.html', name: 'Operativo Solicitudes', desc: 'Pedidos operativos' },
+     { path: 'operativo/operativo-analisis.html', name: 'Operativo Análisis', desc: 'Análisis operativo' },
+     { path: 'operativo/operativo-erp.html', name: 'Operativo ERP', desc: 'Panel ERP' },
+     { path: 'operativo/operativo-cms.html', name: 'Operativo CMS', desc: 'CMS contenido' },
+     { path: 'operativo/cms-members.html', name: 'CMS Members', desc: 'Gestión de miembros' },
+     { path: 'operativo/operativo-master-sku.html', name: 'Master SKU', desc: 'Catálogo de productos' },
+     { path: 'operativo/operativo-master-proveedores.html', name: 'Op. Proveedores', desc: 'Proveedores (vista op.)' },
+     { path: 'operativo/scanner.html', name: 'Scanner', desc: 'Escáner QR' },
+    ],
+    'Staff': [
+     { path: 'staff/staff-caja-index.html', name: 'Staff Caja', desc: 'Dashboard staff caja' },
+     { path: 'staff/staff-barra-index.html', name: 'Staff Barra', desc: 'Dashboard staff barra' },
+    ],
+    'Members (Public)': [
+     { path: 'members/my-qr.html', name: 'My QR', desc: 'QR personal del miembro' },
+    ],
+   };
+
+   const allModules = Object.entries(MODULES).flatMap(([section, mods]) =>
+    mods.map(m => ({ ...m, section }))
+   );
+   const total = allModules.length;
+   let processed = 0;
+   let counts = { ok: 0, redirect: 0, error: 0 };
+
+   // ── Probe a single page ──
+   async function probeModule(mod) {
+    const url = `/pages/${mod.path}`;
+    const result = {
+     ...mod,
+     status: 'pending',
+     httpCode: null,
+     title: null,
+     hasCSS: false,
+     hasJS: false,
+     fileSize: null,
+     loadTime: null,
+     details: [],
+    };
+
+    const t1 = performance.now();
+    try {
+     const resp = await fetch(url, { redirect: 'follow' });
+     result.httpCode = resp.status;
+     result.loadTime = Math.round(performance.now() - t1);
+
+     if (!resp.ok) {
+      result.status = 'error';
+      result.details.push(`HTTP ${resp.status}`);
+      counts.error++;
+      return result;
+     }
+
+     const html = await resp.text();
+     result.fileSize = (html.length / 1024).toFixed(1) + ' KB';
+
+     // Parse title
+     const titleMatch = html.match(/<title>(.*?)<\/title>/i);
+     result.title = titleMatch ? titleMatch[1].trim() : '(sin título)';
+
+     // Check for CSS
+     const cssLinks = html.match(/<link[^>]+rel="stylesheet"[^>]*>/gi) || [];
+     result.hasCSS = cssLinks.length > 0;
+     result.details.push(`${cssLinks.length} CSS`);
+
+     // Check for JS scripts
+     const scripts = html.match(/<script[^>]*src=[^>]*>/gi) || [];
+     result.hasJS = scripts.length > 0;
+     result.details.push(`${scripts.length} JS`);
+
+     // Check for Supabase
+     const hasSupa = html.includes('supabase');
+     result.details.push(hasSupa ? 'Supabase ✓' : 'No Supabase');
+
+     // Check auth guard
+     const hasAuth = html.includes('data-allowed-roles') || html.includes('guardOrRedirect');
+     const roleMatch = html.match(/data-allowed-roles="([^"]+)"/);
+     if (roleMatch) {
+      result.details.push(`Roles: ${roleMatch[1]}`);
+     } else if (hasAuth) {
+      result.details.push('Auth guard ✓');
+     } else {
+      result.details.push('No auth guard');
+     }
+
+     // Check for tokens.css (golden standard)
+     const hasTokens = html.includes('tokens.css');
+     const hasComponents = html.includes('components.css');
+     result.details.push(hasTokens && hasComponents ? 'GS ✓' : hasTokens ? 'tokens only' : '⚠ No GS');
+
+     // Check for inline styles (bad practice)
+     const inlineStyles = (html.match(/style="/gi) || []).length;
+     if (inlineStyles > 5) {
+      result.details.push(`⚠ ${inlineStyles} inline styles`);
+     }
+
+     // Check for inline onclick (security issue)
+     const inlineOnclick = (html.match(/onclick="/gi) || []).length;
+     if (inlineOnclick > 0) {
+      result.details.push(`🔴 ${inlineOnclick} onclick`);
+     }
+
+     // Count key UI elements
+     const tables = (html.match(/<table/gi) || []).length;
+     const forms = (html.match(/<form/gi) || []).length;
+     const modals = (html.match(/modal|dialog/gi) || []).length;
+     const tabs = (html.match(/tab-bar|data-tab/gi) || []).length;
+
+     let ui = [];
+     if (tables) ui.push(`${tables} tabla${tables > 1 ? 's' : ''}`);
+     if (forms) ui.push(`${forms} form${forms > 1 ? 's' : ''}`);
+     if (modals) ui.push(`${modals} modal${modals > 1 ? 'es' : ''}`);
+     if (tabs) ui.push('tabs');
+     result.uiElements = ui.join(', ') || 'minimal';
+
+     // Check redirect (login page check in JS)
+     const redirectsToLogin = html.includes('login.html') || html.includes('guardOrRedirect');
+     result.status = 'ok';
+     counts.ok++;
+
+    } catch (err) {
+     result.status = 'error';
+     result.details.push(err.message);
+     result.loadTime = Math.round(performance.now() - t1);
+     counts.error++;
+    }
+
+    processed++;
+    const pct = Math.round((processed / total) * 100);
+    progressFill.style.width = pct + '%';
+    progressText.textContent = `Escaneando ${processed}/${total}: ${mod.name}...`;
+
+    return result;
+   }
+
+   // ── Run all probes ──
+   let currentSection = '';
+   const allResults = [];
+
+   for (const [section, mods] of Object.entries(MODULES)) {
+    // Run section in parallel (5 at a time)
+    const batch = mods.map(m => ({ ...m, section }));
+    const results = await Promise.all(batch.map(m => probeModule(m)));
+    allResults.push(...results);
+   }
+
+   // ── Render results ──
+   const elapsed = ((performance.now() - t0) / 1000).toFixed(1);
+
+   // Summary bar
+   document.getElementById('summary-bar').style.display = 'flex';
+   document.getElementById('stat-total').textContent = total;
+   document.getElementById('stat-ok').textContent = counts.ok;
+   document.getElementById('stat-redirect').textContent = counts.redirect;
+   document.getElementById('stat-error').textContent = counts.error;
+   document.getElementById('stat-time').textContent = elapsed;
+   progressText.textContent = `✅ Scan completo — ${total} módulos en ${elapsed}s`;
+   progressFill.style.width = '100%';
+   progressFill.style.background = counts.error > 0 ? '#ef4444' : '#22c55e';
+
+   // Group by section
+   let currentSec = '';
+   for (const r of allResults) {
+    if (r.section !== currentSec) {
+     currentSec = r.section;
+     const h = document.createElement('h2');
+     h.className = 'section-header';
+     h.textContent = `${currentSec} (${allResults.filter(x => x.section === currentSec).length})`;
+     resultsDiv.appendChild(h);
+
+     const table = document.createElement('table');
+     table.id = `table-${currentSec.replace(/\s/g, '')}`;
+     table.innerHTML = `<thead><tr>
+                    <th>Módulo</th>
+                    <th>Status</th>
+                    <th>HTTP</th>
+                    <th>Título</th>
+                    <th>Size</th>
+                    <th>ms</th>
+                    <th>UI</th>
+                    <th>Detalles</th>
+                </tr></thead><tbody></tbody>`;
+     resultsDiv.appendChild(table);
+    }
+
+    const tbody = document.querySelector(`#table-${currentSec.replace(/\s/g, '')} tbody`);
+    const tr = document.createElement('tr');
+    tr.className = `status-${r.status}`;
+
+    const statusBadge = r.status === 'ok' ? '<span class="badge badge-ok">OK</span>'
+     : r.status === 'redirect' ? '<span class="badge badge-redirect">LOGIN</span>'
+      : r.status === 'error' ? '<span class="badge badge-error">ERROR</span>'
+       : '<span class="badge badge-pending">—</span>';
+
+    const speedBadge = r.loadTime > 500 ? ' <span class="badge badge-slow">SLOW</span>' : '';
+
+    tr.innerHTML = `
+                <td><strong>${r.name}</strong><br><span class="mono" style="color:var(--text-muted)">${r.desc}</span></td>
+                <td>${statusBadge}${speedBadge}</td>
+                <td class="mono">${r.httpCode || '—'}</td>
+                <td>${r.title || '—'}</td>
+                <td class="mono">${r.fileSize || '—'}</td>
+                <td class="mono">${r.loadTime || '—'}</td>
+                <td>${r.uiElements || '—'}</td>
+                <td><ul class="detail-list">${(r.details || []).map(d => `<li>${d}</li>`).join('')}</ul></td>
+            `;
+    tbody.appendChild(tr);
+   }
+
+   // Expose results for programmatic access
+   window.__AUDIT_RESULTS = {
+    total, elapsed,
+    counts,
+    modules: allResults.map(r => ({
+     name: r.name,
+     section: r.section,
+     path: r.path,
+     status: r.status,
+     httpCode: r.httpCode,
+     title: r.title,
+     fileSize: r.fileSize,
+     loadTime: r.loadTime,
+     uiElements: r.uiElements,
+     details: r.details,
+    }))
+   };
+   console.log('[module-audit]', window.__AUDIT_RESULTS);
+
+  })();
+ </script>
+</body>
+
+</html>

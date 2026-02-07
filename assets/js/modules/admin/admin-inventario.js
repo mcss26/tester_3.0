@@ -1780,13 +1780,14 @@
           const { error: paymentError } = await window.sb
             .from("finance_payments")
             .insert({
+              title: `Pedido #${order.id.slice(0, 8)} - ${order.proveedor}`,
+              supplier_id: order.items[0]?.master_sku?.proveedor_default_id || null,
               supplier_order_id: order.id,
-              amount: paymentAmount,
+              amount_total: paymentAmount,
               due_date: dueDate,
-              status: "pending",
-              concept: `Pedido #${order.id.slice(0, 8)} - ${order.proveedor}`,
+              status: "PENDING",
+              source_type: "PEDIDO",
               created_by: session.user.id,
-              created_at: new Date().toISOString(),
             });
 
           if (paymentError) {

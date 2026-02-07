@@ -87,8 +87,8 @@
             const { data: skus, error } = await window.sb
                 .from('master_sku')
                 .select('*')
-                .eq('is_active', true)
-                .order('name');
+                .eq('active', true)
+                .order('nombre');
 
             if (error) throw error;
             return skus || [];
@@ -111,12 +111,11 @@
         const html = skus.map(sku => `
             <div class="staff-row" data-sku-id="${sku.id}">
                 <div>
-                    <div style="font-weight: 500;">${sku.name}</div>
-                    <div class="muted" style="font-size: 0.75rem;">${sku.unit_type || 'Unid.'}</div>
+                    <div class="font-medium">${sku.nombre}</div>
+                    <div class="muted text-sm">${sku.tipo || 'Unid.'}</div>
                 </div>
                 <input type="number" 
-                       class="input stock-input" 
-                       style="width: 80px; text-align: right;"
+                       class="input stock-input cell-narrow text-right" 
                        placeholder="0" 
                        step="0.01" 
                        min="0"
@@ -215,7 +214,7 @@
         return new Promise(resolve => {
             ui.confirmTitle.textContent = title;
             ui.confirmMessage.textContent = message;
-            ui.confirmModal.classList.remove('hidden');
+            ui.confirmModal.showModal();
 
             const handleConfirm = () => {
                 cleanup();
@@ -228,13 +227,15 @@
             };
 
             const cleanup = () => {
-                ui.confirmModal.classList.add('hidden');
+                ui.confirmModal.close();
                 ui.btnConfirm.removeEventListener('click', handleConfirm);
                 ui.btnCancelConfirm.removeEventListener('click', handleCancel);
+                ui.confirmModal.removeEventListener('cancel', handleCancel);
             };
 
             ui.btnConfirm.addEventListener('click', handleConfirm);
             ui.btnCancelConfirm.addEventListener('click', handleCancel);
+            ui.confirmModal.addEventListener('cancel', handleCancel);
         });
     }
 

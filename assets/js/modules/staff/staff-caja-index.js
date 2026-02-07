@@ -38,6 +38,8 @@
         // Dashboard
         stepDashboard: document.getElementById('step-dashboard'),
         activeTerminalName: document.getElementById('active-terminal-name'),
+        terminalStatusPill: document.getElementById('terminal-status-pill'),
+        statusTimeline: document.getElementById('status-timeline'),
 
         // Closing Form
         closingForm: document.getElementById('closing-form'),
@@ -193,8 +195,9 @@
                 .from('cash_closings')
                 .select('id')
                 .eq('work_day_id', data.id)
-                .single();
+                .maybeSingle();
 
+            if (closingError) console.warn('[StaffCaja] No cash closing yet:', closingError.message);
             if (closingData) state.cashClosingId = closingData.id;
 
             return data;
@@ -253,12 +256,44 @@
         }
     }
 
+    function updateTimeline(status) {
+        if (!ui.statusTimeline) return;
+
+        const steps = ['waiting', 'assigned', 'submitted', 'verified'];
+        const statusMap = { opened: 1, submitted: 2, verified: 3, closed: 3 };
+        const activeIndex = statusMap[status] ?? 0;
+
+        const stepEls = ui.statusTimeline.querySelectorAll('.timeline-step');
+        const connectorEls = ui.statusTimeline.querySelectorAll('.timeline-connector');
+
+        stepEls.forEach((el, i) => {
+            el.classList.remove('is-active', 'is-completed');
+            if (i < activeIndex) el.classList.add('is-completed');
+            else if (i === activeIndex) el.classList.add('is-active');
+        });
+
+        connectorEls.forEach((el, i) => {
+            el.classList.toggle('is-filled', i < activeIndex);
+        });
+
+        // Update pill
+        const pillMap = { opened: 'ASIGNADO', submitted: 'DECLARADO', verified: 'VERIFICADO', closed: 'CERRADO' };
+        const pillClass = { opened: 'status-active', submitted: 'status-warning', verified: 'status-success', closed: 'status-success' };
+        if (ui.terminalStatusPill) {
+            ui.terminalStatusPill.textContent = pillMap[status] || 'ESPERANDO';
+            ui.terminalStatusPill.className = `status-pill ${pillClass[status] || 'status-active'}`;
+        }
+    }
+
     function renderDashboard() {
         if (!state.assignedTerminal) return;
 
         ui.statusMessage.classList.add('hidden');
         ui.stepDashboard.classList.remove('hidden');
         ui.activeTerminalName.textContent = state.assignedTerminal.pos_terminals.friendly_name;
+
+        // Update timeline
+        updateTimeline(state.assignedTerminal.status);
 
         // Populate Form if data exists
         if (state.assignedTerminal.declared_cash) ui.inputCash.value = state.assignedTerminal.declared_cash;

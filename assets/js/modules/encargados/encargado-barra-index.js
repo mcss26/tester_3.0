@@ -96,16 +96,9 @@
             ui.systemStatus.textContent = `🟢 BARRA OPERATIVA: ${openDay.work_date}`;
             ui.systemStatus.className = 'system-status-pill status-success';
 
-            // Enable navigation buttons
+            // Enable navigation buttons (data-go handles routing)
             enableButton(ui.btnPersonal);
-            ui.btnPersonal.onclick = () => {
-                window.location.href = window.Auth.toAppPath('pages/encargados/encargado-barra-personal.html');
-            };
-
             enableButton(ui.btnNoche);
-            ui.btnNoche.onclick = () => {
-                window.location.href = window.Auth.toAppPath('pages/encargados/encargado-barra-noche.html');
-            };
         } else {
             // Update Status Display - Bar closed
             ui.systemStatus.textContent = '🔴 BARRA CERRADA';

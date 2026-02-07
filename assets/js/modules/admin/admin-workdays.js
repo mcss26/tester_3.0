@@ -1,7 +1,8 @@
 /**
  * Module: admin-workdays.js
  * Standard: logic-engineer (2026)
- * Description: Workday Management - ZBB Planner Dashboard (Unified Staffing & Convocation)
+ * Description: Workday Management - 3-Tab Dashboard (Planificación / Evento / Histórico)
+ * Integrates cash closing (ex admin-cierre) into Evento tab.
  */
 
 (async function () {
@@ -54,7 +55,40 @@
 
         // Cost Modal
         btnSaveCost: document.getElementById('btnSaveCost'),
-        // ... (other modal refs handled dynamically or via delegation)
+
+        // ── Cierre / Evento Tab ──
+        tabBar: document.getElementById('workday-tabs'),
+        panelPlan: document.getElementById('panelPlan'),
+        panelEvento: document.getElementById('panelEvento'),
+        panelHistorico: document.getElementById('panelHistorico'),
+
+        cierreTableBody: document.getElementById('cierre-table-body'),
+        totalCashDecl: document.getElementById('total-cash-decl'),
+        totalZocoDecl: document.getElementById('total-zoco-decl'),
+        totalCashSys: document.getElementById('total-cash-sys'),
+        totalZocoSys: document.getElementById('total-zoco-sys'),
+        totalDiff: document.getElementById('total-diff'),
+        evtKpiSystem: document.getElementById('evt-kpi-system'),
+        evtKpiDeclared: document.getElementById('evt-kpi-declared'),
+        evtKpiDiff: document.getElementById('evt-kpi-diff'),
+        btnCloseNight: document.getElementById('btn-close-night'),
+        btnSaveNotes: document.getElementById('btn-save-notes'),
+        closingNotes: document.getElementById('closing-notes'),
+        qrPassline: { qty: document.getElementById('qr-passline-qty'), sys: document.getElementById('qr-passline-sys'), decl: document.getElementById('qr-passline-decl'), diff: document.getElementById('qr-passline-diff') },
+        qrBoleteria: { qty: document.getElementById('qr-boleteria-qty'), sys: document.getElementById('qr-boleteria-sys'), decl: document.getElementById('qr-boleteria-decl'), diff: document.getElementById('qr-boleteria-diff') },
+        qrRrpp: { qty: document.getElementById('qr-rrpp-qty'), sys: document.getElementById('qr-rrpp-sys') },
+        closeNightModal: document.getElementById('closeNightModal'),
+        confirmDiffDisplay: document.getElementById('confirm-diff-display'),
+        btnConfirmCloseNight: document.getElementById('btnConfirmCloseNight'),
+        btnCancelCloseNight: document.getElementById('btnCancelCloseNight'),
+        historyTableBody: document.getElementById('history-table-body'),
+
+        // ── Devenciones ──
+        devencionesTableBody: document.getElementById('devenciones-table-body'),
+        devencionKpiTotal: document.getElementById('devencion-kpi-total'),
+        devencionesTotalFooter: document.getElementById('devenciones-total-footer'),
+        btnGenerateAccruals: document.getElementById('btn-generate-accruals'),
+        sectionDevenciones: document.getElementById('section-devenciones'),
     };
 
     // Validation
@@ -77,7 +111,13 @@
         
         history: [],
         isLoading: false,
-        currentCountdownEventId: null
+        currentCountdownEventId: null,
+
+        // Cierre state
+        closingId: null,
+        activeTab: 'panelPlan',
+        cierreLoaded: false,
+        accruals: []      // staff_accruals for active workday
     };
 
     // 4. Utils
@@ -175,7 +215,7 @@
                 const costId = e.target.dataset.costId;
                 const amount = parseFloat(e.target.value) || 0;
                 const def = state.openingCosts.find(c => c.id === costId);
-                state.costsPlan[costId] = { amount, isAdjusted: amount !== (def?.default_amount || 0) };
+                state.costsPlan[costId] = { amount, isAdjusted: amount !== (def?.base_amount || 0) };
                 calculateTotals();
             }
         });
@@ -186,6 +226,99 @@
         ui.btnNewEvent?.addEventListener('click', openEventModal);
         ui.btnCancelEventModal?.addEventListener('click', closeEventModal);
         ui.btnCreateEvent?.addEventListener('click', handleCreateEvent);
+
+        // ── Tab Bar ──
+        ui.tabBar?.addEventListener('click', (e) => {
+            const btn = e.target.closest('[data-tab]');
+            if (btn) switchTab(btn.dataset.tab);
+        });
+
+        // ── Cierre / Evento events ──
+        ui.btnCloseNight?.addEventListener('click', openCloseNightModal);
+        ui.btnConfirmCloseNight?.addEventListener('click', performCloseNight);
+        ui.btnCancelCloseNight?.addEventListener('click', () => ui.closeNightModal?.classList.add('hidden'));
+
+        ui.btnSaveNotes?.addEventListener('click', handleSaveNotes);
+
+        // Import Triggers
+        document.querySelectorAll('#panelEvento .btn-import').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const fileInput = document.getElementById(e.currentTarget.dataset.trigger);
+                if (fileInput) fileInput.click();
+            });
+        });
+
+        bindFileHandler('file-extracciones', async (f) => {
+            const { count } = await window.ImporterExtracciones.process(f, state.activeWorkDay?.id);
+            window.Toast.success(`Importados ${count} retiros.`);
+            loadCierreData();
+        });
+        bindFileHandler('file-gbol', async (f) => {
+            const { count } = await window.ImporterGbol.process(f, state.activeWorkDay?.id);
+            window.Toast.success(`Importadas ${count} ventas Gbol.`);
+            loadCierreData();
+        });
+        bindFileHandler('file-passline', async (f) => {
+            const { count } = await window.ImporterPassline.process(f, state.activeWorkDay?.id);
+            window.Toast.success(`Procesados ${count} registros QR.`);
+            loadQrStats(state.activeWorkDay?.id);
+        });
+        bindFileHandler('file-afip', async (f) => {
+            const summary = await window.ImporterAfip.process(f);
+            window.Toast.success('Terminales procesadas.');
+        });
+
+        // QR live diffs
+        ui.qrPassline.decl?.addEventListener('input', updateQrDiffs);
+        ui.qrBoleteria.decl?.addEventListener('input', updateQrDiffs);
+    }
+
+    // ── Tab Switching ──
+    function switchTab(tabId) {
+        state.activeTab = tabId;
+        ['panelPlan', 'panelEvento', 'panelHistorico'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.classList.toggle('hidden', id !== tabId);
+        });
+        ui.tabBar?.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.toggle('is-active', btn.dataset.tab === tabId);
+            btn.setAttribute('aria-selected', btn.dataset.tab === tabId ? 'true' : 'false');
+        });
+
+        // Lazy-load cierre data when entering Evento tab
+        if (tabId === 'panelEvento' && state.activeWorkDay && !state.cierreLoaded) {
+            loadCierreData();
+        }
+        // Load accruals every time Evento tab is shown (to reflect real-time changes)
+        if (tabId === 'panelEvento' && state.activeWorkDay) {
+            loadAccruals();
+        }
+        // Lazy-load history when entering Histórico tab
+        if (tabId === 'panelHistorico') {
+            renderHistoryTable();
+        }
+    }
+
+    // ── File handler helper ──
+    function bindFileHandler(inputId, handler) {
+        const input = document.getElementById(inputId);
+        if (!input) return;
+        input.addEventListener('change', async (e) => {
+            if (!e.target.files.length) return;
+            const file = e.target.files[0];
+            const btn = document.querySelector(`button[data-trigger="${inputId}"]`);
+            const prevText = btn?.textContent || '';
+            if (btn) { btn.textContent = '...'; btn.disabled = true; }
+            try {
+                if (!state.activeWorkDay?.id && inputId !== 'file-afip') throw new Error('No hay jornada activa.');
+                await handler(file);
+            } catch (err) {
+                window.Toast.error(err.message || 'Error importando');
+            } finally {
+                if (btn) { btn.textContent = prevText; btn.disabled = false; }
+                input.value = '';
+            }
+        });
     }
 
     // 7. Data Loading
@@ -194,7 +327,7 @@
         try {
             const [rolesRes, costsRes, eventsRes, historyRes, usersRes] = await Promise.all([
                 window.sb.from('master_staff_roles').select('*').eq('active', true).order('name'),
-                window.sb.from('finance_opening_cost_defs').select('*').eq('is_active', true).order('sort_order'),
+                window.sb.from('cost_definitions').select('*').eq('frequency', 'per_event').eq('is_active', true).order('title'),
                 window.sb.from('events').select('*').gte('date', new Date().toISOString().split('T')[0]).order('date').limit(20),
                 window.WorkDayHelper.getWorkDaySummary(),
                 window.sb.from('profiles').select('id, full_name, role').order('full_name') // Fetch users
@@ -208,7 +341,7 @@
 
             // Init defaults
             state.roles.forEach(r => state.staffPlan[r.id] = 0);
-            state.openingCosts.forEach(c => state.costsPlan[c.id] = { amount: c.default_amount, isAdjusted: false });
+            state.openingCosts.forEach(c => state.costsPlan[c.id] = { amount: c.base_amount, isAdjusted: false });
 
             renderBasicPanels();
         } catch (e) {
@@ -233,6 +366,10 @@
         const dateVal = ui.inputDate.value;
         if (!dateVal) return;
 
+        // Reset cierre lazy-load flag for new date
+        state.cierreLoaded = false;
+        state.closingId = null;
+
         ui.statusIndicator.className = 'status-pill staff-status-pending';
         ui.statusIndicator.textContent = 'Verificando...';
         ui.statusIndicator.style.opacity = '0.5';
@@ -242,7 +379,7 @@
             state.staffPlan[r.id] = 0;
             state.allocations[r.id] = [];
         });
-        state.openingCosts.forEach(c => state.costsPlan[c.id] = { amount: c.default_amount, isAdjusted: false });
+        state.openingCosts.forEach(c => state.costsPlan[c.id] = { amount: c.base_amount, isAdjusted: false });
         
         // Reset Inputs
         ui.inputNotes.value = '';
@@ -425,12 +562,12 @@
     function renderCostsList() {
         if (!ui.costsContainer) return;
         ui.costsContainer.innerHTML = state.openingCosts.map(cost => {
-            const plan = state.costsPlan[cost.id] || { amount: cost.default_amount };
+            const plan = state.costsPlan[cost.id] || { amount: cost.base_amount };
             return `
             <div class="planner-item">
                 <div class="item-info">
                     <span class="item-name">${window.Utils.escapeHtml(cost.title)}</span>
-                    <span class="item-meta">Recurrente: ${window.Utils.formatARS(cost.default_amount)}</span>
+                    <span class="item-meta">Recurrente: ${window.Utils.formatARS(cost.base_amount)}</span>
                 </div>
                 <div class="item-controls">
                     <input type="number" min="0" value="${plan.amount}" 
@@ -508,19 +645,23 @@
             
             if (staffPayload.length > 0) await window.sb.from('work_day_staff_planning').insert(staffPayload);
 
-            // C. Costs
+            // C. Costs → finance_payments
             const costsPayload = state.openingCosts
                 .filter(c => (state.costsPlan[c.id]?.amount || 0) > 0)
                 .map(cost => ({
+                    title: cost.title,
+                    supplier_id: cost.supplier_id || null,
+                    cost_definition_id: cost.id,
                     work_day_id: day.id,
-                    source_id: cost.id,
-                    source_type: 'opening_cost',
-                    amount: state.costsPlan[cost.id].amount,
-                    status: 'pending',
-                    concept: `Apertura: ${cost.title}`,
-                    due_date: dateVal
+                    source_type: 'RECURRENTE',
+                    amount_total: state.costsPlan[cost.id].amount,
+                    due_date: dateVal,
+                    status: 'PENDING',
+                    voucher_type: cost.voucher_type || null,
+                    payment_method: cost.payment_method || null,
+                    created_by: session.user.id,
                 }));
-            if (costsPayload.length > 0) await window.sb.from('accounts_payable').insert(costsPayload);
+            if (costsPayload.length > 0) await window.sb.from('finance_payments').insert(costsPayload);
 
             // D. Open
             await window.sb.rpc('rpc_open_work_day', { p_work_day_id: day.id });
@@ -630,9 +771,416 @@
     }
 
     async function handleCloseWorkday(id, date) {
-        if (!await window.Utils.confirmAction(`¿Cerrar jornada ${date}?`, { isDanger: true })) return;
-        await window.sb.from('work_days').update({ status: 'closed', closed_at: new Date() }).eq('id', id);
-        window.location.reload();
+        // Switch to Evento tab instead of closing directly
+        ui.inputDate.value = date;
+        await handleDateChange();
+        switchTab('panelEvento');
+        window.Toast.info('Revisa la rendición antes de cerrar la noche.');
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // 12. CIERRE / EVENTO LOGIC (migrated from admin-cierre.js)
+    // ═══════════════════════════════════════════════════════════════
+
+    const cierreStatusLabels = {
+        verified: { label: 'Verificado', cls: 'success' },
+        submitted: { label: 'Enviado', cls: 'info' },
+        pending: { label: 'Pendiente', cls: 'warning' }
+    };
+
+    function applyDiffClass(el, diff) {
+        if (!el) return;
+        el.classList.remove('text-success', 'text-error', 'muted');
+        if (diff === 0) el.classList.add('muted');
+        else if (diff < 0) el.classList.add('text-error');
+        else el.classList.add('text-success');
+    }
+
+    async function loadCierreData() {
+        if (!state.activeWorkDay) return;
+        const wdId = state.activeWorkDay.id;
+
+        try {
+            // A. Get or create cash_closing
+            let { data: closing, error: cErr } = await window.sb
+                .from('cash_closings').select('*')
+                .eq('work_day_id', wdId).maybeSingle();
+            if (cErr) throw cErr;
+
+            if (!closing) {
+                const { data: newC, error: createErr } = await window.sb
+                    .from('cash_closings')
+                    .insert({ work_day_id: wdId, status: 'open', total_system: 0, total_declared: 0, total_difference: 0 })
+                    .select().single();
+                if (createErr) { window.Toast.error('No se pudo crear cierre de caja.'); return; }
+                closing = newC;
+                window.Toast.info('Cierre de caja creado automáticamente.');
+            }
+
+            state.closingId = closing.id;
+            ui.closingNotes.value = closing.notes || '';
+            ui.btnCloseNight.disabled = closing.status === 'closed';
+            ui.btnCloseNight.textContent = closing.status === 'closed' ? 'CERRADO' : 'CERRAR NOCHE';
+
+            // B. Load terminals
+            const [termRes, detailRes] = await Promise.all([
+                window.sb.from('pos_terminals').select('id, friendly_name'),
+                window.sb.from('closing_terminals').select('*, staff:staff_id(email)').eq('cash_closing_id', closing.id)
+            ]);
+
+            renderCierreTable(termRes.data || [], detailRes.data || []);
+            loadQrStats(wdId);
+            loadBreakdown(wdId);
+            state.cierreLoaded = true;
+
+        } catch (err) {
+            console.error('[cierre] Load error:', err);
+            window.Toast.error('Error cargando cierre.');
+        }
+    }
+
+    function renderCierreTable(terminals, details) {
+        if (!ui.cierreTableBody) return;
+        let acc = { cashDecl: 0, zocoDecl: 0, cashSys: 0, zocoSys: 0, diff: 0 };
+
+        const rows = terminals.map(t => {
+            const d = details.find(x => x.terminal_id === t.id) || { declared_cash: 0, declared_zoco: 0, system_cash: 0, system_zoco: 0, status: 'pending' };
+            const cD = Number(d.declared_cash) || 0, zD = Number(d.declared_zoco) || 0;
+            const cS = Number(d.system_cash) || 0, zS = Number(d.system_zoco) || 0;
+            const diff = (cD + zD) - (cS + zS);
+            acc.cashDecl += cD; acc.zocoDecl += zD; acc.cashSys += cS; acc.zocoSys += zS; acc.diff += diff;
+
+            const si = cierreStatusLabels[(d.status || 'pending').toLowerCase()] || cierreStatusLabels.pending;
+            const dc = diff === 0 ? 'muted' : (diff < 0 ? 'text-error' : 'text-success');
+            return `<tr class="table-row">
+                <td class="table-cell"><div class="font-bold">${t.friendly_name}</div><div class="text-xs muted">${d.staff?.email || '-'}</div></td>
+                <td class="table-cell text-right font-mono">${window.Utils.formatARS(cD)}</td>
+                <td class="table-cell text-right font-mono">${window.Utils.formatARS(zD)}</td>
+                <td class="table-cell text-right font-mono muted">${window.Utils.formatARS(cS)}</td>
+                <td class="table-cell text-right font-mono muted">${window.Utils.formatARS(zS)}</td>
+                <td class="table-cell text-right font-mono font-bold ${dc}">${window.Utils.formatARS(diff)}</td>
+                <td class="table-cell text-center"><span class="status-pill status-${si.cls}">${si.label}</span></td>
+            </tr>`;
+        }).join('');
+
+        ui.cierreTableBody.innerHTML = rows || '<tr><td colspan="7" class="cell-pad text-center muted">Sin terminales</td></tr>';
+        renderCierreTotals(acc);
+    }
+
+    function renderCierreTotals(acc) {
+        ui.totalCashDecl.textContent = window.Utils.formatARS(acc.cashDecl);
+        ui.totalZocoDecl.textContent = window.Utils.formatARS(acc.zocoDecl);
+        ui.totalCashSys.textContent = window.Utils.formatARS(acc.cashSys);
+        ui.totalZocoSys.textContent = window.Utils.formatARS(acc.zocoSys);
+        ui.totalDiff.textContent = window.Utils.formatARS(acc.diff);
+        applyDiffClass(ui.totalDiff, acc.diff);
+
+        // Update Evento KPIs
+        const totalSys = acc.cashSys + acc.zocoSys;
+        const totalDecl = acc.cashDecl + acc.zocoDecl;
+        if (ui.evtKpiSystem) ui.evtKpiSystem.textContent = window.Utils.formatARS(totalSys);
+        if (ui.evtKpiDeclared) ui.evtKpiDeclared.textContent = window.Utils.formatARS(totalDecl);
+        if (ui.evtKpiDiff) { ui.evtKpiDiff.textContent = window.Utils.formatARS(acc.diff); applyDiffClass(ui.evtKpiDiff, acc.diff); }
+    }
+
+    // ── QR ──
+    async function loadQrStats(workDayId) {
+        if (!workDayId) return;
+        const { data: qrs, error } = await window.sb
+            .from('qr_codes').select('*, qr_batches(market_source, unit_price)')
+            .eq('work_day_id', workDayId).eq('status', 'ACREDITADO');
+        if (error) return console.error(error);
+
+        const stats = { passline: { qty: 0, sys: 0 }, boleteria: { qty: 0, sys: 0 }, rrpp: { qty: 0, sys: 0 } };
+        (qrs || []).forEach(q => {
+            const src = (q.qr_batches?.market_source || '').toUpperCase();
+            const price = Number(q.qr_batches?.unit_price) || 0;
+            if (src === 'PASSLINE') { stats.passline.qty++; stats.passline.sys += price; }
+            else if (src === 'BOLETERIA') { stats.boleteria.qty++; stats.boleteria.sys += price; }
+            else { stats.rrpp.qty++; stats.rrpp.sys += price; }
+        });
+
+        ui.qrPassline.qty.textContent = stats.passline.qty;
+        ui.qrPassline.sys.textContent = window.Utils.formatARS(stats.passline.sys);
+        ui.qrPassline.sys.dataset.val = stats.passline.sys;
+        ui.qrBoleteria.qty.textContent = stats.boleteria.qty;
+        ui.qrBoleteria.sys.textContent = window.Utils.formatARS(stats.boleteria.sys);
+        ui.qrBoleteria.sys.dataset.val = stats.boleteria.sys;
+        ui.qrRrpp.qty.textContent = stats.rrpp.qty;
+        ui.qrRrpp.sys.textContent = window.Utils.formatARS(stats.rrpp.sys);
+        updateQrDiffs();
+    }
+
+    function updateQrDiffs() {
+        ['qrPassline', 'qrBoleteria'].forEach(k => {
+            const g = ui[k];
+            if (!g?.sys || !g?.decl || !g?.diff) return;
+            const sys = Number(g.sys.dataset.val || 0);
+            const decl = Number(g.decl.value || 0);
+            const diff = decl - sys;
+            g.diff.textContent = window.Utils.formatARS(diff);
+            applyDiffClass(g.diff, diff);
+        });
+    }
+
+    // ── Breakdown ──
+    async function loadBreakdown(workDayId) {
+        const { data, error } = await window.sb.from('vw_daily_sales').select('*').eq('work_day_id', workDayId).maybeSingle();
+        if (error || !data) return;
+        renderBreakdown(data);
+    }
+
+    function renderBreakdown(s) {
+        const el = (id) => document.getElementById(id);
+        const barCash = s.bar_sales_cash || 0, barCard = s.bar_sales_card || 0;
+        const barTotal = s.bar_sales_system || (barCash + barCard);
+        const qrTotal = s.qr_total || 0;
+        const totalCash = barCash, totalZoco = barCard + qrTotal, globalTotal = totalCash + totalZoco;
+
+        const fmt = window.Utils.formatARS;
+        if (el('breakdown-bar-cash')) el('breakdown-bar-cash').textContent = fmt(barCash);
+        if (el('breakdown-bar-card')) el('breakdown-bar-card').textContent = fmt(barCard);
+        if (el('breakdown-bar-total')) el('breakdown-bar-total').textContent = fmt(barTotal);
+        if (el('breakdown-qr-zoco')) el('breakdown-qr-zoco').textContent = fmt(qrTotal);
+        if (el('breakdown-qr-total')) el('breakdown-qr-total').textContent = fmt(qrTotal);
+        if (el('breakdown-total-cash')) el('breakdown-total-cash').textContent = fmt(totalCash);
+        if (el('breakdown-total-zoco')) el('breakdown-total-zoco').textContent = fmt(totalZoco);
+        if (el('breakdown-total-global')) el('breakdown-total-global').textContent = fmt(globalTotal);
+    }
+
+    // ── Close Night ──
+    function openCloseNightModal() {
+        if (!state.closingId) return;
+        ui.confirmDiffDisplay.textContent = ui.totalDiff.textContent;
+        ui.closeNightModal?.classList.remove('hidden');
+    }
+
+    async function performCloseNight() {
+        ui.closeNightModal?.classList.add('hidden');
+        ui.btnCloseNight.disabled = true;
+        ui.btnCloseNight.textContent = 'Cerrando...';
+
+        try {
+            // Checkpoints: bar sessions + terminal closings
+            const [barRes, termRes] = await Promise.all([
+                window.sb.from('bar_sessions').select('id, location, profiles(full_name)')
+                    .eq('work_day_id', state.activeWorkDay.id).neq('status', 'closed'),
+                window.sb.from('closing_terminals').select('id, pos_terminals(friendly_name)')
+                    .eq('cash_closing_id', state.closingId).not('status', 'in', '(submitted,verified)')
+            ]);
+
+            if (barRes.error) throw barRes.error;
+            if (barRes.data?.length > 0) {
+                throw new Error(`Hay ${barRes.data.length} barra(s) sin cerrar: ${barRes.data.map(b => b.profiles?.full_name || b.location).join(', ')}`);
+            }
+            if (termRes.error) throw termRes.error;
+            if (termRes.data?.length > 0) {
+                throw new Error(`Cajas sin cerrar: ${termRes.data.map(t => t.pos_terminals?.friendly_name).join(', ')}`);
+            }
+
+            // ── CRITICAL FIX: Persist totals into cash_closings ──
+            const totalSys = parseFloat(ui.evtKpiSystem?.textContent?.replace(/[^0-9.,-]/g, '').replace(',', '.')) || 0;
+            const totalDecl = parseFloat(ui.evtKpiDeclared?.textContent?.replace(/[^0-9.,-]/g, '').replace(',', '.')) || 0;
+            const totalDiff = totalDecl - totalSys;
+
+            const closedAt = new Date().toISOString();
+            const userId = session.user.id;
+
+            const [closingRes, wdRes] = await Promise.all([
+                window.sb.from('cash_closings').update({
+                    status: 'closed',
+                    closed_at: closedAt,
+                    closed_by: userId,
+                    total_system: totalSys,
+                    total_declared: totalDecl,
+                    total_difference: totalDiff
+                }).eq('id', state.closingId),
+                window.sb.from('work_days').update({
+                    status: 'closed', closed_at: closedAt, closed_by: userId
+                }).eq('id', state.activeWorkDay.id)
+            ]);
+
+            if (closingRes.error) throw closingRes.error;
+            if (wdRes.error) throw wdRes.error;
+
+            window.Toast.success('Noche cerrada exitosamente.');
+            setTimeout(() => window.location.reload(), 1500);
+
+        } catch (err) {
+            console.error('[cierre] Close error:', err);
+            window.Toast.error(err.message || 'Error al cerrar noche');
+            ui.btnCloseNight.disabled = false;
+            ui.btnCloseNight.textContent = 'CERRAR NOCHE';
+        }
+    }
+
+    async function handleSaveNotes() {
+        if (!state.closingId) return;
+        try {
+            await window.sb.from('cash_closings').update({ notes: ui.closingNotes.value.trim() }).eq('id', state.closingId);
+            window.Toast.success('Notas guardadas.');
+        } catch (e) { window.Toast.error('Error guardando notas.'); }
+    }
+
+    // ── Histórico Tab ──
+    function renderHistoryTable() {
+        if (!ui.historyTableBody) return;
+        const fmt = window.Utils.formatARS;
+        const rows = state.history.map(h => {
+            const ev = state.events.find(e => e.date === h.work_date);
+            return `<tr class="table-row">
+                <td class="table-cell cell-pad font-bold">${window.WorkDayHelper.formatDate(h.work_date)}</td>
+                <td class="table-cell">${ev ? window.Utils.escapeHtml(ev.name) : '—'}</td>
+                <td class="table-cell text-right font-mono">—</td>
+                <td class="table-cell text-right font-mono">—</td>
+                <td class="table-cell text-right font-mono">—</td>
+                <td class="table-cell text-center">—</td>
+                <td class="table-cell text-center">${window.Utils.renderStatusBadge(h._status)}</td>
+            </tr>`;
+        }).join('');
+        ui.historyTableBody.innerHTML = rows || '<tr><td colspan="7" class="p-4 text-center muted italic">Sin jornadas registradas.</td></tr>';
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // DEVENCIONES (Staff Accruals)
+    // ═══════════════════════════════════════════════════════════
+    const fmt = window.Utils.formatARS;
+    const esc = window.Utils.escapeHtml;
+
+    async function loadAccruals() {
+        if (!state.activeWorkDay?.id || !ui.devencionesTableBody) return;
+
+        try {
+            const { data, error } = await window.sb
+                .from('staff_accruals')
+                .select('*, profiles(full_name), master_staff_roles(name)')
+                .eq('work_day_id', state.activeWorkDay.id)
+                .order('created_at');
+
+            if (error) throw error;
+
+            state.accruals = data || [];
+            renderAccruals();
+
+            // Enable generate button only if no accruals yet
+            if (ui.btnGenerateAccruals) {
+                const hasAccrued = state.accruals.some(a => a.status === 'accrued');
+                ui.btnGenerateAccruals.disabled = state.accruals.length > 0 && !hasAccrued;
+                ui.btnGenerateAccruals.textContent = state.accruals.length > 0 
+                    ? 'Regenerar Devenciones' 
+                    : 'Generar Devenciones';
+            }
+        } catch (err) {
+            console.error('[devenciones] Load error:', err);
+        }
+    }
+
+    function renderAccruals() {
+        if (!ui.devencionesTableBody) return;
+
+        if (!state.accruals || state.accruals.length === 0) {
+            ui.devencionesTableBody.innerHTML = `<tr><td colspan="6" class="cell-pad text-center muted">Genera devenciones para ver el detalle de nómina.</td></tr>`;
+            if (ui.devencionKpiTotal) ui.devencionKpiTotal.textContent = '$0';
+            if (ui.devencionesTotalFooter) ui.devencionesTotalFooter.textContent = '$0';
+            return;
+        }
+
+        const statusMap = {
+            'accrued': '<span class="status-pill status-warning">Devengado</span>',
+            'exported': '<span class="status-pill status-info">Exportado</span>',
+            'paid': '<span class="status-pill status-success">Pagado</span>',
+            'cancelled': '<span class="status-pill status-muted">Anulado</span>'
+        };
+
+        let totalAccrued = 0;
+        ui.devencionesTableBody.innerHTML = state.accruals.map(a => {
+            const name = a.profiles?.full_name || '—';
+            const role = a.master_staff_roles?.name || '—';
+            const total = (a.base_amount || 0) + (a.adjustments || 0);
+            if (a.status !== 'cancelled') totalAccrued += total;
+
+            return `<tr class="table-row js-accrual-row" data-id="${a.id}"${a.status === 'cancelled' ? ' style="opacity:0.4"' : ''}>
+                <td class="table-cell cell-pad cell-strong">${esc(name)}</td>
+                <td class="table-cell text-center text-xs">${esc(role)}</td>
+                <td class="table-cell text-right font-mono text-sm">${fmt(a.base_amount)}</td>
+                <td class="table-cell text-right">
+                    ${a.status === 'accrued' 
+                        ? `<input type="number" class="input input-reconcile-compact js-adj-input" data-id="${a.id}" value="${a.adjustments || 0}" step="500" style="max-width:90px;text-align:right;" aria-label="Ajuste para ${esc(name)}"/>`
+                        : `<span class="font-mono text-sm ${a.adjustments ? 'text-warning' : 'muted'}">${fmt(a.adjustments || 0)}</span>`
+                    }
+                </td>
+                <td class="table-cell text-right font-mono font-bold">${fmt(total)}</td>
+                <td class="table-cell text-center">${statusMap[a.status] || a.status}</td>
+            </tr>`;
+        }).join('');
+
+        // Totals
+        if (ui.devencionKpiTotal) ui.devencionKpiTotal.textContent = fmt(totalAccrued);
+        if (ui.devencionesTotalFooter) ui.devencionesTotalFooter.textContent = fmt(totalAccrued);
+
+        // Bind adjustment inputs
+        ui.devencionesTableBody.querySelectorAll('.js-adj-input').forEach(inp => {
+            inp.addEventListener('change', () => adjustAccrual(inp.dataset.id, parseFloat(inp.value) || 0));
+        });
+    }
+
+    async function generateAccruals() {
+        if (!state.activeWorkDay?.id) return;
+
+        // Lápiz: Confirm before generating
+        const confirmed = await window.Utils.confirmAction(
+            '¿Generar devenciones de nómina para esta jornada? Se tomarán las convocatorias confirmadas y las tarifas vigentes.',
+            { confirmText: 'Generar' }
+        );
+        if (!confirmed) return;
+
+        // Tinta: Execute
+        try {
+            ui.btnGenerateAccruals.disabled = true;
+            ui.btnGenerateAccruals.textContent = 'Generando...';
+
+            const { data, error } = await window.sb.rpc('admin_generate_workday_accruals', {
+                p_work_day_id: state.activeWorkDay.id
+            });
+
+            if (error) throw error;
+
+            const result = data;
+            if (result?.new_accruals > 0) {
+                window.Toast.success(`${result.new_accruals} devencion(es) generada(s).`);
+            } else {
+                window.Toast.info('No se generaron nuevas devenciones (ya existían o no hay convocados confirmados).');
+            }
+
+            await loadAccruals();
+        } catch (err) {
+            console.error('[devenciones] Generate error:', err);
+            window.Toast.error('Error al generar devenciones: ' + err.message);
+        } finally {
+            ui.btnGenerateAccruals.disabled = false;
+        }
+    }
+
+    async function adjustAccrual(accrualId, adjustment) {
+        try {
+            const { error } = await window.sb
+                .from('staff_accruals')
+                .update({ adjustments: adjustment })
+                .eq('id', accrualId)
+                .eq('status', 'accrued'); // Only allow adjusting 'accrued' status
+
+            if (error) throw error;
+            window.Toast.success('Ajuste guardado.');
+            await loadAccruals();
+        } catch (err) {
+            console.error('[devenciones] Adjust error:', err);
+            window.Toast.error('Error al ajustar: ' + err.message);
+        }
+    }
+
+    // Bind devenciones events
+    if (ui.btnGenerateAccruals) {
+        ui.btnGenerateAccruals.addEventListener('click', generateAccruals);
     }
 
     // Start

@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="../../assets/css/tokens.css">
     <link rel="stylesheet" href="../../assets/css/components.css">
     <link rel="stylesheet" href="../../assets/css/admin-solicitudes.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
 </head>
 
 <body class="app-shell admin-shell admin-scroll" data-allowed-roles="admin,contable">
@@ -137,8 +139,6 @@
                                 <div class="tab-bar" id="solicitudes-tabs">
                                     <button class="tab-chip active" data-tab="pre-aprobacion">Pre-Aprobación</button>
                                     <button class="tab-chip" data-tab="pendientes">Aprobación Final</button>
-                                    <button class="tab-chip" data-tab="sin-asignar">Sin Asignar</button>
-                                    <button class="tab-chip" data-tab="historial">Historial</button>
                                 </div>
                             </div>
                         </div>
@@ -162,6 +162,67 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- Audit Chart Section -->
+                        <div id="audit-chart-container" class="chart-section">
+                            <div class="chart-header">
+                                <div class="custom-dropdown" id="audit-chart-dropdown">
+                                    <div class="custom-dropdown-trigger" id="audit-dropdown-trigger">
+                                        <span class="custom-dropdown-text">Pedido vs Consumo</span>
+                                        <svg class="custom-dropdown-icon" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <polyline points="6 9 12 15 18 9"></polyline>
+                                        </svg>
+                                    </div>
+                                    <div class="custom-dropdown-menu" id="audit-dropdown-menu">
+                                        <div class="custom-dropdown-option" data-value="pedido-vs-consumo">
+                                            Pedido vs Consumo</div>
+                                        <div class="custom-dropdown-option" data-value="deficit-recurrente">
+                                            Déficit Recurrente</div>
+                                        <div class="custom-dropdown-option" data-value="tendencia-gasto">
+                                            Tendencia de Gasto</div>
+                                    </div>
+                                </div>
+                                <button class="btn btn-ghost btn-sm" id="btn-historial">
+                                    Historial
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                        style="margin-left: 4px;">
+                                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                        <polyline points="15 3 21 3 21 9"></polyline>
+                                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <!-- KPI Cards -->
+                            <div id="audit-chart-kpis" class="chart-kpis-grid">
+                                <div class="chart-kpi-card">
+                                    <div class="chart-kpi-label-row">
+                                        <p class="chart-kpi-label">Total Pedido</p>
+                                        <span id="audit-kpi-1-trend" class="chart-kpi-trend"></span>
+                                    </div>
+                                    <p id="audit-kpi-1-value" class="chart-kpi-value">-</p>
+                                </div>
+                                <div class="chart-kpi-card">
+                                    <div class="chart-kpi-label-row">
+                                        <p class="chart-kpi-label">Total Consumido</p>
+                                        <span id="audit-kpi-2-trend" class="chart-kpi-trend"></span>
+                                    </div>
+                                    <p id="audit-kpi-2-value" class="chart-kpi-value chart-kpi-success">-</p>
+                                </div>
+                                <div class="chart-kpi-card">
+                                    <div class="chart-kpi-label-row">
+                                        <p class="chart-kpi-label">Diferencia</p>
+                                        <span id="audit-kpi-3-trend" class="chart-kpi-trend"></span>
+                                    </div>
+                                    <p id="audit-kpi-3-value" class="chart-kpi-value">-</p>
+                                </div>
+                            </div>
+
+                            <canvas id="audit-chart-canvas" class="chart-canvas-max"></canvas>
                         </div>
 
                         <!-- View: Pre-Aprobación -->
@@ -199,26 +260,9 @@
                             </div>
                         </div>
 
-                        <!-- View: Sin Asignar -->
-                        <div id="view-unassigned" class="tab-content hidden">
-                            <div id="unassigned-stats" class="mb-2">
-                                <span class="badge status-neutral">Total Estimado: <span
-                                        id="unassigned-total-budget">$0,00</span></span>
-                            </div>
-                            <div class="table-viewport table-shell" id="unassigned-container">
-                                <!-- Injected by JS -->
-                            </div>
-                        </div>
 
-                        <!-- View: Historial -->
-                        <div id="view-historial" class="tab-content hidden">
-                            <div class="table-viewport table-shell" id="historial-container">
-                                <div class="state-block">
-                                    <p class="state-title muted">Próximamente</p>
-                                    <p class="state-desc">Historial de pedidos procesados.</p>
-                                </div>
-                            </div>
-                        </div>
+
+
                     </div>
                 </div>
             </div>

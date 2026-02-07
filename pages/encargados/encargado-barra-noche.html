@@ -54,22 +54,22 @@
             <div class="page-content hidden" id="pageOpen">
                 <div class="staff-dashboard">
                     <div class="dashboard-header">
-                        <h2 class="dashboard-title">🔓 Apertura de Barra</h2>
+                        <h2 class="dashboard-title">Apertura de Barra</h2>
                     </div>
-                    <p class="muted" style="margin-bottom: var(--space-md);">Confirma el stock inicial para comenzar tu
+                    <p class="muted mb-md">Confirma el stock inicial para comenzar tu
                         turno.</p>
 
                     <div id="openingStockList" class="staff-list">
                         <!-- JS Injected SKU rows -->
                     </div>
 
-                    <div class="form-group" style="margin-top: var(--space-md);">
+                    <div class="form-group mt-md">
                         <label>Notas de Apertura (Opcional)</label>
                         <textarea id="openingNotes" class="input" rows="2"
                             placeholder="Ej: Faltan hielos, vaso roto..."></textarea>
                     </div>
 
-                    <button id="btnSubmitOpen" class="btn-primary w-full" style="margin-top: var(--space-md);">Confirmar
+                    <button id="btnSubmitOpen" class="btn-primary w-full mt-md">Confirmar
                         Apertura</button>
                 </div>
             </div>
@@ -78,36 +78,36 @@
             <div class="page-content hidden" id="pageActive">
                 <div class="staff-dashboard">
                     <div class="dashboard-header">
-                        <h2 class="dashboard-title">🟢 Barra Activa</h2>
+                        <h2 class="dashboard-title">Barra Activa</h2>
                         <span class="status-pill status-success" id="activeSessionTime">--:--</span>
                     </div>
 
-                    <div style="display: flex; gap: var(--space-sm); margin-top: var(--space-md);">
-                        <button id="btnCloseSession" class="btn-danger w-full">🛑 Cerrar Barra</button>
+                    <div class="flex gap-sm mt-md">
+                        <button id="btnCloseSession" class="btn-danger w-full">Cerrar Barra</button>
                     </div>
                 </div>
 
                 <!-- Closing View (shown when closing) -->
-                <div id="closingView" class="hidden" style="margin-top: var(--space-lg);">
+                <div id="closingView" class="hidden mt-lg">
                     <div class="staff-dashboard">
                         <div class="dashboard-header">
                             <h2 class="dashboard-title">Cierre de Barra</h2>
                         </div>
-                        <p class="muted" style="margin-bottom: var(--space-md);">Ingresa el stock final (Sobrante
+                        <p class="muted mb-md">Ingresa el stock final (Sobrante
                             físico).</p>
 
                         <div id="closingStockList" class="staff-list">
                             <!-- JS Injected SKU rows -->
                         </div>
 
-                        <div class="form-group" style="margin-top: var(--space-md);">
+                        <div class="form-group mt-md">
                             <label>Notas de Cierre</label>
                             <textarea id="closingNotes" class="input" rows="2"></textarea>
                         </div>
 
-                        <div style="display: flex; gap: var(--space-sm); margin-top: var(--space-md);">
-                            <button id="btnCancelClose" class="btn-secondary" style="flex: 1;">Cancelar</button>
-                            <button id="btnSubmitClose" class="btn-primary" style="flex: 1;">Finalizar Turno</button>
+                        <div class="flex gap-sm mt-md">
+                            <button id="btnCancelClose" class="btn-secondary flex-1">Cancelar</button>
+                            <button id="btnSubmitClose" class="btn-primary flex-1">Finalizar Turno</button>
                         </div>
                     </div>
                 </div>
@@ -117,10 +117,11 @@
     </main>
 
     <!-- Confirm Modal -->
-    <div class="modal-overlay hidden" id="confirmModal">
-        <div class="modal-card" style="max-width: 400px;">
+    <dialog class="modal" id="confirmModal">
+        <div class="modal-content modal-content-sm">
             <div class="modal-header">
                 <h2 id="confirmTitle">Confirmar Acción</h2>
+                <button class="modal-close" onclick="this.closest('dialog').close()">×</button>
             </div>
             <div class="modal-body">
                 <p id="confirmMessage">¿Estás seguro de continuar?</p>
@@ -130,7 +131,7 @@
                 <button class="btn-primary" id="btnConfirm">Confirmar</button>
             </div>
         </div>
-    </div>
+    </dialog>
 
     <!-- Scripts -->
     <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>

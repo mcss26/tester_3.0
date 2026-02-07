@@ -8,8 +8,7 @@
     <link rel="stylesheet" href="../../assets/css/main.css">
 </head>
 
-<body class="app-shell admin-shell admin-scroll encargado-barra-personal-shell"
-    data-allowed-roles="encargado_barra,admin">
+<body class="app-shell" data-allowed-roles="encargado_barra,admin">
 
     <!-- Topbar -->
     <header class="app-topbar">
@@ -56,14 +55,14 @@
                 </div>
 
                 <!-- Workday Selector -->
-                <div class="form-row" style="margin-block: var(--space-md);">
-                    <div class="form-group" style="flex: 1;">
+                <div class="form-row my-md">
+                    <div class="form-group flex-1">
                         <label>Jornada Activa</label>
                         <select id="selectWorkday" class="input">
                             <option value="">Cargando fechas...</option>
                         </select>
                     </div>
-                    <div class="form-group" style="flex: 0 0 auto; align-self: flex-end;">
+                    <div class="form-group flex-none self-end">
                         <span id="workdayStatus" class="status-pill status-neutral">SELECCIONAR</span>
                     </div>
                 </div>
@@ -71,20 +70,18 @@
                 <!-- TAB: Convocatorias -->
                 <section id="tabConvocar" class="tab-content">
                     <!-- Planning Summary -->
-                    <div id="planningSummary" class="hidden"
-                        style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin-bottom: var(--space-md);">
-                        <div class="staff-dashboard" style="height: auto; padding: var(--space-md);">
+                    <div id="planningSummary" class="hidden grid-2 mb-md">
+                        <div class="staff-dashboard auto-height">
                             <h3 class="dashboard-subtitle">DOTACIÓN REQUERIDA</h3>
-                            <div id="requirementsList" class="staff-list" style="max-height: 200px;">
+                            <div id="requirementsList" class="staff-list scroll-cap-sm">
                                 <!-- JS Injected -->
                             </div>
                         </div>
-                        <div class="staff-dashboard"
-                            style="height: auto; padding: var(--space-md); text-align: center;">
+                        <div class="staff-dashboard auto-height text-center">
                             <div class="kpi-value" id="coveragePercent">0%</div>
                             <div class="kpi-label">Cubierto</div>
-                            <button id="btnAutoConvocate" class="btn-secondary btn-sm hidden"
-                                style="margin-top: var(--space-sm);">Sugerir Staff</button>
+                            <button id="btnAutoConvocate" class="btn-secondary btn-sm hidden mt-sm">Sugerir
+                                Staff</button>
                         </div>
                     </div>
 
@@ -163,14 +160,15 @@
     </aside>
 
     <!-- Role Selection Modal -->
-    <div class="modal-overlay hidden" id="roleModal">
-        <div class="modal-card" style="max-width: 400px;">
+    <dialog class="modal" id="roleModal">
+        <div class="modal-content modal-content-sm">
             <div class="modal-header">
                 <h2>Seleccionar Rol</h2>
+                <button class="modal-close" onclick="this.closest('dialog').close()">×</button>
             </div>
             <div class="modal-body">
-                <p class="muted" style="margin-bottom: var(--space-sm);">Elige el rol para esta convocatoria:</p>
-                <div id="roleOptions" class="staff-list" style="max-height: 300px;">
+                <p class="muted mb-sm">Elige el rol para esta convocatoria:</p>
+                <div id="roleOptions" class="staff-list scroll-cap-md">
                     <!-- JS Injected role buttons -->
                 </div>
             </div>
@@ -178,13 +176,14 @@
                 <button class="btn-secondary" id="btnCancelRole">Cancelar</button>
             </div>
         </div>
-    </div>
+    </dialog>
 
     <!-- Confirm Modal -->
-    <div class="modal-overlay hidden" id="confirmModal">
-        <div class="modal-card" style="max-width: 400px;">
+    <dialog class="modal" id="confirmModal">
+        <div class="modal-content modal-content-sm">
             <div class="modal-header">
                 <h2 id="confirmTitle">Confirmar Acción</h2>
+                <button class="modal-close" onclick="this.closest('dialog').close()">×</button>
             </div>
             <div class="modal-body">
                 <p id="confirmMessage">¿Estás seguro de continuar?</p>
@@ -194,7 +193,7 @@
                 <button class="btn-primary" id="btnConfirm">Confirmar</button>
             </div>
         </div>
-    </div>
+    </dialog>
 
     <!-- Scripts -->
     <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
@@ -203,6 +202,7 @@
     <script defer src="../../assets/js/core/auth.js"></script>
     <script defer src="../../assets/js/core/utils.js"></script>
     <script defer src="../../assets/js/core/toast.js"></script>
+    <script defer src="../../assets/js/core/work-day-helper.js"></script>
     <script src="../../assets/js/core/navigation.js"></script>
     <script defer src="../../assets/js/modules/encargados/encargado-barra-personal.js"></script>
 

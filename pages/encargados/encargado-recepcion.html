@@ -4,77 +4,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recepción de Pedidos - Encargado</title>
-    <!-- Core CSS -->
+    <title>FormulaMid — Recepción de Pedidos</title>
     <link rel="stylesheet" href="../../assets/css/main.css">
-    <!-- Supabase CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
-<body class="app-shell" data-allowed-roles="encargado_barra">
+<body class="app-shell" data-allowed-roles="encargado_barra,admin,contable">
 
-    <!-- Top Navigation Bar -->
-    <header class="top-bar">
-        <button class="btn-icon" data-go="pages/encargados/encargado-barra-index.html" aria-label="Volver">
-            ←
-        </button>
-        <h1 class="page-title">Recepción</h1>
-        <div class="top-actions">
-            <!-- Espacio para acciones futuras o pills de estado -->
+    <!-- Topbar (Golden Standard: 3-div layout) -->
+    <header class="app-topbar">
+        <div class="topbar-left">
+            <button class="btn-icon btn-icon-flat" data-go="pages/encargados/encargado-barra-index.html">←</button>
+            <span class="topbar-back">INICIO</span>
+        </div>
+        <div class="topbar-center">
+            <span class="topbar-title">RECEPCIÓN</span>
+        </div>
+        <div class="topbar-right">
+            <button id="btn-refresh" class="btn-icon btn-icon-flat" aria-label="Refrescar">↻</button>
         </div>
     </header>
 
     <!-- Main Content -->
-    <main class="main-content">
+    <main class="page-shell">
+        <div class="page-card-wrap">
 
-        <!-- List Container -->
-        <section id="list-container" class="content-section">
-            <div class="loading-spinner">Cargando pedidos...</div>
-            <!--
-                Aquí se inyectará la tabla de pedidos aprobados:
-                - Proveedor
-                - Skus count
-                - Final Cost
-                - ETA
-                - Action Button (Recibir)
-             -->
-        </section>
-
-    </main>
-
-    <!-- Modal Recepción (Hidden by default) -->
-    <div id="modal" class="modal-overlay hidden">
-        <div class="modal-card">
-            <header class="modal-header">
-                <h2 id="modal-title">Recibir Pedido</h2>
-                <button id="modal-close" class="btn-icon">×</button>
-            </header>
-
-            <div id="modal-body" class="modal-body">
-                <!-- 
-                    Tabla de items para ajustar cantidad recibida vs esperada
-                 -->
+            <!-- Loading State -->
+            <div class="page-card-loading" id="pageLoading">
+                <div class="loading-spinner"></div>
+                <span>Cargando pedidos...</span>
             </div>
 
-            <footer id="modal-actions" class="modal-footer">
-                <button id="modal-cancel" class="btn-secondary">Cancelar</button>
-                <button id="modal-confirm" class="btn-primary">Confirmar Recepción</button>
-            </footer>
+            <!-- Empty State -->
+            <div class="page-card-empty hidden" id="pageEmpty">
+                <p>No hay pedidos pendientes de recepción.</p>
+            </div>
+
+            <!-- Orders Table -->
+            <div class="page-content hidden" id="pageContent">
+                <div class="table-viewport table-shell" id="list-container">
+                    <div class="table-scroll">
+                        <table class="table table-sticky table-compact">
+                            <thead>
+                                <tr class="table-head">
+                                    <th class="table-cell is-header cell-pad">Proveedor</th>
+                                    <th class="table-cell is-header cell-pad text-center">SKUs</th>
+                                    <th class="table-cell is-header cell-pad text-right">Costo Total</th>
+                                    <th class="table-cell is-header cell-pad text-center">ETA</th>
+                                    <th class="table-cell is-header cell-pad text-center">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orders-body">
+                                <!-- JS Injected -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
         </div>
-    </div>
+    </main>
 
-    <!-- Scripts Core -->
-    <script src="../../assets/js/core/config.js"></script>
-    <script src="../../assets/js/core/supabase-client.js"></script>
-    <script src="../../assets/js/core/auth.js"></script>
+    <!-- Reception Modal (Native Dialog) -->
+    <dialog class="modal" id="modal">
+        <div class="modal-content modal-content-lg">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-title">Recibir Pedido</h3>
+                <button class="modal-close" id="modal-close">×</button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- Items table injected by JS -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="modal-cancel">Cancelar</button>
+                <button class="btn-primary" id="modal-confirm">Confirmar Recepción</button>
+            </div>
+        </div>
+    </dialog>
 
-    <!-- Modules -->
-    <script src="../../assets/js/core/utils.js"></script>
+    <!-- Scripts -->
+    <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script defer src="../../assets/js/core/config.js"></script>
+    <script defer src="../../assets/js/core/supabase-client.js"></script>
+    <script defer src="../../assets/js/core/auth.js"></script>
+    <script defer src="../../assets/js/core/utils.js"></script>
+    <script defer src="../../assets/js/core/toast.js"></script>
+    <script defer src="../../assets/js/core/work-day-helper.js"></script>
     <script src="../../assets/js/core/navigation.js"></script>
-
-    <script src="../../assets/js/core/toast.js"></script>
-    <!-- Page Specific Logic -->
-    <script src="../../assets/js/modules/encargados/encargado-recepcion.js"></script>
+    <script defer src="../../assets/js/modules/encargados/encargado-recepcion.js"></script>
 
 </body>
 

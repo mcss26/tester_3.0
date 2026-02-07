@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     notes,
                     created_at,
                     supplier_id,
-                    master_proveedores!replenishment_supplier_orders_supplier_id_fkey(name)
+                    master_proveedores!replenishment_supplier_orders_supplier_id_fkey(nombre_fantasia)
                 `)
                 .order('expected_date', { ascending: true });
 
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             orders = (data || []).map(o => ({
                 ...o,
-                supplier_name: o.master_proveedores?.name || 'Proveedor desconocido'
+                supplier_name: o.master_proveedores?.nombre_fantasia || 'Proveedor desconocido'
             }));
 
             renderList(orders);
@@ -104,11 +104,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             const { data, error } = await window.sb
                 .from('master_proveedores')
-                .select('id, name')
+                .select('id, nombre_fantasia')
                 .eq('is_active', true)
-                .order('name');
+                .order('nombre_fantasia');
             if (error) throw error;
-            suppliers = data || [];
+            suppliers = (data || []).map(s => ({ id: s.id, name: s.nombre_fantasia }));
             renderSupplierOptions();
         } catch (err) {
             console.error('Error loading suppliers:', err);
@@ -370,6 +370,17 @@ document.addEventListener('DOMContentLoaded', async () => {
                     invoice_received_at: new Date().toISOString()
                 })
                 .eq('id', selectedOrder.id);
+
+            // 0b. Propagar factura al pago vinculado en finance_payments
+            await window.sb
+                .from('finance_payments')
+                .update({
+                    invoice_number: invoice,
+                    invoice_date: invoiceDate,
+                    invoice_amount: invoiceAmount,
+                })
+                .eq('supplier_order_id', selectedOrder.id)
+                .in('status', ['PENDING', 'APPROVED']);
             // 1. Crear registro de recepción
             const { data: receipt, error: rcptError } = await window.sb
                 .from('replenishment_receipts')

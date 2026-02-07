@@ -56,139 +56,466 @@
                     <!-- Dashboard Header -->
                     <header class="dashboard-header">
                         <div class="dashboard-title-block">
-                            <h1>Planificación de Jornada</h1>
+                            <h1>Gestión de Jornada</h1>
                             <p id="dashboard-subtitle">Selecciona una fecha para comenzar</p>
                         </div>
                         <div class="dashboard-actions">
-                            <button class="btn btn-outline" id="btn-back-list">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2">
-                                    <path d="M3 12h18M3 6h18M3 18h18"></path>
-                                </svg>
-                                Historial
-                            </button>
+                            <!-- Historial Compacto (últimas 3 jornadas) -->
+                            <div class="history-compact" id="history-compact">
+                                <button class="history-chip" data-offset="-1">← Anterior</button>
+                                <button class="history-chip active" data-offset="0">Hoy</button>
+                                <button class="history-chip" data-offset="1">Siguiente →</button>
+                            </div>
                         </div>
                     </header>
 
-                    <!-- Historial Compacto (últimas 3 jornadas) -->
-                    <div class="history-compact" id="history-compact">
-                        <button class="history-chip" data-offset="-1">← Anterior</button>
-                        <button class="history-chip active" data-offset="0">Hoy</button>
-                        <button class="history-chip" data-offset="1">Siguiente →</button>
-                    </div>
+                    <!-- ═══════════════════════════════════════════ -->
+                    <!-- TAB BAR: 3 Vistas                          -->
+                    <!-- ═══════════════════════════════════════════ -->
+                    <nav class="tab-bar" id="workday-tabs" role="tablist" aria-label="Vistas de jornada">
+                        <button class="tab-btn is-active" data-tab="panelPlan" role="tab" aria-selected="true"
+                            aria-controls="panelPlan">Planificación</button>
+                        <button class="tab-btn" data-tab="panelEvento" role="tab" aria-selected="false"
+                            aria-controls="panelEvento">Evento</button>
+                        <button class="tab-btn" data-tab="panelHistorico" role="tab" aria-selected="false"
+                            aria-controls="panelHistorico">Histórico</button>
+                    </nav>
 
-                    <!-- Stats Grid (4 KPIs) -->
-                    <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr);">
-                        <div class="stat-card">
-                            <div class="stat-label">Costo Staff</div>
-                            <div class="stat-value" id="kpi-staff-cost">$0</div>
-                            <div class="stat-delta" id="kpi-staff-delta"></div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-label">Costo Apertura</div>
-                            <div class="stat-value" id="kpi-fixed-cost">$0</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-label">Break-even</div>
-                            <div class="stat-value" id="kpi-total-cost">$0</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-label">Convocatoria</div>
-                            <div class="stat-value" id="kpi-staff-status">—/—</div>
-                            <div class="stat-delta text-warning" id="kpi-staff-pending"></div>
-                        </div>
-                    </div>
+                    <!-- ═══════════════════════════════════════════ -->
+                    <!-- TAB 1: PLANIFICACIÓN (contenido actual)    -->
+                    <!-- ═══════════════════════════════════════════ -->
+                    <section id="panelPlan" class="tab-content" role="tabpanel">
 
-                    <div class="planner-layout">
+                        <!-- Stats Grid (4 KPIs) -->
+                        <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr);">
+                            <div class="stat-card">
+                                <div class="stat-label">Costo Staff</div>
+                                <div class="stat-value" id="kpi-staff-cost">$0</div>
+                                <div class="stat-delta" id="kpi-staff-delta"></div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Costo Apertura</div>
+                                <div class="stat-value" id="kpi-fixed-cost">$0</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Break-even</div>
+                                <div class="stat-value" id="kpi-total-cost">$0</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Convocatoria</div>
+                                <div class="stat-value" id="kpi-staff-status">—/—</div>
+                                <div class="stat-delta text-warning" id="kpi-staff-pending"></div>
+                            </div>
+                        </div>
 
-                        <!-- SIDEBAR: Configuración y Costos -->
-                        <aside class="planner-sidebar">
+                        <div class="planner-layout">
 
-                            <!-- PANEL A: Definición -->
-                            <section class="planner-section">
-                                <div class="panel-title-row">
-                                    <span>A. Definición</span>
-                                    <div style="display:flex; gap:8px; align-items:center;">
-                                        <span class="status-pill staff-status-pending"
-                                            id="workday-status-indicator">Draft</span>
-                                        <button class="btn-secondary btn-sm" id="btn-new-event"
-                                            title="Crear nuevo evento">+
-                                            Evento</button>
+                            <!-- SIDEBAR: Configuración y Costos -->
+                            <aside class="planner-sidebar">
+
+                                <!-- PANEL A: Definición -->
+                                <section class="planner-section">
+                                    <div class="panel-title-row">
+                                        <span>A. Definición</span>
+                                        <div style="display:flex; gap:8px; align-items:center;">
+                                            <span class="status-pill staff-status-pending"
+                                                id="workday-status-indicator">Draft</span>
+                                            <button class="btn-secondary btn-sm" id="btn-new-event"
+                                                title="Crear nuevo evento">+
+                                                Evento</button>
+                                        </div>
+                                    </div>
+
+                                    <div class="planner-col mt-4">
+                                        <label class="form-label">Fecha Operativa</label>
+                                        <input type="date" id="input-date" class="input" required>
+                                    </div>
+
+                                    <div class="planner-col mt-4">
+                                        <label class="form-label">Evento Vinculado</label>
+                                        <select id="select-event" class="input">
+                                            <option value="">-- Sin Evento --</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="planner-col mt-4" style="display:flex; align-items:center; gap:8px;">
+                                        <input type="checkbox" id="check-high-demand" class="checkbox">
+                                        <label for="check-high-demand" class="form-label" style="margin:0;">Alta
+                                            Demanda</label>
+                                    </div>
+
+                                    <div class="planner-col mt-4">
+                                        <label class="form-label">Countdown Web</label>
+                                        <select id="select-countdown-event" class="input">
+                                            <option value="">-- Sin countdown --</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="planner-col mt-4">
+                                        <label class="form-label">Notas</label>
+                                        <textarea id="input-notes" class="input" rows="2"
+                                            placeholder="Notas internas..."></textarea>
+                                    </div>
+                                </section>
+
+                            </aside>
+
+                            <!-- MAIN CANVAS: Staff + Costos -->
+                            <main class="planner-canvas">
+
+                                <!-- PANEL B: Staff -->
+                                <div class="planner-panel panel-staff">
+                                    <div class="panel-title-row">
+                                        <span>B. Dimensionamiento de Staff</span>
+                                        <span class="badge" id="staff-subtotal">$0</span>
+                                    </div>
+                                    <div class="panel-scroll scroll-staff" id="staff-container">
+                                        <div class="state-block loading">
+                                            <div class="state-loader"></div>
+                                            <p class="state-title">Cargando roles...</p>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="planner-col mt-4">
-                                    <label class="form-label">Fecha Operativa</label>
-                                    <input type="date" id="input-date" class="input" required>
+                                <!-- PANEL C: Costos -->
+                                <div class="planner-panel panel-costs">
+                                    <div class="panel-title-row">
+                                        <span>C. Costos Apertura</span>
+                                        <div style="display:flex; gap:8px; align-items:center;">
+                                            <span class="badge" id="costs-subtotal">$0</span>
+                                            <button class="btn-secondary btn-sm" id="btn-add-cost"
+                                                title="Agregar costo">+
+                                                Costo</button>
+                                        </div>
+                                    </div>
+                                    <div class="panel-scroll scroll-costs" id="costs-container">
+                                        <div class="state-block loading">
+                                            <div class="state-loader"></div>
+                                            <p class="state-title">Cargando costos...</p>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div class="planner-col mt-4">
-                                    <label class="form-label">Evento Vinculado</label>
-                                    <select id="select-event" class="input">
-                                        <option value="">-- Sin Evento --</option>
-                                    </select>
+                            </main>
+
+                        </div>
+                    </section>
+
+                    <!-- ═══════════════════════════════════════════ -->
+                    <!-- TAB 2: EVENTO (Caja + Barra)               -->
+                    <!-- ═══════════════════════════════════════════ -->
+                    <section id="panelEvento" class="tab-content hidden" role="tabpanel">
+
+                        <!-- Estado del Evento -->
+                        <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr);">
+                            <div class="stat-card">
+                                <div class="stat-label">Total Sistema</div>
+                                <div class="stat-value font-mono" id="evt-kpi-system">$0</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Total Declarado</div>
+                                <div class="stat-value font-mono" id="evt-kpi-declared">$0</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Diferencia</div>
+                                <div class="stat-value font-mono" id="evt-kpi-diff">$0</div>
+                            </div>
+                        </div>
+
+                        <!-- ── Sub-sección: CAJA ── -->
+                        <div class="staff-dashboard" id="section-caja">
+                            <div class="dashboard-header align-start">
+                                <div>
+                                    <h2 class="dashboard-title dashboard-title-soft">Rendición de Caja</h2>
+                                    <p class="dashboard-subtitle dashboard-subtitle-soft">Conciliación diaria por
+                                        terminal</p>
                                 </div>
-
-                                <div class="planner-col mt-4" style="display:flex; align-items:center; gap:8px;">
-                                    <input type="checkbox" id="check-high-demand" class="checkbox">
-                                    <label for="check-high-demand" class="form-label" style="margin:0;">Alta
-                                        Demanda</label>
-                                </div>
-
-                                <div class="planner-col mt-4">
-                                    <label class="form-label">Countdown Web</label>
-                                    <select id="select-countdown-event" class="input">
-                                        <option value="">-- Sin countdown --</option>
-                                    </select>
-                                </div>
-
-                                <div class="planner-col mt-4">
-                                    <label class="form-label">Notas</label>
-                                    <textarea id="input-notes" class="input" rows="2"
-                                        placeholder="Notas internas..."></textarea>
-                                </div>
-                            </section>
-
-                        </aside>
-
-                        <!-- MAIN CANVAS: Staff + Costos -->
-                        <main class="planner-canvas">
-
-                            <!-- PANEL B: Staff -->
-                            <div class="planner-panel panel-staff">
-                                <div class="panel-title-row">
-                                    <span>B. Dimensionamiento de Staff</span>
-                                    <span class="badge" id="staff-subtotal">$0</span>
-                                </div>
-                                <div class="panel-scroll scroll-staff" id="staff-container">
-                                    <div class="state-block loading">
-                                        <div class="state-loader"></div>
-                                        <p class="state-title">Cargando roles...</p>
+                                <div class="filter-actions">
+                                    <div class="filter-group">
+                                        <button data-trigger="file-extracciones"
+                                            class="btn-import btn-ghost btn-sm">RETIROS</button>
+                                        <button data-trigger="file-gbol"
+                                            class="btn-import btn-ghost btn-sm">GBOL</button>
+                                        <button data-trigger="file-passline"
+                                            class="btn-import btn-ghost btn-sm">PASSLINE</button>
+                                        <button data-trigger="file-afip"
+                                            class="btn-import btn-ghost btn-sm">TERMINALES</button>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- PANEL C: Costos -->
-                            <div class="planner-panel panel-costs">
-                                <div class="panel-title-row">
-                                    <span>C. Costos Apertura</span>
-                                    <div style="display:flex; gap:8px; align-items:center;">
-                                        <span class="badge" id="costs-subtotal">$0</span>
-                                        <button class="btn-secondary btn-sm" id="btn-add-cost" title="Agregar costo">+
-                                            Costo</button>
+                            <!-- Terminal Reconciliation Table -->
+                            <div class="table-viewport table-shell table-viewport-limited">
+                                <div class="table-scroll">
+                                    <table class="table table-sticky">
+                                        <thead>
+                                            <tr class="table-head">
+                                                <th class="table-cell is-header">Terminal</th>
+                                                <th class="table-cell is-header text-right">Efectivo (Decl)</th>
+                                                <th class="table-cell is-header text-right">Zoco (Decl)</th>
+                                                <th class="table-cell is-header text-right muted">Efectivo (GBol)</th>
+                                                <th class="table-cell is-header text-right muted">Zoco (GBol)</th>
+                                                <th class="table-cell is-header text-right">Diferencia</th>
+                                                <th class="table-cell is-header text-center">Estado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="cierre-table-body">
+                                            <tr>
+                                                <td colspan="7" class="cell-pad text-center muted">Selecciona una
+                                                    jornada para cargar datos</td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot class="table-head table-foot-sticky">
+                                            <tr>
+                                                <td class="table-cell is-header">Totales</td>
+                                                <td class="table-cell is-header text-right" id="total-cash-decl">$0.00
+                                                </td>
+                                                <td class="table-cell is-header text-right" id="total-zoco-decl">$0.00
+                                                </td>
+                                                <td class="table-cell is-header text-right muted" id="total-cash-sys">
+                                                    $0.00</td>
+                                                <td class="table-cell is-header text-right muted" id="total-zoco-sys">
+                                                    $0.00</td>
+                                                <td class="table-cell is-header text-right font-bold" id="total-diff">
+                                                    $0.00</td>
+                                                <td class="table-cell is-header"></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Detail Grid: QR + Desglose -->
+                            <div class="reconcile-grid">
+                                <!-- QR Reconciliation -->
+                                <div class="staff-dashboard reconcile-card">
+                                    <div class="dashboard-header cell-pad">
+                                        <h3 class="dashboard-subtitle muted">Conciliación Entradas QR</h3>
+                                        <span class="dashboard-subtitle muted">Ingresos x Acreditación</span>
+                                    </div>
+                                    <div class="table-wrap">
+                                        <table class="table">
+                                            <thead>
+                                                <tr class="table-head">
+                                                    <th class="table-cell is-header">Origen</th>
+                                                    <th class="table-cell is-header text-center">Cant.</th>
+                                                    <th class="table-cell is-header text-right">Sistema ($)</th>
+                                                    <th class="table-cell is-header text-right">Declarado ($)</th>
+                                                    <th class="table-cell is-header text-right">Diff</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="table-row">
+                                                    <td class="table-cell font-bold text-accent">Passline</td>
+                                                    <td class="table-cell text-center" id="qr-passline-qty">0</td>
+                                                    <td class="table-cell text-right muted" id="qr-passline-sys">$0
+                                                    </td>
+                                                    <td class="table-cell text-right">
+                                                        <input type="number" id="qr-passline-decl"
+                                                            class="input input-reconcile-compact" value="0">
+                                                    </td>
+                                                    <td class="table-cell text-right font-mono font-bold"
+                                                        id="qr-passline-diff">$0</td>
+                                                </tr>
+                                                <tr class="table-row">
+                                                    <td class="table-cell font-bold text-success">Boletería</td>
+                                                    <td class="table-cell text-center" id="qr-boleteria-qty">0</td>
+                                                    <td class="table-cell text-right muted" id="qr-boleteria-sys">$0
+                                                    </td>
+                                                    <td class="table-cell text-right">
+                                                        <input type="number" id="qr-boleteria-decl"
+                                                            class="input input-reconcile-compact" value="0">
+                                                    </td>
+                                                    <td class="table-cell text-right font-mono font-bold"
+                                                        id="qr-boleteria-diff">$0</td>
+                                                </tr>
+                                                <tr class="table-row">
+                                                    <td class="table-cell font-bold muted">RRPP / Cortesía</td>
+                                                    <td class="table-cell text-center" id="qr-rrpp-qty">0</td>
+                                                    <td class="table-cell text-right muted" id="qr-rrpp-sys">$0</td>
+                                                    <td class="table-cell text-right muted">-</td>
+                                                    <td class="table-cell text-right">-</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
-                                <div class="panel-scroll scroll-costs" id="costs-container">
-                                    <div class="state-block loading">
-                                        <div class="state-loader"></div>
-                                        <p class="state-title">Cargando costos...</p>
+
+                                <!-- System Sales Breakdown -->
+                                <div class="staff-dashboard reconcile-card">
+                                    <div class="dashboard-header cell-pad">
+                                        <h3 class="dashboard-subtitle muted">Desglose de Ventas (Sistema)</h3>
+                                        <span class="dashboard-subtitle muted">Ventas Barra + Entradas</span>
+                                    </div>
+                                    <div class="table-wrap">
+                                        <table class="table">
+                                            <thead>
+                                                <tr class="table-head">
+                                                    <th class="table-cell is-header">Concepto</th>
+                                                    <th class="table-cell is-header text-right">Efectivo</th>
+                                                    <th class="table-cell is-header text-right">Zoco/Card</th>
+                                                    <th class="table-cell is-header text-right">Total</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="table-row">
+                                                    <td class="table-cell font-bold">Ventas Barra</td>
+                                                    <td class="table-cell text-right font-mono" id="breakdown-bar-cash">
+                                                        $0</td>
+                                                    <td class="table-cell text-right font-mono" id="breakdown-bar-card">
+                                                        $0</td>
+                                                    <td class="table-cell text-right font-bold font-mono"
+                                                        id="breakdown-bar-total">$0</td>
+                                                </tr>
+                                                <tr class="table-row">
+                                                    <td class="table-cell font-bold">Entradas QR</td>
+                                                    <td class="table-cell text-right font-mono muted">-</td>
+                                                    <td class="table-cell text-right font-mono" id="breakdown-qr-zoco">
+                                                        $0</td>
+                                                    <td class="table-cell text-right font-bold font-mono"
+                                                        id="breakdown-qr-total">$0</td>
+                                                </tr>
+                                                <tr class="table-row" style="border-top: 1px solid var(--border-1);">
+                                                    <td class="table-cell font-bold text-accent">TOTAL SISTEMA</td>
+                                                    <td class="table-cell text-right font-bold font-mono"
+                                                        id="breakdown-total-cash">$0</td>
+                                                    <td class="table-cell text-right font-bold font-mono"
+                                                        id="breakdown-total-zoco">$0</td>
+                                                    <td class="table-cell text-right font-bold font-mono text-lg"
+                                                        id="breakdown-total-global">$0</td>
+                                                </tr>
+                                            </tbody>
+                                            <tfoot class="table-head">
+                                                <tr>
+                                                    <td class="table-cell muted text-xs" colspan="4">
+                                                        * Datos calculados automáticamente desde vw_daily_sales
+                                                    </td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
 
-                        </main>
+                            <!-- Notes -->
+                            <div class="staff-dashboard notes-panel">
+                                <h3 class="dashboard-subtitle font-bold muted">Notas de Cierre</h3>
+                                <textarea id="closing-notes" class="input notes-input"
+                                    placeholder="Observaciones de la noche..." aria-label="Notas de cierre"></textarea>
+                                <div class="notes-actions">
+                                    <button id="btn-save-notes" class="btn-ghost btn-sm">Guardar Notas</button>
+                                </div>
+                            </div>
+                        </div>
 
-                    </div>
+                        <!-- ── Sub-sección: DEVENCIONES (Nómina Devengada) ── -->
+                        <div class="staff-dashboard" id="section-devenciones" style="margin-top: var(--space-4);">
+                            <div class="dashboard-header align-start">
+                                <div>
+                                    <h2 class="dashboard-title dashboard-title-soft">Devenciones de Nómina</h2>
+                                    <p class="dashboard-subtitle dashboard-subtitle-soft">Devengado por staff convocado
+                                        esta noche</p>
+                                </div>
+                                <div class="dashboard-actions" style="display:flex;gap:8px;align-items:center;">
+                                    <span class="status-pill" id="devencion-kpi-total"
+                                        style="font-size:var(--text-sm);font-weight:700;">$0</span>
+                                    <button id="btn-generate-accruals" class="btn-primary btn-sm" disabled>Generar
+                                        Devenciones</button>
+                                </div>
+                            </div>
+                            <div class="table-viewport table-shell">
+                                <div class="table-scroll">
+                                    <table class="table table-sticky table-compact">
+                                        <thead>
+                                            <tr class="table-head">
+                                                <th class="table-cell is-header">Staff</th>
+                                                <th class="table-cell is-header text-center">Rol</th>
+                                                <th class="table-cell is-header text-right">Tarifa</th>
+                                                <th class="table-cell is-header text-right">Ajuste</th>
+                                                <th class="table-cell is-header text-right">Total</th>
+                                                <th class="table-cell is-header text-center">Estado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="devenciones-table-body">
+                                            <tr>
+                                                <td colspan="6" class="cell-pad text-center muted">
+                                                    Genera devenciones para ver el detalle de nómina.
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot class="table-head table-foot-sticky">
+                                            <tr>
+                                                <td class="table-cell is-header" colspan="4">Total Devengado</td>
+                                                <td class="table-cell is-header text-right font-mono font-bold"
+                                                    id="devenciones-total-footer">$0</td>
+                                                <td class="table-cell is-header"></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ── Sub-sección: BARRA (placeholder — equipo paralelo) ── -->
+                        <div class="staff-dashboard" id="section-barra" style="margin-top: var(--space-4);">
+                            <div class="dashboard-header align-start">
+                                <div>
+                                    <h2 class="dashboard-title dashboard-title-soft">Auditoría de Barra</h2>
+                                    <p class="dashboard-subtitle dashboard-subtitle-soft">Sesiones de barra y
+                                        consumo</p>
+                                </div>
+                            </div>
+                            <div class="state-block" id="panel-barra-placeholder">
+                                <p class="state-title">Módulo en desarrollo</p>
+                                <p class="state-subtitle">El equipo de barras está implementando esta sección.</p>
+                            </div>
+                        </div>
+
+                        <!-- Acción principal: Cerrar Noche -->
+                        <div style="display:flex; justify-content:flex-end; padding: var(--space-4) 0;">
+                            <button id="btn-close-night" class="btn-danger" disabled>
+                                CERRAR NOCHE
+                            </button>
+                        </div>
+                    </section>
+
+                    <!-- ═══════════════════════════════════════════ -->
+                    <!-- TAB 3: HISTÓRICO                           -->
+                    <!-- ═══════════════════════════════════════════ -->
+                    <section id="panelHistorico" class="tab-content hidden" role="tabpanel">
+                        <div class="staff-dashboard">
+                            <div class="dashboard-header align-start">
+                                <div>
+                                    <h2 class="dashboard-title dashboard-title-soft">Historial de Jornadas</h2>
+                                    <p class="dashboard-subtitle dashboard-subtitle-soft">Reportes y KPIs de noches
+                                        cerradas</p>
+                                </div>
+                            </div>
+                            <div class="table-viewport table-shell">
+                                <div class="table-scroll">
+                                    <table class="table table-sticky table-compact">
+                                        <thead>
+                                            <tr class="table-head">
+                                                <th class="table-cell is-header cell-pad">Fecha</th>
+                                                <th class="table-cell is-header">Evento</th>
+                                                <th class="table-cell is-header text-right">Ingreso Sist.</th>
+                                                <th class="table-cell is-header text-right">Declarado</th>
+                                                <th class="table-cell is-header text-right">Diferencia</th>
+                                                <th class="table-cell is-header text-center">Staff</th>
+                                                <th class="table-cell is-header text-center">Estado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="history-table-body">
+                                            <tr>
+                                                <td colspan="7" class="p-4 text-center muted italic">Cargando
+                                                    historial...</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
 
                 </div> <!-- /module-content -->
             </div>
@@ -219,7 +546,7 @@
         </div>
     </footer>
 
-    <!-- Slide Panel (List View para Historial) -->
+    <!-- Slide Panel (List View para Historial — legacy, se mantiene por JS) -->
     <div class="panel-overlay" id="panel-overlay"></div>
     <div class="slide-panel" id="slide-panel">
         <div class="panel-header">
@@ -246,6 +573,27 @@
             <div class="modal-footer">
                 <button class="btn-secondary" id="btnCancelModal">Cancelar</button>
                 <button class="btn-primary" id="btnConfirmModal">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Close Night Confirm Modal -->
+    <div class="modal-overlay hidden" id="closeNightModal">
+        <div class="modal-card modal-sm">
+            <div class="modal-header">
+                <h2 class="modal-title">Confirmar Cierre</h2>
+            </div>
+            <div class="modal-body">
+                <p class="text-center" style="margin-bottom: 16px;">¿Estás seguro de cerrar la noche
+                    permanentemente?</p>
+                <div class="state-block">
+                    <p class="state-title">Diferencia Total</p>
+                    <p class="dashboard-title" id="confirm-diff-display">$0.00</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="btnCancelCloseNight">Cancelar</button>
+                <button class="btn-primary" id="btnConfirmCloseNight">Confirmar Cierre</button>
             </div>
         </div>
     </div>
@@ -308,6 +656,12 @@
         </div>
     </div>
 
+    <!-- Hidden Inputs for CSV Import -->
+    <input type="file" id="file-extracciones" hidden accept=".csv">
+    <input type="file" id="file-gbol" hidden accept=".csv">
+    <input type="file" id="file-passline" hidden accept=".csv">
+    <input type="file" id="file-afip" hidden accept=".csv">
+
     <!-- Scripts -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="../../assets/js/core/config.js"></script>
@@ -319,6 +673,14 @@
     <script src="../../assets/js/core/work-day-helper.js"></script>
     <script src="../../assets/js/core/panel.js"></script>
     <script src="../../assets/js/core/navigation.js"></script>
+
+    <!-- Importers (para Evento tab) -->
+    <script defer src="../../assets/js/importers/importer-utils.js"></script>
+    <script defer src="../../assets/js/importers/importer-extracciones.js"></script>
+    <script defer src="../../assets/js/importers/importer-gbol.js"></script>
+    <script defer src="../../assets/js/importers/importer-passline.js"></script>
+    <script defer src="../../assets/js/importers/importer-afip.js"></script>
+
     <script src="../../assets/js/modules/admin/admin-workdays.js"></script>
 
 </body>

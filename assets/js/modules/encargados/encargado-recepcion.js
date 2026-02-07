@@ -1,159 +1,205 @@
 /**
  * Encargado Recepción Module
- * - Lista órdenes aprobadas (vw_supplier_orders_encargado)
- * - Muestra detalle de items para ajustar cantidad
- * - Confirma recepción vía RPC (rpc_receive_supplier_order)
+ * @module encargado-recepcion
+ * 
+ * Lista órdenes aprobadas (vw_supplier_orders_encargado)
+ * Muestra detalle de items para ajustar cantidad
+ * Confirma recepción vía RPC (rpc_receive_supplier_order)
  */
 
-(function () {
+(async function () {
     'use strict';
 
-    // State
-    let currentOrders = [];
-    let currentItems = [];
-    let selectedOrder = null;
+    // ─────────────────────────────────────────────────────────────
+    // 1. DOM References
+    // ─────────────────────────────────────────────────────────────
+    const ui = {
+        // States
+        pageLoading: document.getElementById('pageLoading'),
+        pageEmpty: document.getElementById('pageEmpty'),
+        pageContent: document.getElementById('pageContent'),
 
-    // DOM Elements
-    const dom = {
-        listContainer: document.getElementById('list-container'),
+        // Table
+        ordersBody: document.getElementById('orders-body'),
+
+        // Modal
         modal: document.getElementById('modal'),
         modalTitle: document.getElementById('modal-title'),
         modalBody: document.getElementById('modal-body'),
         modalClose: document.getElementById('modal-close'),
         modalCancel: document.getElementById('modal-cancel'),
-        modalConfirm: document.getElementById('modal-confirm')
+        modalConfirm: document.getElementById('modal-confirm'),
+
+        // Refresh
+        btnRefresh: document.getElementById('btn-refresh')
     };
 
-    /**
-     * Init
-     */
-    async function init() {
+    // ─────────────────────────────────────────────────────────────
+    // 2. State
+    // ─────────────────────────────────────────────────────────────
+    let currentOrders = [];
+    let currentItems = [];
+    let selectedOrder = null;
 
-            const session = await window.Auth.guardOrRedirect(['encargado_barra', 'admin', 'contable']);
-            if (!session) return;
+    // ─────────────────────────────────────────────────────────────
+    // 3. Guard & Assertions
+    // ─────────────────────────────────────────────────────────────
+    const session = await window.Auth.guardOrRedirect(['encargado_barra', 'admin', 'contable']);
+    if (!session) return;
 
-            if (!dom.listContainer) return;
-            if (window.Utils?.assertSbOrShowBlockingError) {
-                if (!window.Utils.assertSbOrShowBlockingError(dom.listContainer)) return;
-            } else if (!window.sb) {
-                dom.listContainer.innerHTML = '<div class="empty-state accent">No se pudo iniciar la conexión.</div>';
+    if (!window.Utils.assertSbOrShowBlockingError()) return;
+
+    // ─────────────────────────────────────────────────────────────
+    // 4. Page State Management
+    // ─────────────────────────────────────────────────────────────
+    function setPageState(stateName) {
+        ui.pageLoading.classList.toggle('hidden', stateName !== 'loading');
+        ui.pageEmpty.classList.toggle('hidden', stateName !== 'empty');
+        ui.pageContent.classList.toggle('hidden', stateName !== 'content');
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // 5. Data Loading
+    // ─────────────────────────────────────────────────────────────
+    async function loadOrders() {
+        setPageState('loading');
+
+        try {
+            const { data, error } = await window.sb
+                .from('vw_supplier_orders_encargado')
+                .select('*')
+                .eq('status', 'approved')
+                .not('eta_date', 'is', null)
+                .order('eta_date', { ascending: true });
+
+            if (error) throw error;
+
+            currentOrders = data || [];
+
+            if (currentOrders.length === 0) {
+                setPageState('empty');
                 return;
             }
 
-            // 1. Bind Events
-            bindEvents();
+            renderOrders(currentOrders);
+            setPageState('content');
 
-            // 2. Cargar lista de pedidos
-            await loadOrders();
+        } catch (err) {
+            console.error('[encargado-recepcion] Error loading orders:', err);
+            window.Toast.error('Error cargando pedidos');
+            setPageState('empty');
         }
+    }
 
-        /**
-         * Carga y renderiza órdenes
-         */
-        async function loadOrders() {
-            if (!dom.listContainer) return;
-            dom.listContainer.innerHTML = '<div class="loading-spinner">Cargando pedidos...</div>';
+    // ─────────────────────────────────────────────────────────────
+    // 6. Rendering
+    // ─────────────────────────────────────────────────────────────
+    function renderOrders(orders) {
+        const html = orders.map(order => {
+            const eta = order.eta_date
+                ? new Date(order.eta_date).toLocaleDateString('es-AR')
+                : '-';
+            const hasCost = order.final_cost !== null && order.final_cost !== undefined && order.final_cost !== '';
+            const costNum = hasCost ? Number(order.final_cost) : NaN;
+            const cost = hasCost && Number.isFinite(costNum)
+                ? window.Utils.formatARS(costNum)
+                : '-';
 
-            try {
-                // Consulta a la vista creada en Prompt 1
-                // vw_supplier_orders_encargado filtra: approved, ordered, in_transit
-                const { data, error } = await window.sb
-                    .from('vw_supplier_orders_encargado')
-                    .select('*')
-                    .eq('status', 'approved') // Solo approved por ahora según prompt, o ampliar si se quiere ver ordered
-                    .not('eta_date', 'is', null) // Solo con fecha estimada
-                    .order('eta_date', { ascending: true });
-
-                if (error) throw error;
-
-                currentOrders = data || [];
-                renderOrders(currentOrders);
-
-            } catch (err) {
-                console.error('Error cargando pedidos:', err);
-                dom.listContainer.innerHTML = '<p class="error-msg">Error cargando lista de pedidos.</p>';
-            }
-        }
-
-        /**
-         * Render Table
-         */
-        function renderOrders(orders) {
-            if (!orders.length) {
-                dom.listContainer.innerHTML = `
-                <div class="empty-state">
-                    <p>No hay pedidos pendientes de recepción.</p>
-                </div>`;
-                return;
-            }
-
-            let html = `
-            <div class="table-scroll">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Proveedor</th>
-                        <th>Fecha ETA</th>
-                        <th>SKUs</th>
-                        <th>Costo Final</th>
-                        <th>Acción</th>
-                    </tr>
-                </thead>
-                <tbody>
-        `;
-
-            orders.forEach(order => {
-                const eta = order.eta_date
-                    ? new Date(order.eta_date).toLocaleDateString('es-AR')
-                    : '-';
-                const hasCost = order.final_cost !== null && order.final_cost !== undefined && order.final_cost !== '';
-                const costNum = hasCost ? Number(order.final_cost) : NaN;
-                const cost = hasCost && Number.isFinite(costNum)
-                    ? window.Utils.formatARS(costNum)
-                    : '-';
-
-                html += `
-                <tr>
-                    <td><strong>${order.proveedor || 'Desconocido'}</strong></td>
-                    <td>${eta}</td>
-                    <td>${order.skus_count || 0} ítems</td>
-                    <td>${cost}</td>
-                    <td>
-                        <button class="btn-primary btn-sm btn-receive" data-id="${order.order_id || ''}">
+            return `
+                <tr class="table-row">
+                    <td class="table-cell cell-pad">
+                        <div class="font-medium">${order.proveedor || 'Desconocido'}</div>
+                    </td>
+                    <td class="table-cell cell-pad text-center">${order.skus_count || 0}</td>
+                    <td class="table-cell cell-pad text-right font-mono">${cost}</td>
+                    <td class="table-cell cell-pad text-center">${eta}</td>
+                    <td class="table-cell cell-pad text-center">
+                        <button class="btn-primary btn-sm" data-action="receive" data-id="${order.order_id || ''}">
                             Recibir
                         </button>
                     </td>
                 </tr>
             `;
-            });
+        }).join('');
 
-            html += `</tbody></table></div>`;
-            dom.listContainer.innerHTML = html;
+        ui.ordersBody.innerHTML = html;
+    }
 
-            // Bind clicks dynamic
-            document.querySelectorAll('.btn-receive').forEach(btn => {
-                btn.addEventListener('click', () => openReceptionModal(btn.dataset.id));
-            });
+    function renderItemsForm(items) {
+        if (!items || items.length === 0) {
+            ui.modalBody.innerHTML = '<div class="empty-state">Esta orden no tiene ítems.</div>';
+            return;
         }
 
-        /**
-         * Abre modal de recepción para una orden
-         */
-        async function openReceptionModal(orderId) {
-            selectedOrder = currentOrders.find(o => String(o.order_id) === String(orderId));
-            if (!selectedOrder || !dom.modal || !dom.modalBody || !dom.modalTitle) return;
+        let html = `
+            <table class="table table-compact">
+                <thead>
+                    <tr class="table-head">
+                        <th class="table-cell is-header cell-pad">Producto</th>
+                        <th class="table-cell is-header cell-pad text-center">Packs Sol.</th>
+                        <th class="table-cell is-header cell-pad text-center">Unidades Esp.</th>
+                        <th class="table-cell is-header cell-pad text-center cell-narrow">Recibido</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
 
-            // UI Reset
-            dom.modalTitle.textContent = `Recibiendo: ${selectedOrder.proveedor}`;
-            dom.modalBody.innerHTML = '<div class="loading-spinner">Cargando ítems...</div>';
-            dom.modal.classList.remove('hidden');
+        items.forEach(item => {
+            const skuName = item.master_sku?.nombre || 'Producto Desconocido';
+            const packQty = item.master_sku?.pack_qty || 1;
+            const reqPacks = parseFloat(item.requested_packs || 0);
+            const adjPacks = parseFloat(item.adjust_packs || 0);
+            const finalPacks = reqPacks + adjPacks;
+            const expectedUnits = finalPacks * packQty;
 
-            try {
-                // Fetch items con join a master_sku
-                // Necesitamos: requested_packs, adjust_packs, pack_qty (sku)
-                const { data, error } = await window.sb
-                    .from('replenishment_items')
-                    .select(`
+            html += `
+                <tr data-sku-id="${item.sku_id}">
+                    <td class="table-cell cell-pad">
+                        <div class="font-medium">${skuName}</div>
+                        <div class="muted text-sm">x${packQty} un/pack</div>
+                    </td>
+                    <td class="table-cell cell-pad text-center">${finalPacks}</td>
+                    <td class="table-cell cell-pad text-center font-bold">${expectedUnits}</td>
+                    <td class="table-cell cell-pad text-center">
+                        <input type="number" 
+                               class="input input-received cell-narrow text-right" 
+                               value="${expectedUnits}" 
+                               min="0" 
+                               step="0.01"
+                               data-expected="${expectedUnits}"
+                               data-sku="${item.sku_id}">
+                    </td>
+                </tr>
+            `;
+        });
+
+        html += `</tbody></table>`;
+
+        html += `
+            <div class="form-group mt-md">
+                <label>Notas de recepción (opcional)</label>
+                <textarea id="receipt-notes" class="input" rows="2" placeholder="Ej: Faltante parcial en vodka..."></textarea>
+            </div>
+        `;
+
+        ui.modalBody.innerHTML = html;
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // 7. Modal Actions
+    // ─────────────────────────────────────────────────────────────
+    async function openReceptionModal(orderId) {
+        selectedOrder = currentOrders.find(o => String(o.order_id) === String(orderId));
+        if (!selectedOrder) return;
+
+        ui.modalTitle.textContent = `Recibiendo: ${selectedOrder.proveedor}`;
+        ui.modalBody.innerHTML = '<div class="loading-spinner"></div>';
+        ui.modal.showModal();
+
+        try {
+            const { data, error } = await window.sb
+                .from('replenishment_items')
+                .select(`
                     id,
                     sku_id,
                     requested_packs,
@@ -163,173 +209,106 @@
                         pack_qty
                     )
                 `)
-                    .eq('supplier_order_id', orderId);
+                .eq('supplier_order_id', orderId);
 
-                if (error) throw error;
+            if (error) throw error;
 
-                currentItems = data;
-                renderItemsForm(currentItems);
+            currentItems = data;
+            renderItemsForm(currentItems);
 
-            } catch (err) {
-                console.error('Error cargando items:', err);
-                dom.modalBody.innerHTML = '<p class="error-msg">No se pudieron cargar los ítems.</p>';
-            }
+        } catch (err) {
+            console.error('[encargado-recepcion] Error loading items:', err);
+            ui.modalBody.innerHTML = '<div class="empty-state text-error">No se pudieron cargar los ítems.</div>';
         }
+    }
 
-        /**
-         * Renderiza formulario de ítems en modal
-         */
-        function renderItemsForm(items) {
-            if (!items || items.length === 0) {
-                dom.modalBody.innerHTML = '<p>Esta orden no tiene ítems.</p>';
+    function closeModal() {
+        ui.modal.close();
+        selectedOrder = null;
+        currentItems = [];
+    }
+
+    async function confirmReception() {
+        if (!selectedOrder) return;
+
+        ui.modalConfirm.disabled = true;
+        ui.modalConfirm.textContent = 'Procesando...';
+
+        try {
+            const rows = document.querySelectorAll('#modal-body tr[data-sku-id]');
+            if (!rows.length) {
+                window.Toast.warning('Esta orden no tiene ítems para recibir.');
+                closeModal();
                 return;
             }
 
-            let html = `
-            <table class="data-table table-compact">
-                <thead>
-                    <tr>
-                        <th>Producto</th>
-                        <th>Packs Sol.</th>
-                        <th>Unidades Esp.</th>
-                        <th style="width: 120px;">Recibido (Unid)</th>
-                    </tr>
-                </thead>
-                <tbody>
-        `;
+            const itemsPayload = [];
+            const notesEl = document.getElementById('receipt-notes');
+            const notes = notesEl ? notesEl.value : '';
 
-            items.forEach(item => {
-                const skuName = item.master_sku?.nombre || 'Producto Desconocido';
-                const packQty = item.master_sku?.pack_qty || 1;
+            rows.forEach(row => {
+                const input = row.querySelector('.input-received');
+                if (!input) return;
+                const skuId = row.dataset.skuId;
+                if (!skuId) return;
+                const expected = parseFloat(input.dataset.expected || '0');
+                let received = parseFloat(input.value);
+                if (!Number.isFinite(received) || received < 0) received = 0;
 
-                // Expected Logic: (requested + adjustments) * pack_qty
-                const reqPacks = parseFloat(item.requested_packs || 0);
-                const adjPacks = parseFloat(item.adjust_packs || 0);
-                const finalPacks = reqPacks + adjPacks;
-                const expectedUnits = finalPacks * packQty;
-
-                // Input default = expectedUnits
-                html += `
-                <tr data-sku-id="${item.sku_id}">
-                    <td>
-                        <div class="cell-strong">${skuName}</div>
-                        <div class="muted text-sm">x${packQty} un/pack</div>
-                    </td>
-                    <td>${finalPacks}</td>
-                    <td><strong class="cell-strong">${expectedUnits}</strong></td>
-                    <td>
-                        <input type="number" 
-                               class="input input-compact input-received" 
-                               value="${expectedUnits}" 
-                               min="0" 
-                               step="0.01"
-                               data-expected="${expectedUnits}"
-                               data-sku="${item.sku_id}"
-                        >
-                    </td>
-                </tr>
-            `;
+                itemsPayload.push({
+                    sku_id: skuId,
+                    expected: Number.isFinite(expected) ? expected : 0,
+                    received
+                });
             });
 
-            html += `</tbody></table>`;
-
-            // Add Notes Field
-            html += `
-            <div class="form-group" style="margin-top: 1rem;">
-                <label>Notas de recepción (opcional)</label>
-                <textarea id="receipt-notes" class="input input-full" rows="2" placeholder="Ej: Faltante parcial en vodka..."></textarea>
-            </div>
-        `;
-
-            dom.modalBody.innerHTML = html;
-        }
-
-        /**
-         * Confirma la recepción llamando al RPC
-         */
-        async function confirmReception() {
-            if (!selectedOrder) return;
-
-            const confirmBtn = dom.modalConfirm;
-            if (!confirmBtn) return;
-            confirmBtn.disabled = true;
-            confirmBtn.textContent = 'Procesando...';
-
-            try {
-                // Construir payload
-                const rows = document.querySelectorAll('#modal-body tr[data-sku-id]');
-                if (!rows.length) {
-                    window.Toast.warning('Esta orden no tiene ítems para recibir.');
-                    closeModal();
-                    return;
-                }
-                const itemsPayload = [];
-                const notesEl = document.getElementById('receipt-notes');
-                const notes = notesEl ? notesEl.value : '';
-
-                rows.forEach(row => {
-                    const input = row.querySelector('.input-received');
-                    if (!input) return;
-                    const skuId = row.dataset.skuId;
-                    if (!skuId) return;
-                    const expected = parseFloat(input.dataset.expected || '0');
-                    let received = parseFloat(input.value);
-                    if (!Number.isFinite(received) || received < 0) received = 0;
-
-                    itemsPayload.push({
-                        sku_id: skuId,
-                        expected: Number.isFinite(expected) ? expected : 0,
-                        received
-                    });
-                });
-
-                // Call RPC
-                const { error } = await window.sb.rpc('rpc_receive_supplier_order', {
-                    p_order_id: selectedOrder.order_id,
-                    p_items: itemsPayload, // Supabase client auto-converts array to jsonb
-                    p_notes: notes || ''
-                });
-
-                if (error) throw error;
-
-                window.Toast.success('Recepción registrada correctamente.');
-
-                closeModal();
-                loadOrders(); // Recargar lista
-
-            } catch (err) {
-                console.error('Error confirmando recepción:', err);
-                window.Toast.error('Error al procesar la recepción: ' + err.message);
-            } finally {
-                confirmBtn.disabled = false;
-                confirmBtn.textContent = 'Confirmar Recepción';
-            }
-        }
-
-        /**
-         * Helper close modal
-         */
-        function closeModal() {
-            dom.modal.classList.add('hidden');
-            selectedOrder = null;
-            currentItems = [];
-        }
-
-        /**
-         * Bind Global Events
-         */
-        function bindEvents() {
-            if (dom.modalClose) dom.modalClose.addEventListener('click', closeModal);
-            if (dom.modalCancel) dom.modalCancel.addEventListener('click', closeModal);
-            if (dom.modalConfirm) dom.modalConfirm.addEventListener('click', confirmReception);
-
-            // Click outside (opcional)
-            window.addEventListener('click', (e) => {
-                if (dom.modal && e.target === dom.modal) closeModal();
+            const { error } = await window.sb.rpc('rpc_receive_supplier_order', {
+                p_order_id: selectedOrder.order_id,
+                p_items: itemsPayload,
+                p_notes: notes || ''
             });
+
+            if (error) throw error;
+
+            window.Toast.success('Recepción registrada correctamente.');
+            closeModal();
+            await loadOrders();
+
+        } catch (err) {
+            console.error('[encargado-recepcion] Error confirming:', err);
+            window.Toast.error('Error al procesar la recepción: ' + err.message);
+        } finally {
+            ui.modalConfirm.disabled = false;
+            ui.modalConfirm.textContent = 'Confirmar Recepción';
         }
+    }
 
-        // Run
-        document.addEventListener('DOMContentLoaded', init);
+    // ─────────────────────────────────────────────────────────────
+    // 8. Event Bindings
+    // ─────────────────────────────────────────────────────────────
+    function bindEvents() {
+        // Refresh
+        ui.btnRefresh?.addEventListener('click', () => loadOrders());
 
-    }) ();
+        // Modal close / cancel
+        ui.modalClose?.addEventListener('click', closeModal);
+        ui.modalCancel?.addEventListener('click', closeModal);
+        ui.modal?.addEventListener('cancel', closeModal);
+
+        // Modal confirm
+        ui.modalConfirm?.addEventListener('click', confirmReception);
+
+        // Receive buttons (event delegation)
+        ui.ordersBody?.addEventListener('click', (e) => {
+            const btn = e.target.closest('[data-action="receive"]');
+            if (btn) openReceptionModal(btn.dataset.id);
+        });
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // 9. Init
+    // ─────────────────────────────────────────────────────────────
+    bindEvents();
+    await loadOrders();
+
+})();
