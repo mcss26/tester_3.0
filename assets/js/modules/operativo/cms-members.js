@@ -47,6 +47,7 @@
     countTotal: document.getElementById("count-total"),
     countTotalPill: document.getElementById("count-total-pill"),
     countPendiente: document.getElementById("count-pendiente"),
+    countPendienteMetric: document.getElementById("count-pendiente-metric"),
     countActivo: document.getElementById("count-activo"),
     countActivoPill: document.getElementById("count-activo-pill"),
     countRechazado: document.getElementById("count-rechazado"),
@@ -55,7 +56,7 @@
     countCumple: document.getElementById("count-cumple"),
     birthdayToday: document.getElementById("birthday-today"),
     tabs: document.querySelectorAll(".tab-chip[data-view]"),
-    filterPills: document.querySelectorAll(".filter-pill[data-status]"),
+    filterPills: document.querySelectorAll(".pill[data-status]"),
   };
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -163,6 +164,7 @@
     setText(refs.countTotal, counts.total);
     setText(refs.countTotalPill, counts.total);
     setText(refs.countPendiente, counts.pendiente);
+    setText(refs.countPendienteMetric, counts.pendiente);
     setText(refs.countActivo, counts.activo);
     setText(refs.countActivoPill, counts.activo);
     setText(refs.countRechazado, counts.rechazado);
@@ -638,8 +640,8 @@
   // Filter pills
   refs.filterPills.forEach((pill) => {
     pill.addEventListener("click", () => {
-      refs.filterPills.forEach((p) => p.classList.remove("active"));
-      pill.classList.add("active");
+      refs.filterPills.forEach((p) => p.classList.remove("is-active"));
+      pill.classList.add("is-active");
       state.currentFilter = pill.dataset.status || "pendiente";
       renderList();
     });

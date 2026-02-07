@@ -33,9 +33,11 @@
     tabs: document.querySelectorAll("[data-tab]"),
     subtabs: document.querySelectorAll("[data-subtab]"),
 
-    // Stats (integrated in tabs/views)
-    preapprovalCount: document.getElementById("preapproval-count"),
-    preapprovalTotalBudget: document.getElementById("preapproval-total-budget"),
+    // Stats — Summary Metric Cards
+    statDeficitCount: document.getElementById("stat-deficit-count"),
+    statTotalCost: document.getElementById("stat-total-cost"),
+    statSupplierCount: document.getElementById("stat-supplier-count"),
+    preapprovalMetrics: document.getElementById("preapproval-metrics"),
     unassignedStats: document.getElementById("unassigned-stats"),
     unassignedTotalBudget: document.getElementById("unassigned-total-budget"),
 
@@ -136,10 +138,18 @@
   function switchTab(tabId) {
     activeTab = tabId;
     ui.tabs.forEach((t) => {
-      t.classList.toggle("is-active", t.dataset.tab === tabId);
-      // Remove legacy active class just in case
-      t.classList.remove("active");
+      const isActive = t.dataset.tab === tabId;
+      // tab-chip uses 'active', pill uses 'is-active'
+      if (t.classList.contains('tab-chip')) {
+        t.classList.toggle('active', isActive);
+      } else {
+        t.classList.toggle('is-active', isActive);
+      }
     });
+
+    // Show summary metrics only on pre-aprobacion
+    ui.preapprovalMetrics?.classList.toggle('hidden', tabId !== 'pre-aprobacion');
+
     refreshViews(tabId);
   }
 
@@ -159,27 +169,52 @@
     else renderPreApprovalBySupplier(preapprovalItems);
   }
 
-  // 7. Data Fetching (Pre-Aprobación)
+  function refreshViews(tabId) {
+    // Hide all
+    ui.viewPreAprobacion?.classList.add("hidden");
+    ui.viewPendientes?.classList.add("hidden");
+    ui.viewUnassigned?.classList.add("hidden");
+    ui.viewHistorial?.classList.add("hidden");
+
+    // Show active & Load Data
+    if (tabId === "pre-aprobacion") {
+      ui.viewPreAprobacion?.classList.remove("hidden");
+      loadPreApprovalItems();
+    } else if (tabId === "pendientes") {
+      ui.viewPendientes?.classList.remove("hidden");
+      loadOrders();
+    } else if (tabId === "sin-asignar") {
+      ui.viewUnassigned?.classList.remove("hidden");
+      loadUnassigned();
+    } else if (tabId === "historial") {
+      ui.viewHistorial?.classList.remove("hidden");
+    }
+  }
+
+  // 7. Data Fetching (Pre-Aprobación) — Auto-detección con ideal dinámico
   async function loadPreApprovalItems() {
     if (activeTab !== "pre-aprobacion") return;
     setPageState("loading");
 
     try {
+      // ── 1. Date range (last 30 days) ──
       const today = new Date();
       const past = new Date();
       past.setDate(today.getDate() - 30);
+      const startDate = past.toISOString().split("T")[0];
+      const endDate = today.toISOString().split("T")[0];
 
-      // Get recent requests
-      const { data: requests, error: reqError } = await window.sb
-        .from("replenishment_requests")
-        .select("id")
-        .gte("operational_date", past.toISOString().split("T")[0])
-        .neq("status", "cancelled");
+      // ── 2. Fetch ALL active SKUs with provider info ──
+      const { data: skus, error: skuErr } = await window.sb
+        .from("master_sku")
+        .select(
+          "id, nombre, pack_qty, costo, costo_pack, proveedor_default_id, active",
+        )
+        .eq("active", true)
+        .order("nombre");
 
-      if (reqError) throw reqError;
-      const requestIds = (requests || []).map((r) => r.id);
-
-      if (requestIds.length === 0) {
+      if (skuErr) throw skuErr;
+      if (!skus || skus.length === 0) {
         preapprovalItems = [];
         renderPreApprovalByItem([]);
         updatePreApprovalStats([]);
@@ -187,89 +222,119 @@
         return;
       }
 
-      // Get items
-      const { data: items, error: itemError } = await window.sb
-        .from("replenishment_items")
-        .select(
-          `
-                    id, request_id, sku_id, requested_packs, status,
-                    pre_approval_status, pre_rejection_reason,
-                    supplier_id,
-                    master_sku (id, nombre, pack_qty, costo, costo_pack, proveedor_default_id),
-                    master_proveedores:supplier_id (id, nombre_fantasia)
-                `,
-        )
-        .in("request_id", requestIds)
-        .neq("status", "cancelled")
-        .or("pre_approval_status.is.null,pre_approval_status.eq.pending");
+      // ── 3. Fetch stock levels from vw_stock_global ──
+      const { data: stockData } = await window.sb
+        .from("vw_stock_global")
+        .select("sku_id, stock_actual, requerido");
 
-      if (itemError) throw itemError;
+      const stockMap = {};
+      (stockData || []).forEach((s) => (stockMap[s.sku_id] = s));
 
-      // Stock data
-      const skuIds = (items || []).map((i) => i.sku_id).filter(Boolean);
-      let stockMap = {};
-      if (skuIds.length > 0) {
-        const { data: stocks } = await window.sb
-          .from("vw_stock_global")
-          .select("*")
-          .in("sku_id", skuIds);
-        (stocks || []).forEach((s) => (stockMap[s.sku_id] = s));
+      // ── 4. Fetch consumption reports in range ──
+      const { data: reports } = await window.sb
+        .from("consumption_reports")
+        .select("id")
+        .gte("operational_date", startDate)
+        .lte("operational_date", endDate);
+
+      const reportIds = (reports || []).map((r) => r.id);
+
+      // ── 5. Fetch consumption details ──
+      let consumptionMap = {};
+      if (reportIds.length > 0) {
+        const { data: details } = await window.sb
+          .from("consumption_details")
+          .select("sku_id, quantity")
+          .in("report_id", reportIds);
+        (details || []).forEach((d) => {
+          consumptionMap[d.sku_id] =
+            (consumptionMap[d.sku_id] || 0) + (d.quantity || 0);
+        });
       }
 
-      // Default suppliers
-      const defaultSupplierIds = (items || [])
-        .map((i) => i.master_sku?.proveedor_default_id)
-        .filter(Boolean);
+      // ── 6. Get average attendance for ideal calculation ──
+      const { data: workDays } = await window.sb
+        .from("work_days")
+        .select("attendance")
+        .gte("work_date", startDate)
+        .lte("work_date", endDate)
+        .eq("status", "closed");
 
-      let defaultSuppliersMap = {};
-      if (defaultSupplierIds.length > 0) {
+      const validDays = (workDays || []).filter(
+        (d) => d.attendance && d.attendance > 0,
+      );
+      const avgPeople =
+        validDays.length > 0
+          ? Math.round(
+              validDays.reduce((s, d) => s + d.attendance, 0) /
+                validDays.length,
+            )
+          : 500; // Fallback default
+
+      // ── 7. Get supplier names ──
+      const supplierIds = skus
+        .map((s) => s.proveedor_default_id)
+        .filter(Boolean);
+      let suppliersMap = {};
+      if (supplierIds.length > 0) {
         const { data: suppliers } = await window.sb
           .from("master_proveedores")
           .select("id, nombre_fantasia")
-          .in("id", defaultSupplierIds);
-        (suppliers || []).forEach((s) => (defaultSuppliersMap[s.id] = s));
+          .in("id", [...new Set(supplierIds)]);
+        (suppliers || []).forEach((s) => (suppliersMap[s.id] = s));
       }
 
-      preapprovalItems = (items || []).map((item) => {
-        const sku = item.master_sku || {};
-        const stockData = stockMap[item.sku_id];
-        const packCost =
-          sku.costo_pack !== null
-            ? sku.costo_pack
-            : (sku.costo || 0) * (sku.pack_qty || 1);
-        const estimatedCost = (item.requested_packs || 0) * packCost;
+      // ── 8. Build items with dynamic ideal calculation ──
+      const allItems = skus.map((sku) => {
+        const stockInfo = stockMap[sku.id] || {};
+        const consumption = consumptionMap[sku.id] || 0;
+        const actual = stockInfo.stock_actual ?? 0;
 
-        let supplierName =
-          window.Constants?.LABELS?.UNASSIGNED || "Sin asignar";
-        let supplierId = item.supplier_id;
-        if (item.master_proveedores?.nombre_fantasia) {
-          supplierName = item.master_proveedores.nombre_fantasia;
-        } else if (
-          sku.proveedor_default_id &&
-          defaultSuppliersMap[sku.proveedor_default_id]
-        ) {
-          supplierName =
-            defaultSuppliersMap[sku.proveedor_default_id].nombre_fantasia +
-            " (default)";
-          supplierId = sku.proveedor_default_id;
+        // Dynamic ideal: same formula as admin-central-stock
+        let ideal = 0;
+        if (avgPeople > 0 && consumption > 0) {
+          ideal = Math.ceil((consumption / avgPeople) * avgPeople);
+        } else {
+          ideal = stockInfo.requerido ?? 0; // Fallback to static
         }
 
+        const deficitUnits = Math.max(0, ideal - actual);
+        const packQty = sku.pack_qty || 1;
+        const deficitPacks = Math.ceil(deficitUnits / packQty);
+        const packCost =
+          sku.costo_pack != null
+            ? sku.costo_pack
+            : (sku.costo || 0) * packQty;
+        const estimatedCost = deficitPacks * packCost;
+
+        const supplierId = sku.proveedor_default_id || null;
+        const supplierName = supplierId
+          ? suppliersMap[supplierId]?.nombre_fantasia || "Sin asignar"
+          : "Sin asignar";
+
         return {
-          id: item.id,
-          sku_id: item.sku_id,
-          sku_nombre:
-            sku.nombre || window.Constants?.LABELS?.UNKNOWN_SKU || "Unknown",
-          requested_packs: item.requested_packs || 0,
-          pack_qty: sku.pack_qty || 1,
-          total_units: (item.requested_packs || 0) * (sku.pack_qty || 1),
+          id: sku.id,
+          sku_id: sku.id,
+          sku_nombre: sku.nombre || "Unknown",
+          stock_actual: actual,
+          stock_ideal: ideal,
+          consumption: consumption,
+          deficit_units: deficitUnits,
+          deficit_packs: deficitPacks,
+          pack_qty: packQty,
           estimated_cost: estimatedCost,
           supplier_id: supplierId,
           supplier_name: supplierName,
-          stock_actual: stockData?.stock_actual || 0,
-          stock_requerido: stockData?.requerido || 0,
-          pre_approval_status: item.pre_approval_status || "pending",
         };
       });
+
+      // ── 9. Filter: only SKUs below their dynamic ideal ──
+      preapprovalItems = allItems.filter(
+        (item) => item.stock_ideal > 0 && item.deficit_units > 0,
+      );
+
+      // Sort by largest deficit first
+      preapprovalItems.sort((a, b) => b.deficit_units - a.deficit_units);
 
       if (activeSubtab === "item") {
         renderPreApprovalByItem(preapprovalItems);
@@ -278,38 +343,47 @@
       }
       updatePreApprovalStats(preapprovalItems);
     } catch (err) {
-      console.error("Pre-Approval Load Error:", err);
-      window.Toast?.error("Error cargando solicitudes: " + err.message);
+      console.error("Auto-Detection Load Error:", err);
+      window.Toast?.error("Error cargando stock: " + err.message);
     } finally {
       setPageState(preapprovalItems.length === 0 ? "empty" : "ready");
     }
   }
 
-  // 8. Render Pre-Approval
+  // 8. Render Pre-Approval (Auto-detected items)
   function renderPreApprovalByItem(items) {
     if (!ui.subviewPorItem) return;
 
     if (items.length === 0) {
-      ui.subviewPorItem.innerHTML = `<div class="empty-state">No hay items pendientes de pre-aprobación.</div>`;
+      ui.subviewPorItem.innerHTML = `<div class="empty-state">Todos los SKUs activos están al nivel de stock ideal. ✓</div>`;
       return;
     }
 
     const rows = items
       .map((item) => {
         const isSelected = selectedItemIds.has(item.id);
+        const urgencyClass =
+          item.stock_actual === 0
+            ? "text-error"
+            : item.deficit_units > item.stock_ideal * 0.5
+              ? "text-warning"
+              : "";
+        const namePrefix = item.stock_actual === 0 ? '<span class="urgent-indicator"></span>' : '';
         return `
-                <tr class="table-row ${isSelected ? "bg-accent/10" : ""}">
+                <tr role="row">
                     <td class="table-cell cell-pad text-center">
                         <input type="checkbox" class="js-item-checkbox" data-id="${item.id}" ${isSelected ? "checked" : ""}>
                     </td>
-                    <td class="table-cell cell-pad cell-strong font-medium">${window.Utils.escapeHtml(item.sku_nombre)}</td>
-                    <td class="table-cell cell-pad text-center">${item.requested_packs}</td>
-                    <td class="table-cell cell-pad text-center">${item.total_units} u.</td>
-                    <td class="table-cell cell-pad text-right muted font-mono text-sm">${window.Utils.formatARS(item.estimated_cost)}</td>
-                    <td class="table-cell cell-pad">${window.Utils.escapeHtml(item.supplier_name)}</td>
-                    <td class="table-cell cell-pad text-right">
-                        <button class="btn-ghost btn-sm btn-success js-preapprove-single" data-id="${item.id}">✓</button>
-                        <button class="btn-ghost btn-sm text-error js-prereject-single" data-id="${item.id}">✕</button>
+                    <td class="table-cell cell-pad">${namePrefix}${window.Utils.escapeHtml(item.sku_nombre)}</td>
+                    <td class="table-cell cell-pad text-right font-mono ${urgencyClass}">${item.stock_actual}</td>
+                    <td class="table-cell cell-pad text-right font-mono muted">${item.stock_ideal}</td>
+                    <td class="table-cell cell-pad text-right font-mono ${urgencyClass}">${item.deficit_units}</td>
+                    <td class="table-cell cell-pad text-right font-mono">${item.deficit_packs}</td>
+                    <td class="table-cell cell-pad text-right font-mono muted">${window.Utils.formatARS(item.estimated_cost)}</td>
+                    <td class="table-cell cell-pad muted">${window.Utils.escapeHtml(item.supplier_name)}</td>
+                    <td class="table-cell cell-pad text-center">
+                        <button class="btn-ghost btn-sm btn-success js-preapprove-single" data-id="${item.id}" aria-label="Aprobar">✓</button>
+                        <button class="btn-ghost btn-sm text-error js-prereject-single" data-id="${item.id}" aria-label="Rechazar">✕</button>
                     </td>
                 </tr>
             `;
@@ -318,18 +392,20 @@
 
     ui.subviewPorItem.innerHTML = `
             <div class="table-scroll">
-                <table class="table table-sticky table-compact">
+                <table class="table table-sticky table-compact" role="table" aria-label="SKUs con déficit de stock">
                     <thead>
-                        <tr class="table-head">
-                            <th class="table-cell is-header cell-pad text-center" style="width: 40px;">
+                        <tr role="row">
+                            <th class="table-cell is-header cell-pad text-center" role="columnheader" style="width: 40px;">
                                 <input type="checkbox" id="select-all-items" title="Seleccionar todos">
                             </th>
-                            <th class="table-cell is-header cell-pad">SKU</th>
-                            <th class="table-cell is-header cell-pad text-center">Packs</th>
-                            <th class="table-cell is-header cell-pad text-center">Unidades</th>
-                            <th class="table-cell is-header cell-pad text-right">Costo Est.</th>
-                            <th class="table-cell is-header cell-pad">Proveedor</th>
-                            <th class="table-cell is-header cell-pad text-right">Acciones</th>
+                            <th class="table-cell is-header cell-pad" role="columnheader" scope="col">SKU</th>
+                            <th class="table-cell is-header cell-pad text-right" role="columnheader" scope="col">Actual</th>
+                            <th class="table-cell is-header cell-pad text-right" role="columnheader" scope="col">Ideal</th>
+                            <th class="table-cell is-header cell-pad text-right" role="columnheader" scope="col">Déficit</th>
+                            <th class="table-cell is-header cell-pad text-right" role="columnheader" scope="col">Packs</th>
+                            <th class="table-cell is-header cell-pad text-right" role="columnheader" scope="col">Costo Est.</th>
+                            <th class="table-cell is-header cell-pad" role="columnheader" scope="col">Proveedor</th>
+                            <th class="table-cell is-header cell-pad text-center" role="columnheader" scope="col">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>${rows}</tbody>
@@ -342,7 +418,7 @@
     if (!ui.subviewPorProveedor) return;
 
     if (items.length === 0) {
-      ui.subviewPorProveedor.innerHTML = `<div class="empty-state">No hay items pendientes.</div>`;
+      ui.subviewPorProveedor.innerHTML = `<div class="empty-state">Sin déficits detectados.</div>`;
       return;
     }
 
@@ -362,37 +438,40 @@
     });
 
     const cards = Object.values(bySupplier)
+      .sort((a, b) => b.total_cost - a.total_cost)
       .map((group) => {
-        const itemIds = group.items.map((i) => i.id);
-        const allSelected = itemIds.every((id) => selectedItemIds.has(id));
+        const itemSkuIds = group.items.map((i) => i.sku_id);
+        const allSelected = itemSkuIds.every((id) =>
+          selectedItemIds.has(id),
+        );
 
         const itemRows = group.items
           .map(
             (item) => `
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <div class="supplier-card-item">
                     <span class="text-sm">${window.Utils.escapeHtml(item.sku_nombre)}</span>
-                    <span class="text-sm muted">${item.requested_packs} packs (${item.total_units} u.)</span>
+                    <span class="text-sm muted font-mono">-${item.deficit_units} u. → ${item.deficit_packs} packs</span>
                 </div>
             `,
           )
           .join("");
 
         return `
-                <div class="card" style="padding: 16px; margin-bottom: 16px; background: var(--surface-2); border-radius: 8px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <input type="checkbox" class="js-supplier-checkbox" data-supplier-id="${group.supplier_id || ""}" data-item-ids='${JSON.stringify(itemIds)}' ${allSelected ? "checked" : ""}>
-                            <h3 class="font-bold">${window.Utils.escapeHtml(group.supplier_name)}</h3>
+                <div class="supplier-card">
+                    <div class="supplier-card-header">
+                        <div class="supplier-card-header-left">
+                            <input type="checkbox" class="js-supplier-checkbox" data-supplier-id="${group.supplier_id || ""}" data-item-ids='${JSON.stringify(itemSkuIds)}' ${allSelected ? "checked" : ""}>
+                            <h3>${window.Utils.escapeHtml(group.supplier_name)}</h3>
                             <span class="badge status-neutral">${group.items.length} items</span>
                         </div>
-                        <span class="font-mono font-bold">${window.Utils.formatARS(group.total_cost)}</span>
+                        <span class="font-mono">${window.Utils.formatARS(group.total_cost)}</span>
                     </div>
-                    <div style="margin-bottom: 12px; max-height: 128px; overflow-y: auto;">
+                    <div class="supplier-card-body">
                         ${itemRows}
                     </div>
-                    <div style="display: flex; gap: 8px; justify-content: flex-end;">
-                        <button class="btn-primary btn-sm js-preapprove-supplier" data-item-ids='${JSON.stringify(itemIds)}'>Aprobar Todo</button>
-                        <button class="btn-ghost btn-sm text-error js-prereject-supplier" data-item-ids='${JSON.stringify(itemIds)}'>Rechazar Todo</button>
+                    <div class="supplier-card-footer">
+                        <button class="btn-primary btn-sm js-preapprove-supplier" data-item-ids='${JSON.stringify(itemSkuIds)}'>Aprobar Todo</button>
+                        <button class="btn-ghost btn-sm text-error js-prereject-supplier" data-item-ids='${JSON.stringify(itemSkuIds)}'>Ignorar</button>
                     </div>
                 </div>
             `;
@@ -405,10 +484,12 @@
   function updatePreApprovalStats(items) {
     const count = items.length;
     const totalBudget = items.reduce((sum, i) => sum + i.estimated_cost, 0);
-    if (ui.preapprovalCount) ui.preapprovalCount.textContent = count;
-    if (ui.preapprovalTotalBudget)
-      ui.preapprovalTotalBudget.textContent =
-        window.Utils.formatARS(totalBudget);
+    const uniqueSuppliers = new Set(items.map(i => i.supplier_id).filter(Boolean)).size;
+
+    // Summary metric cards (Golden Standard)
+    if (ui.statDeficitCount) ui.statDeficitCount.textContent = count;
+    if (ui.statTotalCost) ui.statTotalCost.textContent = window.Utils.formatARS(totalBudget);
+    if (ui.statSupplierCount) ui.statSupplierCount.textContent = uniqueSuppliers;
   }
 
   function updateSelectionUI() {

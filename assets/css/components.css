@@ -6303,3 +6303,68 @@ dialog.modal .modal-content-lg {
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
+/* =========================================================================
+   SUMMARY METRICS (Shared Component)
+   ========================================================================= */
+
+.summary-metrics-container {
+  margin-bottom: 28px;
+}
+
+.summary-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.summary-metric-card {
+  background: transparent;
+  border: none;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 0;
+  padding: 20px 24px;
+  text-align: center;
+  box-shadow: none;
+}
+
+.summary-metric-card:last-child {
+  border-right: none;
+}
+
+.summary-metric-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-tertiary);
+  margin-bottom: 8px;
+}
+
+.summary-metric-value {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+/* Color Variants */
+body.admin-shell .summary-metric-primary {
+  color: var(--purple-400, #c084fc) !important;
+}
+
+body.admin-shell .summary-metric-success {
+  color: #ffffff !important;
+}
+
+body.admin-shell .summary-metric-tertiary {
+  color: var(--text-tertiary) !important;
+}
+
+body.admin-shell .summary-metric-warning {
+  color: var(--warning, #fbbf24) !important;
+}
+

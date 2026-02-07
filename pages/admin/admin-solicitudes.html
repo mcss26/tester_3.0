@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Pedidos - FormulaMid</title>
-    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/tokens.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
     <link rel="stylesheet" href="../../assets/css/admin-solicitudes.css">
 </head>
 
@@ -101,94 +102,105 @@
     </header>
 
     <main class="page-shell" role="main">
-        <!-- Module Header -->
-        <div class="dashboard-header align-start mb-4">
-            <div>
-                <h2 class="dashboard-title dashboard-title-soft">Gestión de Reposición</h2>
-                <p class="dashboard-subtitle dashboard-subtitle-soft">Control de pre-aprobación y órdenes de compra</p>
-            </div>
-        </div>
-
         <div class="page-card-wrap">
-            <div class="page-card">
-                <!-- Loading State -->
-                <div class="page-card-loading" id="page-card-loading">
+            <div class="page-card overflow-visible">
+
+                <!-- 1. Loading Overlay -->
+                <div id="page-card-loading" class="page-card-loading">
                     <div class="state-block loading">
-                        <div class="state-spinner"></div>
-                        <p class="state-title">Cargando solicitudes...</p>
-                        <p class="state-desc">Sincronizando con proveedores y stock</p>
+                        <p class="state-title">Cargando</p>
+                        <div class="state-loader"></div>
                     </div>
                 </div>
 
-                <!-- Empty State -->
+                <!-- 2. Empty State Overlay -->
                 <div class="page-card-empty" id="page-card-empty">
-                    <div class="state-block">
-                        <p class="state-title">Sin pedidos pendientes</p>
-                        <p class="state-desc">No hay solicitudes que requieran tu atención.</p>
-                        <button class="btn-ghost btn-sm mt-2" id="btn-reload-empty">Refrescar</button>
+                    <div class="state-block loading">
+                        <p class="state-title">Sin Datos</p>
+                        <p class="state-desc">No se encontraron solicitudes ni déficits de stock.</p>
+                        <button id="btn-reload-empty" class="btn btn-primary btn-sm">Reintentar</button>
                     </div>
                 </div>
 
-                <!-- Module Content -->
+                <!-- 3. Module Content -->
                 <div id="module-content">
                     <div class="staff-dashboard">
-                        <!-- Main Tabs -->
-                        <div class="sku-filter-bar" id="solicitudes-tabs">
-                            <div class="pill-group" id="main-pills">
-                                <button class="pill is-active" data-tab="pre-aprobacion">
-                                    Pre-Aprobación <span class="pill-count" id="preapproval-count">0</span>
-                                </button>
-                                <button class="pill" data-tab="pendientes">
-                                    Aprobación Final
-                                </button>
-                                <button class="pill" data-tab="sin-asignar">
-                                    Sin Asignar
-                                </button>
-                                <button class="pill" data-tab="historial">
-                                    Historial
-                                </button>
+
+                        <!-- Dashboard Header (Golden Standard: tab-chip in actions-bar) -->
+                        <div class="dashboard-header align-start">
+                            <div>
+                                <h2 class="dashboard-title dashboard-title-soft">Gestión de Reposición</h2>
+                                <p class="dashboard-subtitle dashboard-subtitle-soft">Control de pre-aprobación y
+                                    órdenes de compra</p>
                             </div>
-                            <div class="filter-spacer"></div>
-                            <div class="filter-actions">
-                                <span class="badge status-neutral" id="preapproval-total-budget">$0,00</span>
+                            <div class="actions-bar">
+                                <div class="tab-bar" id="solicitudes-tabs">
+                                    <button class="tab-chip active" data-tab="pre-aprobacion">Pre-Aprobación</button>
+                                    <button class="tab-chip" data-tab="pendientes">Aprobación Final</button>
+                                    <button class="tab-chip" data-tab="sin-asignar">Sin Asignar</button>
+                                    <button class="tab-chip" data-tab="historial">Historial</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Summary Metrics (Golden Standard) -->
+                        <div class="summary-metrics-container" id="preapproval-metrics">
+                            <div class="summary-metrics-grid">
+                                <div class="summary-metric-card">
+                                    <div class="summary-metric-label">SKUs con Déficit</div>
+                                    <div class="summary-metric-value summary-metric-primary" id="stat-deficit-count">-
+                                    </div>
+                                </div>
+                                <div class="summary-metric-card">
+                                    <div class="summary-metric-label">Costo Estimado Total</div>
+                                    <div class="summary-metric-value summary-metric-warning" id="stat-total-cost">-
+                                    </div>
+                                </div>
+                                <div class="summary-metric-card">
+                                    <div class="summary-metric-label">Proveedores Involucrados</div>
+                                    <div class="summary-metric-value summary-metric-success" id="stat-supplier-count">-
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
                         <!-- View: Pre-Aprobación -->
-                        <div id="view-pre-aprobacion" class="staff-list">
-                            <div class="sku-filter-bar mb-2 sub-filter-bar">
+                        <div id="view-pre-aprobacion" class="tab-content">
+                            <!-- Sub-filter bar -->
+                            <div class="sku-filter-bar">
                                 <div class="pill-group">
                                     <button class="pill is-active" id="subtab-por-item" data-subtab="item">Por
                                         Item</button>
                                     <button class="pill" id="subtab-por-proveedor" data-subtab="proveedor">Por
                                         Proveedor</button>
                                 </div>
+                                <div class="filter-spacer"></div>
                                 <div class="filter-actions" id="preapproval-bulk-actions">
                                     <span class="text-xs muted" id="preapproval-selection-info">0 seleccionados</span>
-                                    <button class="btn btn-primary btn-xs" id="btn-preapprove-selected"
-                                        disabled>APROBAR</button>
-                                    <button class="btn btn-ghost btn-xs" id="btn-prereject-selected"
-                                        disabled>RECHAZAR</button>
+                                    <button class="btn-primary btn-sm" id="btn-preapprove-selected"
+                                        disabled>Aprobar</button>
+                                    <button class="btn-ghost btn-sm" id="btn-prereject-selected"
+                                        disabled>Rechazar</button>
                                 </div>
                             </div>
 
                             <div class="table-viewport table-shell" id="subview-por-item">
                                 <!-- Injected by JS -->
                             </div>
-                            <div class="table-scroll hidden" id="subview-por-proveedor">
+                            <div class="hidden" id="subview-por-proveedor">
                                 <!-- Injected by JS -->
                             </div>
                         </div>
 
                         <!-- View: Pendientes (Aprobación Final) -->
-                        <div id="view-pendientes" class="staff-list hidden">
+                        <div id="view-pendientes" class="tab-content hidden">
                             <div class="table-viewport table-shell" id="list-container">
                                 <!-- Injected by JS -->
                             </div>
                         </div>
 
                         <!-- View: Sin Asignar -->
-                        <div id="view-unassigned" class="staff-list hidden">
+                        <div id="view-unassigned" class="tab-content hidden">
                             <div id="unassigned-stats" class="mb-2">
                                 <span class="badge status-neutral">Total Estimado: <span
                                         id="unassigned-total-budget">$0,00</span></span>
@@ -199,7 +211,7 @@
                         </div>
 
                         <!-- View: Historial -->
-                        <div id="view-historial" class="staff-list hidden">
+                        <div id="view-historial" class="tab-content hidden">
                             <div class="table-viewport table-shell" id="historial-container">
                                 <div class="state-block">
                                     <p class="state-title muted">Próximamente</p>
@@ -215,7 +227,7 @@
 
     <!-- Slide Panel: Detalle de Pedido -->
     <div id="panel-overlay" class="panel-overlay"></div>
-    <div id="slide-panel" class="slide-panel">
+    <aside id="slide-panel" class="slide-panel">
         <div class="panel-header">
             <h3 class="panel-title" id="panel-title">Detalle de Pedido</h3>
             <button class="panel-close" id="btn-close-panel" aria-label="Cerrar">×</button>
@@ -234,12 +246,12 @@
         </div>
 
         <div class="panel-footer">
-            <button class="btn btn-secondary" id="btn-cancel">CANCELAR</button>
+            <button class="btn-secondary" id="btn-cancel">Cancelar</button>
             <div id="panel-actions" class="row-flex gap-sm">
                 <!-- JS will inject actions -->
             </div>
         </div>
-    </div>
+    </aside>
 
     <!-- Modal: Rechazo Pre-Aprobación -->
     <dialog id="modal-prereject" class="modal">
@@ -259,9 +271,9 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary"
-                        onclick="document.getElementById('modal-prereject').close()">CANCELAR</button>
-                    <button type="submit" class="btn btn-primary">CONFIRMAR RECHAZO</button>
+                    <button type="button" class="btn-secondary"
+                        onclick="document.getElementById('modal-prereject').close()">Cancelar</button>
+                    <button type="submit" class="btn-primary">Confirmar Rechazo</button>
                 </div>
             </form>
         </div>

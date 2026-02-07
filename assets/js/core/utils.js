@@ -197,6 +197,56 @@
     return `<span class="status-pill ${className}">${label}</span>`;
   };
 
+  /**
+   * Promise-based alert modal (informational, single OK button)
+   * @param {string} message - The message to display
+   * @param {string} [title] - Optional title
+   * @returns {Promise<void>}
+   */
+  const alertModal = (message, title) => {
+    return new Promise((resolve) => {
+      let modal = document.getElementById('alertModal');
+
+      if (!modal) {
+        modal = document.createElement('dialog');
+        modal.id = 'alertModal';
+        modal.className = 'modal';
+        modal.innerHTML = `
+          <div class="modal-content">
+            <h3 id="alert-title" class="modal-title" style="margin-bottom:8px;"></h3>
+            <p id="alert-message" class="modal-body" style="white-space:pre-wrap;"></p>
+            <div class="modal-footer">
+              <button type="button" class="btn-primary" id="btn-alert-ok">OK</button>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(modal);
+      }
+
+      const titleEl = modal.querySelector('#alert-title');
+      const msgEl = modal.querySelector('#alert-message');
+      const btnOk = modal.querySelector('#btn-alert-ok');
+
+      if (titleEl) titleEl.textContent = title || '';
+      if (titleEl) titleEl.style.display = title ? '' : 'none';
+      if (msgEl) msgEl.textContent = message;
+
+      modal.showModal();
+
+      const cleanup = () => {
+        modal.close();
+        btnOk?.removeEventListener('click', onOk);
+        modal?.removeEventListener('close', onClose);
+      };
+
+      const onOk = () => { cleanup(); resolve(); };
+      const onClose = () => { cleanup(); resolve(); };
+
+      btnOk?.addEventListener('click', onOk);
+      modal?.addEventListener('close', onClose);
+    });
+  };
+
   window.Utils = {
     debounce,
     numberOrNull,
@@ -209,6 +259,8 @@
     isHidden,
     escapeHtml,
     confirmAction,
+    confirmModal: confirmAction,   // Alias used by cms-members, admin-pagos, etc.
+    alertModal,                    // Informational dialog
     renderStatusBadge,
     setPageState,
   };

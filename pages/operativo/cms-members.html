@@ -4,43 +4,71 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CMS - Members</title>
-  <link rel="stylesheet" href="../../assets/css/main.css">
+  <title>CMS Members - FormulaMid</title>
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/cms-members.css">
 </head>
 
 <body class="app-shell admin-shell admin-scroll cms-members"
   data-allowed-roles="operativo,staff_barra,staff_operativo,admin,contable">
 
-  <header class="app-topbar">
-    <div class="topbar-left">
-      <button class="btn-icon btn-icon-flat" data-go="pages/operativo/operativo-cms.html" aria-label="Volver">←</button>
-      <span class="topbar-back">CMS</span>
+  <!-- Skip Link (Accessibility) -->
+  <a href="#module-content" class="skip-link">Saltar al contenido principal</a>
+
+  <!-- Topbar (Golden Standard) -->
+  <header class="topbar">
+    <!-- Left: Breadcrumb -->
+    <nav class="breadcrumb topbar-start">
+      <a href="../operativo/operativo-cms.html" class="breadcrumb-item breadcrumb-link">CMS</a>
+      <span class="breadcrumb-sep">/</span>
+      <span class="breadcrumb-item current">Members</span>
+    </nav>
+
+    <!-- Center: Search -->
+    <div class="topbar-center header-search">
+      <input type="text" id="global-search" class="input" placeholder="Jump to...">
+      <svg class="header-search-icon" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <span class="header-shortcut">⌘K</span>
     </div>
 
-    <div class="topbar-center">
-      <span class="topbar-title">MEMBERS</span>
-    </div>
+    <!-- Right: Notifications + Avatar -->
+    <div class="topbar-end">
+      <!-- Notifications Dropdown -->
+      <div class="dropdown-container">
+        <button id="btn-notifications" class="icon-btn" aria-label="Notificaciones">
+          <svg class="icon-notification" viewBox="0 0 24 24">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <span class="notification-badge" id="notification-count">0</span>
+        </button>
+      </div>
 
-    <div class="topbar-right">
-      <span class="system-status-pill status-open topbar-pill topbar-pill-quiet" id="cms-status-pill">SOLICITUDES</span>
+      <!-- User Menu Dropdown -->
+      <div class="dropdown-container">
+        <button class="avatar avatar-sm" id="user-avatar" aria-label="Menú de usuario">??</button>
+      </div>
     </div>
   </header>
 
   <main class="page-shell">
     <div class="page-card-wrap">
-      <div class="page-card">
+      <div class="page-card overflow-visible">
 
-        <!-- Loading State -->
-        <div class="page-card-loading" id="page-card-loading">
+        <!-- 1. Loading State -->
+        <div class="page-card-loading is-visible" id="page-card-loading">
           <div class="state-block loading">
-            <div class="state-spinner" aria-hidden="true"></div>
             <div class="state-loader"></div>
             <p class="state-title">Cargando datos...</p>
             <p class="state-desc">Sincronizando solicitudes</p>
           </div>
         </div>
 
-        <!-- Empty State -->
+        <!-- 2. Empty State -->
         <div class="page-card-empty" id="page-card-empty">
           <div class="state-block loading">
             <p class="state-title">Sin resultados</p>
@@ -48,84 +76,108 @@
           </div>
         </div>
 
-        <!-- Module Content -->
-        <div id="module-content">
+        <!-- 3. Module Content -->
+        <div id="module-content" class="hidden">
           <div class="staff-dashboard cms-dashboard">
+
+            <!-- Dashboard Header (Golden Standard) -->
             <div class="dashboard-header align-start">
               <div>
                 <h2 class="dashboard-title dashboard-title-soft">CMS Members</h2>
                 <p class="dashboard-subtitle dashboard-subtitle-soft">Solicitudes, altas y cumpleaños</p>
               </div>
               <div class="actions-bar">
-                <span class="badge status-neutral">Total <span class="pill-count" id="count-total">0</span></span>
-                <span class="badge status-success">Activos <span class="pill-count" id="count-activo">0</span></span>
-                <button id="btnRefresh" class="btn-ghost btn-sm" aria-label="Refrescar">Refrescar</button>
+                <button id="btnRefresh" class="btn-icon btn-icon-flat" aria-label="Refrescar">
+                  <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M23 4v6h-6M1 20v-6h6"></path>
+                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                  </svg>
+                </button>
+                <!-- Tab Bar in actions-bar (Golden Standard) -->
+                <div class="tab-bar">
+                  <button class="tab-chip active" data-view="solicitudes">Solicitudes</button>
+                  <button class="tab-chip" data-view="cumple">Cumpleaños</button>
+                </div>
               </div>
             </div>
 
-            <div class="filter-bar cms-tabs" aria-label="Vistas de members">
-              <div class="tab-bar">
-                <button class="tab-chip active" data-view="solicitudes">Solicitudes</button>
-                <button class="tab-chip" data-view="cumple">Cumpleaños</button>
+            <!-- Summary Metrics (Golden Standard: 3-col) -->
+            <div class="summary-metrics-container">
+              <div class="summary-metrics-grid">
+                <div class="summary-metric-card">
+                  <div class="summary-metric-label">Total Registros</div>
+                  <div class="summary-metric-value" id="count-total">0</div>
+                </div>
+                <div class="summary-metric-card">
+                  <div class="summary-metric-label">Miembros Activos</div>
+                  <div class="summary-metric-value summary-metric-success" id="count-activo">0</div>
+                </div>
+                <div class="summary-metric-card">
+                  <div class="summary-metric-label">Pendientes</div>
+                  <div class="summary-metric-value summary-metric-warning" id="count-pendiente-metric">0</div>
+                </div>
               </div>
             </div>
 
             <!-- VIEW: Solicitudes -->
             <div id="view-solicitudes" class="view-container">
 
-              <!-- Toolbar (Filters + Search) -->
-              <div class="filter-bar filter-bar-compact">
-                <div class="filter-group">
-                  <button class="status-pill status-warning filter-pill active" data-status="pendiente">Pendientes <span
-                      class="pill-count" id="count-pendiente">0</span></button>
-                  <button class="status-pill status-success filter-pill" data-status="activo">Activos <span
-                      class="pill-count" id="count-activo-pill">0</span></button>
-                  <button class="status-pill status-error filter-pill" data-status="rechazado">Rechazados <span
-                      class="pill-count" id="count-rechazado">0</span></button>
-                  <button class="status-pill status-error filter-pill" data-status="banned">Baneados <span
-                      class="pill-count" id="count-banned">0</span></button>
-                  <button class="status-pill status-error filter-pill" data-status="debug">Credenciales <span
-                      class="pill-count" id="count-debug">0</span></button>
-                  <button class="status-pill status-neutral filter-pill" data-status="all">Todos <span
-                      class="pill-count" id="count-total-pill">0</span></button>
+              <!-- Filter Bar (Golden Standard: sku-filter-bar) -->
+              <div class="sku-filter-bar" aria-label="Filtros de solicitudes">
+                <div class="pill-group" id="status-pills">
+                  <button class="pill is-active" data-status="pendiente">Pendientes <span class="pill-count"
+                      id="count-pendiente">0</span></button>
+                  <button class="pill" data-status="activo">Activos <span class="pill-count"
+                      id="count-activo-pill">0</span></button>
+                  <button class="pill" data-status="rechazado">Rechazados <span class="pill-count"
+                      id="count-rechazado">0</span></button>
+                  <button class="pill" data-status="banned">Baneados <span class="pill-count"
+                      id="count-banned">0</span></button>
+                  <button class="pill" data-status="debug">Credenciales <span class="pill-count"
+                      id="count-debug">0</span></button>
+                  <button class="pill" data-status="all">Todos <span class="pill-count"
+                      id="count-total-pill">0</span></button>
                 </div>
 
-                <div class="filter-actions">
-                  <input type="search" id="searchInput" class="input input-compact filter-input"
-                    placeholder="Buscar por nombre..." aria-label="Buscar por nombre">
+                <div class="filter-spacer"></div>
+
+                <!-- Search (Golden Standard) -->
+                <div class="search-input-wrap">
+                  <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  </svg>
+                  <input type="search" id="searchInput" class="input search-input" placeholder="Buscar por nombre..."
+                    aria-label="Buscar por nombre">
                 </div>
               </div>
 
               <!-- Instagram Bulk Tool -->
-              <div class="filter-bar filter-bar-compact cms-bulk-row" aria-label="Herramienta de Instagram">
-                <div class="filter-group">
-                  <span class="faint">Instagrams Bulk</span>
-                </div>
-                <div class="filter-actions">
-                  <input type="number" id="instaFrom" class="input input-compact" placeholder="Desde"
-                    style="width: 70px;" aria-label="Desde">
-                  <input type="number" id="instaTo" class="input input-compact" placeholder="Hasta" style="width: 70px;"
-                    aria-label="Hasta">
-                  <button id="btnBulk" class="btn-secondary btn-sm" aria-label="Abrir Instagram en lote">Abrir
-                    ↗</button>
-                </div>
+              <div class="sku-filter-bar cms-bulk-row" aria-label="Herramienta de Instagram">
+                <span class="faint">Instagrams Bulk</span>
+                <div class="filter-spacer"></div>
+                <input type="number" id="instaFrom" class="input input-compact bulk-input-compact" placeholder="Desde"
+                  aria-label="Desde">
+                <input type="number" id="instaTo" class="input input-compact bulk-input-compact" placeholder="Hasta"
+                  aria-label="Hasta">
+                <button id="btnBulk" class="btn-secondary btn-sm" aria-label="Abrir Instagram en lote">Abrir ↗</button>
               </div>
 
               <!-- List -->
-              <div class="staff-list table-viewport table-shell cms-list" id="requestsList">
+              <div class="staff-list table-viewport table-shell cms-list" id="requestsList" role="list"
+                aria-label="Lista de solicitudes">
                 <!-- JS Injected Content -->
               </div>
             </div>
 
             <!-- VIEW: Cumpleaños -->
             <div id="view-cumple" class="view-container hidden">
-              <div class="filter-bar filter-bar-compact" aria-label="Resumen de cumpleaños">
-                <div class="filter-group">
-                  <span class="badge status-success">Hoy <span class="pill-count" id="birthday-today">-</span></span>
-                  <span class="badge status-neutral">Cumples <span class="pill-count" id="count-cumple">0</span></span>
-                </div>
+              <div class="sku-filter-bar" aria-label="Resumen de cumpleaños">
+                <span class="badge status-success">Hoy <span class="pill-count" id="birthday-today">-</span></span>
+                <span class="badge status-neutral">Cumples <span class="pill-count" id="count-cumple">0</span></span>
               </div>
-              <div id="birthdayList" class="staff-list table-viewport table-shell cms-list"></div>
+              <div id="birthdayList" class="staff-list table-viewport table-shell cms-list" role="list"
+                aria-label="Lista de cumpleaños"></div>
             </div>
 
           </div>
