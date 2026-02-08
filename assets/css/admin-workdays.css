@@ -1,6 +1,6 @@
 /* =========================================================================
    ADMIN WORKDAYS - Page-Specific Styles
-   Golden Standard compliant (2026-02-08)
+   Golden Standard compliant (2026-02-08) — Cross-Module Aligned
    ========================================================================= */
 
 /* =========================================================================
@@ -50,7 +50,7 @@
     align-items: center;
 }
 
-/* KPI Value Small - Overrides generic if needed or used as specific context */
+/* KPI Value Small */
 .kpi-value-sm-bold {
     font-size: var(--text-sm);
     font-weight: 700;
@@ -68,10 +68,59 @@
 }
 
 /* =========================================================================
-   GRID OVERRIDES
+   SUMMARY METRICS — Golden Standard KPI Cards
+   Base styles + 4-col Workdays Variant
    ========================================================================= */
-.stats-grid-4col {
+.summary-metrics-container {
+    margin-bottom: 24px;
+}
+
+.summary-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.summary-metric-card {
+    background: var(--bg-surface);
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+}
+
+.summary-metric-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+}
+
+.summary-metric-value {
+    font-size: var(--fs-xl);
+    font-weight: 700;
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+}
+
+/* 4-col Workdays variant */
+.summary-metrics-4col {
     grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 900px) {
+    .summary-metrics-4col {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 500px) {
+    .summary-metrics-4col {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* =========================================================================
@@ -130,7 +179,7 @@
     vertical-align: middle;
 }
 
-/* 3. Semantic KPI Borders */
+/* 3. Semantic KPI Borders (Workdays-specific modifiers) */
 .border-l-staff { border-left: 3px solid var(--green-500); }
 .border-l-costs { border-left: 3px solid var(--orange-500); }
 .border-l-breakeven { border-left: 3px solid var(--red-500); }
@@ -170,9 +219,7 @@
 .budget-bar-fill.is-over { background: var(--red-500); }
 .budget-bar-fill.is-warning { background: var(--orange-500); }
 
-
-
-/* 5. Sidebar Toggle Switch */
+/* 5. Toggle Switch (Golden Standard naming) */
 .toggle-switch {
     position: relative;
     display: inline-block;
@@ -180,13 +227,13 @@
     height: 20px;
 }
 
-.toggle-switch input {
+.toggle-switch .toggle-input {
     opacity: 0;
     width: 0;
     height: 0;
 }
 
-.slider {
+.toggle-slider {
     position: absolute;
     cursor: pointer;
     top: 0;
@@ -198,7 +245,7 @@
     border-radius: 20px;
 }
 
-.slider:before {
+.toggle-slider:before {
     position: absolute;
     content: "";
     height: 16px;
@@ -210,11 +257,11 @@
     border-radius: 50%;
 }
 
-input:checked + .slider {
+.toggle-input:checked + .toggle-slider {
     background-color: var(--orange-500);
 }
 
-input:checked + .slider:before {
+.toggle-input:checked + .toggle-slider:before {
     transform: translateX(16px);
 }
 

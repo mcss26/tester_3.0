@@ -334,8 +334,8 @@
             const el = document.getElementById(id);
             if (el) el.classList.toggle('hidden', id !== tabId);
         });
-        ui.tabBar?.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.classList.toggle('is-active', btn.dataset.tab === tabId);
+        ui.tabBar?.querySelectorAll('.tab-chip').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.tab === tabId);
             btn.setAttribute('aria-selected', btn.dataset.tab === tabId ? 'true' : 'false');
         });
 
