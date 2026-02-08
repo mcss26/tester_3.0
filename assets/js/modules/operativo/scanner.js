@@ -2,11 +2,13 @@
  * Enhanced Scanner Module
  * Features: Haptic feedback, fullscreen overlay, member info, stats, persistent history
  */
-document.addEventListener('DOMContentLoaded', async () => {
+(async function() {
+  'use strict';
     // 1. Auth Guard
     const session = await window.Auth.guardOrRedirect(['admin', 'operativo', 'staff_guardia']);
     if (!session) return;
     
+    if (!window.Utils.assertSbOrShowBlockingError()) return;
     const sb = window.sb;
     const user = session.user;
     const MCO_BATCH_ID = '141e44d9-42bc-4c2b-a3bb-4d9721e03802';
@@ -376,4 +378,4 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-});
+})();

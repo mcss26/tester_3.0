@@ -4,55 +4,80 @@
 <head>
     <meta charset="UTF-8">
     <title>Solicitudes Operativo - FormulaMid</title>
-    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/tokens.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/admin-master.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
-<body class="app-shell stock-shell" data-allowed-roles="operativo,logistico">
+<body class="app-shell admin-shell admin-scroll" data-allowed-roles="operativo,logistico">
 
-    <header class="app-topbar">
-        <div class="topbar-left">
-            <button class="topbar-link" data-go="pages/operativo/operativo-erp.html">← Volver</button>
-        </div>
-        <nav class="topbar-center">
-            <button class="topbar-link" data-go="pages/operativo/operativo-stock.html">Stock</button>
-            <button class="topbar-link active" data-go="pages/operativo/operativo-solicitudes.html">Solicitudes</button>
+    <!-- Topbar: Golden Standard -->
+    <header class="topbar">
+        <nav class="breadcrumb topbar-start">
+            <span class="breadcrumb-item">
+                <a class="breadcrumb-link" href="operativo-index.html">Operativo</a>
+            </span>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-item current">Solicitudes</span>
         </nav>
-        <div class="topbar-right">
-            <div class="topbar-brand">ERP</div>
+
+        <div class="topbar-center header-search">
+            <input type="text" id="global-search" class="input" placeholder="Ir a...">
+            <span class="header-shortcut">⌘K</span>
+        </div>
+
+        <div class="topbar-end">
+            <div class="dropdown-container">
+                <button class="avatar avatar-sm" id="user-avatar">OP</button>
+            </div>
         </div>
     </header>
 
     <main class="page-shell">
         <div class="page-card-wrap">
             <div class="page-card">
+
+                <!-- Master Navigation -->
+                <nav class="master-nav">
+                    <a href="operativo-workday.html" class="master-nav-link">Work Day</a>
+                    <a href="operativo-stock.html" class="master-nav-link">Stock</a>
+                    <a href="operativo-solicitudes.html" class="master-nav-link active">Solicitudes</a>
+                    <a href="operativo-master-sku.html" class="master-nav-link">Configuración</a>
+                </nav>
+
                 <div class="staff-dashboard">
-                    <div class="dashboard-header">
+                    <div class="dashboard-header align-start">
                         <div>
-                            <h2 class="dashboard-title">Solicitudes</h2>
-                            <p class="dashboard-subtitle">Reposición y control operativo</p>
+                            <h2 class="dashboard-title dashboard-title-soft">Solicitudes de Reposición</h2>
+                            <p class="text-sm text-muted">Gestión de pedidos y control operativo.</p>
                         </div>
                     </div>
 
-                    <div class="tabs-row">
-                        <div class="tab-bar">
-                            <button class="tab-chip active" data-tab="sku-table">Por SKU</button>
-                            <button class="tab-chip" data-tab="supplier-table">Por Proveedor</button>
+                    <!-- Filter Bar -->
+                    <div class="sku-filter-bar">
+                        <div class="pill-group">
+                            <button class="filter-pill active" data-tab="sku-table">Por SKU</button>
+                            <button class="filter-pill" data-tab="supplier-table">Por Proveedor</button>
                         </div>
                     </div>
 
                     <!-- SKU Table Section -->
                     <div id="view-sku-table">
-                        <p class="muted text-sm">Items con stock bajo requerimiento o agregados manualmente.</p>
-                        <div class="staff-list" id="sku-list-container">
+                        <div class="p-4 bg-surface text-sm text-muted border-b border-subtle">
+                            Items con stock bajo requerimiento o agregados manualmente.
+                        </div>
+                        <div class="table-viewport table-shell" id="sku-list-container">
                             <div class="empty-state">Cargando items...</div>
                         </div>
                     </div>
 
                     <!-- Supplier Table Section -->
                     <div id="view-supplier-table" class="hidden">
-                        <p class="muted text-sm">Agrupado por proveedor para generación de órdenes.</p>
-                        <div class="staff-list" id="supplier-list-container">
+                        <div class="p-4 bg-surface text-sm text-muted border-b border-subtle">
+                            Agrupado por proveedor para generación de órdenes.
+                        </div>
+                        <div class="table-viewport table-shell" id="supplier-list-container">
                             <div class="empty-state">Cargando proveedores...</div>
                         </div>
                     </div>
@@ -66,13 +91,14 @@
         <div class="modal-card">
             <div class="modal-header">
                 <h3 class="modal-title">Motivo de Ajuste</h3>
-                <button class="modal-close" data-close-modal="modal-adjust">×</button>
+                <button class="btn-icon" data-close-modal="modal-adjust">×</button>
             </div>
             <div class="modal-body">
-                <p class="modal-text">Detectamos una diferencia en el stock. Por favor indica el motivo.</p>
+                <p class="text-sm text-muted mb-4">Detectamos una diferencia en el stock. Por favor indica el motivo.
+                </p>
                 <div class="form-group">
-                    <label class="label">Motivo</label>
-                    <select id="adjust-reason-select" class="input">
+                    <label class="form-label">Motivo</label>
+                    <select id="adjust-reason-select" class="input select">
                         <option value="rotura">Rotura / Merma</option>
                         <option value="consumo_interno">Consumo Interno / Degustación</option>
                         <option value="diferencia_inventario">Error de Conteo / Desconocido</option>
@@ -80,16 +106,18 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label class="label">Observación (Opcional)</label>
+                    <label class="form-label">Observación (Opcional)</label>
                     <input type="text" id="adjust-reason-text" class="input" placeholder="Detalles extra...">
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn-ghost" data-close-modal="modal-adjust">Cancelar</button>
-                <button class="btn-primary" id="confirm-adjust">Confirmar</button>
+                <button class="btn btn-secondary" data-close-modal="modal-adjust">Cancelar</button>
+                <button class="btn btn-primary" id="confirm-adjust">Confirmar</button>
             </div>
         </div>
     </div>
+
+    <!-- Scripts -->
     <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script defer src="../../assets/js/core/config.js"></script>
     <script defer src="../../assets/js/core/constants.js"></script>
@@ -97,6 +125,7 @@
     <script defer src="../../assets/js/core/auth.js"></script>
     <script defer src="../../assets/js/core/work-day-helper.js"></script>
     <script defer src="../../assets/js/core/utils.js"></script>
+    <script defer src="../../assets/js/core/toast.js"></script>
     <script src="../../assets/js/core/navigation.js"></script>
     <script defer src="../../assets/js/modules/operativo/operativo-solicitudes.js"></script>
 </body>

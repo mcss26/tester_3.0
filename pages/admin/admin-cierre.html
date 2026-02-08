@@ -4,92 +4,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FormulaMid — Cierre Admin</title>
-
-    <link rel="stylesheet" href="../../assets/css/main.css">
+    <title>Cierre Admin - FormulaMid</title>
+    <!-- Design Tokens & Global Components -->
+    <link rel="stylesheet" href="../../assets/css/tokens.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <!-- Page Specific CSS -->
+    <link rel="stylesheet" href="../../assets/css/admin-cierre.css">
 </head>
 
-<body class="app-shell admin-shell admin-scroll admin-cierre" data-allowed-roles="admin,contable">
+<body class="admin-shell admin-scroll admin-cierre">
 
-    <header class="app-topbar">
-        <div class="topbar-left">
-            <button class="btn-icon btn-icon-flat" data-go="pages/admin/admin-index.html" aria-label="Volver">←</button>
-            <span class="topbar-back">INICIO</span>
-        </div>
-        <nav class="topbar-center topbar-nav-split">
-            <div class="topbar-nav-group center">
-                <button class="topbar-link is-center active" data-go="pages/admin/admin-cierre.html">Cierre</button>
-            </div>
+    <!-- Topbar: Golden Standard -->
+    <header class="topbar">
+        <!-- Left: Breadcrumb -->
+        <nav class="breadcrumb topbar-start">
+            <span class="breadcrumb-item">
+                <a class="breadcrumb-link" href="admin-index.html">Administración</a>
+            </span>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-item current">Cierre</span>
         </nav>
-        <div class="topbar-right">
-            <span class="system-status-pill status-open topbar-pill topbar-pill-quiet" id="current-closing-status"
-                aria-live="polite">ESTADO: —</span>
+
+        <!-- Center: Empty -->
+        <div class="topbar-center"></div>
+
+        <!-- Right: Status + User -->
+        <div class="topbar-end">
+            <span class="status-pill status-open" id="current-closing-status">ESTADO: —</span>
+
+            <div class="dropdown-container">
+                <div class="avatar avatar-sm">AD</div>
+            </div>
         </div>
     </header>
 
     <main class="page-shell">
         <div class="page-card-wrap">
             <div class="page-card">
-                <div class="page-card-loading" id="page-card-loading">
+
+                <!-- Loading State -->
+                <div id="page-card-loading" class="page-card-loading">
                     <div class="state-block loading">
-                        <div class="state-spinner" aria-hidden="true"></div>
-                        <div class="state-loader"></div>
+                        <div class="state-spinner"></div>
                         <p class="state-title">Cargando cierre...</p>
-                        <p class="state-desc">Esto puede tardar unos segundos</p>
                     </div>
                 </div>
-                <div class="page-card-empty" id="page-card-empty">
-                    <div class="state-block loading">
+
+                <!-- Empty State -->
+                <div id="page-card-empty" class="page-card-empty">
+                    <div class="state-block">
                         <p class="state-title">Sin datos</p>
                         <p class="state-desc" id="page-card-empty-message">Selecciona una fecha para cargar datos.</p>
                     </div>
                 </div>
+
                 <div id="cierre-content">
                     <div class="staff-dashboard">
+
+                        <!-- Dashboard Header -->
                         <div class="dashboard-header align-start">
                             <div>
-                                <h2 class="dashboard-title dashboard-title-soft">Cierre de Caja</h2>
+                                <h2 class="dashboard-title">Cierre de Caja</h2>
                                 <p class="dashboard-subtitle dashboard-subtitle-soft">Conciliación diaria de ventas y
                                     rendiciones</p>
                             </div>
                         </div>
 
                         <!-- Toolbar -->
-                        <div class="filter-bar filter-bar-compact">
+                        <div class="filter-bar filter-bar-compact"
+                            style="border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 16px; margin-bottom: 24px;">
                             <div class="filter-group">
                                 <input type="date" id="input-date" class="input input-auto-width"
                                     aria-label="Seleccionar fecha">
                                 <button id="btn-load" class="btn-icon btn-icon-flat" aria-label="Cargar datos">
                                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2" aria-hidden="true">
+                                        stroke-width="2">
                                         <circle cx="11" cy="11" r="7"></circle>
                                         <line x1="16.65" y1="16.65" x2="21" y2="21"></line>
                                     </svg>
-                                    <span class="visually-hidden">Cargar</span>
                                 </button>
                             </div>
 
                             <div class="filter-actions">
                                 <!-- Import Actions -->
-                                <div class="filter-group">
+                                <div class="filter-group" style="gap: 8px;">
                                     <button data-trigger="file-extracciones"
-                                        class="btn-import btn-ghost btn-sm">RETIROS</button>
-                                    <button data-trigger="file-gbol" class="btn-import btn-ghost btn-sm">GBOL</button>
-                                    <button data-trigger="file-passline"
-                                        class="btn-import btn-ghost btn-sm">PASSLINE</button>
-                                    <button data-trigger="file-afip"
-                                        class="btn-import btn-ghost btn-sm">TERMINALES</button>
+                                        class="btn btn-ghost btn-xs">RETIROS</button>
+                                    <button data-trigger="file-gbol" class="btn btn-ghost btn-xs">GBOL</button>
+                                    <button data-trigger="file-passline" class="btn btn-ghost btn-xs">PASSLINE</button>
+                                    <button data-trigger="file-afip" class="btn btn-ghost btn-xs">TERMINALES</button>
                                 </div>
 
                                 <!-- Close Action -->
-                                <button id="btn-close-night" class="btn-danger">
+                                <button id="btn-close-night" class="btn btn-danger">
                                     CERRAR NOCHE
                                 </button>
                             </div>
                         </div>
 
                         <!-- Main Reconciliation Table -->
-                        <div class="staff-list table-viewport table-shell table-viewport-limited">
+                        <div class="table-viewport table-shell table-viewport-limited">
                             <div class="table-scroll">
                                 <table class="table table-sticky">
                                     <thead>
@@ -97,16 +111,18 @@
                                             <th class="table-cell is-header">Terminal</th>
                                             <th class="table-cell is-header text-right">Efectivo (Decl)</th>
                                             <th class="table-cell is-header text-right">Zoco (Decl)</th>
-                                            <th class="table-cell is-header text-right muted">Efectivo (GBol)</th>
-                                            <th class="table-cell is-header text-right muted">Zoco (GBol)</th>
-                                            <th class="table-cell is-header text-right">Diferencia</th>
+                                            <th class="table-cell is-header text-right text-muted">Efectivo (GBol)</th>
+                                            <th class="table-cell is-header text-right text-muted">Zoco (GBol)</th>
+                                            <th class="table-cell is-header text-right"
+                                                title="Positivo = Sobrante, Negativo = Faltante">Diferencia ℹ️</th>
+                                            <th class="table-cell is-header text-center">Cuadre</th>
                                             <th class="table-cell is-header text-center">Estado</th>
                                         </tr>
                                     </thead>
                                     <tbody id="table-body">
                                         <tr>
-                                            <td colspan="7" class="cell-pad text-center muted">Selecciona una fecha para
-                                                cargar datos</td>
+                                            <td colspan="8" class="table-cell text-center-muted">Selecciona una fecha
+                                                para cargar datos</td>
                                         </tr>
                                     </tbody>
                                     <tfoot class="table-head table-foot-sticky">
@@ -114,12 +130,13 @@
                                             <td class="table-cell is-header">Totales</td>
                                             <td class="table-cell is-header text-right" id="total-cash-decl">$0.00</td>
                                             <td class="table-cell is-header text-right" id="total-zoco-decl">$0.00</td>
-                                            <td class="table-cell is-header text-right muted" id="total-cash-sys">$0.00
-                                            </td>
-                                            <td class="table-cell is-header text-right muted" id="total-zoco-sys">$0.00
-                                            </td>
+                                            <td class="table-cell is-header text-right text-muted" id="total-cash-sys">
+                                                $0.00</td>
+                                            <td class="table-cell is-header text-right text-muted" id="total-zoco-sys">
+                                                $0.00</td>
                                             <td class="table-cell is-header text-right font-bold" id="total-diff">$0.00
                                             </td>
+                                            <td class="table-cell is-header"></td>
                                             <td class="table-cell is-header"></td>
                                         </tr>
                                     </tfoot>
@@ -131,13 +148,17 @@
                         <div class="reconcile-grid">
 
                             <!-- QR Reconciliation -->
-                            <div class="staff-dashboard reconcile-card">
-                                <div class="dashboard-header cell-pad">
-                                    <h3 class="dashboard-subtitle muted">Conciliación Entradas QR</h3>
-                                    <span class="dashboard-subtitle muted">Ingresos x Acreditación</span>
+                            <div class="reconcile-card">
+                                <div class="dashboard-header cell-pad"
+                                    style="padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.06);">
+                                    <div>
+                                        <h3 class="dashboard-subtitle text-muted" style="margin: 0;">Conciliación
+                                            Entradas QR</h3>
+                                        <span class="text-xs text-tertiary">Ingresos x Acreditación</span>
+                                    </div>
                                 </div>
-                                <div class="table-wrap">
-                                    <table class="table">
+                                <div class="table-viewport">
+                                    <table class="table table-compact">
                                         <thead>
                                             <tr class="table-head">
                                                 <th class="table-cell is-header">Origen</th>
@@ -152,10 +173,11 @@
                                             <tr class="table-row">
                                                 <td class="table-cell font-bold text-accent">Passline</td>
                                                 <td class="table-cell text-center" id="qr-passline-qty">0</td>
-                                                <td class="table-cell text-right muted" id="qr-passline-sys">$0</td>
+                                                <td class="table-cell text-right text-muted" id="qr-passline-sys">$0
+                                                </td>
                                                 <td class="table-cell text-right">
                                                     <input type="number" id="qr-passline-decl"
-                                                        class="input input-reconcile-compact" value="0">
+                                                        class="input-reconcile-compact" value="0">
                                                 </td>
                                                 <td class="table-cell text-right font-mono font-bold"
                                                     id="qr-passline-diff">$0</td>
@@ -164,20 +186,21 @@
                                             <tr class="table-row">
                                                 <td class="table-cell font-bold text-success">Boletería</td>
                                                 <td class="table-cell text-center" id="qr-boleteria-qty">0</td>
-                                                <td class="table-cell text-right muted" id="qr-boleteria-sys">$0</td>
+                                                <td class="table-cell text-right text-muted" id="qr-boleteria-sys">$0
+                                                </td>
                                                 <td class="table-cell text-right">
                                                     <input type="number" id="qr-boleteria-decl"
-                                                        class="input input-reconcile-compact" value="0">
+                                                        class="input-reconcile-compact" value="0">
                                                 </td>
                                                 <td class="table-cell text-right font-mono font-bold"
                                                     id="qr-boleteria-diff">$0</td>
                                             </tr>
                                             <!-- RRPP/Cortesía -->
                                             <tr class="table-row">
-                                                <td class="table-cell font-bold muted">RRPP / Cortesía</td>
+                                                <td class="table-cell font-bold text-muted">RRPP / Cortesía</td>
                                                 <td class="table-cell text-center" id="qr-rrpp-qty">0</td>
-                                                <td class="table-cell text-right muted" id="qr-rrpp-sys">$0</td>
-                                                <td class="table-cell text-right muted">-</td>
+                                                <td class="table-cell text-right text-muted" id="qr-rrpp-sys">$0</td>
+                                                <td class="table-cell text-right text-muted">-</td>
                                                 <td class="table-cell text-right">-</td>
                                             </tr>
                                         </tbody>
@@ -186,14 +209,18 @@
                             </div>
 
 
-                            <!-- System Sales Breakdown (New Phase 5) -->
-                            <div class="staff-dashboard reconcile-card">
-                                <div class="dashboard-header cell-pad">
-                                    <h3 class="dashboard-subtitle muted">Desglose de Ventas (Sistema)</h3>
-                                    <span class="dashboard-subtitle muted">Ventas Barra + Entradas</span>
+                            <!-- System Sales Breakdown -->
+                            <div class="reconcile-card">
+                                <div class="dashboard-header cell-pad"
+                                    style="padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.06);">
+                                    <div>
+                                        <h3 class="dashboard-subtitle text-muted" style="margin: 0;">Desglose de Ventas
+                                            (Sistema)</h3>
+                                        <span class="text-xs text-tertiary">Ventas Barra + Entradas</span>
+                                    </div>
                                 </div>
-                                <div class="table-wrap">
-                                    <table class="table">
+                                <div class="table-viewport">
+                                    <table class="table table-compact">
                                         <thead>
                                             <tr class="table-head">
                                                 <th class="table-cell is-header">Concepto</th>
@@ -216,14 +243,14 @@
                                             <!-- QR / Entradas -->
                                             <tr class="table-row">
                                                 <td class="table-cell font-bold">Entradas QR</td>
-                                                <td class="table-cell text-right font-mono muted">-</td>
+                                                <td class="table-cell text-right font-mono text-muted">-</td>
                                                 <td class="table-cell text-right font-mono" id="breakdown-qr-zoco">$0
                                                 </td>
                                                 <td class="table-cell text-right font-bold font-mono"
                                                     id="breakdown-qr-total">$0</td>
                                             </tr>
                                             <!-- Totals Row -->
-                                            <tr class="table-row" style="border-top: 1px solid var(--border-1);">
+                                            <tr class="table-row" style="border-top: 1px solid rgba(255,255,255,0.1);">
                                                 <td class="table-cell font-bold text-accent">TOTAL SISTEMA</td>
                                                 <td class="table-cell text-right font-bold font-mono"
                                                     id="breakdown-total-cash">$0</td>
@@ -235,7 +262,7 @@
                                         </tbody>
                                         <tfoot class="table-head">
                                             <tr>
-                                                <td class="table-cell muted text-xs" colspan="4">
+                                                <td class="table-cell text-muted text-xs" colspan="4">
                                                     * Datos calculados automáticamente desde vw_daily_sales
                                                 </td>
                                             </tr>
@@ -245,24 +272,47 @@
                             </div>
                         </div>
 
+                        <!-- Sprint 2: Bar Stock Audit Section (Collapsible) -->
+                        <details class="audit-details" open>
+                            <summary class="dashboard-subtitle font-bold text-muted"
+                                style="cursor: pointer; padding: 12px 0; margin-top: 16px;">
+                                📊 Auditoría de Stock de Barra
+                            </summary>
+                            <div id="bar-audit-section">
+                                <div class="muted text-sm">Cargando datos de auditoría...</div>
+                            </div>
+                        </details>
+
+                        <!-- Sprint 3: Staff Performance Section (Collapsible) -->
+                        <details class="audit-details">
+                            <summary class="dashboard-subtitle font-bold text-muted"
+                                style="cursor: pointer; padding: 12px 0; margin-top: 16px;">
+                                👥 Desempeño de Operarios
+                            </summary>
+                            <div id="staff-performance-section">
+                                <div class="muted text-sm">Cargando historial de operarios...</div>
+                            </div>
+                        </details>
+
                         <!-- Notes -->
-                        <div class="staff-dashboard notes-panel">
-                            <h3 class="dashboard-subtitle font-bold muted">Notas de Cierre</h3>
+                        <div class="notes-panel">
+                            <h3 class="dashboard-subtitle font-bold text-muted">Notas de Cierre</h3>
                             <textarea id="closing-notes" class="input notes-input"
                                 placeholder="Observaciones de la noche..." aria-label="Notas de cierre"></textarea>
                             <div class="notes-actions">
-                                <button id="btn-save-notes" class="btn-ghost btn-sm">Guardar Notas</button>
+                                <button id="btn-save-notes" class="btn btn-ghost btn-sm">Guardar Notas</button>
                             </div>
                         </div>
+
                     </div>
-                </div>
+                </div> <!-- /cierre-content -->
             </div>
         </div>
     </main>
 
-    <!-- Modals -->
+    <!-- Modals (Maintaining div structure for JS compatibility but styling with tokens) -->
     <div class="modal-overlay hidden" id="confirmModal">
-        <div class="modal-card modal-card-sm">
+        <div class="modal-card">
             <div class="modal-header">
                 <h2 class="dashboard-title">Confirmar Cierre</h2>
             </div>
@@ -271,12 +321,12 @@
                 </p>
                 <div class="state-block">
                     <p class="state-title">Diferencia Total</p>
-                    <p class="dashboard-title" id="confirm-diff-display">$0.00</p>
+                    <p class="dashboard-title text-xl" id="confirm-diff-display">$0.00</p>
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn-secondary" id="btnCancelModal">Cancelar</button>
-                <button class="btn-primary" id="btnConfirmModal">Confirmar Cierre</button>
+                <button class="btn btn-secondary" id="btnCancelModal">Cancelar</button>
+                <button class="btn btn-primary" id="btnConfirmModal">Confirmar Cierre</button>
             </div>
         </div>
     </div>
@@ -285,27 +335,28 @@
         <div class="modal-card">
             <div class="modal-header">
                 <h2 class="dashboard-title">Información</h2>
-                <button class="btn-icon" id="btnCloseInfo" aria-label="Cerrar modal">×</button>
+                <button class="icon-btn" id="btnCloseInfo" aria-label="Cerrar modal">×</button>
             </div>
             <div class="modal-body">
-                <pre id="infoContent" class="font-mono" style="white-space: pre-wrap;"></pre>
+                <pre id="infoContent" class="font-mono text-sm" style="white-space: pre-wrap;"></pre>
             </div>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-    <script defer src="../../assets/js/core/config.js"></script>
-    <script defer src="../../assets/js/core/supabase-client.js"></script>
-    <script defer src="../../assets/js/core/auth.js"></script>
-    <script defer src="../../assets/js/core/utils.js"></script>
-    <script defer src="../../assets/js/core/toast.js"></script>
-    <script src="../../assets/js/core/navigation.js"></script>
 
     <!-- Hidden Inputs for CSV Import -->
     <input type="file" id="file-extracciones" hidden accept=".csv">
     <input type="file" id="file-gbol" hidden accept=".csv">
     <input type="file" id="file-passline" hidden accept=".csv">
     <input type="file" id="file-afip" hidden accept=".csv">
+
+    <!-- Dependencies -->
+    <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script defer src="../../assets/js/core/config.js"></script>
+    <script defer src="../../assets/js/core/supabase-client.js"></script>
+    <script defer src="../../assets/js/core/auth.js"></script>
+    <script defer src="../../assets/js/core/utils.js"></script>
+    <script defer src="../../assets/js/core/toast.js"></script>
+    <script defer src="../../assets/js/core/navigation.js"></script>
 
     <!-- Importers & Logic -->
     <script defer src="../../assets/js/importers/importer-utils.js"></script>

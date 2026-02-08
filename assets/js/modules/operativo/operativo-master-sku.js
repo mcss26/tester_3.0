@@ -1,7 +1,8 @@
 // Module: operativo-master-sku.js
 // Operativo SKU change requests (pending admin approval)
 
-document.addEventListener('DOMContentLoaded', async () => {
+(async function() {
+  'use strict';
     const session = await window.Auth.guardOrRedirect(['operativo', 'staff_barra', 'staff_operativo', 'admin', 'contable']);
     if (!session) return;
 
@@ -134,7 +135,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     function renderProviderOptions() {
         if (!inpProveedor) return;
-        const options = providers.map((prov) => `<option value="${prov.id}">${prov.nombre_fantasia}</option>`);
+        const options = providers.map((prov) => `<option value="${prov.id}">${window.Utils.escapeHtml(prov.nombre_fantasia)}</option>`);
         inpProveedor.innerHTML = ['<option value="">Seleccionar proveedor</option>', ...options].join('');
     }
 
@@ -477,4 +478,4 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     renderViewTabs();
     setActiveView(activeView);
-});
+})();

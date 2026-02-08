@@ -3,99 +3,105 @@
  * Visualizes data from SQL Views: vw_daily_sales, vw_staff_performance
  */
 
-window.AdminReportesApp = {
-  state: {
+(async function () {
+  "use strict";
+
+  // 1. Auth Guard
+  const session = await window.Auth.guardOrRedirect(["admin", "contable"]);
+  if (!session) return;
+
+  // 2. Supabase Check
+  if (!window.Utils.assertSbOrShowBlockingError()) return;
+
+  // ── State ──────────────────────────────────────────────────────────────
+  const state = {
     activeTab: "ventas",
     salesData: [],
     staffData: [],
     pnlData: [],
     taxData: [],
     barData: [],
-  },
+  };
 
-  init: async function () {
-    console.log("Admin Reportes Init");
-    this.cacheDOM();
-    this.initDates();
-    this.bindEvents();
+  // ── DOM Cache ──────────────────────────────────────────────────────────
+  const tabs = document.querySelectorAll(".tab-chip");
+  const views = {
+    ventas: document.getElementById("view-ventas"),
+    staff: document.getElementById("view-staff"),
+    finanzas: document.getElementById("view-finanzas"),
+    barras: document.getElementById("view-barras"),
+  };
+  const lists = {
+    ventas: document.getElementById("sales-list"),
+    staff: document.getElementById("staff-list"),
+    pnl: document.getElementById("pnl-list"),
+    tax: document.getElementById("tax-list"),
+    bar: document.getElementById("bar-list"),
+  };
+  const inputs = {
+    start: document.getElementById("report-start"),
+    end: document.getElementById("report-end"),
+    refresh: document.getElementById("btn-refresh-report"),
+  };
+  const ui = {
+    loadingState: document.getElementById("page-card-loading"),
+    emptyState: document.getElementById("page-card-empty"),
+    moduleContent: document.getElementById("module-content"),
+  };
 
-    await this.loadData();
-  },
+  // ── Helpers ────────────────────────────────────────────────────────────
+  function formatMoney(amount) {
+    return window.Utils.formatARS(amount);
+  }
 
-  cacheDOM: function () {
-    this.tabs = document.querySelectorAll(".tab-chip");
-    this.views = {
-      ventas: document.getElementById("view-ventas"),
-      staff: document.getElementById("view-staff"),
-      finanzas: document.getElementById("view-finanzas"),
-      barras: document.getElementById("view-barras"),
-    };
-    this.lists = {
-      ventas: document.getElementById("sales-list"),
-      staff: document.getElementById("staff-list"),
-      pnl: document.getElementById("pnl-list"),
-      tax: document.getElementById("tax-list"),
-      bar: document.getElementById("bar-list"),
-    };
-    this.inputs = {
-      start: document.getElementById("report-start"),
-      end: document.getElementById("report-end"),
-      refresh: document.getElementById("btn-refresh-report"),
-    };
+  function setLoading(isLoading) {
+    window.Utils.setPageState(ui, { loading: isLoading });
+  }
 
-    // Global States
-    this.ui = {
-      loadingState: document.getElementById("page-card-loading"),
-      emptyState: document.getElementById("page-card-empty"),
-      moduleContent: document.getElementById("module-content"),
-    };
-  },
-
-  initDates: function () {
+  // ── Init ───────────────────────────────────────────────────────────────
+  function initDates() {
     const today = new Date();
     const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
 
-    if (this.inputs.start)
-      this.inputs.start.value = firstDay.toISOString().split("T")[0];
-    if (this.inputs.end)
-      this.inputs.end.value = today.toISOString().split("T")[0];
-  },
+    if (inputs.start)
+      inputs.start.value = firstDay.toISOString().split("T")[0];
+    if (inputs.end)
+      inputs.end.value = today.toISOString().split("T")[0];
+  }
 
-  bindEvents: function () {
-    this.tabs.forEach((tab) => {
-      tab.addEventListener("click", (e) => this.switchTab(e.target));
+  function bindEvents() {
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", (e) => switchTab(e.target));
     });
 
     const logoutBtn = document.getElementById("btn-logout");
     if (logoutBtn)
       logoutBtn.addEventListener("click", () => window.Auth.logout());
 
-    if (this.inputs.refresh) {
-      this.inputs.refresh.addEventListener("click", () => this.loadData());
+    if (inputs.refresh) {
+      inputs.refresh.addEventListener("click", () => loadData());
     }
-  },
+  }
 
-  switchTab: function (targetTab) {
-    this.state.activeTab = targetTab.dataset.view;
-    this.tabs.forEach((t) => t.classList.remove("active"));
+  function switchTab(targetTab) {
+    state.activeTab = targetTab.dataset.view;
+    tabs.forEach((t) => t.classList.remove("active"));
     targetTab.classList.add("active");
 
-    Object.values(this.views).forEach((v) => {
+    Object.values(views).forEach((v) => {
       if (v) v.classList.add("hidden");
     });
-    const activeView = this.views[this.state.activeTab];
+    const activeView = views[state.activeTab];
     if (activeView) activeView.classList.remove("hidden");
-  },
+  }
 
-  loadData: async function () {
+  // ── Data Loading ───────────────────────────────────────────────────────
+  async function loadData() {
     if (window.Toast) window.Toast.info("Actualizando reportes...", 1000);
+    setLoading(true);
 
-    // Show Global Loader only if not just refreshing?
-    // For standardization, let's use global loader.
-    this.setLoading(true);
-
-    const start = this.inputs.start?.value;
-    const end = this.inputs.end?.value;
+    const start = inputs.start?.value;
+    const end = inputs.end?.value;
 
     // Load Sales (Using V2)
     try {
@@ -109,13 +115,13 @@ window.AdminReportesApp = {
 
       const resSales = await query;
       if (resSales.error) throw resSales.error;
-      this.state.salesData = resSales.data || [];
-      this.renderSales();
+      state.salesData = resSales.data || [];
+      renderSales();
     } catch (e) {
       console.error(e);
       if (window.Toast)
         window.Toast.error("Error cargando ventas: " + e.message);
-      this.lists.ventas.innerHTML =
+      lists.ventas.innerHTML =
         '<tr><td colspan="4" class="text-center py-4 text-red-400">Error cargando datos.</td></tr>';
     }
 
@@ -124,11 +130,11 @@ window.AdminReportesApp = {
       const resStaff = await window.sb.from("vw_staff_performance").select("*");
 
       if (resStaff.error) throw resStaff.error;
-      this.state.staffData = resStaff.data || [];
-      this.renderStaff();
+      state.staffData = resStaff.data || [];
+      renderStaff();
     } catch (e) {
       console.error(e);
-      this.lists.staff.innerHTML =
+      lists.staff.innerHTML =
         '<tr><td colspan="4" class="text-center py-4 text-red-400">Error cargando staff.</td></tr>';
     }
 
@@ -148,9 +154,9 @@ window.AdminReportesApp = {
       if (resPnL.error) throw resPnL.error;
       if (resTax.error) throw resTax.error;
 
-      this.state.pnlData = resPnL.data || [];
-      this.state.taxData = resTax.data || [];
-      this.renderFinanzas();
+      state.pnlData = resPnL.data || [];
+      state.taxData = resTax.data || [];
+      renderFinanzas();
     } catch (e) {
       console.error(e);
       if (window.Toast)
@@ -170,39 +176,32 @@ window.AdminReportesApp = {
       const resBar = await queryBar;
       if (resBar.error) throw resBar.error;
 
-      this.state.barData = resBar.data || [];
-      this.renderBar();
+      state.barData = resBar.data || [];
+      renderBar();
     } catch (e) {
       console.error(e);
-      if (this.lists.bar)
-        this.lists.bar.innerHTML =
+      if (lists.bar)
+        lists.bar.innerHTML =
           '<tr><td colspan="6" class="text-center py-4 text-red-400">Error cargando datos de barra.</td></tr>';
     }
 
-    this.setLoading(false);
-    if (window.Toast && this.state.salesData.length > 0)
+    setLoading(false);
+    if (window.Toast && state.salesData.length > 0)
       window.Toast.success("Reportes actualizados.");
-  },
+  }
 
-  setLoading: function (isLoading) {
-    window.Utils.setPageState(this.ui, { loading: isLoading });
-  },
-
-  toggleEmptyState: function (isEmpty) {
-    window.Utils.setPageState(this.ui, { empty: isEmpty });
-  },
-
-  renderSales: function () {
-    const list = this.lists.ventas;
+  // ── Render Functions ───────────────────────────────────────────────────
+  function renderSales() {
+    const list = lists.ventas;
     list.innerHTML = "";
 
-    if (this.state.salesData.length === 0) {
+    if (state.salesData.length === 0) {
       list.innerHTML =
         '<tr><td colspan="4" class="text-center py-8 text-white/30">Sin datos de ventas.</td></tr>';
       return;
     }
 
-    this.state.salesData.forEach((row) => {
+    state.salesData.forEach((row) => {
       const tr = document.createElement("tr");
       tr.className =
         "hover:bg-white/5 transition-colors border-b border-white/5 last:border-0";
@@ -219,25 +218,25 @@ window.AdminReportesApp = {
                     <div class="font-mono text-white/90">${row.work_date}</div>
                     <div class="text-[10px] uppercase text-white/40">${row.status}</div>
                 </td>
-                <td class="py-3 text-right font-mono text-white/70">${this.formatMoney(row.total_income)}</td> <!-- Changed from total_income to generic, but view has total_income. Note: View V2 uses total_income. -->
-                <td class="py-3 text-right font-mono text-white">${this.formatMoney(row.total_declared)}</td>
-                <td class="py-3 text-right pr-2 font-mono font-bold ${diffClass}">${this.formatMoney(row.total_difference)}</td>
+                <td class="py-3 text-right font-mono text-white/70">${formatMoney(row.total_income)}</td>
+                <td class="py-3 text-right font-mono text-white">${formatMoney(row.total_declared)}</td>
+                <td class="py-3 text-right pr-2 font-mono font-bold ${diffClass}">${formatMoney(row.total_difference)}</td>
             `;
       list.appendChild(tr);
     });
-  },
+  }
 
-  renderStaff: function () {
-    const list = this.lists.staff;
+  function renderStaff() {
+    const list = lists.staff;
     list.innerHTML = "";
 
-    if (this.state.staffData.length === 0) {
+    if (state.staffData.length === 0) {
       list.innerHTML =
         '<tr><td colspan="4" class="text-center py-8 text-white/30">Sin datos de personal.</td></tr>';
       return;
     }
 
-    this.state.staffData.forEach((row) => {
+    state.staffData.forEach((row) => {
       const tr = document.createElement("tr");
       tr.className =
         "hover:bg-white/5 transition-colors border-b border-white/5 last:border-0";
@@ -271,25 +270,21 @@ window.AdminReportesApp = {
                     <div class="text-[10px] text-white/30">${row.shifts_confirmed}/${row.shifts_total}</div>
                 </td>
                 <td class="py-3 text-right font-mono text-white/70">${row.closures_count}</td>
-                <td class="py-3 text-right pr-2 font-mono font-bold ${diffClass}">${this.formatMoney(diff)}</td>
+                <td class="py-3 text-right pr-2 font-mono font-bold ${diffClass}">${formatMoney(diff)}</td>
             `;
       list.appendChild(tr);
     });
-  },
+  }
 
-  formatMoney: function (amount) {
-    return window.Utils.formatARS(amount);
-  },
-
-  renderFinanzas: function () {
+  function renderFinanzas() {
     // P&L
-    const pnlList = this.lists.pnl;
+    const pnlList = lists.pnl;
     pnlList.innerHTML = "";
-    if (this.state.pnlData.length === 0) {
+    if (state.pnlData.length === 0) {
       pnlList.innerHTML =
         '<tr><td colspan="3" class="text-center py-8 text-white/30">Sin datos P&L.</td></tr>';
     } else {
-      this.state.pnlData.forEach((row) => {
+      state.pnlData.forEach((row) => {
         const tr = document.createElement("tr");
         tr.className =
           "hover:bg-white/5 transition-colors border-b border-white/5 last:border-0";
@@ -301,80 +296,71 @@ window.AdminReportesApp = {
         tr.innerHTML = `
                     <td class="py-3 pl-2"><div class="font-mono text-white/90">${row.month}</div></td>
                     <td class="py-3"><div class="text-sm text-white/80">${row.category}</div></td>
-                    <td class="py-3 text-right pr-2 font-mono ${amountClass}">${this.formatMoney(row.amount)}</td>
+                    <td class="py-3 text-right pr-2 font-mono ${amountClass}">${formatMoney(row.amount)}</td>
                 `;
         pnlList.appendChild(tr);
       });
     }
 
     // Tax
-    const taxList = this.lists.tax;
+    const taxList = lists.tax;
     taxList.innerHTML = "";
-    if (this.state.taxData.length === 0) {
+    if (state.taxData.length === 0) {
       taxList.innerHTML =
         '<tr><td colspan="3" class="text-center py-8 text-white/30">Sin datos Fiscales.</td></tr>';
     } else {
-      this.state.taxData.forEach((row) => {
+      state.taxData.forEach((row) => {
         const tr = document.createElement("tr");
         tr.className =
           "hover:bg-white/5 transition-colors border-b border-white/5 last:border-0";
         tr.innerHTML = `
                     <td class="py-3 pl-2"><div class="font-mono text-white/90">${row.month}</div></td>
-                    <td class="py-3 text-right font-mono text-white/70">${this.formatMoney(row.total_factura_a)}</td>
-                    <td class="py-3 text-right pr-2 font-mono font-bold text-blue-400">${this.formatMoney(row.estimated_vat_credit)}</td>
+                    <td class="py-3 text-right font-mono text-white/70">${formatMoney(row.total_factura_a)}</td>
+                    <td class="py-3 text-right pr-2 font-mono font-bold text-blue-400">${formatMoney(row.estimated_vat_credit)}</td>
                 `;
         taxList.appendChild(tr);
       });
     }
-  },
+  }
 
-  renderBar: function () {
-    const list = this.lists.bar;
+  function renderBar() {
+    const list = lists.bar;
     if (!list) return;
     list.innerHTML = "";
 
-    if (this.state.barData.length === 0) {
+    if (state.barData.length === 0) {
       list.innerHTML =
         '<tr><td colspan="6" class="text-center py-8 text-white/30">Sin datos de barras.</td></tr>';
       return;
     }
 
-    this.state.barData.forEach((row) => {
+    state.barData.forEach((row) => {
       const tr = document.createElement("tr");
       tr.className =
         "hover:bg-white/5 transition-colors border-b border-white/5 last:border-0";
 
+      // Negative diff = Loss (Theo - Phys < 0 means Physical Cost > Theoretical)
       const diffClass =
-        row.cost_difference < 0 ? "text-red-400" : "text-green-400"; // Negative diff means (Theo - Phys) < 0 => Phys > Theo => Loss? Wait. Theo - Phys. If Theo=1000, Phys=1200. Diff = -200. Bad.
-      // If Theo is cost of sold items (Ideal Cost). Phys is Cost of Consumed items (Real Cost).
-      // Usually we want Measured Cost to be equal to Ideal Cost.
-      // If Measured Cost > Ideal Cost => Cost of Goods Sold is HIGHER than it should be => Loss/Waste.
-      // My View: cost_difference = theo - phys.
-      // If Phys=1200, Theo=1000. Diff = 1000 - 1200 = -200.
-      // So Negative is BAD (Loss). Highlight Red. Correct.
+        row.cost_difference < 0 ? "text-red-400" : "text-green-400";
 
       tr.innerHTML = `
                 <td class="py-3 pl-2">
                     <div class="font-mono text-white/90">${row.work_date || "?"}</div>
                     <div class="text-[10px] uppercase text-white/40">${row.location}</div>
                 </td>
-                <td class="py-3 text-right font-mono text-white/70">${this.formatMoney(row.items_revenue)}</td>
-                <td class="py-3 text-right font-mono text-white/70">${this.formatMoney(row.cost_physical)}</td>
-                <td class="py-3 text-right font-mono text-white/70">${this.formatMoney(row.cost_theoretical)}</td>
-                <td class="py-3 text-right font-mono font-bold ${diffClass}">${this.formatMoney(row.cost_difference)}</td>
+                <td class="py-3 text-right font-mono text-white/70">${formatMoney(row.items_revenue)}</td>
+                <td class="py-3 text-right font-mono text-white/70">${formatMoney(row.cost_physical)}</td>
+                <td class="py-3 text-right font-mono text-white/70">${formatMoney(row.cost_theoretical)}</td>
+                <td class="py-3 text-right font-mono font-bold ${diffClass}">${formatMoney(row.cost_difference)}</td>
                 <td class="py-3 text-right pr-2 font-mono text-white/50">${Math.round(row.cost_percentage)}%</td>
             `;
       list.appendChild(tr);
     });
-  },
-};
+  }
 
-document.addEventListener("DOMContentLoaded", async () => {
-  const session = await window.Auth.guardOrRedirect(["admin", "contable"]);
-  if (!session) return;
+  // ── Boot ────────────────────────────────────────────────────────────────
+  initDates();
+  bindEvents();
+  await loadData();
 
-  // Check Supabase connection
-  if (!window.Utils.assertSbOrShowBlockingError()) return;
-
-  window.AdminReportesApp.init();
-});
+})();

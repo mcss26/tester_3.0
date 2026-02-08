@@ -1,7 +1,8 @@
 // Module: logistica-distribucion.js
 // Gestión de pedidos de reposición y despacho a barras
 
-document.addEventListener('DOMContentLoaded', async () => {
+(async function() {
+  'use strict';
     const listContainer = document.getElementById('list-container');
     const btnRefresh = document.getElementById('btn-refresh');
     const statusTabs = document.getElementById('status-tabs');
@@ -424,4 +425,4 @@ document.addEventListener('DOMContentLoaded', async () => {
     // ─────────────────────────────────────────────────────────────────────────
 
     await loadData();
-});
+})();

@@ -25,7 +25,9 @@
     };
 
     // 1. Auth & Init
-    if (!window.Auth.guardOrRedirect(['admin', 'gerente', 'contable'])) return;
+    const session = await window.Auth.guardOrRedirect(['admin', 'gerente', 'contable']);
+    if (!session) return;
+    if (!window.Utils.assertSbOrShowBlockingError()) return;
 
     // 2. Load Data
     async function loadData() {

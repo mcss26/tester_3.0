@@ -1,7 +1,8 @@
 // Module: logistica-recepcion.js
 // Recepción de mercadería de proveedores
 
-document.addEventListener('DOMContentLoaded', async () => {
+(async function() {
+  'use strict';
     const listContainer = document.getElementById('list-container');
     const btnRefresh = document.getElementById('btn-refresh');
     const btnNewReceipt = document.getElementById('btn-new-receipt');
@@ -70,14 +71,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 .select(`
                     id,
                     status,
-                    total_estimated,
-                    expected_date,
+                    final_cost,
+                    eta_date,
                     notes,
                     created_at,
                     supplier_id,
                     master_proveedores!replenishment_supplier_orders_supplier_id_fkey(nombre_fantasia)
                 `)
-                .order('expected_date', { ascending: true });
+                .order('eta_date', { ascending: true });
 
             if (activeStatus) {
                 query = query.eq('status', activeStatus);
@@ -105,7 +106,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const { data, error } = await window.sb
                 .from('master_proveedores')
                 .select('id, nombre_fantasia')
-                .eq('is_active', true)
+                .eq('active', true)
                 .order('nombre_fantasia');
             if (error) throw error;
             suppliers = (data || []).map(s => ({ id: s.id, name: s.nombre_fantasia }));
@@ -120,9 +121,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             const { data, error } = await window.sb
                 .from('master_sku')
-                .select('id, name')
-                .eq('is_active', true)
-                .order('name');
+                .select('id, nombre')
+                .eq('active', true)
+                .order('nombre');
             if (error) throw error;
             skus = data || [];
             renderSkuOptions();
@@ -141,7 +142,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     function renderSkuOptions() {
         if (!freeSkuSelect) return;
         freeSkuSelect.innerHTML = '<option value="">Buscar SKU...</option>' +
-            skus.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+            skus.map(s => `<option value="${s.id}">${s.nombre}</option>`).join('');
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -206,8 +207,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             html += `
                 <tr class="table-row">
                     <td class="table-cell cell-pad cell-strong">${order.supplier_name}</td>
-                    <td class="table-cell cell-pad">${formatDate(order.expected_date)}</td>
-                    <td class="table-cell cell-pad muted">${formatCurrency(order.total_estimated)}</td>
+                    <td class="table-cell cell-pad">${formatDate(order.eta_date)}</td>
+                    <td class="table-cell cell-pad muted">${formatCurrency(order.final_cost)}</td>
                     <td class="table-cell cell-pad">${getStatusPill(order.status)}</td>
                     <td class="table-cell cell-pad">
                         ${canReceive ? `
@@ -320,18 +321,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Por ahora, crear items de ejemplo basados en SKUs
         receiveItems = skus.slice(0, 5).map(sku => ({
             sku_id: sku.id,
-            sku_nombre: sku.name,
+            sku_nombre: sku.nombre,
             quantity_expected: Math.floor(Math.random() * 20) + 5,
             quantity_received: 0
         }));
         receiveItems.forEach(item => item.quantity_received = item.quantity_expected);
 
         if (receiveSupplier) receiveSupplier.textContent = selectedOrder.supplier_name;
-        if (receiveEta) receiveEta.textContent = formatDate(selectedOrder.expected_date);
-        if (receiveTotal) receiveTotal.textContent = formatCurrency(selectedOrder.total_estimated);
+        if (receiveEta) receiveEta.textContent = formatDate(selectedOrder.eta_date);
+        if (receiveTotal) receiveTotal.textContent = formatCurrency(selectedOrder.final_cost);
         if (receiveInvoice) receiveInvoice.value = '';
         if (receiveInvoiceDate) receiveInvoiceDate.value = new Date().toISOString().split('T')[0]; // Default to today
-        if (receiveInvoiceAmount) receiveInvoiceAmount.value = selectedOrder.total_estimated || '';
+        if (receiveInvoiceAmount) receiveInvoiceAmount.value = selectedOrder.final_cost || '';
         if (receiveNotes) receiveNotes.value = '';
 
         renderReceiveItems(receiveItems);
@@ -389,7 +390,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     received_by: session.user.id,
                     receipt_date: new Date().toISOString(),
                     invoice_number: invoice,
-                    total_amount: selectedOrder.total_estimated,
+                    total_amount: selectedOrder.final_cost || 0,
                     notes: notes || null
                 })
                 .select()
@@ -501,7 +502,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else {
             freeItems.push({
                 sku_id: skuId,
-                sku_nombre: sku.name,
+                sku_nombre: sku.nombre,
                 quantity: qty
             });
         }
@@ -644,4 +645,4 @@ document.addEventListener('DOMContentLoaded', async () => {
     // ─────────────────────────────────────────────────────────────────────────
 
     await Promise.all([loadData(), loadSuppliers(), loadSkus()]);
-});
+})();

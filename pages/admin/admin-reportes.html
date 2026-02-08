@@ -5,22 +5,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reportes - FormulaMid</title>
-    <link rel="stylesheet" href="../../assets/css/main.css">
+    <!-- Design Tokens & Global Components -->
+    <link rel="stylesheet" href="../../assets/css/tokens.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <!-- Page Specific CSS -->
+    <link rel="stylesheet" href="../../assets/css/admin-reportes.css">
 </head>
 
-<body class="app-shell admin-shell admin-scroll" data-allowed-roles="admin,contable">
+<body class="admin-shell admin-scroll">
 
-    <header class="app-topbar">
-        <div class="topbar-left">
-            <button class="topbar-link" data-go="pages/admin/admin-index.html">← Volver</button>
-        </div>
-
-        <nav class="topbar-center">
-            <button class="topbar-link active" data-go="pages/admin/admin-reportes.html">Reportes</button>
+    <!-- Topbar: Golden Standard -->
+    <header class="topbar">
+        <!-- Left: Breadcrumb -->
+        <nav class="breadcrumb topbar-start">
+            <span class="breadcrumb-item">
+                <a class="breadcrumb-link" href="admin-index.html">Administración</a>
+            </span>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-item current">Reportes</span>
         </nav>
 
-        <div class="topbar-right">
-            <div class="topbar-brand">ERP</div>
+        <!-- Center: Empty for this module -->
+        <div class="topbar-center"></div>
+
+        <!-- Right: Notifications + User -->
+        <div class="topbar-end">
+            <!-- Notifications -->
+            <div class="dropdown-container">
+                <button class="icon-btn" aria-label="Notificaciones">
+                    <svg class="icon-notification" viewBox="0 0 24 24">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                </button>
+            </div>
+            <!-- User Avatar -->
+            <div class="dropdown-container">
+                <div class="avatar avatar-sm">AD</div>
+            </div>
         </div>
     </header>
 
@@ -29,37 +51,37 @@
             <div class="page-card">
 
                 <!-- Loading State -->
-                <div class="page-card-loading" id="page-card-loading">
+                <div id="page-card-loading" class="page-card-loading">
                     <div class="state-block loading">
-                        <div class="state-spinner" aria-hidden="true"></div>
-                        <div class="state-loader"></div>
+                        <div class="state-spinner"></div>
                         <p class="state-title">Cargando datos...</p>
-                        <p class="state-desc">Esto puede tardar unos segundos</p>
                     </div>
                 </div>
 
                 <!-- Empty State -->
-                <div class="page-card-empty" id="page-card-empty">
+                <div id="page-card-empty" class="page-card-empty">
                     <div class="state-block">
                         <p class="state-title">Sin resultados</p>
                         <p class="state-desc">No se encontraron datos para los filtros aplicados.</p>
-                        <button class="btn-ghost btn-sm mt-2" id="btn-clear-search">Actualizar</button>
+                        <button class="btn btn-ghost btn-sm mt-2" id="btn-clear-search">Actualizar</button>
                     </div>
                 </div>
 
                 <div id="module-content">
                     <div class="staff-dashboard">
-                        <div class="dashboard-header" style="margin-bottom: 24px;">
+
+                        <!-- Dashboard Header -->
+                        <div class="dashboard-header align-start">
                             <div>
                                 <h2 class="dashboard-title">Reportes Operativos</h2>
-                                <p class="dashboard-subtitle">Métricas generadas por SQL Views</p>
+                                <p class="dashboard-subtitle dashboard-subtitle-soft">Métricas generadas por SQL Views
+                                </p>
                             </div>
                         </div>
 
                         <!-- Tabs & Filters -->
-                        <div class="filter-bar filter-bar-compact"
-                            style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 16px; margin-bottom: 16px;">
-                            <div class="filter-group tab-bar">
+                        <div class="report-filter-bar">
+                            <div class="tab-bar">
                                 <button class="tab-chip active" data-view="ventas">Ventas (Caja)</button>
                                 <button class="tab-chip" data-view="staff">Performance Staff</button>
                                 <button class="tab-chip" data-view="finanzas">Finanzas</button>
@@ -67,12 +89,11 @@
                             </div>
 
                             <!-- Date Filter -->
-                            <div class="filter-actions" style="display: flex; gap: 8px; align-items: center;">
+                            <div class="report-actions">
                                 <input type="date" id="report-start" class="input input-compact">
-                                <span class="muted">-</span>
+                                <span class="date-separator">-</span>
                                 <input type="date" id="report-end" class="input input-compact">
-                                <button id="btn-refresh-report" class="btn-icon btn-icon-flat" title="Actualizar"
-                                    aria-label="Actualizar">
+                                <button id="btn-refresh-report" class="btn-icon btn-icon-flat" aria-label="Actualizar">
                                     🔄
                                 </button>
                             </div>
@@ -80,93 +101,98 @@
 
                         <!-- TAB: VENTAS -->
                         <div id="view-ventas" class="fade-in">
-                            <div class="table-viewport">
-                                <table class="table">
-                                    <thead>
-                                        <tr class="table-head">
-                                            <th class="table-cell is-header">Fecha</th>
-                                            <th class="table-cell is-header text-right">Sistema</th>
-                                            <th class="table-cell is-header text-right">Declarado</th>
-                                            <th class="table-cell is-header text-right">Diferencia</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="sales-list">
-                                        <!-- JS Injected -->
-                                        <tr>
-                                            <td colspan="4" class="table-cell text-center muted">Cargando datos...</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <div class="table-viewport table-shell">
+                                <div class="table-scroll">
+                                    <table class="table table-sticky table-compact">
+                                        <thead>
+                                            <tr class="table-head">
+                                                <th class="table-cell is-header">Fecha</th>
+                                                <th class="table-cell is-header text-right">Sistema</th>
+                                                <th class="table-cell is-header text-right">Declarado</th>
+                                                <th class="table-cell is-header text-right">Diferencia</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="sales-list">
+                                            <tr>
+                                                <td colspan="4" class="table-cell text-center-muted">Cargando...</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
 
                         <!-- TAB: STAFF -->
                         <div id="view-staff" class="hidden fade-in">
-                            <div class="table-viewport">
-                                <table class="table">
-                                    <thead>
-                                        <tr class="table-head">
-                                            <th class="table-cell is-header">Staff</th>
-                                            <th class="table-cell is-header text-center">Asistencia</th>
-                                            <th class="table-cell is-header text-right">Cierres</th>
-                                            <th class="table-cell is-header text-right">Dif. Neta</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="staff-list">
-                                        <!-- JS Injected -->
-                                        <tr>
-                                            <td colspan="4" class="table-cell text-center muted">Cargando datos...</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <div class="table-viewport table-shell">
+                                <div class="table-scroll">
+                                    <table class="table table-sticky table-compact">
+                                        <thead>
+                                            <tr class="table-head">
+                                                <th class="table-cell is-header">Staff</th>
+                                                <th class="table-cell is-header text-center">Asistencia</th>
+                                                <th class="table-cell is-header text-right">Cierres</th>
+                                                <th class="table-cell is-header text-right">Dif. Neta</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="staff-list">
+                                            <tr>
+                                                <td colspan="4" class="table-cell text-center-muted">Cargando...</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
 
                         <!-- TAB: FINANZAS -->
                         <div id="view-finanzas" class="hidden fade-in">
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+                            <div class="finance-grid">
                                 <!-- P&L Section -->
                                 <div>
-                                    <h3 class="dashboard-subtitle" style="margin-bottom: 16px;">Resultados (P&L)</h3>
-                                    <div class="table-viewport">
-                                        <table class="table">
-                                            <thead>
-                                                <tr class="table-head">
-                                                    <th class="table-cell is-header">Periodo</th>
-                                                    <th class="table-cell is-header">Categoría</th>
-                                                    <th class="table-cell is-header text-right">Monto</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="pnl-list">
-                                                <tr>
-                                                    <td colspan="3" class="table-cell text-center muted">Cargando...
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                    <h3 class="section-subtitle">Resultados (P&L)</h3>
+                                    <div class="table-viewport table-shell">
+                                        <div class="table-scroll">
+                                            <table class="table table-sticky table-compact">
+                                                <thead>
+                                                    <tr class="table-head">
+                                                        <th class="table-cell is-header">Periodo</th>
+                                                        <th class="table-cell is-header">Categoría</th>
+                                                        <th class="table-cell is-header text-right">Monto</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="pnl-list">
+                                                    <tr>
+                                                        <td colspan="3" class="table-cell text-center-muted">Cargando...
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <!-- Tax Section -->
                                 <div>
-                                    <h3 class="dashboard-subtitle" style="margin-bottom: 16px;">Estimación IVA (Crédito)
-                                    </h3>
-                                    <div class="table-viewport">
-                                        <table class="table">
-                                            <thead>
-                                                <tr class="table-head">
-                                                    <th class="table-cell is-header">Periodo</th>
-                                                    <th class="table-cell is-header text-right">Factura A Total</th>
-                                                    <th class="table-cell is-header text-right">IVA Computable</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="tax-list">
-                                                <tr>
-                                                    <td colspan="3" class="table-cell text-center muted">Cargando...
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                    <h3 class="section-subtitle">Estimación IVA (Crédito)</h3>
+                                    <div class="table-viewport table-shell">
+                                        <div class="table-scroll">
+                                            <table class="table table-sticky table-compact">
+                                                <thead>
+                                                    <tr class="table-head">
+                                                        <th class="table-cell is-header">Periodo</th>
+                                                        <th class="table-cell is-header text-right">Factura A Total</th>
+                                                        <th class="table-cell is-header text-right">IVA Computable</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tax-list">
+                                                    <tr>
+                                                        <td colspan="3" class="table-cell text-center-muted">Cargando...
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -174,24 +200,26 @@
 
                         <!-- TAB: BARRAS -->
                         <div id="view-barras" class="hidden fade-in">
-                            <div class="table-viewport">
-                                <table class="table">
-                                    <thead>
-                                        <tr class="table-head">
-                                            <th class="table-cell is-header">Fecha / Sesión</th>
-                                            <th class="table-cell is-header text-right">Ventas Calc.</th>
-                                            <th class="table-cell is-header text-right">Costo Físico</th>
-                                            <th class="table-cell is-header text-right">Costo Teórico</th>
-                                            <th class="table-cell is-header text-right">Diferencia</th>
-                                            <th class="table-cell is-header text-right">Costo %</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="bar-list">
-                                        <tr>
-                                            <td colspan="6" class="table-cell text-center muted">Cargando datos...</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <div class="table-viewport table-shell">
+                                <div class="table-scroll">
+                                    <table class="table table-sticky table-compact">
+                                        <thead>
+                                            <tr class="table-head">
+                                                <th class="table-cell is-header">Fecha / Sesión</th>
+                                                <th class="table-cell is-header text-right">Ventas Calc.</th>
+                                                <th class="table-cell is-header text-right">Costo Físico</th>
+                                                <th class="table-cell is-header text-right">Costo Teórico</th>
+                                                <th class="table-cell is-header text-right">Diferencia</th>
+                                                <th class="table-cell is-header text-right">Costo %</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="bar-list">
+                                            <tr>
+                                                <td colspan="6" class="table-cell text-center-muted">Cargando...</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
 
@@ -200,14 +228,19 @@
             </div>
         </div>
     </main>
+
+    <!-- Dependencies -->
     <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script defer src="../../assets/js/core/config.js"></script>
     <script defer src="../../assets/js/core/supabase-client.js"></script>
     <script defer src="../../assets/js/core/auth.js"></script>
     <script defer src="../../assets/js/core/utils.js"></script>
     <script defer src="../../assets/js/core/toast.js"></script>
+    <script defer src="../../assets/js/core/navigation.js"></script>
+
+    <!-- Module Logic -->
     <script defer src="../../assets/js/modules/admin/admin-reportes.js"></script>
-    <script src="../../assets/js/core/navigation.js"></script>
+
 </body>
 
 </html>

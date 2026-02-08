@@ -7,9 +7,12 @@
     <title>Central Stock - FormulaMid</title>
     <link rel="stylesheet" href="../../assets/css/tokens.css">
     <link rel="stylesheet" href="../../assets/css/components.css">
+    <!-- Shared Admin Master CSS (for master-nav) -->
+    <link rel="stylesheet" href="../../assets/css/admin-master.css">
+    <!-- Page Specific CSS -->
     <link rel="stylesheet" href="../../assets/css/admin-central-stock.css?v=20260205j">
-    <!-- Chart.js and SheetJS (Excel) -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- SheetJS (Chart.js loaded lazily via chart-loader) -->
+    <script src="../../assets/js/core/chart-loader.js"></script>
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 </head>
 
@@ -18,9 +21,13 @@
     <header class="topbar">
         <!-- Left: Breadcrumb -->
         <nav class="breadcrumb topbar-start">
-            <a href="./admin-index.html" class="breadcrumb-item breadcrumb-link">Administración</a>
+            <span class="breadcrumb-item">
+                <a href="./admin-index.html" class="breadcrumb-link">Administración</a>
+            </span>
             <span class="breadcrumb-sep">/</span>
-            <span class="breadcrumb-item current">Stock</span>
+            <span class="breadcrumb-item">Master Data</span>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-item current">Stock Central</span>
         </nav>
 
         <!-- Center: Search -->
@@ -107,6 +114,17 @@
         <div class="page-card-wrap">
             <div class="page-card overflow-visible">
 
+                <!-- Master Navigation -->
+                <nav class="master-nav">
+                    <a href="admin-central-stock.html" class="master-nav-link active">SKU & Recetas</a>
+                    <a href="admin-master-proveedores.html" class="master-nav-link">Proveedores</a>
+                    <a href="admin-master-categorias.html" class="master-nav-link">Categorías</a>
+                    <a href="admin-master-nomina.html" class="master-nav-link">Nómina</a>
+                    <a href="admin-pagos.html" class="master-nav-link">Pagos</a>
+                    <a href="admin-master-tarifario.html" class="master-nav-link">Tarifario</a>
+                    <a href="admin-master-pos.html" class="master-nav-link">POS</a>
+                </nav>
+
                 <!-- 1. Loading Overlay (Fullscreen) -->
                 <div id="page-card-loading" class="page-card-loading is-visible">
                     <div class="state-block loading">
@@ -130,11 +148,6 @@
 
                         <!-- Dashboard Header (Golden Standard) -->
                         <div class="dashboard-header align-start">
-                            <div>
-                                <h2 class="dashboard-title dashboard-title-soft">Gestión de Inventario</h2>
-                                <p class="dashboard-subtitle dashboard-subtitle-soft">Control de stock, SKUs y análisis
-                                    de consumo</p>
-                            </div>
                             <div class="actions-bar">
                                 <!-- TABS -->
                                 <div class="tab-bar" id="herramientas-tabs">
@@ -798,7 +811,7 @@
                         </thead>
                         <tbody id="revenue-reports-tbody">
                             <tr>
-                                <td colspan="5" class="text-center-muted">
+                                <td colspan="5" class="table-cell-center-muted">
                                     Cargando reportes...
                                 </td>
                             </tr>
@@ -809,293 +822,104 @@
         </div>
     </dialog>
 
-    <!-- Code Mappings Modal -->
-    <dialog id="modal-code-mappings" class="modal">
-        <div class="modal-content modal-content-lg">
+    <!-- Modal Adjustment -->
+    <div id="modal-adjustment" class="modal-overlay hidden">
+        <div class="modal-card modal-compact">
             <div class="modal-header">
-                <h3 class="modal-title">Gestión de Códigos POS</h3>
-                <button id="btn-close-code-mappings" class="btn-icon btn-icon-ghost" aria-label="Cerrar">×</button>
+                <h3 class="modal-title">Ajuste Manual de Stock</h3>
+                <button class="btn-icon-flat" id="btn-close-adjustment">×</button>
             </div>
-            <div class="modal-body">
-                <p class="text-sm text-tertiary mb-4">
-                    Asocia códigos del sistema POS con recetas del sistema para mejorar el matching automático en las
-                    importaciones.
-                </p>
+            <form id="adjustment-form-modal">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">SKU</label>
+                        <select id="select-sku-modal" class="input" required>
+                            <option value="">Seleccionar SKU...</option>
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
 
-                <!-- Add New Mapping Form -->
-                <div class="card mb-4 p-4">
-                    <h4 class="text-sm font-semibold mb-3">Nuevo Mapeo</h4>
-                    <div class="grid-mappings-form">
-                        <div class="form-group">
-                            <label class="form-label">Código POS</label>
-                            <input type="text" id="input-pos-code" class="input" placeholder="Ej: 81">
+                    <div class="form-group">
+                        <label class="form-label">Stock Actual: <span id="current-stock-display-modal">-</span></label>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Tipo de Ajuste</label>
+                        <div class="segmented-control">
+                            <button type="button" class="type-btn active" data-type="loss">Merma / Pérdida</button>
+                            <button type="button" class="type-btn" data-type="correction">Corrección / Inventario
+                                Físico</button>
+                            <button type="button" class="type-btn" data-type="gift">Regalo / Cortesía</button>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">Receta</label>
-                            <select id="select-recipe" class="input">
-                                <option value="">Seleccionar receta...</option>
-                            </select>
-                        </div>
-                        <button id="btn-add-mapping" class="btn-primary">Agregar</button>
+                        <input type="hidden" id="input-type-modal" value="loss">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Cantidad a Descontar <span id="qty-hint-modal"
+                                class="text-sm text-muted">(-0 UN)</span></label>
+                        <input type="number" id="input-qty-modal" class="input" placeholder="Ej: 5" min="0.01"
+                            step="0.01" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Motivo</label>
+                        <textarea id="input-reason-modal" class="input" rows="2"
+                            placeholder="Ej: Botella rota en barra, vencimiento..." required></textarea>
                     </div>
                 </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" id="btn-cancel-adjustment">Cancelar</button>
+                    <button type="submit" class="btn-primary">Registrar Ajuste</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-                <!-- Existing Mappings Table -->
-                <div class="table-container table-container-md">
-                    <table class="data-table">
+    <!-- Modal Code Mappings -->
+    <div id="modal-code-mappings" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title">Gestionar Códigos POS</h3>
+                <button class="btn-icon-flat" id="btn-close-code-mappings">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="mapping-form-row">
+                    <input type="text" id="input-pos-code" class="input" placeholder="Código POS (Ej: 1025)">
+                    <select id="select-recipe" class="input">
+                        <option value="">Asignar a Receta...</option>
+                    </select>
+                    <button id="btn-add-mapping" class="btn-primary">Asignar</button>
+                </div>
+                <div class="table-container mt-4" style="max-height: 300px; overflow-y: auto;">
+                    <table class="table table-compact">
                         <thead>
                             <tr>
                                 <th>Código POS</th>
-                                <th>Receta</th>
-                                <th>Notas</th>
-                                <th class="w-action-col text-center">Acciones</th>
+                                <th>Receta Asignada</th>
+                                <th>Venta Total</th>
+                                <th>Acción</th>
                             </tr>
                         </thead>
                         <tbody id="code-mappings-table-body">
-                            <tr>
-                                <td colspan="4" class="text-center-muted">
-                                    Cargando mapeos...
-                                </td>
-                            </tr>
+                            <!-- Populated via JS -->
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-    </dialog>
-
-    <!-- Scripts -->
-    <!-- 3. MODAL: AJUSTE MANUAL (Integrated) -->
-    <div id="modal-adjustment" class="modal-overlay hidden">
-        <div class="modal-container">
-            <div class="modal-header">
-                <h3 class="modal-title">Ajuste Manual de Inventario</h3>
-                <button class="modal-close" id="btn-close-adjustment">&times;</button>
-            </div>
-            <div class="modal-body">
-                <form id="adjustment-form-modal">
-                    <!-- SKU Select -->
-                    <div class="form-group">
-                        <label class="form-label" for="select-sku-modal">Producto (SKU)</label>
-                        <select id="select-sku-modal" class="input input-full" required>
-                            <option value="">Cargando productos...</option>
-                        </select>
-                    </div>
-
-                    <!-- Current Stock Info -->
-                    <div class="form-group info-box">
-                        <div class="info-row">
-                            <span class="info-label">Stock Actual:</span>
-                            <span id="current-stock-display-modal" class="info-value">-</span>
-                        </div>
-                    </div>
-
-                    <!-- Movement Type -->
-                    <div class="form-group">
-                        <label class="form-label">Tipo de Movimiento</label>
-                        <div class="tab-bar fit-content">
-                            <button type="button" class="tab-chip type-btn active" data-type="consumption">Consumo /
-                                Merma</button>
-                            <button type="button" class="tab-chip type-btn" data-type="adjustment">Corrección
-                                (Audit)</button>
-                        </div>
-                        <input type="hidden" id="input-type-modal" value="consumption">
-                    </div>
-
-                    <!-- Quantity -->
-                    <div class="form-group">
-                        <label class="form-label" for="input-qty-modal">Cantidad a Descontar</label>
-                        <div class="input-with-hint">
-                            <input type="number" id="input-qty-modal" class="input input-full" min="1" value="1"
-                                required>
-                            <div class="input-hint" id="qty-hint-modal">(-1 UN)</div>
-                        </div>
-                        <p class="form-help">* Para agregar stock use Recepción de Mercadería</p>
-                    </div>
-
-                    <!-- Reason -->
-                    <div class="form-group">
-                        <label class="form-label" for="input-reason-modal">Motivo / Notas</label>
-                        <input type="text" id="input-reason-modal" class="input input-full"
-                            placeholder="Ej: Botella rota, Degustación...">
-                    </div>
-
-                    <div class="modal-actions">
-                        <button type="button" class="btn btn-secondary" id="btn-cancel-adjustment">Cancelar</button>
-                        <button type="submit" class="btn btn-danger">Confirmar Ajuste</button>
-                    </div>
-                </form>
-            </div>
-        </div>
     </div>
 
+    <!-- Scripts -->
     <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script defer src="../../assets/js/core/config.js"></script>
     <script defer src="../../assets/js/core/supabase-client.js"></script>
     <script defer src="../../assets/js/core/auth.js"></script>
     <script defer src="../../assets/js/core/utils.js"></script>
     <script defer src="../../assets/js/core/toast.js"></script>
-    <script defer src="../../assets/js/core/panel.js"></script>
-
-    <!-- Shared Navigation -->
-    <script src="../../assets/js/core/navigation.js"></script>
-
-    <!-- Topbar Functionality -->
-    <script>
-        // Global Search (⌘K shortcut)
-        document.addEventListener('DOMContentLoaded', () => {
-            const searchInput = document.getElementById('global-search');
-
-            // Keyboard shortcut ⌘K or Ctrl+K
-            document.addEventListener('keydown', (e) => {
-                if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-                    e.preventDefault();
-                    searchInput.focus();
-                }
-            });
-
-            // Search functionality (placeholder)
-            searchInput?.addEventListener('input', (e) => {
-                const query = e.target.value.toLowerCase();
-                if (query.length < 2) return;
-
-                // TODO: Implement global search logic
-                console.log('Searching for:', query);
-            });
-        });
-
-        // Notifications Dropdown
-        document.addEventListener('DOMContentLoaded', () => {
-            const notifBtn = document.getElementById('btn-notifications');
-            const notifMenu = document.getElementById('notifications-menu');
-
-            notifBtn?.addEventListener('click', (e) => {
-                e.stopPropagation();
-                notifMenu.classList.toggle('hidden');
-                // Close user menu if open
-                document.getElementById('user-menu')?.classList.add('hidden');
-            });
-
-            // Close when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!notifBtn?.contains(e.target) && !notifMenu?.contains(e.target)) {
-                    notifMenu?.classList.add('hidden');
-                }
-            });
-        });
-
-        // Table Column Sorting
-        document.addEventListener('DOMContentLoaded', () => {
-            let currentSort = { column: null, direction: 'asc' };
-
-            // Add click handlers to sortable headers
-            document.querySelectorAll('.sortable').forEach(header => {
-                header.addEventListener('click', function () {
-                    const sortKey = this.dataset.sort;
-                    const tbody = document.getElementById('main-table-body');
-                    const rows = Array.from(tbody.querySelectorAll('tr[data-sku-id]'));
-
-                    // Toggle direction if same column, else default to asc
-                    if (currentSort.column === sortKey) {
-                        currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
-                    } else {
-                        currentSort.column = sortKey;
-                        currentSort.direction = 'asc';
-                    }
-
-                    // Remove active class from all headers
-                    document.querySelectorAll('.sortable').forEach(h => {
-                        h.classList.remove('sort-asc', 'sort-desc');
-                    });
-
-                    // Add active class to current header
-                    this.classList.add(`sort-${currentSort.direction}`);
-
-                    // Sort rows
-                    rows.sort((a, b) => {
-                        let aVal = a.dataset[sortKey] || '';
-                        let bVal = b.dataset[sortKey] || '';
-
-                        // Handle numeric columns
-                        if (['stock', 'ideal', 'costo', 'valorizado'].includes(sortKey)) {
-                            aVal = parseFloat(aVal) || 0;
-                            bVal = parseFloat(bVal) || 0;
-                        }
-
-                        // Handle boolean column (activo)
-                        if (sortKey === 'activo') {
-                            aVal = aVal === 'true' ? 1 : 0;
-                            bVal = bVal === 'true' ? 1 : 0;
-                        }
-
-                        if (aVal < bVal) return currentSort.direction === 'asc' ? -1 : 1;
-                        if (aVal > bVal) return currentSort.direction === 'asc' ? 1 : -1;
-                        return 0;
-                    });
-
-                    // Re-append sorted rows
-                    rows.forEach(row => tbody.appendChild(row));
-                });
-
-                // Keyboard accessibility
-                header.addEventListener('keypress', function (e) {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        this.click();
-                    }
-                });
-            });
-        });
-
-        // User Menu Dropdown
-        document.addEventListener('DOMContentLoaded', () => {
-            const userAvatar = document.getElementById('user-avatar');
-            const userMenu = document.getElementById('user-menu');
-
-            userAvatar?.addEventListener('click', (e) => {
-                e.stopPropagation();
-                userMenu.classList.toggle('hidden');
-                // Close notifications if open
-                document.getElementById('notifications-menu')?.classList.add('hidden');
-            });
-
-            // Close when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!userAvatar?.contains(e.target) && !userMenu?.contains(e.target)) {
-                    userMenu?.classList.add('hidden');
-                }
-            });
-
-            // Logout functionality
-            const logoutBtn = document.getElementById('btn-logout');
-            logoutBtn?.addEventListener('click', async (e) => {
-                e.preventDefault();
-                if (confirm('¿Cerrar sesión?')) {
-                    try {
-                        // Use Auth system if available
-                        if (window.Auth && window.Auth.logout) {
-                            await window.Auth.logout();
-                        } else {
-                            // Fallback: clear session and redirect
-                            if (window.sb) {
-                                await window.sb.auth.signOut();
-                            }
-                            localStorage.clear();
-                            sessionStorage.clear();
-                            window.location.href = '../../index.html';
-                        }
-                    } catch (err) {
-                        console.error('Logout error:', err);
-                        window.location.href = '../../index.html';
-                    }
-                }
-            });
-        });
-    </script>
-
-    <!-- Module Specific -->
+    <!-- Page Specific Script -->
     <script defer src="../../assets/js/modules/admin/admin-central-stock.js"></script>
-
+    <!-- Navigation -->
+    <script src="../../assets/js/core/navigation.js"></script>
 </body>
 
 </html>

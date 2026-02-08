@@ -121,8 +121,8 @@
 
     filtered.forEach((item) => {
       const statusClass = item.active
-        ? "staff-status-accepted"
-        : "staff-status-rejected";
+        ? "badge-success"
+        : "badge-danger";
       const statusText = item.active ? "Activo" : "Inactivo";
       const date = item.created_at
         ? new Date(item.created_at).toLocaleDateString()
@@ -130,9 +130,9 @@
 
       html += `
                 <tr class="table-row">
-                    <td class="table-cell cell-pad cell-strong">${item.nombre}</td>
-                    <td class="table-cell cell-pad"><span class="staff-status badge ${statusClass}">${statusText}</span></td>
-                    <td class="table-cell cell-pad faint">${date}</td>
+                    <td class="table-cell cell-pad font-medium">${window.Utils.escapeHtml(item.nombre)}</td>
+                    <td class="table-cell cell-pad"><span class="badge ${statusClass}">${statusText}</span></td>
+                    <td class="table-cell cell-pad text-tertiary">${date}</td>
                     <td class="table-cell cell-pad">
                         <button class="btn-ghost btn-sm btn-edit-cat" data-id="${item.id}">Editar</button>
                     </td>

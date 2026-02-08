@@ -1,5 +1,5 @@
-
-document.addEventListener('DOMContentLoaded', async () => {
+(async function() {
+  'use strict';
   const loginForm = document.getElementById('login-form');
   const errorContainer = document.getElementById('login-error');
   const emailInput = document.getElementById('email');
@@ -76,4 +76,4 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (msg.includes('Email not confirmed')) return 'Email no confirmado.';
     return msg || 'Error al iniciar sesión.';
   }
-});
+})();

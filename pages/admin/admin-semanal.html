@@ -4,134 +4,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Midnight — Cierre Semanal</title>
-    <link rel="stylesheet" href="../../assets/css/main.css">
-    <style>
-        .weekly-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: var(--space-md);
-            margin-bottom: var(--space-lg);
-        }
-
-        .balance-card {
-            background: var(--surface-card);
-            border: 1px solid var(--border-1);
-            border-radius: var(--radius-md);
-            padding: var(--space-md);
-        }
-
-        .balance-value {
-            font-size: 2rem;
-            font-weight: 700;
-            font-family: var(--font-mono);
-        }
-
-        .balance-label {
-            color: var(--text-muted);
-            font-size: 0.875rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .tax-alert {
-            color: var(--error);
-        }
-
-        .tax-ok {
-            color: var(--success);
-        }
-    </style>
+    <title>Cierre Semanal - FormulaMid</title>
+    <!-- Design Tokens & Global Components -->
+    <link rel="stylesheet" href="../../assets/css/tokens.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <!-- Page Specific CSS -->
+    <link rel="stylesheet" href="../../assets/css/admin-semanal.css">
 </head>
 
-<body class="app-shell admin-shell admin-scroll">
-    <header class="app-topbar">
-        <div class="topbar-left">
-            <button class="btn-icon btn-icon-flat" data-go="pages/admin/admin-index.html">←</button>
-            <span class="topbar-back">INICIO</span>
-        </div>
-        <nav class="topbar-center">
-            <span class="topbar-brand">CIERRE SEMANAL</span>
+<body class="admin-shell admin-scroll">
+
+    <!-- Topbar: Golden Standard -->
+    <header class="topbar">
+        <!-- Left: Breadcrumb -->
+        <nav class="breadcrumb topbar-start">
+            <span class="breadcrumb-item">
+                <a class="breadcrumb-link" href="admin-index.html">Administración</a>
+            </span>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-item current">Cierre Semanal</span>
         </nav>
-        <div class="topbar-right">
-            <div class="user-profile"><span id="user-name">Admin</span></div>
+
+        <!-- Center: Search (Optional, or Empty per Standard if not needed) -->
+        <div class="topbar-center header-search">
+            <!-- Keeping empty or searching logic if applies. For now, empty or standard placeholder -->
+        </div>
+
+        <!-- Right: Notifications + User -->
+        <div class="topbar-end">
+            <!-- Notifications (Static Mockup for Standard Coherence) -->
+            <div class="dropdown-container">
+                <button class="icon-btn" aria-label="Notificaciones">
+                    <svg class="icon-notification" viewBox="0 0 24 24">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                </button>
+            </div>
+            <!-- User Avatar -->
+            <div class="dropdown-container">
+                <div class="avatar avatar-sm">AD</div>
+            </div>
         </div>
     </header>
 
     <main class="page-shell">
         <div class="page-card-wrap">
-            <div class="page-card dashboard-view">
+            <div class="page-card overflow-visible">
 
-                <!-- Week Selector -->
-                <div class="filter-bar">
-                    <div class="filter-group">
-                        <label class="text-sm muted mr-2">Semana:</label>
-                        <select id="weekSelect" class="input input-auto-width"></select>
+                <!-- Loading State -->
+                <div id="page-card-loading" class="page-card-loading">
+                    <div class="state-spinner"></div>
+                </div>
+
+                <!-- Dashboard Header -->
+                <div class="dashboard-header align-start">
+                    <div>
+                        <h2 class="dashboard-title">Cierre Semanal</h2>
+                        <p class="dashboard-subtitle dashboard-subtitle-soft">Control de ingresos, egresos y
+                            estimaciones fiscales</p>
                     </div>
-                    <div class="filter-actions h-full">
-                        <button id="btnFreeze" class="btn btn-primary hidden">❄️ CONGELAR SEMANA</button>
+                    <div class="actions-bar">
+                        <!-- Week Selector -->
+                        <select id="weekSelect" class="week-select"></select>
+                        <!-- Freeze Button -->
+                        <button id="btnFreeze" class="btn btn-primary hidden">
+                            ❄️ CONGELAR SEMANA
+                        </button>
                     </div>
                 </div>
 
-                <!-- Live Status -->
-                <div id="statusBanner" class="p-4 mb-4 rounded bg-surface-2 hidden">
-                    <p class="text-center font-bold">⚠️ VISTA PRELIMINAR (EN VIVO)</p>
+                <!-- Live Status Banner -->
+                <div id="statusBanner" class="status-banner hidden">
+                    ⚠️ VISTA PRELIMINAR (EN VIVO)
                 </div>
 
                 <!-- KPI Grid -->
                 <div class="weekly-grid">
+
                     <!-- White Balance -->
                     <div class="balance-card">
                         <p class="balance-label">Balance Blanco (A/C/B)</p>
-                        <div class="row-flex justify-between mt-2">
+                        <div class="balance-row">
                             <div>
-                                <span class="text-xs muted block">INGRESOS</span>
-                                <span class="font-mono text-lg text-success" id="valIncWhite">$0</span>
+                                <span class="balance-sub-label">INGRESOS</span>
+                                <span class="balance-sub-value text-success" id="valIncWhite">$0</span>
                             </div>
                             <div class="text-right">
-                                <span class="text-xs muted block">EGESTOS</span>
-                                <span class="font-mono text-lg text-error" id="valExpWhite">$0</span>
+                                <span class="balance-sub-label">EGESTOS</span>
+                                <span class="balance-sub-value text-error" id="valExpWhite">$0</span>
                             </div>
                         </div>
-                        <hr class="my-2 border-white/10">
+                        <div class="card-divider"></div>
                         <div class="text-center">
-                            <span class="font-mono font-bold text-xl" id="valBalWhite">$0</span>
+                            <span class="balance-value-lg" id="valBalWhite">$0</span>
                         </div>
                     </div>
 
                     <!-- Black Balance -->
                     <div class="balance-card">
                         <p class="balance-label">Balance Efectivo (X)</p>
-                        <div class="row-flex justify-between mt-2">
+                        <div class="balance-row">
                             <div>
-                                <span class="text-xs muted block">INGRESOS</span>
-                                <span class="font-mono text-lg text-success" id="valIncBlack">$0</span>
+                                <span class="balance-sub-label">INGRESOS</span>
+                                <span class="balance-sub-value text-success" id="valIncBlack">$0</span>
                             </div>
                             <div class="text-right">
-                                <span class="text-xs muted block">EGESTOS</span>
-                                <span class="font-mono text-lg text-error" id="valExpBlack">$0</span>
+                                <span class="balance-sub-label">EGESTOS</span>
+                                <span class="balance-sub-value text-error" id="valExpBlack">$0</span>
                             </div>
                         </div>
-                        <hr class="my-2 border-white/10">
+                        <div class="card-divider"></div>
                         <div class="text-center">
-                            <span class="font-mono font-bold text-xl" id="valBalBlack">$0</span>
+                            <span class="balance-value-lg" id="valBalBlack">$0</span>
                         </div>
                     </div>
 
-                    <!-- Tax Est -->
-                    <div class="balance-card" style="border-color: var(--accent-gold);">
-                        <p class="balance-label" style="color: var(--accent-gold);">Est. Impositivo</p>
-                        <div class="mt-4 text-center">
-                            <p class="text-xs muted mb-1">IVA + IIBB + Muni (Aprox)</p>
-                            <p class="balance-value text-warning" id="valTaxEst">$0</p>
+                    <!-- Tax Estimate -->
+                    <div class="balance-card" style="border-color: rgba(251, 191, 36, 0.3);">
+                        <p class="balance-label text-warning">Est. Impositivo</p>
+                        <div
+                            style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                            <span class="balance-sub-label" style="text-align: center; margin-bottom: 8px;">IVA + IIBB +
+                                Muni (Aprox)</span>
+                            <p class="balance-value-lg text-warning" id="valTaxEst">$0</p>
+                        </div>
+                        <div class="text-center">
+                            <!-- Spacer or additional info could go here -->
                         </div>
                     </div>
+
                 </div>
+
+                <!-- Here we could add a detailed table if defined in requirements, for now respecting original content scope -->
 
             </div>
         </div>
     </main>
 
+    <!-- Dependencies -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="../../assets/js/core/config.js"></script>
     <script src="../../assets/js/core/supabase-client.js"></script>
@@ -140,6 +151,7 @@
     <script src="../../assets/js/core/toast.js"></script>
     <script src="../../assets/js/core/navigation.js"></script>
 
+    <!-- Module Logic -->
     <script src="../../assets/js/modules/admin/admin-semanal.js"></script>
 </body>
 

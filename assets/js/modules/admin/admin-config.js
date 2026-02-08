@@ -21,7 +21,7 @@
         moduleContent: document.getElementById('module-content'),
         
         // Tabs
-        tabBtns: document.querySelectorAll('.tab-btn'),
+        tabBtns: document.querySelectorAll('.tab-chip'),
         tabContents: document.querySelectorAll('.tab-content'),
         
         // Tables
@@ -56,7 +56,12 @@
     function setPageState(s) {
         ui.loadingState.classList.toggle('is-visible', s === 'loading');
         ui.emptyState.classList.toggle('is-visible', s === 'empty');
-        ui.moduleContent.classList.toggle('hidden', s !== 'ready');
+        // Standard "hidden" class usage
+        if (s === 'ready') {
+            ui.moduleContent.classList.remove('hidden');
+        } else {
+            ui.moduleContent.classList.add('hidden');
+        }
     }
 
     function bindEvents() {
@@ -90,8 +95,8 @@
     }
 
     function switchTab(tabId) {
-        ui.tabBtns.forEach(btn => btn.classList.toggle('is-active', btn.dataset.tab === tabId));
-        ui.tabContents.forEach(content => content.classList.toggle('is-active', content.id === `tab-${tabId}`));
+        ui.tabBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tabId));
+        ui.tabContents.forEach(content => content.classList.toggle('active', content.id === `tab-${tabId}`));
     }
 
     // --- DATA LOADING ---

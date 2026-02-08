@@ -5,47 +5,100 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Midnight - Operaciones</title>
-    <!-- Estilo Base -->
-    <link rel="stylesheet" href="../../assets/css/main.css">
-    <!-- Estilo Específico (Reusing Admin Dashboard styles) -->
-    <link rel="stylesheet" href="../../assets/css/pages/admin-index.css">
+    <link rel="stylesheet" href="../../assets/css/tokens.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/admin-master.css">
 </head>
 
-<body class="app-shell admin-shell" data-allowed-roles="operativo,staff_barra,staff_operativo">
+<body class="app-shell admin-shell admin-scroll"
+    data-allowed-roles="operativo,staff_barra,staff_operativo,admin,encargado_barra,encargado_caja">
 
-    <main class="page-shell">
-
-        <!-- 1. HEADER (Glassmorphism) -->
-        <header class="dashboard-header fade-in">
-            <div class="welcome-text">
-                <p class="label-welcome">Bienvenido</p>
-                <h1 id="user-name">Operativo</h1>
-                <p class="role-subtitle">Panel de <strong>OPERACIONES</strong></p>
-            </div>
-
-            <!-- Optional Status Widget -->
-            <div class="status-row">
-                <div id="system-status-widget" class="kpi-widget hidden">
-                    <span class="kpi-dot"></span>
-                    <span class="kpi-text">ESTADO: <span id="system-status-value" class="kpi-value">...</span></span>
-                </div>
-                
-                <!-- MCO QR Widget -->
-                <div id="mco-qr-widget" class="kpi-widget hidden" style="border-color: var(--accent-gold, #e4d2a8);">
-                    <span class="kpi-dot" style="background: var(--accent-gold, #e4d2a8);"></span>
-                    <span class="kpi-text">MCO: <span id="mco-qr-generated" class="kpi-value">0</span> / <span id="mco-qr-validated" class="kpi-value" style="color: var(--success, #4ade80);">0</span></span>
-                </div>
-            </div>
-        </header>
-
-        <!-- 2. NAVIGATION (Segmented Control as Main Nav) -->
-        <nav class="segmented-control fade-in" style="animation-delay: 0.1s;">
-            <button class="segment-btn" data-go="pages/operativo/operativo-workday.html">WORKDAY</button>
-            <button class="segment-btn" data-go="pages/operativo/operativo-stock.html">STOCK</button>
-            <button class="segment-btn" data-go="pages/operativo/operativo-master-sku.html">SETTINGS</button>
-            <button class="segment-btn" data-go="pages/operativo/cms-members.html">MEMBERS</button>
+    <!-- Topbar: Golden Standard -->
+    <header class="topbar">
+        <nav class="breadcrumb topbar-start">
+            <span class="breadcrumb-item">
+                <a class="breadcrumb-link" href="operativo-index.html">Operaciones</a>
+            </span>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-item current">Inicio</span>
         </nav>
 
+        <div class="topbar-center header-search">
+            <input type="text" id="global-search" class="input" placeholder="Ir a...">
+            <span class="header-shortcut">⌘K</span>
+        </div>
+
+        <div class="topbar-end">
+            <!-- MCO Widget -->
+            <div class="status-indicator status-active" id="mco-widget" style="display: none;">
+                <span class="status-dot"></span>
+                <span class="status-text">MCO: <span id="mco-qr-validated">0</span></span>
+            </div>
+
+            <div class="dropdown-container">
+                <button class="avatar avatar-sm" id="user-avatar">OP</button>
+                <div class="dropdown-menu dropdown-user hidden" id="user-menu">
+                    <div class="dropdown-header" id="user-name-display">Operativo</div>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" id="btn-logout" class="dropdown-item dropdown-item-danger">Cerrar Sesión</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="page-shell">
+        <div class="page-card-wrap">
+            <div class="page-card">
+
+                <div id="module-content">
+                    <div class="staff-dashboard">
+                        <div class="dashboard-header align-start">
+                            <div class="welcome-text">
+                                <h1 class="dashboard-title">Panel de Operaciones</h1>
+                                <p class="dashboard-subtitle">Gestión diaria, stock y control operativo.</p>
+                            </div>
+                            <div class="status-row">
+                                <span class="badge status-success">SISTEMA ONLINE</span>
+                            </div>
+                        </div>
+
+                        <!-- Dashboard Shortcuts -->
+                        <div class="profiles-grid">
+                            <a href="operativo-workday.html" class="profile-card" style="text-decoration: none;">
+                                <div class="profile-avatar">📅</div>
+                                <h3 class="profile-name">Work Day</h3>
+                                <p class="profile-role">Gestión de Jornada</p>
+                                <span class="profile-info">Links, Nómina y Solicitudes</span>
+                            </a>
+                            <a href="operativo-stock.html" class="profile-card" style="text-decoration: none;">
+                                <div class="profile-avatar">📦</div>
+                                <h3 class="profile-name">Stock</h3>
+                                <p class="profile-role">Control de Inventario</p>
+                                <span class="profile-info">Stock operativo y ajustes</span>
+                            </a>
+                            <a href="operativo-solicitudes.html" class="profile-card" style="text-decoration: none;">
+                                <div class="profile-avatar">📋</div>
+                                <h3 class="profile-name">Solicitudes</h3>
+                                <p class="profile-role">Requerimientos</p>
+                                <span class="profile-info">Reposición y pedidos</span>
+                            </a>
+                            <a href="cms-members.html" class="profile-card" style="text-decoration: none;">
+                                <div class="profile-avatar">👥</div>
+                                <h3 class="profile-name">CMS Members</h3>
+                                <p class="profile-role">Gestión de Socios</p>
+                                <span class="profile-info">Altas, Bajas y Modificaciones</span>
+                            </a>
+                            <a href="operativo-master-sku.html" class="profile-card" style="text-decoration: none;">
+                                <div class="profile-avatar">⚙️</div>
+                                <h3 class="profile-name">Configuración</h3>
+                                <p class="profile-role">Master Data</p>
+                                <span class="profile-info">SKUs y Proveedores</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 
     <!-- Scripts -->
@@ -53,16 +106,13 @@
     <script defer src="../../assets/js/core/config.js"></script>
     <script defer src="../../assets/js/core/supabase-client.js"></script>
     <script defer src="../../assets/js/core/auth.js"></script>
-    <script src="../../assets/js/core/navigation.js"></script>
-    <!-- Re-using logic if applicable, or generic logic -->
+    <script defer src="../../assets/js/core/utils.js"></script>
+
+    <!-- Module Script -->
     <script src="../../assets/js/modules/operativo/operativo-index.js"></script>
 
-    <footer class="footer" style="position: fixed; bottom: 20px; width: 100%; text-align: center;">
-        <button id="btn-logout" class="footer-link"
-            style="background:none; border:none; color: var(--text-2); cursor: pointer; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Cerrar
-            Sesión</button>
-    </footer>
-
+    <!-- Global Navigation -->
+    <script src="../../assets/js/core/navigation.js"></script>
 </body>
 
 </html>

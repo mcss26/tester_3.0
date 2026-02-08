@@ -620,7 +620,7 @@
     }
     
     async function rejectRequest(id) {
-        const reason = prompt('Motivo del rechazo (opcional):');
+        const reason = await window.Utils.promptModal('Motivo del rechazo (opcional):');
         
         try {
             const { error } = await sb.from('sku_change_requests')
@@ -1783,9 +1783,7 @@
 
     // --- CHART ---
 
-    function getThemeColor(varName, fallback) {
-        return getComputedStyle(document.documentElement).getPropertyValue(varName).trim() || fallback;
-    }
+
 
     async function openChartModal() {
         ui.chartModal?.showModal();
@@ -1825,13 +1823,7 @@
                 .slice(0, 5)
                 .map(([id, info]) => ({ id, name: info.name }));
 
-            const themeColors = [
-                getThemeColor('--color-danger', '#ff3b30'),
-                getThemeColor('--color-warning', '#ff9500'),
-                getThemeColor('--color-success', '#34c759'),
-                getThemeColor('--color-info', '#007aff'),
-                getThemeColor('--color-primary', '#5856d6')
-            ];
+            const themeColors = window.Utils.getChartColors(5);
 
             const datasets = top5.map((sku, i) => {
                 const dataPoints = ordered.map(r => {
@@ -1842,16 +1834,16 @@
                 return { label: sku.name, data: dataPoints, borderColor: color, backgroundColor: color, tension: 0.3, fill: false };
             });
 
-            const textColor = getThemeColor('--color-text-muted', '#888');
-            const gridColor = getThemeColor('--color-border', '#333');
-            const titleColor = getThemeColor('--color-text-main', '#e0e0e0');
+            const textColor = window.Utils.getThemeColor('--color-text-muted', '#888');
+            const gridColor = window.Utils.getThemeColor('--color-border', '#333');
+            const titleColor = window.Utils.getThemeColor('--color-text-main', '#e0e0e0');
 
             if (!ui.historyChartCanvas) {
                 window.Toast?.error('Canvas no disponible');
                 return;
             }
 
-            state.chartInstance = new Chart(ui.historyChartCanvas, {
+            state.chartInstance = await window.ChartLoader.create(ui.historyChartCanvas, {
                 type: 'line',
                 data: { labels, datasets },
                 options: {
@@ -2020,7 +2012,7 @@
         }
 
         try {
-            let query = sb.from('master_recipes').select('*').order('name');
+            let query = sb.from('master_recipes').select('*').eq('active', true).order('name');
             if (filter) query = query.ilike('name', `%${filter}%`);
 
             const { data, error } = await query;
@@ -2233,7 +2225,7 @@
         if (!confirmed) return;
         
         try {
-            const { error } = await sb.from('master_recipes').delete().eq('id', recipe.id);
+            const { error } = await sb.from('master_recipes').update({ active: false }).eq('id', recipe.id);
             if (error) throw error;
             window.Toast?.success('Receta eliminada');
             loadRecipes(ui.searchRecipe?.value || '');
@@ -2427,7 +2419,7 @@
         const colorSuccess = style.getPropertyValue('--success').trim() || '#4ade80';
         const colorWarning = style.getPropertyValue('--warning').trim() || '#fbbf24';
         
-        state.chartInstance = new Chart(ctx, {
+        state.chartInstance = await window.ChartLoader.create(ctx, {
             type: 'line',
             data: {
                 labels: dates,
@@ -2575,8 +2567,8 @@
 
     // Helper Toast (if not exists)
     function showToast(msg) {
-        // Simple alert for now if no toast system
-        alert(msg);
+        if (window.Toast) window.Toast.error(msg);
+        else console.error('[central-stock]', msg);
     }
 
     // Calculate KPIs for consumption cost vs revenue WITH COMPARISON
@@ -2811,7 +2803,7 @@
             });
             
             // Create chart with $ formatting
-            createChartInstance(dates, datasets, '$', true);
+            await createChartInstance(dates, datasets, '$', true);
             
         } else {
             // Query consumption_details for consumption mode
@@ -2859,15 +2851,15 @@
             });
             
             // Create chart with units formatting
-            createChartInstance(dates, datasets, 'unid.', false);
+            await createChartInstance(dates, datasets, 'unid.', false);
         }
     }
     
     
-    function createChartInstance(dates, datasets, unit, isCurrency) {
+    async function createChartInstance(dates, datasets, unit, isCurrency) {
         const ctx = ui.top5ChartCanvas.getContext('2d');
 
-        state.chartInstance = new Chart(ctx, {
+        state.chartInstance = await window.ChartLoader.create(ctx, {
             type: 'line',
             data: { labels: dates, datasets },
             options: {
@@ -3072,6 +3064,7 @@
         const { data: recipes, error } = await sb
             .from('master_recipes')
             .select('id, name, external_id')
+            .eq('active', true)
             .order('name');
         
         if (error) {
@@ -3095,6 +3088,7 @@
         const { data: mappings, error } = await sb
             .from('recipe_code_mappings')
             .select('id, pos_code, recipe_id, notes, recipe:master_recipes(name)')
+            .eq('active', true)
             .order('pos_code');
 
         if (error) {
@@ -3112,7 +3106,7 @@
             <tr>
                 <td><code style="background: var(--bg-elevated); padding: 2px 6px; border-radius: 4px;">${window.Utils.escapeHtml(m.pos_code)}</code></td>
                 <td>${window.Utils.escapeHtml(m.recipe?.name || 'Receta no encontrada')}</td>
-                <td class="text-tertiary text-xs">${m.notes || '-'}</td>
+                <td class="text-tertiary text-xs">${window.Utils.escapeHtml(m.notes || '-')}</td>
                 <td style="text-align: center;">
                     <button class="btn-icon btn-icon-ghost btn-delete-mapping" data-mapping-id="${m.id}" title="Eliminar">🗑️</button>
                 </td>
@@ -3123,7 +3117,7 @@
         ui.codeMappingsTableBody.querySelectorAll('.btn-delete-mapping').forEach(btn => {
             btn.addEventListener('click', async (e) => {
                 const mappingId = e.currentTarget.dataset.mappingId;
-                if (confirm('¿Eliminar este mapeo?')) {
+                if (await window.Utils.confirmModal('¿Eliminar este mapeo?')) {
                     await deleteCodeMapping(mappingId);
                 }
             });
@@ -3165,7 +3159,7 @@
     async function deleteCodeMapping(mappingId) {
         const { error } = await sb
             .from('recipe_code_mappings')
-            .delete()
+            .update({ active: false })
             .eq('id', mappingId);
 
         if (error) {
@@ -3231,7 +3225,7 @@
         const sku = state.skuData.find(s => String(s.id) === String(skuId));
         if (!sku) return;
         
-        const confirmed = confirm(`¿Confirmar SALIDA de ${qty} UN de ${sku.name}?`);
+        const confirmed = await window.Utils.confirmModal(`¿Confirmar SALIDA de ${qty} UN de ${sku.name}?`);
         if (!confirmed) return;
         
         const btnSubmit = ui.adjustmentForm.querySelector('button[type="submit"]');

@@ -5,25 +5,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Logística - Distribución</title>
-    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/tokens.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/admin-master.css">
 </head>
 
-<body class="app-shell stock-shell" data-allowed-roles="logistico,admin">
+<body class="app-shell admin-shell admin-scroll" data-allowed-roles="logistico,admin">
 
-    <header class="app-topbar">
-        <div class="topbar-left">
-            <button class="topbar-link" data-go="pages/logistica/logistica-index.html">← Volver</button>
-        </div>
-
-        <nav class="topbar-center">
-            <button class="topbar-link" data-go="pages/logistica/logistica-stock.html">Stock</button>
-            <button class="topbar-link active"
-                data-go="pages/logistica/logistica-distribucion.html">Distribución</button>
-            <button class="topbar-link" data-go="pages/logistica/logistica-recepcion.html">Recepción</button>
+    <!-- Topbar: Golden Standard -->
+    <header class="topbar">
+        <nav class="breadcrumb topbar-start">
+            <span class="breadcrumb-item">
+                <a class="breadcrumb-link" href="logistica-index.html">Logística</a>
+            </span>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-item current">Distribución</span>
         </nav>
 
-        <div class="topbar-right">
-            <div class="topbar-brand">LOGÍSTICA</div>
+        <div class="topbar-center header-search">
+            <input type="text" id="global-search" class="input" placeholder="Ir a...">
+            <svg class="header-search-icon" viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <span class="header-shortcut">⌘K</span>
+        </div>
+
+        <div class="topbar-end">
+            <div class="dropdown-container">
+                <button id="btn-notifications" class="icon-btn" aria-label="Notificaciones">
+                    <svg class="icon-notification" viewBox="0 0 24 24">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                    <span class="notification-badge" id="notification-count">0</span>
+                </button>
+            </div>
+            <div class="dropdown-container">
+                <button class="avatar avatar-sm" id="user-avatar" aria-label="Menú de usuario">LG</button>
+                <div class="dropdown-menu dropdown-user hidden" id="user-menu">
+                    <div class="dropdown-header" id="user-name-display">Logístico</div>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" id="btn-logout" class="dropdown-item dropdown-item-danger">Cerrar Sesión</a>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -31,28 +56,37 @@
         <div class="page-card-wrap">
             <div class="page-card">
 
-                <div class="staff-dashboard">
-                    <div class="dashboard-header">
-                        <div>
-                            <h2 class="dashboard-title">Distribución a Barras</h2>
-                            <p class="dashboard-subtitle">Gestión de pedidos y despachos</p>
-                        </div>
-                    </div>
+                <!-- Master Navigation -->
+                <nav class="master-nav">
+                    <a href="logistica-stock.html" class="master-nav-link">Stock</a>
+                    <a href="logistica-distribucion.html" class="master-nav-link active">Distribución</a>
+                    <a href="logistica-recepcion.html" class="master-nav-link">Recepción</a>
+                    <a href="logistica-seguimiento.html" class="master-nav-link">Seguimiento</a>
+                </nav>
 
-                    <div class="tabs-row">
-                        <div id="status-tabs" class="tab-bar">
-                            <button class="tab-chip status-tab active" data-status="">Todos</button>
-                            <button class="tab-chip status-tab" data-status="PENDING">Pendientes</button>
-                            <button class="tab-chip status-tab" data-status="APPROVED">Aprobados</button>
-                            <button class="tab-chip status-tab" data-status="DISPATCHED">Despachados</button>
+                <div id="module-content">
+                    <div class="staff-dashboard">
+                        <div class="dashboard-header align-start">
+                            <div>
+                                <h2 class="dashboard-title dashboard-title-soft">Distribución a Barras</h2>
+                                <p class="text-sm text-muted">Gestión de pedidos internos y despachos a sucursales.</p>
+                            </div>
+                            <button class="btn btn-ghost btn-sm" id="btn-refresh">Refrescar</button>
                         </div>
-                        <div class="tabs-actions">
-                            <button class="btn-ghost" id="btn-refresh">Refrescar</button>
-                        </div>
-                    </div>
 
-                    <div class="staff-list table-viewport" id="list-container">
-                        <!-- contenido por JS -->
+                        <!-- Filter Bar -->
+                        <div class="sku-filter-bar">
+                            <div id="status-tabs" class="pill-group">
+                                <button class="filter-pill active" data-status="">Todos</button>
+                                <button class="filter-pill" data-status="PENDING">Pendientes</button>
+                                <button class="filter-pill" data-status="APPROVED">Aprobados</button>
+                                <button class="filter-pill" data-status="DISPATCHED">Despachados</button>
+                            </div>
+                        </div>
+
+                        <div class="table-viewport table-shell" id="list-container">
+                            <!-- JS Content -->
+                        </div>
                     </div>
                 </div>
             </div>
@@ -63,22 +97,22 @@
     <div class="modal-overlay hidden" id="modal-dispatch">
         <div class="modal-card">
             <div class="modal-header">
-                <h2>Despachar Pedido</h2>
+                <h2 class="modal-title">Despachar Pedido</h2>
                 <button class="btn-icon" id="close-modal">✕</button>
             </div>
             <div class="modal-body">
-                <div class="mb-4 info-block">
+                <div class="mb-4 bg-surface p-4 rounded text-sm">
                     <p><strong>Solicitante:</strong> <span id="dispatch-requester">-</span></p>
                     <p><strong>Fecha Deseada:</strong> <span id="dispatch-date">-</span></p>
                     <p><strong>Prioridad:</strong> <span id="dispatch-priority">-</span></p>
-                    <p class="muted"><span id="dispatch-notes"></span></p>
+                    <p class="text-muted mt-2"><span id="dispatch-notes"></span></p>
                 </div>
-                <div class="table-scroll" id="dispatch-items-container">
-                    <!-- items por JS -->
+                <div class="table-scroll" id="dispatch-items-container" style="max-height: 300px;">
+                    <!-- Items JS -->
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-ghost" id="btn-cancel-dispatch">Cancelar</button>
+                <button class="btn btn-secondary" id="btn-cancel-dispatch">Cancelar</button>
                 <button class="btn btn-primary" id="btn-confirm-dispatch">Confirmar Despacho</button>
             </div>
         </div>
@@ -90,6 +124,7 @@
     <script defer src="../../assets/js/core/supabase-client.js"></script>
     <script defer src="../../assets/js/core/auth.js"></script>
     <script defer src="../../assets/js/core/utils.js"></script>
+    <script defer src="../../assets/js/core/toast.js"></script>
     <script defer src="../../assets/js/modules/logistica/logistica-distribucion.js"></script>
     <script src="../../assets/js/core/navigation.js"></script>
 </body>

@@ -5,102 +5,120 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Master Nómina - FormulaMid</title>
-    <link rel="stylesheet" href="../../assets/css/main.css">
+    <!-- Design Tokens & Global Components -->
+    <link rel="stylesheet" href="../../assets/css/tokens.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <!-- Page Specific CSS -->
+    <link rel="stylesheet" href="../../assets/css/admin-master.css">
 </head>
 
-<body class="app-shell admin-shell admin-scroll admin-nomina" data-allowed-roles="admin,contable">
+<body class="admin-shell admin-scroll">
 
-    <header class="app-topbar">
-        <div class="topbar-left">
-            <button class="btn-icon btn-icon-flat" data-go="pages/admin/admin-index.html" aria-label="Volver">←</button>
-            <span class="topbar-back">INICIO</span>
-        </div>
-
-        <nav class="topbar-center topbar-nav-split">
-            <div class="topbar-nav-group left">
-                <button class="topbar-link is-fade-1"
-                    data-go="pages/admin/admin-master-proveedores.html">Proveedores</button>
-            </div>
-            <div class="topbar-nav-group center">
-                <div class="tab-group-logic">
-                    <button class="topbar-link is-center active" id="tab-nomina">Nómina</button>
-                    <button class="topbar-link is-center" id="tab-perfiles">Perfiles</button>
-                </div>
-            </div>
-            <div class="topbar-nav-group right">
-                <button class="topbar-link is-fade-1" data-go="pages/admin/admin-index.html">Menú</button>
-            </div>
+    <!-- Topbar: Golden Standard -->
+    <header class="topbar">
+        <!-- Left: Breadcrumb -->
+        <nav class="breadcrumb topbar-start">
+            <span class="breadcrumb-item">
+                <a class="breadcrumb-link" href="admin-index.html">Administración</a>
+            </span>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-item">RRHH</span>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-item current">Nómina</span>
         </nav>
 
-        <div class="topbar-right">
-            <span class="system-status-pill status-open topbar-pill topbar-pill-quiet">ESTADO: OK</span>
+        <!-- Center: Empty -->
+        <div class="topbar-center"></div>
+
+        <!-- Right: Status + User -->
+        <div class="topbar-end">
+            <span class="status-pill status-neutral">👥 STAFF</span>
+            <div class="dropdown-container">
+                <div class="avatar avatar-sm">AD</div>
+            </div>
         </div>
     </header>
 
     <main class="page-shell">
         <div class="page-card-wrap">
             <div class="page-card">
-                <div class="page-card-loading" id="page-card-loading">
+
+                <!-- Master Navigation (Unified) -->
+                <nav class="master-nav">
+                    <a href="admin-central-stock.html" class="master-nav-link">SKU & Recetas</a>
+                    <a href="admin-master-proveedores.html" class="master-nav-link">Proveedores</a>
+                    <a href="admin-master-categorias.html" class="master-nav-link">Categorías</a>
+                    <a href="admin-master-nomina.html" class="master-nav-link active">Nómina</a>
+                    <a href="admin-pagos.html" class="master-nav-link">Pagos</a>
+                    <a href="admin-master-tarifario.html" class="master-nav-link">Tarifario</a>
+                    <a href="admin-master-pos.html" class="master-nav-link">POS</a>
+                </nav>
+
+                <!-- Loading Overlay -->
+                <div id="page-card-loading" class="page-card-loading is-visible">
                     <div class="state-block loading">
-                        <div class="state-spinner" aria-hidden="true"></div>
-                        <div class="state-loader"></div>
+                        <div class="state-spinner"></div>
                         <p class="state-title">Cargando nómina...</p>
                         <p class="state-desc">Esto puede tardar unos segundos</p>
                     </div>
                 </div>
-                <div class="page-card-empty" id="page-card-empty">
-                    <div class="state-block loading">
+
+                <!-- Empty State Overlay -->
+                <div id="page-card-empty" class="page-card-empty">
+                    <div class="state-block">
                         <p class="state-title">Sin resultados</p>
                         <p class="state-desc">Prueba con otro término de búsqueda.</p>
-                        <button class="btn-ghost btn-sm mt-2" id="btn-clear-search">Limpiar búsqueda y ver
-                            todos</button>
+                        <button id="btn-clear-search" class="btn btn-ghost btn-sm mt-2">Limpiar búsqueda</button>
                     </div>
                 </div>
 
-                <div id="module-content">
+                <!-- Module Content -->
+                <div id="module-content" class="hidden">
+
+                    <!-- Internal Tabs (Nomina vs Perfiles) -->
+                    <div class="tab-bar mb-4">
+                        <button class="tab-chip active" id="tab-nomina">📋 Listado Nómina</button>
+                        <button class="tab-chip" id="tab-perfiles">👤 Perfiles de Usuario</button>
+                    </div>
+
                     <!-- Vista Nómina (Tabla Estándar) -->
                     <div id="view-nomina" class="staff-dashboard">
                         <div class="dashboard-header align-start">
                             <div>
-                                <h2 class="dashboard-title dashboard-title-soft">Gestión de Nómina</h2>
+                                <h2 class="dashboard-title">Gestión de Nómina</h2>
                                 <p class="dashboard-subtitle dashboard-subtitle-soft">Listado y control de staff y
                                     personal</p>
                             </div>
-                            <button class="btn-icon btn-icon-flat btn-icon-plus" id="btn-new"
-                                aria-label="Nuevo personal">+</button>
+                            <button id="btn-new" class="btn-icon btn-icon-plus" aria-label="Nuevo personal">+</button>
                         </div>
 
                         <div class="filter-bar filter-bar-compact" aria-label="Filtros de nómina">
                             <div class="filter-group">
-                                <button
-                                    class="status-pill status-neutral topbar-pill topbar-pill-quiet filter-pill active"
-                                    data-status="all" aria-label="Mostrar todo el personal">
+                                <button class="status-pill status-neutral filter-pill active" data-status="all">
                                     Total <span class="pill-count" id="staff-total">0</span>
                                 </button>
-                                <button class="status-pill status-success topbar-pill topbar-pill-quiet filter-pill"
-                                    data-status="active" aria-label="Mostrar personal activo">
+                                <button class="status-pill status-success filter-pill" data-status="active">
                                     Activos <span class="pill-count" id="staff-active">0</span>
                                 </button>
-                                <button class="status-pill status-error topbar-pill topbar-pill-quiet filter-pill"
-                                    data-status="inactive" aria-label="Mostrar personal inactivo">
+                                <button class="status-pill status-error filter-pill" data-status="inactive">
                                     Inactivos <span class="pill-count" id="staff-inactive">0</span>
                                 </button>
                             </div>
                             <div class="filter-actions">
                                 <input type="search" id="staff-search" class="input input-compact filter-input"
-                                    placeholder="Buscar por nombre, rol o email..." aria-label="Buscar personal" />
+                                    placeholder="Buscar por nombre, rol o email..." />
                             </div>
                         </div>
 
                         <!-- List Container (Managed by JS) -->
-                        <div class="staff-list" id="list-container"></div>
+                        <div class="table-viewport table-shell" id="list-container"></div>
                     </div>
 
                     <!-- Vista Perfiles (Grilla de Profile Cards) -->
                     <div id="view-perfiles" class="staff-dashboard hidden">
                         <div class="dashboard-header align-start">
                             <div>
-                                <h2 class="dashboard-title dashboard-title-soft">Perfiles de Usuario</h2>
+                                <h2 class="dashboard-title">Perfiles de Usuario</h2>
                                 <p class="dashboard-subtitle dashboard-subtitle-soft">Identidades y cuentas de acceso al
                                     sistema</p>
                             </div>
@@ -150,7 +168,7 @@
             <div class="form-group">
                 <label for="staff-email" class="form-label">Email (Usuario)</label>
                 <input type="email" id="staff-email" class="input" placeholder="usuario@midnight.tmp">
-                <span class="note">Dejar vacío para autogenerar un email temporal.</span>
+                <span class="note text-xs text-muted">Dejar vacío para autogenerar un email temporal.</span>
             </div>
 
             <div class="form-group">
@@ -162,10 +180,11 @@
             </div>
         </div>
         <div class="panel-footer">
-            <button class="btn-secondary" id="btn-cancel">Cancelar</button>
-            <button class="btn-primary" id="btn-save">Guardar</button>
+            <button class="btn btn-secondary" id="btn-cancel">Cancelar</button>
+            <button class="btn btn-primary" id="btn-save">Guardar</button>
         </div>
     </div>
+
     <!-- Scripts -->
     <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script defer src="../../assets/js/core/config.js"></script>
@@ -173,13 +192,11 @@
     <script defer src="../../assets/js/core/auth.js"></script>
     <script defer src="../../assets/js/core/utils.js"></script>
     <script defer src="../../assets/js/core/toast.js"></script>
-    <!-- Page Specific Script -->
     <!-- Shared Panel Logic -->
     <script defer src="../../assets/js/core/panel.js"></script>
     <!-- Page Specific Script -->
     <script defer src="../../assets/js/modules/admin/admin-master-nomina.js"></script>
-
-    <!-- Shared Navigation Script -->
+    <!-- Navigation -->
     <script src="../../assets/js/core/navigation.js"></script>
 </body>
 

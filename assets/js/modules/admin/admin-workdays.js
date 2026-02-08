@@ -853,7 +853,7 @@
             const si = cierreStatusLabels[(d.status || 'pending').toLowerCase()] || cierreStatusLabels.pending;
             const dc = diff === 0 ? 'muted' : (diff < 0 ? 'text-error' : 'text-success');
             return `<tr class="table-row">
-                <td class="table-cell"><div class="font-bold">${t.friendly_name}</div><div class="text-xs muted">${d.staff?.email || '-'}</div></td>
+                <td class="table-cell"><div class="font-bold">${window.Utils.escapeHtml(t.friendly_name)}</div><div class="text-xs muted">${window.Utils.escapeHtml(d.staff?.email || '-')}</div></td>
                 <td class="table-cell text-right font-mono">${window.Utils.formatARS(cD)}</td>
                 <td class="table-cell text-right font-mono">${window.Utils.formatARS(zD)}</td>
                 <td class="table-cell text-right font-mono muted">${window.Utils.formatARS(cS)}</td>

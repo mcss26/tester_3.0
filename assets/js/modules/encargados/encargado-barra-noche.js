@@ -99,31 +99,105 @@
         }
     }
 
+    /**
+     * Sprint 1A: Fetch the last closing stock snapshot to precarga opening defaults.
+     * Returns a Map<sku_id, quantity> from the most recent closed session.
+     */
+    async function fetchLastClosingStock(workDayId) {
+        try {
+            // Find the most recent closed bar session (could be from a previous work_day)
+            const { data: lastSession, error: sessErr } = await window.sb
+                .from('bar_sessions')
+                .select('id, work_day_id, closed_at')
+                .eq('status', 'closed')
+                .order('closed_at', { ascending: false })
+                .limit(1)
+                .maybeSingle();
+
+            if (sessErr || !lastSession) return new Map();
+
+            const { data: snapshots, error: snapErr } = await window.sb
+                .from('bar_stock_snapshots')
+                .select('sku_id, quantity')
+                .eq('session_id', lastSession.id)
+                .eq('type', 'closing');
+
+            if (snapErr || !snapshots) return new Map();
+
+            const map = new Map();
+            snapshots.forEach(s => map.set(s.sku_id, Number(s.quantity) || 0));
+            return map;
+        } catch (err) {
+            console.warn('[encargado-barra-noche] Could not fetch last closing stock:', err);
+            return new Map();
+        }
+    }
+
     // ─────────────────────────────────────────────────────────────
     // 6. Rendering
     // ─────────────────────────────────────────────────────────────
-    function renderStockList(container, skus) {
+    /**
+     * Renders stock input list.
+     * @param {HTMLElement} container - Target container
+     * @param {Array} skus - Active SKUs
+     * @param {Map} [lastClosing] - Optional Map<sku_id, qty> from last closing for precarga
+     */
+    function renderStockList(container, skus, lastClosing = null) {
         if (skus.length === 0) {
             container.innerHTML = '<div class="empty-state">No hay SKUs activos.</div>';
             return;
         }
 
-        const html = skus.map(sku => `
+        const hasPrecarga = lastClosing && lastClosing.size > 0;
+
+        const html = skus.map(sku => {
+            const prevQty = hasPrecarga ? (lastClosing.get(sku.id) || 0) : null;
+            const showPrevBadge = prevQty !== null && prevQty > 0;
+
+            return `
             <div class="staff-row" data-sku-id="${sku.id}">
                 <div>
-                    <div class="font-medium">${sku.nombre}</div>
+                    <div class="font-medium">${window.Utils.escapeHtml(sku.nombre)}</div>
                     <div class="muted text-sm">${sku.tipo || 'Unid.'}</div>
+                    ${showPrevBadge ? `<div class="text-xs muted precarga-hint" data-prev="${prevQty}">Cierre ant: <strong>${prevQty}</strong></div>` : ''}
                 </div>
-                <input type="number" 
-                       class="input stock-input cell-narrow text-right" 
-                       placeholder="0" 
-                       step="0.01" 
-                       min="0"
-                       data-sku-id="${sku.id}">
+                <div class="stock-input-wrap">
+                    <input type="number" 
+                           class="input stock-input cell-narrow text-right" 
+                           placeholder="0" 
+                           step="0.01" 
+                           min="0"
+                           ${showPrevBadge ? `value="${prevQty}"` : ''}
+                           data-sku-id="${sku.id}"
+                           data-prev-qty="${prevQty !== null ? prevQty : ''}">
+                    <span class="precarga-delta hidden" data-sku-id="${sku.id}"></span>
+                </div>
             </div>
-        `).join('');
+        `;
+        }).join('');
 
         container.innerHTML = html;
+
+        // Bind change detection for precargados
+        if (hasPrecarga) {
+            container.querySelectorAll('.stock-input[data-prev-qty]').forEach(input => {
+                input.addEventListener('input', () => {
+                    const prev = parseFloat(input.dataset.prevQty);
+                    const curr = parseFloat(input.value) || 0;
+                    const delta = curr - prev;
+                    const deltaEl = container.querySelector(`.precarga-delta[data-sku-id="${input.dataset.skuId}"]`);
+                    if (!deltaEl || isNaN(prev)) return;
+
+                    if (delta === 0) {
+                        deltaEl.classList.add('hidden');
+                    } else {
+                        deltaEl.classList.remove('hidden');
+                        deltaEl.textContent = `${delta > 0 ? '+' : ''}${delta}`;
+                        deltaEl.className = `precarga-delta ${delta > 0 ? 'text-success' : 'text-error'}`;
+                    }
+                });
+            });
+        }
     }
 
     function getStockInputs(container) {
@@ -341,9 +415,15 @@
             }
 
             if (!barSession) {
-                // Ready to open
-                const stock = await fetchCriticalStock();
-                renderStockList(ui.openingStockList, stock);
+                // Ready to open — precarga last closing stock as defaults
+                const [stock, lastClosing] = await Promise.all([
+                    fetchCriticalStock(),
+                    fetchLastClosingStock(openDay.id)
+                ]);
+                renderStockList(ui.openingStockList, stock, lastClosing);
+                if (lastClosing.size > 0) {
+                    window.Toast.info(`Precargados ${lastClosing.size} valores del cierre anterior.`);
+                }
                 setPageState('open');
 
             } else if (barSession.status === 'closed') {

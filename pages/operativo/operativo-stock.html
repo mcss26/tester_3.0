@@ -2,78 +2,108 @@
 <html lang="es">
 
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Stock Operativo - FormulaMid</title>
-  <link rel="stylesheet" href="../../assets/css/main.css" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/admin-master.css">
 </head>
 
-<body class="app-shell stock-shell admin-scroll admin-stock" data-allowed-roles="operativo,logistico">
-  <header class="app-topbar">
-    <div class="topbar-left">
-      <button class="btn-icon btn-icon-flat" data-go="pages/operativo/operativo-erp.html" aria-label="Volver">←</button>
-      <span class="topbar-back">ERP</span>
-    </div>
-    <nav class="topbar-center topbar-nav-split">
-      <div class="topbar-nav-group left">
-        <button class="topbar-link is-fade-1" data-go="pages/operativo/operativo-solicitudes.html">Solicitudes</button>
-      </div>
-      <div class="topbar-nav-group center">
-        <button class="topbar-link is-center active" data-go="pages/operativo/operativo-stock.html">Stock</button>
-      </div>
-      <div class="topbar-nav-group right"></div>
+<body class="app-shell admin-shell admin-scroll" data-allowed-roles="operativo,logistico">
+
+  <!-- Topbar: Golden Standard -->
+  <header class="topbar">
+    <nav class="breadcrumb topbar-start">
+      <span class="breadcrumb-item">
+        <a class="breadcrumb-link" href="operativo-index.html">Operativo</a>
+      </span>
+      <span class="breadcrumb-sep">/</span>
+      <span class="breadcrumb-item current">Stock</span>
     </nav>
-    <div class="topbar-right">
-      <span class="system-status-pill status-open topbar-pill topbar-pill-quiet">ESTADO: OK</span>
+
+    <div class="topbar-center header-search">
+      <input type="text" id="global-search" class="input" placeholder="Ir a...">
+      <span class="header-shortcut">⌘K</span>
+    </div>
+
+    <div class="topbar-end">
+      <div class="dropdown-container">
+        <button class="avatar avatar-sm" id="user-avatar">OP</button>
+      </div>
     </div>
   </header>
 
   <main class="page-shell">
     <div class="page-card-wrap">
       <div class="page-card">
+
+        <!-- Master Navigation -->
+        <nav class="master-nav">
+          <a href="operativo-workday.html" class="master-nav-link">Work Day</a>
+          <a href="operativo-stock.html" class="master-nav-link active">Stock</a>
+          <a href="operativo-solicitudes.html" class="master-nav-link">Solicitudes</a>
+          <a href="operativo-master-sku.html" class="master-nav-link">Configuración</a>
+        </nav>
+
+        <!-- Loading State -->
         <div class="page-card-loading" id="page-card-loading">
           <div class="state-block loading">
-            <div class="state-spinner" aria-hidden="true"></div>
             <div class="state-loader"></div>
             <p class="state-title">Cargando stock...</p>
             <p class="state-desc">Consultando inventario</p>
           </div>
         </div>
+
+        <!-- Empty State -->
         <div class="page-card-empty" id="page-card-empty">
-          <div class="state-block loading">
+          <div class="state-block">
             <p class="state-title">Sin resultados</p>
             <p class="state-desc">No hay stock disponible.</p>
+            <button class="btn btn-secondary btn-sm" id="btn-refresh-empty">Refrescar</button>
           </div>
         </div>
 
+        <!-- Main Content -->
         <div id="module-content">
           <div class="staff-dashboard">
             <div class="dashboard-header align-start">
               <div>
-                <h2 class="dashboard-title dashboard-title-soft">Stock</h2>
-                <p class="dashboard-subtitle dashboard-subtitle-soft">
-                  Vista global de stock y estados
-                </p>
+                <h2 class="dashboard-title dashboard-title-soft">Stock Operativo</h2>
+                <p class="text-sm text-muted">Vista global de stock y estados de inventario.</p>
+              </div>
+              <button class="btn btn-ghost btn-sm" id="btn-refresh">
+                Refrescar
+              </button>
+            </div>
+
+            <!-- Filter Bar -->
+            <div class="sku-filter-bar">
+              <div id="stock-tabs" class="pill-group">
+                <!-- JS Injected Tabs -->
+              </div>
+              <div class="filter-spacer"></div>
+              <div class="search-input-wrap">
+                <svg class="search-icon" viewBox="0 0 24 24">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="search" id="stock-search" class="input search-input" placeholder="Buscar SKU..."
+                  aria-label="Buscar SKU" />
               </div>
             </div>
 
-            <div class="filter-bar filter-bar-compact" aria-label="Filtros de stock">
-              <div id="stock-tabs" class="filter-group tab-bar"></div>
-              <div class="filter-actions">
-                <input type="search" id="stock-search" class="input input-compact filter-input"
-                  placeholder="Buscar SKU..." aria-label="Buscar SKU" />
-                <button class="btn-ghost btn-sm" id="btn-refresh">Refrescar</button>
-              </div>
-            </div>
-
-            <div class="staff-list table-viewport table-shell" id="list-container">
-              <div class="empty-state">Cargando...</div>
+            <!-- List Container -->
+            <div class="table-viewport table-shell" id="list-container">
+              <!-- JS Injected Content -->
             </div>
           </div>
         </div>
       </div>
     </div>
   </main>
+
+  <!-- Scripts -->
   <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script defer src="../../assets/js/core/config.js"></script>
   <script defer src="../../assets/js/core/supabase-client.js"></script>

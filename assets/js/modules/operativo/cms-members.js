@@ -52,7 +52,7 @@
     countActivoPill: document.getElementById("count-activo-pill"),
     countRechazado: document.getElementById("count-rechazado"),
     countBanned: document.getElementById("count-banned"),
-    countDebug: document.getElementById("count-debug"),
+
     countCumple: document.getElementById("count-cumple"),
     birthdayToday: document.getElementById("birthday-today"),
     tabs: document.querySelectorAll(".tab-chip[data-view]"),
@@ -152,13 +152,11 @@
       activo: 0,
       rechazado: 0,
       banned: 0,
-      debug: 0,
     };
 
     state.members.forEach((m) => {
       const status = m._status || "";
       if (counts[status] !== undefined) counts[status] += 1;
-      if (m._credsIssue) counts.debug += 1;
     });
 
     setText(refs.countTotal, counts.total);
@@ -169,7 +167,6 @@
     setText(refs.countActivoPill, counts.activo);
     setText(refs.countRechazado, counts.rechazado);
     setText(refs.countBanned, counts.banned);
-    setText(refs.countDebug, counts.debug);
   }
 
   function updateStatusPill() {
@@ -268,7 +265,6 @@
 
       let matchStatus = false;
       if (state.currentFilter === "all") matchStatus = true;
-      else if (state.currentFilter === "debug") matchStatus = m._credsIssue;
       else matchStatus = status === state.currentFilter;
 
       if (!matchStatus) return false;
@@ -318,10 +314,6 @@
 
     if (status === "activo") {
       actionsHtml += `<button class="btn-ghost btn-sm" data-action="resend" data-id="${m.id}">RESEND</button>`;
-    }
-
-    if (credsIssue) {
-      actionsHtml += `<button class="btn-secondary btn-sm" data-action="debug" data-id="${m.id}">DEBUG</button>`;
     }
 
     return `
@@ -429,39 +421,33 @@
       confirmMsg = `¿Aprobar a ${member.nombre} y enviar credenciales?`;
     if (action === "reject")
       confirmMsg = `¿Rechazar solicitud de ${member.nombre}?`;
-    if (action === "debug")
-      confirmMsg = `¿Regenerar credenciales y reenviar mail a ${member.nombre}?`;
     if (action === "resend")
-      confirmMsg = `¿Reenviar credenciales a ${member.nombre}? (No regenera pass)`;
+      confirmMsg = `¿Regenerar credenciales y reenviar mail a ${member.nombre}?`;
 
     const confirmed = await window.Utils.confirmModal(confirmMsg);
     if (!confirmed) return;
 
     const authFnUrl = `${window.APP_CONFIG.SUPABASE_URL}/functions/v1/auth-member`;
 
-    // APPROVE y DEBUG: Usar Edge Function (genera password, hashea, envía email)
-    if (action === "approve" || action === "debug") {
+    // APPROVE / RESEND: Usar Edge Function (genera password, hashea, envía email)
+    if (action === "approve" || action === "resend") {
       try {
         // Asegurar que el miembro tenga member_id
         let finalMemberId = member.member_id;
-        if (!finalMemberId || finalMemberId.length < 3 || action === "debug") {
+        if (!finalMemberId || finalMemberId.length < 3) {
           finalMemberId = generateMemberId();
-          // Actualizar member_id en DB primero
-          await window.sb
-            .from("members")
-            .update({ member_id: finalMemberId })
-            .eq("id", memberId);
         }
 
-        window.Toast.info("Procesando aprobación...");
+        // Actualizar member_id en DB
+        await window.sb
+          .from("members")
+          .update({ member_id: finalMemberId })
+          .eq("id", memberId);
 
-        console.log("🔍 DEBUG - Llamando Edge Function:", {
-          url: authFnUrl,
-          member_id: finalMemberId,
-          action: "approve"
-        });
+        const actionLabel = action === "resend" ? "Reenviando credenciales..." : "Procesando aprobación...";
+        window.Toast.info(actionLabel);
 
-        // Llamar Edge Function para aprobar
+        // Llamar Edge Function
         const resp = await fetch(authFnUrl, {
           method: "POST",
           headers: {
@@ -475,36 +461,30 @@
           })
         });
 
-        console.log("🔍 DEBUG - Response status:", resp.status, resp.statusText);
-
         const result = await resp.json();
 
-        console.log("🔍 DEBUG - Response body:", result);
-
         if (!resp.ok || !result.success) {
-          console.error("❌ Error en response:", {
-            status: resp.status,
-            result
-          });
-          throw new Error(result.error || "Error al aprobar miembro");
+          throw new Error(result.error || "Error al procesar miembro");
         }
 
         // Mostrar credenciales como fallback (por si el email falla)
         if (result.credentials) {
-          const msg = `✅ MIEMBRO APROBADO\n\nID: ${result.credentials.member_id}\nPASS: ${result.credentials.password}\n\nURL: midnightclub.com.ar\n\n${result.warning ? '⚠️ ' + result.warning : 'Email enviado correctamente'}\n\n(Copia estos datos por seguridad)`;
-          await window.Utils.alertModal(msg, "Credenciales Generadas");
+          const title = action === "resend" ? "Credenciales Regeneradas" : "Credenciales Generadas";
+          const msg = `✅ MIEMBRO ${action === "resend" ? "ACTUALIZADO" : "APROBADO"}\n\nID: ${result.credentials.member_id}\nPASS: ${result.credentials.password}\n\nURL: midnightclub.com.ar\n\n${result.warning ? '⚠️ ' + result.warning : 'Email enviado correctamente'}\n\n(Copia estos datos por seguridad)`;
+          await window.Utils.alertModal(msg, title);
         }
 
         if (result.warning) {
           window.Toast.warning(result.warning);
         } else {
-          window.Toast.success("Miembro aprobado y email enviado");
+          const successMsg = action === "resend" ? "Credenciales regeneradas y email enviado" : "Miembro aprobado y email enviado";
+          window.Toast.success(successMsg);
         }
 
         await loadMembers();
         return;
       } catch (err) {
-        console.error("Error en approve:", err);
+        console.error(`Error en ${action}:`, err);
         window.Toast.error("Error: " + err.message);
         return;
       }
@@ -528,12 +508,6 @@
         window.Toast.error("Error: " + err.message);
         return;
       }
-    }
-
-    // RESEND: No implementado aún (requiere acción separada en Edge Function)
-    if (action === "resend") {
-      window.Toast.warning("Función RESEND aún no implementada. Usa DEBUG para regenerar credenciales.");
-      return;
     }
   }
 

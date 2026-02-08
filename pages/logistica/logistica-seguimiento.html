@@ -5,74 +5,67 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Logística - Seguimiento</title>
-  <link rel="stylesheet" href="../../assets/css/main.css">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/admin-master.css">
 </head>
 
-<body class="app-shell stock-shell" data-allowed-roles="logistico,admin">
+<body class="app-shell admin-shell admin-scroll" data-allowed-roles="logistico,admin">
 
-  <header class="app-topbar">
-    <div class="topbar-left">
-      <button class="topbar-link" data-go="pages/logistica/logistica-index.html">← Volver</button>
-    </div>
-
-    <nav class="topbar-center">
-      <button class="topbar-link" data-go="pages/logistica/logistica-stock.html">Stock</button>
-      <button class="topbar-link" data-go="pages/logistica/logistica-distribucion.html">Distribución</button>
-      <button class="topbar-link" data-go="pages/logistica/logistica-recepcion.html">Recepción</button>
-      <button class="topbar-link active" data-go="pages/logistica/logistica-seguimiento.html">Seguimiento</button>
+  <!-- Topbar: Golden Standard -->
+  <header class="topbar">
+    <nav class="breadcrumb topbar-start">
+      <span class="breadcrumb-item">
+        <a class="breadcrumb-link" href="logistica-index.html">Logística</a>
+      </span>
+      <span class="breadcrumb-sep">/</span>
+      <span class="breadcrumb-item current">Seguimiento</span>
     </nav>
 
-    <div class="topbar-right">
-      <div class="topbar-brand">LOGÍSTICA</div>
+    <div class="topbar-center header-search">
+      <input type="text" id="global-search" class="input" placeholder="Ir a...">
+      <span class="header-shortcut">⌘K</span>
+    </div>
+
+    <div class="topbar-end">
+      <div class="dropdown-container">
+        <button class="avatar avatar-sm" id="user-avatar">LG</button>
+      </div>
     </div>
   </header>
 
-  <!-- Loading State -->
-  <div id="page-card-loading" class="page-card-loading">
-    <div class="loading-content">
-      <div class="loading-spinner"></div>
-      <h3 class="loading-title">Cargando Pedidos...</h3>
-      <p class="loading-msg">Sincronizando estado de órdenes...</p>
-    </div>
-  </div>
-
-  <!-- Empty State -->
-  <div id="page-card-empty" class="page-card-empty hidden">
-    <div class="empty-content">
-      <div class="empty-icon">📦</div>
-      <h3 class="empty-title">Sin Pedidos en Tránsito</h3>
-      <p class="empty-msg">No hay órdenes de compra pendientes de seguimiento.</p>
-      <button class="btn btn-primary btn-sm mt-4" onclick="location.reload()">Refrescar</button>
-    </div>
-  </div>
-
   <main class="page-shell">
-    <div id="module-content" class="page-card-wrap hidden">
+    <div class="page-card-wrap">
       <div class="page-card">
 
+        <nav class="master-nav">
+          <a href="logistica-stock.html" class="master-nav-link">Stock</a>
+          <a href="logistica-distribucion.html" class="master-nav-link">Distribución</a>
+          <a href="logistica-recepcion.html" class="master-nav-link">Recepción</a>
+          <a href="logistica-seguimiento.html" class="master-nav-link active">Seguimiento</a>
+        </nav>
+
         <div class="staff-dashboard">
-          <div class="dashboard-header">
+          <div class="dashboard-header align-start">
             <div>
-              <h2 class="dashboard-title">Seguimiento de Pedidos</h2>
-              <p class="dashboard-subtitle">Tracking de órdenes de compra hasta entrega</p>
+              <h2 class="dashboard-title dashboard-title-soft">Seguimiento de Pedidos</h2>
+              <p class="text-sm text-muted">Tracking de órdenes de compra hasta entrega.</p>
             </div>
-            <div class="header-actions">
-              <button class="btn-icon btn-icon-flat" id="btn-refresh" title="Refrescar">↻</button>
+            <button class="btn btn-ghost btn-sm" id="btn-refresh">Refrescar</button>
+          </div>
+
+          <div class="sku-filter-bar">
+            <div id="status-tabs" class="pill-group">
+              <button class="filter-pill active" data-status="">Todos</button>
+              <button class="filter-pill" data-status="ordered">Ordenados</button>
+              <button class="filter-pill" data-status="in_transit">En Tránsito</button>
+              <button class="filter-pill" data-status="arrived">Llegados</button>
+              <button class="filter-pill" data-status="delivered">Entregados</button>
             </div>
           </div>
 
-          <div class="tabs-row">
-            <div id="status-tabs" class="tab-bar">
-              <button class="tab-chip status-tab active" data-status="">Todos</button>
-              <button class="tab-chip status-tab" data-status="ordered">Ordenados</button>
-              <button class="tab-chip status-tab" data-status="in_transit">En Tránsito</button>
-              <button class="tab-chip status-tab" data-status="arrived">Llegados</button>
-              <button class="tab-chip status-tab" data-status="delivered">Entregados</button>
-            </div>
-          </div>
-
-          <div class="staff-list table-viewport" id="list-container">
-            <!-- contenido por JS -->
+          <div class="table-viewport table-shell" id="list-container">
+            <!-- JS Content -->
           </div>
         </div>
       </div>
@@ -81,57 +74,55 @@
 
   <!-- Slide Panel: Detalle de Orden -->
   <div id="slide-panel" class="slide-panel">
-    <div class="panel-overlay"></div>
-    <div class="panel-content shadow-premium">
-      <header class="panel-header">
-        <div class="panel-header-info">
-          <h2 class="panel-title" id="panel-title">Detalle de Orden</h2>
-          <p class="panel-subtitle">Timeline de seguimiento</p>
-        </div>
-        <button class="btn-icon btn-close-panel" aria-label="Cerrar">×</button>
-      </header>
+    <div class="panel-header">
+      <div class="panel-header-info">
+        <h2 class="panel-title" id="panel-title">Detalle de Orden</h2>
+        <p class="panel-subtitle">Timeline de seguimiento</p>
+      </div>
+      <button class="btn-icon btn-close-panel" aria-label="Cerrar">×</button>
+    </div>
 
-      <div class="panel-body custom-scroll" id="panel-body">
-        <!-- Order Info -->
-        <div id="order-info" class="mb-6">
+    <div class="panel-body custom-scroll" id="panel-body">
+      <!-- Order Info -->
+      <div id="order-info" class="mb-6 card bg-surface">
+        <!-- Injected by JS -->
+      </div>
+
+      <!-- Timeline -->
+      <div class="timeline-container" id="timeline-container">
+        <h4 class="text-sm font-bold mb-3">Historial de Estados</h4>
+        <div id="timeline-list" class="timeline">
           <!-- Injected by JS -->
-        </div>
-
-        <!-- Timeline -->
-        <div class="timeline-container" id="timeline-container">
-          <h4 class="text-sm font-bold mb-3">Historial de Estados</h4>
-          <div id="timeline-list" class="timeline">
-            <!-- Injected by JS -->
-          </div>
-        </div>
-
-        <!-- Add Event Form -->
-        <div class="mt-6 p-4 bg-surface-2 rounded-lg" id="add-event-form">
-          <h4 class="text-sm font-bold mb-3">Agregar Actualización</h4>
-          <div class="form-group">
-            <label class="form-label">Nuevo Estado</label>
-            <select id="new-status" class="input w-full">
-              <option value="">Seleccionar...</option>
-              <option value="ordered">📋 Ordenado</option>
-              <option value="in_transit">🚚 En Tránsito</option>
-              <option value="arrived">📦 Llegado a Depósito</option>
-              <option value="delivered">✅ Entregado</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Notas (opcional)</label>
-            <textarea id="event-notes" class="input w-full" rows="2"
-              placeholder="Ej: Confirmado por proveedor, tracking #123..."></textarea>
-          </div>
         </div>
       </div>
 
-      <footer class="panel-footer row-flex justify-end gap-sm">
-        <button class="btn btn-secondary btn-sm btn-close-panel">CERRAR</button>
-        <button class="btn btn-primary btn-sm" id="btn-add-event">GUARDAR ESTADO</button>
-      </footer>
+      <!-- Add Event Form -->
+      <div class="mt-6 p-4 bg-surface card" id="add-event-form">
+        <h4 class="text-sm font-bold mb-3">Agregar Actualización</h4>
+        <div class="form-group mb-3">
+          <label class="form-label">Nuevo Estado</label>
+          <select id="new-status" class="input select w-full">
+            <option value="">Seleccionar...</option>
+            <option value="ordered">📋 Ordenado</option>
+            <option value="in_transit">🚚 En Tránsito</option>
+            <option value="arrived">📦 Llegado a Depósito</option>
+            <option value="delivered">✅ Entregado</option>
+          </select>
+        </div>
+        <div class="form-group mb-3">
+          <label class="form-label">Notas (opcional)</label>
+          <textarea id="event-notes" class="input w-full" rows="2"
+            placeholder="Ej: Confirmado por proveedor..."></textarea>
+        </div>
+      </div>
     </div>
+
+    <footer class="panel-footer row-flex justify-end gap-sm">
+      <button class="btn btn-secondary btn-sm btn-close-panel">CERRAR</button>
+      <button class="btn btn-primary btn-sm" id="btn-add-event">GUARDAR ESTADO</button>
+    </footer>
   </div>
+  <div class="panel-overlay"></div>
 
   <!-- Scripts -->
   <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>

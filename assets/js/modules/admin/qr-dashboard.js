@@ -1,8 +1,10 @@
-document.addEventListener('DOMContentLoaded', async () => {
+(async function() {
+  'use strict';
     // 1. Auth Guard
     const session = await window.Auth.guardOrRedirect(['admin', 'encargado_caja', 'contable']);
     if (!session) return;
 
+    if (!window.Utils.assertSbOrShowBlockingError()) return;
     const sb = window.sb;
 
     // elements
@@ -86,7 +88,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <td class="p-4 font-mono text-green-400">${bAccredited}</td>
                     <td class="p-4 text-xs text-white/50">${new Date(batch.created_at).toLocaleDateString()}</td>
                     <td class="p-4">
-                        <button class="text-xs bg-white/10 hover:bg-white/20 px-2 py-1 rounded text-white" onclick="viewBatch('${batch.id}')">Ver</button>
+                        <button class="text-xs bg-white/10 hover:bg-white/20 px-2 py-1 rounded text-white js-view-batch" data-batch-id="${batch.id}">Ver</button>
                     </td>
                 </tr>
             `;
@@ -117,8 +119,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         `).join('');
     }
 
-    // Expose helpers
-    window.viewBatch = (id) => {
-        window.Toast.info('Funcionalidad de detalle en desarrollo. ID: ' + id);
-    };
-});
+    // Delegate batch view clicks
+    batchesList.addEventListener('click', (e) => {
+        const btn = e.target.closest('.js-view-batch');
+        if (!btn) return;
+        const id = btn.dataset.batchId;
+        window.Toast?.info('Funcionalidad de detalle en desarrollo. ID: ' + id);
+    });
+})();

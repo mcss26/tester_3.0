@@ -350,7 +350,7 @@
             const div = document.createElement('div');
             div.className = 'notification-item';
             div.innerHTML = `
-                <div class="notification-title">${item.title}</div>
+                <div class="notification-title">${esc(item.title)}</div>
                 <div class="notification-desc">${item.desc}</div>
                 <div class="notification-time">${item.time}</div>
             `;
@@ -559,9 +559,9 @@
     }
 
     async function deleteCostDef(id, type) {
-        if (!confirm('¿Eliminar este costo permanentemente?')) return;
+        if (!await window.Utils.confirmModal('¿Eliminar este costo?')) return;
         try {
-            const { error } = await window.sb.from('cost_definitions').delete().eq('id', id);
+            const { error } = await window.sb.from('cost_definitions').update({ is_active: false, updated_at: new Date().toISOString() }).eq('id', id);
             if (error) throw error;
             window.Toast?.ok('Costo eliminado');
             type === 'noche' ? loadCostosNoche() : loadCostosFijos();
@@ -919,7 +919,7 @@
             });
 
             row.querySelector('.js-btn-del-param')?.addEventListener('click', async () => {
-                if (!confirm('¿Eliminar este parámetro?')) return;
+                if (!await window.Utils.confirmModal('¿Eliminar este parámetro?')) return;
                 try {
                     const { error } = await window.sb.from(table).update({ active: false, updated_at: new Date().toISOString() }).eq('id', id);
                     if (error) throw error;
@@ -933,7 +933,7 @@
         document.getElementById('configParametros')?.querySelectorAll('.js-btn-add-param').forEach(btn => {
             btn.addEventListener('click', async () => {
                 const table = btn.dataset.table;
-                const newName = prompt(table === 'payment_methods' ? 'Nombre del método:' : 'Nombre del comprobante:');
+                const newName = await window.Utils.promptModal(table === 'payment_methods' ? 'Nombre del método:' : 'Nombre del comprobante:');
                 if (!newName?.trim()) return;
                 try {
                     const row = table === 'payment_methods'

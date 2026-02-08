@@ -5,96 +5,105 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Master Categorías - FormulaMid</title>
-    <link rel="stylesheet" href="../../assets/css/main.css">
+    <!-- Design Tokens & Global Components -->
+    <link rel="stylesheet" href="../../assets/css/tokens.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <!-- Page Specific CSS -->
+    <link rel="stylesheet" href="../../assets/css/admin-master.css">
 </head>
 
-<body class="app-shell admin-shell admin-scroll admin-categorias" data-allowed-roles="admin,contable">
+<body class="admin-shell admin-scroll">
 
-    <header class="app-topbar">
-        <div class="topbar-left">
-            <button class="btn-icon btn-icon-flat" data-go="pages/admin/admin-index.html" aria-label="Volver">←</button>
-            <span class="topbar-back">INICIO</span>
-        </div>
-
-        <nav class="topbar-center topbar-nav-split">
-            <div class="topbar-nav-group left">
-                <button class="topbar-link is-fade-1" data-go="pages/admin/admin-master-sku.html">SKU</button>
-                <button class="topbar-link is-fade-2" data-go="pages/admin/admin-central-stock.html">Recetas</button>
-                <button class="topbar-link is-fade-3"
-                    data-go="pages/admin/admin-master-proveedores.html">Proveedores</button>
-            </div>
-            <div class="topbar-nav-group center">
-                <button class="topbar-link is-center active"
-                    data-go="pages/admin/admin-master-categorias.html">Categorías</button>
-            </div>
-            <div class="topbar-nav-group right">
-                <button class="topbar-link is-fade-1" data-go="pages/admin/admin-pagos.html">Pagos</button>
-                <button class="topbar-link is-fade-2"
-                    data-go="pages/admin/admin-master-tarifario.html">Tarifario</button>
-                <button class="topbar-link is-fade-3" data-go="pages/admin/admin-master-pos.html">POS</button>
-            </div>
+    <!-- Topbar: Golden Standard -->
+    <header class="topbar">
+        <!-- Left: Breadcrumb -->
+        <nav class="breadcrumb topbar-start">
+            <span class="breadcrumb-item">
+                <a class="breadcrumb-link" href="admin-index.html">Administración</a>
+            </span>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-item">Master Data</span>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-item current">Categorías</span>
         </nav>
 
-        <div class="topbar-right">
-            <span class="system-status-pill status-open topbar-pill topbar-pill-quiet">ESTADO: OK</span>
+        <!-- Center: Empty -->
+        <div class="topbar-center"></div>
+
+        <!-- Right: Status + User -->
+        <div class="topbar-end">
+            <span class="status-pill status-neutral">📚 DATA</span>
+            <div class="dropdown-container">
+                <div class="avatar avatar-sm">AD</div>
+            </div>
         </div>
     </header>
 
     <main class="page-shell">
         <div class="page-card-wrap">
             <div class="page-card">
-                <div class="page-card-loading" id="page-card-loading">
+
+                <!-- Master Navigation -->
+                <nav class="master-nav">
+                    <a href="admin-central-stock.html" class="master-nav-link">SKU & Recetas</a>
+                    <a href="admin-master-proveedores.html" class="master-nav-link">Proveedores</a>
+                    <a href="admin-master-categorias.html" class="master-nav-link active">Categorías</a>
+                    <a href="admin-master-nomina.html" class="master-nav-link">Nómina</a>
+                    <a href="admin-pagos.html" class="master-nav-link">Pagos</a>
+                    <a href="admin-master-tarifario.html" class="master-nav-link">Tarifario</a>
+                    <a href="admin-master-pos.html" class="master-nav-link">POS</a>
+                </nav>
+
+                <!-- Loading Overlay -->
+                <div id="page-card-loading" class="page-card-loading is-visible">
                     <div class="state-block loading">
-                        <div class="state-spinner" aria-hidden="true"></div>
-                        <div class="state-loader"></div>
+                        <div class="state-spinner"></div>
                         <p class="state-title">Cargando categorías...</p>
                         <p class="state-desc">Esto puede tardar unos segundos</p>
                     </div>
                 </div>
-                <div class="page-card-empty" id="page-card-empty">
-                    <div class="state-block loading">
+
+                <!-- Empty State Overlay -->
+                <div id="page-card-empty" class="page-card-empty">
+                    <div class="state-block">
                         <p class="state-title">Sin resultados</p>
                         <p class="state-desc">Prueba con otro término de búsqueda.</p>
-                        <button class="btn-ghost btn-sm mt-2" id="btn-clear-search">Limpiar búsqueda y ver
-                            todos</button>
+                        <button id="btn-clear-search" class="btn btn-ghost btn-sm mt-2">Limpiar búsqueda</button>
                     </div>
                 </div>
-                <div id="module-content">
+
+                <!-- Module Content -->
+                <div id="module-content" class="hidden">
                     <div class="staff-dashboard">
                         <div class="dashboard-header align-start">
                             <div>
-                                <h2 class="dashboard-title dashboard-title-soft">Gestión de categorías</h2>
+                                <h2 class="dashboard-title">Gestión de categorías</h2>
                                 <p class="dashboard-subtitle dashboard-subtitle-soft">Listado y control de categorías
                                 </p>
                             </div>
-                            <button class="btn-icon btn-icon-flat btn-icon-plus" id="btn-new"
-                                aria-label="Nueva categoría">+</button>
+                            <button id="btn-new" class="btn-icon btn-icon-plus" aria-label="Nueva categoría">+</button>
                         </div>
 
                         <div class="filter-bar filter-bar-compact" aria-label="Filtros de categorías">
                             <div class="filter-group">
-                                <button
-                                    class="status-pill status-neutral topbar-pill topbar-pill-quiet filter-pill active"
-                                    data-status="all" aria-label="Mostrar todas las categorías">
+                                <button class="status-pill status-neutral filter-pill active" data-status="all">
                                     Total <span class="pill-count" id="categories-total">0</span>
                                 </button>
-                                <button class="status-pill status-success topbar-pill topbar-pill-quiet filter-pill"
-                                    data-status="active" aria-label="Mostrar categorías activas">
+                                <button class="status-pill status-success filter-pill" data-status="active">
                                     Activas <span class="pill-count" id="categories-active">0</span>
                                 </button>
-                                <button class="status-pill status-error topbar-pill topbar-pill-quiet filter-pill"
-                                    data-status="inactive" aria-label="Mostrar categorías inactivas">
+                                <button class="status-pill status-error filter-pill" data-status="inactive">
                                     Inactivas <span class="pill-count" id="categories-inactive">0</span>
                                 </button>
                             </div>
                             <div class="filter-actions">
                                 <input type="search" id="search-input" class="input input-compact filter-input"
-                                    placeholder="Buscar categoría..." aria-label="Buscar categoría" />
+                                    placeholder="Buscar categoría..." />
                             </div>
                         </div>
 
                         <!-- List Container (Managed by JS) -->
-                        <div class="staff-list table-viewport table-shell" id="list-container">
+                        <div class="table-viewport table-shell" id="list-container">
                             <!-- Content injected by JS -->
                         </div>
                     </div>
@@ -127,10 +136,11 @@
             </div>
         </div>
         <div class="panel-footer">
-            <button class="btn-secondary" id="btn-cancel">Cancelar</button>
-            <button class="btn-primary" id="btn-save">Guardar</button>
+            <button class="btn btn-secondary" id="btn-cancel">Cancelar</button>
+            <button class="btn btn-primary" id="btn-save">Guardar</button>
         </div>
     </div>
+
     <!-- Scripts -->
     <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script defer src="../../assets/js/core/config.js"></script>
@@ -142,8 +152,7 @@
     <script defer src="../../assets/js/core/panel.js"></script>
     <!-- Page Specific Script -->
     <script defer src="../../assets/js/modules/admin/admin-master-categorias.js"></script>
-
-    <!-- Shared Navigation Script -->
+    <!-- Navigation -->
     <script src="../../assets/js/core/navigation.js"></script>
 </body>
 

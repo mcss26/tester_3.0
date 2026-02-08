@@ -193,24 +193,24 @@
 
       rows.push(`
                 <tr class="table-row row-clickable prov-row ${isExpanded ? "is-open" : ""} ${inactiveClass}" data-id="${item.id}">
-                    <td class="table-cell cell-pad cell-strong">
-                        <span class="row-caret">▸</span>${item.nombre_fantasia}
+                    <td class="table-cell cell-pad font-medium">
+                        <span class="row-caret">▸</span>${window.Utils.escapeHtml(item.nombre_fantasia)}
                     </td>
-                    <td class="table-cell cell-pad muted">${razon}</td>
-                    <td class="table-cell cell-pad muted">${cuit}</td>
-                    <td class="table-cell cell-pad muted">${banco}</td>
-                    <td class="table-cell cell-pad muted">${cbu}</td>
+                    <td class="table-cell cell-pad text-muted">${razon}</td>
+                    <td class="table-cell cell-pad text-muted">${cuit}</td>
+                    <td class="table-cell cell-pad text-muted">${banco}</td>
+                    <td class="table-cell cell-pad text-muted">${cbu}</td>
                     <td class="table-cell cell-pad">
                         <button class="btn-ghost btn-sm btn-edit-prov" data-id="${item.id}" title="Editar">Editar</button>
                         ${notas ? `<span class="note">${notas.slice(0, 50)}${notas.length > 50 ? "…" : ""}</span>` : ""}
                     </td>
                 </tr>
                 <tr class="prov-details row-details row-subtle ${isExpanded ? "is-open" : ""} ${inactiveClass}" data-id="${item.id}">
-                    <td colspan="6" class="table-cell cell-pad-sm text-sm muted">
+                    <td colspan="6" class="table-cell cell-pad-sm text-sm text-muted">
                         <div class="row-flex">
-                            <div><strong>Contacto:</strong> <span class="muted">${contactoNombre}</span></div>
-                            <div><strong>Teléfono:</strong> <span class="muted">${telefono}</span></div>
-                            <div><strong>Email:</strong> <span class="muted">${email}</span></div>
+                            <div><strong>Contacto:</strong> <span class="text-muted">${contactoNombre}</span></div>
+                            <div><strong>Teléfono:</strong> <span class="text-muted">${telefono}</span></div>
+                            <div><strong>Email:</strong> <span class="text-muted">${email}</span></div>
                         </div>
                     </td>
                 </tr>

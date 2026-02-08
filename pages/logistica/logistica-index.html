@@ -5,44 +5,131 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Midnight - Logística</title>
-  <link rel="stylesheet" href="../../assets/css/main.css">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/admin-master.css">
 </head>
 
-<body class="welcome-screen logistica-landing" data-allowed-roles="logistico,admin">
+<body class="app-shell admin-shell admin-scroll" data-allowed-roles="logistico,admin">
 
-  <main class="center-content">
-    <section class="welcome-section">
-      <p class="label-welcome">BIENVENIDO</p>
-      <h1 id="user-name" class="title-name">...</h1>
-      <p class="role-subtitle">Logística de <strong>MIDNIGHT CLUB</strong></p>
+  <!-- Topbar: Golden Standard -->
+  <header class="topbar">
+    <!-- Left: Breadcrumb -->
+    <nav class="breadcrumb topbar-start">
+      <span class="breadcrumb-item">
+        <a class="breadcrumb-link" href="logistica-index.html">Logística</a>
+      </span>
+      <span class="breadcrumb-sep">/</span>
+      <span class="breadcrumb-item current">Inicio</span>
+    </nav>
 
-      <!-- System Status -->
-      <p id="system-status" class="system-status-pill">...</p>
-    </section>
+    <!-- Center: Search -->
+    <div class="topbar-center header-search">
+      <input type="text" id="global-search" class="input" placeholder="Ir a...">
+      <svg class="header-search-icon" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <span class="header-shortcut">⌘K</span>
+    </div>
 
-    <section class="mode-selection link-row">
-      <!-- Navigation Links -->
-      <div class="flex flex-wrap gap-4 justify-center mt-4">
-        <a href="#" data-go="pages/logistica/logistica-stock.html" class="footer-link">📦 Stock</a>
-        <a href="#" data-go="pages/logistica/logistica-distribucion.html" class="footer-link">🔄 Distribución</a>
-        <a href="#" data-go="pages/logistica/logistica-recepcion.html" class="footer-link">📥 Recepción</a>
-        <a href="#" data-go="pages/logistica/logistica-seguimiento.html" class="footer-link">🚚 Seguimiento</a>
+    <!-- Right: Notifications + Avatar -->
+    <div class="topbar-end">
+      <!-- Notifications Dropdown -->
+      <div class="dropdown-container">
+        <button id="btn-notifications" class="icon-btn" aria-label="Notificaciones">
+          <svg class="icon-notification" viewBox="0 0 24 24">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <span class="notification-badge" id="notification-count">0</span>
+        </button>
       </div>
-    </section>
-  </main>
 
-  <footer class="footer">
-    <button id="btn-logout" class="footer-link">Cerrar Sesión</button>
-  </footer>
+      <!-- User Menu Dropdown -->
+      <div class="dropdown-container">
+        <button class="avatar avatar-sm" id="user-avatar" aria-label="Menú de usuario">LG</button>
+        <div class="dropdown-menu dropdown-user hidden" id="user-menu">
+          <div class="dropdown-header" id="user-name-display">Logístico</div>
+          <div class="dropdown-divider"></div>
+          <a href="#" id="btn-logout" class="dropdown-item dropdown-item-danger">
+            <svg class="dropdown-icon" viewBox="0 0 24 24">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+            Cerrar Sesión
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <div class="page-card-wrap">
+      <div class="page-card">
+
+        <!-- Master Navigation -->
+        <nav class="master-nav">
+          <a href="logistica-stock.html" class="master-nav-link">Stock</a>
+          <a href="logistica-distribucion.html" class="master-nav-link">Distribución</a>
+          <a href="logistica-recepcion.html" class="master-nav-link">Recepción</a>
+          <a href="logistica-seguimiento.html" class="master-nav-link">Seguimiento</a>
+        </nav>
+
+        <div id="module-content">
+          <div class="staff-dashboard">
+            <div class="dashboard-header align-start">
+              <div>
+                <h1 class="dashboard-title">Bienvenido a Logística</h1>
+                <p class="dashboard-subtitle">Gestión de stock, distribución y recepción de materiales.</p>
+              </div>
+            </div>
+
+            <!-- Dashboard Widgets / Link Cards -->
+            <div class="profiles-grid">
+              <a href="logistica-stock.html" class="profile-card" style="text-decoration: none;">
+                <div class="profile-avatar">📦</div>
+                <h3 class="profile-name">Stock</h3>
+                <p class="profile-role">Gestión de Inventario</p>
+                <span class="profile-info">Consultar y ajustar stock</span>
+              </a>
+              <a href="logistica-distribucion.html" class="profile-card" style="text-decoration: none;">
+                <div class="profile-avatar">🔄</div>
+                <h3 class="profile-name">Distribución</h3>
+                <p class="profile-role">Movimientos Internos</p>
+                <span class="profile-info">Transferencias entre áreas</span>
+              </a>
+              <a href="logistica-recepcion.html" class="profile-card" style="text-decoration: none;">
+                <div class="profile-avatar">📥</div>
+                <h3 class="profile-name">Recepción</h3>
+                <p class="profile-role">Ingreso de Mercadería</p>
+                <span class="profile-info">Recepcionar proveedores</span>
+              </a>
+              <a href="logistica-seguimiento.html" class="profile-card" style="text-decoration: none;">
+                <div class="profile-avatar">🚚</div>
+                <h3 class="profile-name">Seguimiento</h3>
+                <p class="profile-role">Trazabilidad</p>
+                <span class="profile-info">Historial de movimientos</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
 
   <!-- Scripts -->
   <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script defer src="../../assets/js/core/config.js"></script>
   <script defer src="../../assets/js/core/supabase-client.js"></script>
   <script defer src="../../assets/js/core/auth.js"></script>
-  <script defer src="../../assets/js/core/work-day-helper.js"></script>
+  <script defer src="../../assets/js/core/utils.js"></script>
+  <script defer src="../../assets/js/core/toast.js"></script>
+
+  <!-- Page Specific Script -->
+  <script defer src="../../assets/js/modules/logistica/logistica-index.js"></script>
   <script src="../../assets/js/core/navigation.js"></script>
-  <script src="../../assets/js/modules/logistica/logistica-index.js"></script>
 </body>
 
 </html>

@@ -247,6 +247,107 @@
     });
   };
 
+  /**
+   * Promise-based prompt modal (text input)
+   * @param {string} message - The prompt label
+   * @param {object} [options] - { placeholder, defaultValue, confirmText, cancelText }
+   * @returns {Promise<string|null>} - entered text or null if cancelled
+   */
+  const promptModal = (message, options = {}) => {
+    return new Promise((resolve) => {
+      const { placeholder = '', defaultValue = '', confirmText = 'Aceptar', cancelText = 'Cancelar' } = options;
+
+      let modal = document.getElementById('promptModal');
+      if (!modal) {
+        modal = document.createElement('dialog');
+        modal.id = 'promptModal';
+        modal.className = 'modal';
+        modal.innerHTML = `
+          <div class="modal-content">
+            <p id="prompt-message" class="modal-body"></p>
+            <input type="text" id="prompt-input" class="input" style="width:100%;margin:8px 0 16px;" />
+            <div class="modal-footer">
+              <button type="button" class="btn-ghost" id="btn-prompt-cancel">Cancelar</button>
+              <button type="button" class="btn-primary" id="btn-prompt-ok">Aceptar</button>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(modal);
+      }
+
+      const msgEl = modal.querySelector('#prompt-message');
+      const inputEl = modal.querySelector('#prompt-input');
+      const btnOk = modal.querySelector('#btn-prompt-ok');
+      const btnCancel = modal.querySelector('#btn-prompt-cancel');
+
+      if (msgEl) msgEl.textContent = message;
+      if (inputEl) { inputEl.value = defaultValue; inputEl.placeholder = placeholder; }
+      if (btnOk) btnOk.textContent = confirmText;
+      if (btnCancel) btnCancel.textContent = cancelText;
+
+      modal.showModal();
+      inputEl?.focus();
+
+      const cleanup = () => {
+        modal.close();
+        btnOk?.removeEventListener('click', onOk);
+        btnCancel?.removeEventListener('click', onCancel);
+        modal?.removeEventListener('close', onClose);
+        inputEl?.removeEventListener('keydown', onKey);
+      };
+
+      const onOk = () => { const val = inputEl?.value?.trim(); cleanup(); resolve(val || null); };
+      const onCancel = () => { cleanup(); resolve(null); };
+      const onClose = () => { cleanup(); resolve(null); };
+      const onKey = (e) => { if (e.key === 'Enter') onOk(); };
+
+      btnOk?.addEventListener('click', onOk);
+      btnCancel?.addEventListener('click', onCancel);
+      modal?.addEventListener('close', onClose);
+      inputEl?.addEventListener('keydown', onKey);
+    });
+  };
+
+  /**
+   * Read a CSS custom property from :root
+   * @param {string} varName - CSS variable name (e.g. '--color-danger')
+   * @param {string} [fallback] - Fallback value if variable is empty
+   * @returns {string}
+   */
+  const getThemeColor = (varName, fallback = '') => {
+    return getComputedStyle(document.documentElement).getPropertyValue(varName).trim() || fallback;
+  };
+
+  /**
+   * Standard chart color palette (10 colors)
+   * Used by Chart.js instances across all modules
+   */
+  const CHART_COLORS = [
+    '#ff3b30', '#ff9500', '#34c759', '#007aff', '#5856d6',
+    '#ff2d55', '#af52de', '#5ac8fa', '#ffcc00', '#30d158'
+  ];
+
+  /**
+   * Returns chart colors resolved from CSS theme variables with fallbacks
+   * @param {number} [count=5] - Number of colors to return
+   * @returns {string[]}
+   */
+  const getChartColors = (count = 5) => {
+    const vars = [
+      ['--color-danger',  '#ff3b30'],
+      ['--color-warning', '#ff9500'],
+      ['--color-success', '#34c759'],
+      ['--color-info',    '#007aff'],
+      ['--color-primary', '#5856d6'],
+    ];
+    const colors = vars.map(([v, fb]) => getThemeColor(v, fb));
+    // Extend with CHART_COLORS if more are needed
+    while (colors.length < count) {
+      colors.push(CHART_COLORS[colors.length % CHART_COLORS.length]);
+    }
+    return colors.slice(0, count);
+  };
+
   window.Utils = {
     debounce,
     numberOrNull,
@@ -261,8 +362,12 @@
     confirmAction,
     confirmModal: confirmAction,   // Alias used by cms-members, admin-pagos, etc.
     alertModal,                    // Informational dialog
+    promptModal,                   // Text input dialog
     renderStatusBadge,
     setPageState,
+    getThemeColor,
+    CHART_COLORS,
+    getChartColors,
   };
 })();
 

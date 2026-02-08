@@ -5,39 +5,105 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Master POS - FormulaMid</title>
-    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/tokens.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/admin-master.css">
 </head>
 
-<body class="app-shell admin-shell admin-scroll admin-pos" data-allowed-roles="admin,contable">
+<body class="app-shell admin-shell admin-scroll" data-allowed-roles="admin,contable">
 
-    <header class="app-topbar">
-        <div class="topbar-left">
-            <nav id="breadcrumbs" class="breadcrumbs"></nav>
+    <!-- Topbar: Golden Standard -->
+    <header class="topbar">
+        <!-- Left: Breadcrumb -->
+        <nav class="breadcrumb topbar-start">
+            <span class="breadcrumb-item">
+                <a class="breadcrumb-link" href="admin-index.html">Administración</a>
+            </span>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-item">Master Data</span>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-item current">Terminales POS</span>
+        </nav>
+
+        <!-- Center: Search -->
+        <div class="topbar-center header-search">
+            <input type="text" id="global-search" class="input" placeholder="Ir a...">
+            <svg class="header-search-icon" viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <span class="header-shortcut">⌘K</span>
         </div>
-        <div class="topbar-right">
-            <span class="area-brand">ADMIN</span>
+
+        <!-- Right: Notifications + Avatar -->
+        <div class="topbar-end">
+            <!-- Notifications Dropdown -->
+            <div class="dropdown-container">
+                <button id="btn-notifications" class="icon-btn" aria-label="Notificaciones">
+                    <svg class="icon-notification" viewBox="0 0 24 24">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                    <span class="notification-badge" id="notification-count">0</span>
+                </button>
+            </div>
+
+            <!-- User Menu Dropdown -->
+            <div class="dropdown-container">
+                <button class="avatar avatar-sm" id="user-avatar" aria-label="Menú de usuario">AD</button>
+                <div class="dropdown-menu dropdown-user hidden" id="user-menu">
+                    <div class="dropdown-header" id="user-name-display">Admin</div>
+                    <div class="dropdown-divider"></div>
+                    <a href="./admin-config.html" class="dropdown-item">
+                        <svg class="dropdown-icon" viewBox="0 0 24 24">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        Perfil
+                    </a>
+                    <a href="#" id="btn-logout" class="dropdown-item dropdown-item-danger">
+                        <svg class="dropdown-icon" viewBox="0 0 24 24">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        Cerrar Sesión
+                    </a>
+                </div>
+            </div>
         </div>
     </header>
 
     <main class="page-shell">
         <div class="page-card-wrap">
             <div class="page-card">
+
+                <!-- Master Navigation -->
+                <nav class="master-nav">
+                    <a href="admin-central-stock.html" class="master-nav-link">SKU & Recetas</a>
+                    <a href="admin-master-proveedores.html" class="master-nav-link">Proveedores</a>
+                    <a href="admin-master-categorias.html" class="master-nav-link">Categorías</a>
+                    <a href="admin-master-nomina.html" class="master-nav-link">Nómina</a>
+                    <a href="admin-pagos.html" class="master-nav-link">Pagos</a>
+                    <a href="admin-master-tarifario.html" class="master-nav-link">Tarifario</a>
+                    <a href="admin-master-pos.html" class="master-nav-link active">POS</a>
+                </nav>
+
                 <!-- Loading State -->
                 <div class="page-card-loading" id="page-card-loading">
                     <div class="state-block loading">
-                        <div class="state-spinner" aria-hidden="true"></div>
                         <div class="state-loader"></div>
                         <p class="state-title">Cargando terminales...</p>
-                        <p class="state-desc">Esto puede tardar unos segundos</p>
                     </div>
                 </div>
 
                 <!-- Empty State -->
                 <div class="page-card-empty" id="page-card-empty">
-                    <div class="state-block loading">
+                    <div class="state-block">
                         <p class="state-title">Sin resultados</p>
                         <p class="state-desc">No se encontraron terminales con los filtros actuales.</p>
-                        <button class="btn-ghost btn-sm mt-2" onclick="window.location.reload()">Recargar</button>
+                        <button class="btn btn-secondary btn-sm mt-2"
+                            onclick="window.location.reload()">Recargar</button>
                     </div>
                 </div>
 
@@ -45,39 +111,40 @@
                     <div class="staff-dashboard">
                         <div class="dashboard-header align-start">
                             <div>
-                                <h2 class="dashboard-title dashboard-title-soft">Gestion de Terminales POS</h2>
-                                <p class="dashboard-subtitle dashboard-subtitle-soft">Mapeo de Terminales a Puntos de
-                                    Venta</p>
+                                <h2 class="dashboard-title dashboard-title-soft">Terminales POS</h2>
+                                <p class="text-sm text-muted">Mapeo de Terminales a Puntos de Venta (Mercado Pago,
+                                    Fiserv, etc).</p>
                             </div>
-                            <button class="btn-icon btn-icon-flat btn-icon-plus" id="btn-new"
-                                aria-label="Nueva Terminal">+</button>
+                            <button class="btn btn-primary btn-sm" id="btn-new" aria-label="Nueva Terminal">+ Nueva
+                                Terminal</button>
                         </div>
 
                         <!-- Filter Bar -->
-                        <div class="filter-bar filter-bar-compact" aria-label="Filtros de terminales">
-                            <div class="filter-group">
-                                <button
-                                    class="status-pill status-neutral topbar-pill topbar-pill-quiet filter-pill active"
-                                    data-status="all">
+                        <div class="sku-filter-bar">
+                            <div class="pill-group">
+                                <button class="filter-pill active" data-status="all">
                                     Total <span class="pill-count" id="pos-total">0</span>
                                 </button>
-                                <button class="status-pill status-success topbar-pill topbar-pill-quiet filter-pill"
-                                    data-status="active">
+                                <button class="filter-pill" data-status="active">
                                     Activos <span class="pill-count" id="pos-active-count">0</span>
                                 </button>
-                                <button class="status-pill status-error topbar-pill topbar-pill-quiet filter-pill"
-                                    data-status="inactive">
+                                <button class="filter-pill" data-status="inactive">
                                     Inactivos <span class="pill-count" id="pos-inactive-count">0</span>
                                 </button>
                             </div>
-                            <div class="filter-actions">
-                                <input type="search" id="pos-search" class="input input-compact filter-input"
+                            <div class="filter-spacer"></div>
+                            <div class="search-input-wrap">
+                                <svg class="search-icon" viewBox="0 0 24 24">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                </svg>
+                                <input type="text" id="pos-search" class="input search-input"
                                     placeholder="Buscar terminal..." aria-label="Buscar terminal" />
                             </div>
                         </div>
 
                         <!-- List Container -->
-                        <div class="staff-list table-viewport table-shell" id="list-container">
+                        <div class="table-viewport table-shell" id="list-container">
                             <!-- Content injected by JS -->
                         </div>
                     </div>
@@ -88,10 +155,10 @@
 
     <!-- Slide Panel -->
     <div class="panel-overlay" id="panel-overlay"></div>
-    <div class="slide-panel" id="slide-panel">
+    <aside class="slide-panel" id="slide-panel">
         <div class="panel-header">
             <h3 class="panel-title" id="panel-title">Nueva Terminal</h3>
-            <button class="btn-icon panel-close" id="btn-close-panel" aria-label="Cerrar">×</button>
+            <button class="panel-close" id="btn-close-panel" aria-label="Cerrar">×</button>
         </div>
         <div class="panel-body" id="panel-form-container">
             <div id="panel-error" class="panel-error"></div>
@@ -103,7 +170,7 @@
 
             <div class="form-group">
                 <label for="pos-provider" class="form-label">Proveedor *</label>
-                <select id="pos-provider" class="input">
+                <select id="pos-provider" class="input select">
                     <option value="MERCADO PAGO">Mercado Pago</option>
                     <option value="GETNET">Getnet</option>
                     <option value="FISERV">Fiserv / Posnet</option>
@@ -129,7 +196,8 @@
             <button class="btn-secondary" id="btn-cancel">Cancelar</button>
             <button class="btn-primary" id="btn-save">Guardar</button>
         </div>
-    </div>
+    </aside>
+
     <!-- Scripts -->
     <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script defer src="../../assets/js/core/config.js"></script>
@@ -139,18 +207,9 @@
     <script defer src="../../assets/js/core/toast.js"></script>
     <!-- Shared Panel Logic -->
     <script defer src="../../assets/js/core/panel.js"></script>
-    <script defer src="../../assets/js/core/breadcrumbs.js"></script>
+
     <!-- Page Specific Script -->
     <script defer src="../../assets/js/modules/admin/admin-master-pos.js"></script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const container = document.getElementById('breadcrumbs');
-            if (container && window.Breadcrumbs) {
-                window.Breadcrumbs.render(container);
-            }
-        });
-    </script>
 
     <!-- Shared Navigation Script -->
     <script src="../../assets/js/core/navigation.js"></script>

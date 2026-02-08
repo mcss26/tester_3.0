@@ -1,7 +1,8 @@
 // Module: logistica-stock.js
 // Control de inventario del depósito central
 
-document.addEventListener("DOMContentLoaded", async () => {
+(async function() {
+  'use strict';
   const listContainer = document.getElementById("list-container");
   const searchInput = document.getElementById("stock-search");
   const btnRefresh = document.getElementById("btn-refresh");
@@ -130,7 +131,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const catBtns = (categories || []).map(
       (cat) => `
             <button class="tab-chip cat-tab ${activeCategoryId === cat.id ? "active" : ""}" data-id="${cat.id}">
-                ${cat.nombre}
+                ${window.Utils.escapeHtml(cat.nombre)}
             </button>
         `,
     );
@@ -204,13 +205,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       html += `
                 <tr class="table-row">
                     <td class="table-cell cell-pad">${getStatusIcon(item.estado)}</td>
-                    <td class="table-cell cell-pad cell-strong">${item.nombre || "SKU sin nombre"}</td>
+                    <td class="table-cell cell-pad cell-strong">${window.Utils.escapeHtml(item.nombre || "SKU sin nombre")}</td>
                     <td class="table-cell cell-pad muted">${item.categoria_nombre || "-"}</td>
                     <td class="table-cell cell-pad cell-stronger">${item.stock_actual}</td>
                     <td class="table-cell cell-pad muted">${item.requerido}</td>
                     <td class="table-cell cell-pad ${diffClass}">${diffSign}${diff}</td>
                     <td class="table-cell cell-pad">
-                        <button class="btn-ghost btn-sm btn-adjust" data-id="${item.id}" data-nombre="${item.nombre}" data-stock="${item.stock_actual}">
+                        <button class="btn-ghost btn-sm btn-adjust" data-id="${item.id}" data-nombre="${window.Utils.escapeHtml(item.nombre)}" data-stock="${item.stock_actual}">
                             Ajustar
                         </button>
                     </td>
@@ -381,4 +382,4 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   await loadCategories();
   await loadData();
-});
+})();

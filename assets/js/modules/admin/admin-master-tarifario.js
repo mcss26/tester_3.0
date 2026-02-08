@@ -147,7 +147,8 @@
       const { data, error } = await window.sb
         .from("master_staff_roles")
         .select("*")
-        .order("name"); // Or order by area then name
+        .eq("active", true)
+        .order("name");
 
       if (error) throw error;
       state.roles = data || [];
@@ -224,7 +225,7 @@
     try {
       const { error } = await window.sb
         .from("master_staff_roles")
-        .delete()
+        .update({ active: false })
         .eq("id", id);
 
       if (error) throw error;

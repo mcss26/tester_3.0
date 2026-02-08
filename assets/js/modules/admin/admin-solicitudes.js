@@ -637,14 +637,7 @@
   let auditChartInstance = null;
   let currentChartMode = 'pedido-vs-consumo';
 
-  function getThemeColor(varName, fallback) {
-    return getComputedStyle(document.documentElement).getPropertyValue(varName).trim() || fallback;
-  }
-
-  const CHART_COLORS = [
-    '#ff3b30', '#ff9500', '#34c759', '#007aff', '#5856d6',
-    '#ff2d55', '#af52de', '#5ac8fa', '#ffcc00', '#30d158'
-  ];
+  const { getThemeColor, CHART_COLORS } = window.Utils;
 
   function updateKpiLabels(labels) {
     const kpiLabels = ui.auditKpiLabels;
@@ -753,7 +746,7 @@
     const textColor = getThemeColor('--text-tertiary', '#888');
     const gridColor = 'rgba(255,255,255,0.06)';
 
-    auditChartInstance = new Chart(ui.auditChartCanvas, {
+    auditChartInstance = await window.ChartLoader.create(ui.auditChartCanvas, {
       type: 'line',
       data: {
         labels,
@@ -812,7 +805,7 @@
     const textColor = getThemeColor('--text-tertiary', '#888');
     const gridColor = 'rgba(255,255,255,0.06)';
 
-    auditChartInstance = new Chart(ui.auditChartCanvas, {
+    auditChartInstance = await window.ChartLoader.create(ui.auditChartCanvas, {
       type: 'bar',
       data: {
         labels: skuNames,
@@ -843,7 +836,7 @@
 
     const { data: orders } = await window.sb
       .from('replenishment_supplier_orders')
-      .select('total_estimated, status, created_at')
+      .select('final_cost, status, created_at')
       .in('status', ['approved', 'pre-approved', 'pending']);
 
     if (!orders?.length) {
@@ -860,7 +853,7 @@
       weekStart.setDate(d.getDate() - d.getDay());
       const key = weekStart.toISOString().split('T')[0];
       if (!weekMap[key]) weekMap[key] = 0;
-      weekMap[key] += (o.total_estimated || 0);
+      weekMap[key] += (o.final_cost || 0);
     });
 
     const sortedWeeks = Object.entries(weekMap).sort((a, b) => a[0].localeCompare(b[0]));
@@ -892,7 +885,7 @@
     const textColor = getThemeColor('--text-tertiary', '#888');
     const gridColor = 'rgba(255,255,255,0.06)';
 
-    auditChartInstance = new Chart(ui.auditChartCanvas, {
+    auditChartInstance = await window.ChartLoader.create(ui.auditChartCanvas, {
       type: 'line',
       data: {
         labels,

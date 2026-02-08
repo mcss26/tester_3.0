@@ -60,7 +60,7 @@
       const { data, error } = await window.sb
         .from('replenishment_supplier_orders')
         .select(`
-          id, supplier_id, status, total_estimated, expected_date, final_cost, notes, created_at,
+          id, supplier_id, status, eta_date, final_cost, notes, created_at,
           master_proveedores:supplier_id (id, nombre_fantasia),
           replenishment_tracking (id, status, notes, created_at, created_by)
         `)
@@ -120,10 +120,10 @@
 
     const rows = data.map(order => {
       const cfg = statusConfig[order.trackingStatus] || statusConfig.ordered;
-      const eta = order.expected_date 
-        ? new Date(order.expected_date).toLocaleDateString('es-AR')
+      const eta = order.eta_date 
+        ? new Date(order.eta_date).toLocaleDateString('es-AR')
         : '-';
-      const total = order.final_cost || order.total_estimated || 0;
+      const total = order.final_cost || 0;
 
       return `
         <tr class="table-row cursor-pointer" data-order-id="${order.id}">
@@ -172,10 +172,10 @@
     ui.panelTitle.textContent = `Orden #${order.id.slice(0, 8)}`;
 
     // Order Info
-    const eta = order.expected_date 
-      ? new Date(order.expected_date).toLocaleDateString('es-AR')
+    const eta = order.eta_date 
+      ? new Date(order.eta_date).toLocaleDateString('es-AR')
       : 'No definida';
-    const total = order.final_cost || order.total_estimated || 0;
+    const total = order.final_cost || 0;
 
     ui.orderInfo.innerHTML = `
       <div class="detail-grid">

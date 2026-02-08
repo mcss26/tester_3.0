@@ -199,32 +199,32 @@
             
             // Status badge
             const statusBadge = isActive 
-                ? `<span class="status-pill status-success">Activo</span>` 
-                : `<span class="status-pill status-error">Inactivo</span>`;
+                ? `<span class="badge badge-success">Activo</span>` 
+                : `<span class="badge badge-danger">Inactivo</span>`;
 
             rows.push(`
                 <tr class="table-row row-clickable staff-row ${isExpanded ? 'is-open' : ''} ${inactiveClass}" data-id="${item.id}">
-                    <td class="table-cell cell-pad cell-strong">
+                    <td class="table-cell cell-pad font-medium">
                         <div class="row-flex text-left">
                             <span class="row-caret">▸</span>
                             <div class="avatar-initial small">${esc((item.full_name || 'U').charAt(0))}</div>
                             <span>${safeName}</span>
                         </div>
                     </td>
-                    <td class="table-cell cell-pad muted">${safeRole}</td>
-                    <td class="table-cell cell-pad muted">${safePhone}</td>
-                    <td class="table-cell cell-pad muted text-sm">${safeEmail}</td>
+                    <td class="table-cell cell-pad text-muted">${safeRole}</td>
+                    <td class="table-cell cell-pad text-muted">${safePhone}</td>
+                    <td class="table-cell cell-pad text-muted text-sm">${safeEmail}</td>
                     <td class="table-cell cell-pad">${statusBadge}</td>
                     <td class="table-cell cell-pad">
                         <button class="btn-ghost btn-sm btn-edit-staff" data-id="${item.id}" title="Editar">Editar</button>
                     </td>
                 </tr>
                 <tr class="staff-details row-details row-subtle ${isExpanded ? 'is-open' : ''} ${inactiveClass}" data-id="${item.id}">
-                    <td colspan="6" class="table-cell cell-pad-sm text-sm muted">
+                    <td colspan="6" class="table-cell cell-pad-sm text-sm text-muted">
                         <div class="row-flex">
-                            <div><strong>ID:</strong> <span class="muted">${esc(item.id)}</span></div>
+                            <div><strong>ID:</strong> <span class="text-muted">${esc(item.id)}</span></div>
                             <!-- Future: Add CBU/Alias here if we add it to DB -->
-                             <div><strong>Usuario Sistema:</strong> <span class="muted">${item.email && !item.email.includes('@midnight.tmp') ? 'Sí' : 'No (Simulado)'}</span></div>
+                             <div><strong>Usuario Sistema:</strong> <span class="text-muted">${item.email && !item.email.includes('@midnight.tmp') ? 'Sí' : 'No (Simulado)'}</span></div>
                         </div>
                     </td>
                 </tr>
@@ -271,7 +271,7 @@
             return `
                 <div class="profile-card animate-scale-in">
                     <div class="profile-status">
-                         <span class="status-pill ${isActive ? 'status-success' : 'status-error'}"></span>
+                         <span class="badge ${isActive ? 'badge-success' : 'badge-danger'}">${isActive ? 'Activo' : 'Inactivo'}</span>
                     </div>
                     <div class="profile-avatar">${safeInitial}</div>
                     <div class="profile-name">${safeName}</div>
@@ -285,10 +285,6 @@
                         <div class="profile-item">
                             <span class="profile-label">Tel:</span>
                             <span class="profile-value">${safePhone}</span>
-                        </div>
-                        <div class="profile-item">
-                            <span class="profile-label">Status:</span>
-                            <span class="profile-value">${isActive ? 'Activo' : 'Inactivo'}</span>
                         </div>
                     </div>
                 </div>

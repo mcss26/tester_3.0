@@ -2,6 +2,7 @@
     // Init
     const session = await window.Auth.guardOrRedirect(['admin', 'contable']);
     if (!session) return;
+    if (!window.Utils.assertSbOrShowBlockingError()) return;
 
     const refs = {
         weekSelect: document.getElementById('weekSelect'),
@@ -89,7 +90,7 @@
     };
 
     const freezeWeek = async () => {
-        if (!confirm('¿Confirmar cierre de semana? Esto congelará los valores actuales.')) return;
+        if (!await window.Utils.confirmModal('¿Confirmar cierre de semana? Esto congelará los valores actuales.')) return;
 
         const weekStart = refs.weekSelect.value;
         // Get live data again really quick

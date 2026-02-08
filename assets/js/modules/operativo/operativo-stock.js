@@ -1,4 +1,5 @@
-document.addEventListener('DOMContentLoaded', async () => {
+(async function() {
+  'use strict';
     const listContainer = document.getElementById('list-container');
     const searchInput = document.getElementById('stock-search');
     const btnRefresh = document.getElementById('btn-refresh');
@@ -192,4 +193,4 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     loadStock();
-});
+})();

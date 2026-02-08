@@ -1,0 +1,139 @@
+/* =========================================================================
+   ADMIN SEMANAL - Golden Standard UI
+   Page-specific styles for the weekly closing module
+   Version: 2026-02-07
+   ========================================================================= */
+
+/* =========================================================================
+   GRID LAYOUT
+   ========================================================================= */
+
+.weekly-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Force 3 columns for Balance White, Black, Tax */
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+@media (max-width: 1024px) {
+    .weekly-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================================================================
+   BALANCE CARDS
+   ========================================================================= */
+
+.balance-card {
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.balance-card:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.balance-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-tertiary);
+    margin: 0;
+}
+
+/* Values */
+.balance-value-lg {
+    font-size: 32px;
+    font-weight: 700;
+    font-family: var(--font-mono); /* Ensure we have a mono font stack or fallback */
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    line-height: 1;
+}
+
+.balance-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.balance-sub-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-tertiary);
+    margin-bottom: 4px;
+    display: block;
+}
+
+.balance-sub-value {
+    font-size: 18px;
+    font-weight: 500;
+    font-family: var(--font-mono);
+}
+
+.text-success { color: var(--success) !important; }
+.text-error { color: var(--danger) !important; }
+.text-warning { color: var(--warning) !important; }
+
+/* Divider */
+.card-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 8px 0;
+}
+
+/* =========================================================================
+   STATUS BANNER
+   ========================================================================= */
+
+.status-banner {
+    background: rgba(251, 191, 36, 0.1); /* Warning background */
+    border: 1px solid rgba(251, 191, 36, 0.2);
+    color: var(--warning);
+    border-radius: var(--radius-md);
+    padding: 12px;
+    margin-bottom: 24px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    animation: fadeIn 0.3s ease;
+}
+
+.status-banner.closed {
+    background: rgba(74, 222, 128, 0.1); /* Success background */
+    border-color: rgba(74, 222, 128, 0.2);
+    color: var(--success);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================================================
+   WEEK SELECTOR IN HEADER
+   ========================================================================= */
+.week-select {
+    background: #000;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 6px;
+    outline: none;
+    font-size: 13px;
+    min-width: 220px;
+    cursor: pointer;
+}
+.week-select:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+}

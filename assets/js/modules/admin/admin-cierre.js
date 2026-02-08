@@ -79,12 +79,21 @@
     const state = {
         workDayId: null,
         closingId: null,
-        isLoading: false
+        isLoading: false,
+        auditConfig: null  // Sprint 1B: loaded from audit_config
     };
 
     const statusLabels = {
         verified: { label: 'Verificado', cls: 'success' },
         pending: { label: 'Pendiente', cls: 'warning' }
+    };
+
+    // Sprint 1B: Classification labels
+    const diffLabels = {
+        CUADRADO: { label: 'Cuadrado', cls: 'success', icon: '✓' },
+        FALTANTE_MENOR: { label: 'Faltante Menor', cls: 'warning', icon: '⚠' },
+        FALTANTE_GRAVE: { label: 'Faltante Grave', cls: 'error', icon: '✗' },
+        SOBRANTE: { label: 'Sobrante', cls: 'info', icon: '↑' }
     };
 
     function setButtonLoading(btn, isLoading) {
@@ -134,10 +143,50 @@
 
     function applyDiffClass(el, diff) {
         if (!el) return;
-        el.classList.remove('text-success', 'text-error', 'muted');
+        el.classList.remove('text-success', 'text-error', 'muted', 'text-warning');
         if (diff === 0) el.classList.add('muted');
         else if (diff < 0) el.classList.add('text-error');
         else el.classList.add('text-success');
+    }
+
+    /**
+     * Sprint 1B: Classify a cash difference using audit_config thresholds.
+     * Convention: diff = Declared - System.
+     *   diff < 0: Faltante (declared less than system)
+     *   diff > 0: Sobrante (declared more than system)
+     */
+    function classifyDiff(diff) {
+        const threshold = state.auditConfig?.threshold || 500;
+        const faltanteMenor = state.auditConfig?.faltante_menor || 5000;
+        const absDiff = Math.abs(diff);
+
+        if (absDiff <= threshold) return 'CUADRADO';
+        if (diff < 0 && absDiff <= faltanteMenor) return 'FALTANTE_MENOR';
+        if (diff < 0) return 'FALTANTE_GRAVE';
+        return 'SOBRANTE';
+    }
+
+    /** Sprint 1B: Load audit thresholds from audit_config table */
+    async function loadAuditConfig() {
+        try {
+            const { data, error } = await window.sb
+                .from('audit_config')
+                .select('key, value')
+                .eq('domain', 'cash_closing')
+                .eq('is_active', true);
+
+            if (error || !data) return;
+
+            state.auditConfig = {};
+            data.forEach(row => {
+                if (row.key === 'threshold_ars') state.auditConfig.threshold = Number(row.value) || 500;
+                if (row.key === 'classifications') {
+                    state.auditConfig.faltante_menor = row.value?.faltante_menor || 5000;
+                }
+            });
+        } catch (err) {
+            console.warn('[admin-cierre] Could not load audit_config:', err);
+        }
     }
 
     // 5. Initialize
@@ -146,6 +195,7 @@
         setImportsEnabled(null);
         setCloseNightVisibility(false);
         bindEvents();
+        loadAuditConfig(); // Sprint 1B: Pre-load thresholds
         loadData();
     }
 
@@ -348,6 +398,8 @@
             renderMainTable(terminals || [], details || []);
             loadQrStats(wd.id);
             loadBreakdown(wd.id);
+            loadBarAudit(wd.id); // Sprint 2: Load bar stock audit
+            loadStaffPerformance(wd.id); // Sprint 3: Load staff performance
 
         } catch (err) {
             console.error(err);
@@ -386,13 +438,17 @@
 
             const statusKey = (detail.status || 'pending').toLowerCase();
             const statusInfo = statusLabels[statusKey] || statusLabels.pending;
+
+            // Sprint 1B: Threshold-based classification
+            const classification = classifyDiff(diff);
+            const classInfo = diffLabels[classification] || diffLabels.CUADRADO;
             const diffClass = diff === 0 ? 'muted' : (diff < 0 ? 'text-error' : 'text-success');
 
             return `
                 <tr class="table-row">
                     <td class="table-cell">
                         <div class="font-bold">${t.friendly_name}</div>
-                        <div class="text-xs muted">${detail.staff?.email || '-'}</div>
+                        <div class="text-xs muted">${window.Utils.escapeHtml(detail.staff?.email || '-')}</div>
                     </td>
                     <td class="table-cell text-right font-mono">${window.Utils.formatARS(cashD)}</td>
                     <td class="table-cell text-right font-mono">${window.Utils.formatARS(zocoD)}</td>
@@ -400,6 +456,11 @@
                     <td class="table-cell text-right font-mono muted">${window.Utils.formatARS(zocoS)}</td>
                     <td class="table-cell text-right font-mono font-bold ${diffClass}">
                         ${window.Utils.formatARS(diff)}
+                    </td>
+                    <td class="table-cell text-center">
+                        <span class="status-pill status-${classInfo.cls}" title="${classInfo.label}">
+                            ${classInfo.icon} ${classInfo.label}
+                        </span>
                     </td>
                     <td class="table-cell text-center">
                         <span class="status-pill status-${statusInfo.cls}">
@@ -577,6 +638,32 @@
             }
 
             // ──────────────────────────────────────────────────────────
+            // Sprint 2: Checkpoint de Varianza de Stock
+            // ──────────────────────────────────────────────────────────
+            const { data: stockAlerts } = await window.sb
+                .from('vw_bar_audit_variance')
+                .select('sku_nombre, diferencia, varianza_pct, clasificacion')
+                .eq('work_day_id', state.workDayId)
+                .eq('clasificacion', 'ALERTA_PERDIDA');
+
+            if (stockAlerts && stockAlerts.length > 0) {
+                const alertList = stockAlerts.slice(0, 5).map(a =>
+                    `${a.sku_nombre}: Δ${a.diferencia} (${a.varianza_pct}%)`
+                ).join('\n');
+
+                const acceptMerma = confirm(
+                    `⚠ Hay ${stockAlerts.length} SKUs con alertas de pérdida en la barra:\n\n` +
+                    `${alertList}${stockAlerts.length > 5 ? '\n...y más' : ''}\n\n` +
+                    `¿Aceptar merma y continuar con el cierre?`
+                );
+
+                if (!acceptMerma) {
+                    window.Toast.info('Cierre cancelado. Revise la auditoría de stock.');
+                    return;
+                }
+            }
+
+            // ──────────────────────────────────────────────────────────
             // Cerrar Cash Closing y Work Day en Paralelo
             // ──────────────────────────────────────────────────────────
             const closedAt = new Date().toISOString();
@@ -629,19 +716,144 @@
     }
 
     async function generateNightReport(workDayId) {
-        // Llamar al generador de PDF integral
-        if (typeof window.ReportGenerator !== 'undefined' && window.ReportGenerator.generateIntegralReport) {
-            const pdfBlob = await window.ReportGenerator.generateIntegralReport(workDayId);
-            const url = URL.createObjectURL(pdfBlob);
+        // Sprint 3: Consolidated Night Report — collects all data and generates downloadable text report
+        try {
+            // Parallel fetch all data sources
+            const [dailySales, terminals, barAudit, staffPerf] = await Promise.all([
+                window.sb.from('vw_daily_sales').select('*').eq('work_day_id', workDayId).maybeSingle(),
+                window.sb.from('closing_terminals').select('*, pos_terminals(friendly_name), profiles(full_name)').eq('cash_closing_id', state.closingId),
+                window.sb.from('vw_bar_audit_variance').select('*').eq('work_day_id', workDayId).order('costo_diferencia', { ascending: false }),
+                window.sb.from('vw_staff_performance').select('*')
+            ]);
+
+            const ds = dailySales.data || {};
+            const terms = terminals.data || [];
+            const audit = barAudit.data || [];
+            const staff = staffPerf.data || [];
+
+            // Filter staff to those who worked today
+            const todayStaffIds = new Set(terms.map(t => t.staff_id).filter(Boolean));
+            const todayStaff = staff.filter(s => todayStaffIds.has(s.user_id));
+
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('es-AR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            const timeStr = now.toLocaleTimeString('es-AR');
+
+            // Build report sections
+            const lines = [];
+            lines.push('═══════════════════════════════════════════════════════');
+            lines.push('          REPORTE INTEGRAL DE CIERRE DE NOCHE');
+            lines.push('═══════════════════════════════════════════════════════');
+            lines.push(`Fecha:     ${dateStr}`);
+            lines.push(`Generado:  ${timeStr}`);
+            lines.push(`Jornada:   ${workDayId}`);
+            lines.push('');
+
+            // ── Section 1: Cash Reconciliation ──
+            lines.push('───────────────────────────────────────────────────────');
+            lines.push('  1. CONCILIACIÓN DE CAJA');
+            lines.push('───────────────────────────────────────────────────────');
+            lines.push('');
+
+            let totalDiff = 0;
+            terms.forEach(t => {
+                const cashD = Number(t.declared_cash) || 0;
+                const zocoD = Number(t.declared_zoco) || 0;
+                const cashS = Number(t.system_cash) || 0;
+                const zocoS = Number(t.system_zoco) || 0;
+                const diff = (cashD + zocoD) - (cashS + zocoS);
+                totalDiff += diff;
+                const classification = classifyDiff(diff);
+
+                lines.push(`  ${(t.pos_terminals?.friendly_name || 'Terminal').padEnd(20)} | ` +
+                    `Decl: $${(cashD + zocoD).toFixed(0).padStart(8)} | ` +
+                    `Sist: $${(cashS + zocoS).toFixed(0).padStart(8)} | ` +
+                    `Δ: $${diff.toFixed(0).padStart(7)} | ${classification}`);
+            });
+
+            lines.push('');
+            lines.push(`  TOTAL DIFERENCIA: $${totalDiff.toFixed(0)}  [${classifyDiff(totalDiff)}]`);
+            lines.push('');
+
+            // ── Section 2: Sales Breakdown ──
+            lines.push('───────────────────────────────────────────────────────');
+            lines.push('  2. DESGLOSE DE VENTAS (SISTEMA)');
+            lines.push('───────────────────────────────────────────────────────');
+            const barTotal = (ds.bar_sales_cash || 0) + (ds.bar_sales_card || 0);
+            const qrTotal = ds.qr_total || 0;
+            lines.push(`  Ventas Barra:     $${barTotal.toFixed(0)}`);
+            lines.push(`    - Efectivo:     $${(ds.bar_sales_cash || 0).toFixed(0)}`);
+            lines.push(`    - Digital:      $${(ds.bar_sales_card || 0).toFixed(0)}`);
+            lines.push(`  Entradas QR:      $${qrTotal.toFixed(0)}`);
+            lines.push(`  TOTAL SISTEMA:    $${(barTotal + qrTotal).toFixed(0)}`);
+
+            if (ds.withdrawals) lines.push(`  Retiros:         -$${Number(ds.withdrawals).toFixed(0)}`);
+            if (ds.net_to_render) lines.push(`  Neto a Rendir:    $${Number(ds.net_to_render).toFixed(0)}`);
+            lines.push('');
+
+            // ── Section 3: Bar Stock Audit ──
+            if (audit.length > 0) {
+                lines.push('───────────────────────────────────────────────────────');
+                lines.push('  3. AUDITORÍA DE STOCK DE BARRA');
+                lines.push('───────────────────────────────────────────────────────');
+
+                const totalMerma = audit.reduce((s, r) => s + Math.max(0, Number(r.costo_diferencia) || 0), 0);
+                const alerts = audit.filter(r => r.clasificacion === 'ALERTA_PERDIDA');
+                const withinRange = audit.filter(r => r.clasificacion === 'DENTRO_DE_RANGO');
+                lines.push(`  SKUs auditados:   ${audit.length}`);
+                lines.push(`  En rango:         ${withinRange.length} (${Math.round((withinRange.length / audit.length) * 100)}%)`);
+                lines.push(`  Alertas:          ${alerts.length}`);
+                lines.push(`  Pérdida estimada: $${totalMerma.toFixed(0)}`);
+
+                if (alerts.length > 0) {
+                    lines.push('');
+                    lines.push('  Detalle Alertas:');
+                    alerts.forEach(a => {
+                        lines.push(`    • ${(a.sku_nombre || '-').padEnd(25)} Δ${a.diferencia}  (${a.varianza_pct}%)`);
+                    });
+                }
+                lines.push('');
+            }
+
+            // ── Section 4: Staff Performance ──
+            if (todayStaff.length > 0) {
+                lines.push('───────────────────────────────────────────────────────');
+                lines.push('  4. DESEMPEÑO DE OPERARIOS (HISTÓRICO)');
+                lines.push('───────────────────────────────────────────────────────');
+                lines.push('');
+                lines.push('  Nombre'.padEnd(28) + 'Turnos  Cierres  Δ Neto     Δ Abs');
+                lines.push('  ' + '─'.repeat(55));
+
+                todayStaff.forEach(s => {
+                    const name = (s.full_name || 'Sin nombre').substring(0, 24).padEnd(26);
+                    const shifts = String(s.shifts_total || 0).padStart(5);
+                    const closures = String(s.closures_count || 0).padStart(7);
+                    const netDiff = `$${(s.net_cash_difference || 0).toFixed(0)}`.padStart(9);
+                    const absDiff = `$${(s.abs_cash_difference || 0).toFixed(0)}`.padStart(9);
+                    lines.push(`  ${name}${shifts}  ${closures}  ${netDiff}  ${absDiff}`);
+                });
+                lines.push('');
+            }
+
+            lines.push('═══════════════════════════════════════════════════════');
+            lines.push('  Fin del Reporte');
+            lines.push('═══════════════════════════════════════════════════════');
+
+            // Download as text file
+            const reportText = lines.join('\n');
+            const blob = new Blob([reportText], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `Reporte_Integral_${state.workDayId}.pdf`; // Fixed variable name
+            a.download = `Reporte_Cierre_${workDayId}_${now.toISOString().split('T')[0]}.txt`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
-        } else {
-            console.warn('[admin-cierre] ReportGenerator no disponible');
+
+        } catch (err) {
+            console.error('[admin-cierre] Error generating night report:', err);
+            throw err;
         }
     }
 
@@ -658,6 +870,219 @@
             return;
         }
         renderBreakdown(summary);
+    }
+
+    // ──────────────────────────────────────────────────────────────
+    // 12. Sprint 1B+2: Bar Stock Audit Section
+    // ──────────────────────────────────────────────────────────────
+    async function loadBarAudit(workDayId) {
+        const auditContainer = document.getElementById('bar-audit-section');
+        if (!auditContainer) return; // HTML section not present yet
+
+        try {
+            const { data: variance, error } = await window.sb
+                .from('vw_bar_audit_variance')
+                .select('*')
+                .eq('work_day_id', workDayId)
+                .order('costo_diferencia', { ascending: false });
+
+            if (error) throw error;
+            renderBarAudit(auditContainer, variance || []);
+        } catch (err) {
+            console.warn('[admin-cierre] Bar audit load error:', err);
+            if (auditContainer) {
+                auditContainer.innerHTML = '<div class="muted text-sm">Sin datos de auditoría de barra para esta jornada.</div>';
+            }
+        }
+    }
+
+    function renderBarAudit(container, rows) {
+        if (rows.length === 0) {
+            container.innerHTML = '<div class="muted text-sm">Sin sesiones de barra cerradas para auditar.</div>';
+            return;
+        }
+
+        // KPIs
+        const totalMerma = rows.reduce((s, r) => s + Math.max(0, Number(r.costo_diferencia) || 0), 0);
+        const totalItems = rows.length;
+        const alertCount = rows.filter(r => r.clasificacion === 'ALERTA_PERDIDA').length;
+        const withinRange = rows.filter(r => r.clasificacion === 'DENTRO_DE_RANGO').length;
+        const efficiencyPct = totalItems > 0 ? Math.round((withinRange / totalItems) * 100) : 0;
+
+        const classMap = {
+            'DENTRO_DE_RANGO': { cls: 'success', label: 'OK' },
+            'ALERTA_PERDIDA': { cls: 'error', label: 'Alerta' },
+            'ERROR_REGISTRO': { cls: 'warning', label: 'Error' },
+            'SIN_MOVIMIENTO': { cls: 'muted', label: 'Sin Mov.' }
+        };
+
+        const kpiHtml = `
+            <div class="kpi-row">
+                <div class="kpi-card">
+                    <div class="kpi-value">${window.Utils.formatARS(totalMerma)}</div>
+                    <div class="kpi-label">Pérdida Estimada</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value">${efficiencyPct}%</div>
+                    <div class="kpi-label">SKUs en Rango</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value ${alertCount > 0 ? 'text-error' : ''}">${alertCount}</div>
+                    <div class="kpi-label">Alertas</div>
+                </div>
+            </div>
+        `;
+
+        const tableHtml = rows.map(r => {
+            const info = classMap[r.clasificacion] || classMap['SIN_MOVIMIENTO'];
+            const diff = Number(r.diferencia) || 0;
+            const diffClass = diff === 0 ? 'muted' : (diff > 0 ? 'text-error' : 'text-success');
+
+            return `
+                <tr class="table-row">
+                    <td class="table-cell">
+                        <div class="font-medium">${window.Utils.escapeHtml(r.sku_nombre || '-')}</div>
+                        <div class="text-xs muted">${window.Utils.escapeHtml(r.categoria || '')}</div>
+                    </td>
+                    <td class="table-cell text-right font-mono">${r.stock_apertura}</td>
+                    <td class="table-cell text-right font-mono">${r.stock_cierre}</td>
+                    <td class="table-cell text-right font-mono">${r.consumo_real}</td>
+                    <td class="table-cell text-right font-mono muted">${r.consumo_sistema}</td>
+                    <td class="table-cell text-right font-mono font-bold ${diffClass}">${diff}</td>
+                    <td class="table-cell text-right font-mono">${r.varianza_pct}%</td>
+                    <td class="table-cell text-center">
+                        <span class="status-pill status-${info.cls}">${info.label}</span>
+                    </td>
+                </tr>`;
+        }).join('');
+
+        container.innerHTML = `
+            ${kpiHtml}
+            <div class="table-wrap table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th class="table-header">SKU</th>
+                            <th class="table-header text-right">Apertura</th>
+                            <th class="table-header text-right">Cierre</th>
+                            <th class="table-header text-right">Real</th>
+                            <th class="table-header text-right">Sistema</th>
+                            <th class="table-header text-right">Δ</th>
+                            <th class="table-header text-right">%</th>
+                            <th class="table-header text-center">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>${tableHtml}</tbody>
+                </table>
+            </div>
+        `;
+    }
+
+    // ──────────────────────────────────────────────────────────────
+    // 13. Sprint 3: Staff Performance Panel
+    // ──────────────────────────────────────────────────────────────
+    async function loadStaffPerformance(workDayId) {
+        const container = document.getElementById('staff-performance-section');
+        if (!container) return;
+
+        try {
+            // Get today's staff from closing_terminals
+            const { data: terminals } = await window.sb
+                .from('closing_terminals')
+                .select('staff_id')
+                .eq('cash_closing_id', state.closingId);
+
+            if (!terminals || terminals.length === 0) {
+                container.innerHTML = '<div class="muted text-sm">Sin operarios asignados.</div>';
+                return;
+            }
+
+            const staffIds = [...new Set(terminals.map(t => t.staff_id).filter(Boolean))];
+
+            if (staffIds.length === 0) {
+                container.innerHTML = '<div class="muted text-sm">Sin operarios registrados.</div>';
+                return;
+            }
+
+            const { data: perfData, error } = await window.sb
+                .from('vw_staff_performance')
+                .select('*')
+                .in('user_id', staffIds);
+
+            if (error) throw error;
+            renderStaffPerformance(container, perfData || []);
+        } catch (err) {
+            console.warn('[admin-cierre] Staff performance load error:', err);
+            if (container) {
+                container.innerHTML = '<div class="muted text-sm">No se pudo cargar el historial de operarios.</div>';
+            }
+        }
+    }
+
+    function renderStaffPerformance(container, staff) {
+        if (staff.length === 0) {
+            container.innerHTML = '<div class="muted text-sm">Sin datos históricos disponibles.</div>';
+            return;
+        }
+
+        // Determine reliability: based on abs_cash_difference / closures_count
+        function getReliability(s) {
+            const closures = s.closures_count || 0;
+            if (closures < 3) return { label: 'Nuevo', cls: 'muted', icon: '○' };
+            const avgAbs = (s.abs_cash_difference || 0) / closures;
+            const threshold = state.auditConfig?.threshold || 500;
+            if (avgAbs <= threshold) return { label: 'Fiable', cls: 'success', icon: '●' };
+            if (avgAbs <= threshold * 3) return { label: 'Regular', cls: 'warning', icon: '◐' };
+            return { label: 'Riesgo', cls: 'error', icon: '◉' };
+        }
+
+        const tableHtml = staff.map(s => {
+            const rel = getReliability(s);
+            const netDiff = Number(s.net_cash_difference) || 0;
+            const netClass = netDiff === 0 ? 'muted' : (netDiff < 0 ? 'text-error' : 'text-success');
+
+            return `
+                <tr class="table-row">
+                    <td class="table-cell">
+                        <div class="font-medium">${window.Utils.escapeHtml(s.full_name || '-')}</div>
+                        <div class="text-xs muted">${s.role || '-'}</div>
+                    </td>
+                    <td class="table-cell text-center font-mono">${s.shifts_total || 0}</td>
+                    <td class="table-cell text-center font-mono">${s.closures_count || 0}</td>
+                    <td class="table-cell text-right font-mono ${netClass}">
+                        ${window.Utils.formatARS(netDiff)}
+                    </td>
+                    <td class="table-cell text-right font-mono muted">
+                        ${window.Utils.formatARS(s.abs_cash_difference || 0)}
+                    </td>
+                    <td class="table-cell text-center">
+                        <span class="status-pill status-${rel.cls}" title="${rel.label}">
+                            ${rel.icon} ${rel.label}
+                        </span>
+                    </td>
+                </tr>`;
+        }).join('');
+
+        container.innerHTML = `
+            <div class="table-wrap table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th class="table-header">Operario</th>
+                            <th class="table-header text-center">Turnos</th>
+                            <th class="table-header text-center">Cierres</th>
+                            <th class="table-header text-right">Δ Neto</th>
+                            <th class="table-header text-right">Δ Absoluto</th>
+                            <th class="table-header text-center">Fiabilidad</th>
+                        </tr>
+                    </thead>
+                    <tbody>${tableHtml}</tbody>
+                </table>
+            </div>
+            <div class="text-xs muted" style="margin-top: 8px;">
+                Fiabilidad calculada sobre promedio histórico de diferencias absolutas por cierre.
+            </div>
+        `;
     }
 
     function renderBreakdown(summary) {

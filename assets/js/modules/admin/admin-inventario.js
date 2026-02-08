@@ -298,9 +298,7 @@
     }
   }
 
-  function getThemeColor(varName, fallback) {
-    return getComputedStyle(document.documentElement).getPropertyValue(varName).trim() || fallback;
-  }
+
 
   function normalizeString(value) {
     return String(value || "").trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ");
@@ -628,13 +626,7 @@
 
     const top5 = Object.values(skuTotals).sort((a, b) => b.total - a.total).slice(0, 5);
 
-    const themeColors = [
-      getThemeColor("--color-danger", "#ff3b30"),
-      getThemeColor("--color-warning", "#ff9500"),
-      getThemeColor("--color-success", "#34c759"),
-      getThemeColor("--color-info", "#007aff"),
-      getThemeColor("--color-primary", "#5856d6"),
-    ];
+    const themeColors = window.Utils.getChartColors(5);
 
     const datasets = top5.map((sku, index) => {
       const data = dates.map((date) => {
@@ -650,10 +642,10 @@
 
     if (datasets.length === 0) datasets.push({ label: "Sin Datos", data: [] });
 
-    const textColor = getThemeColor("--color-text-muted", "#a0a0a0");
-    const gridColor = getThemeColor("--color-border", "rgba(255,255,255,0.06)");
+    const textColor = window.Utils.getThemeColor("--color-text-muted", "#a0a0a0");
+    const gridColor = window.Utils.getThemeColor("--color-border", "rgba(255,255,255,0.06)");
 
-    state.analisis.chartInstance = new Chart(ctx, {
+    state.analisis.chartInstance = await window.ChartLoader.create(ctx, {
       type: "line",
       data: { labels: dates, datasets },
       options: {
@@ -661,7 +653,7 @@
         maintainAspectRatio: false,
         interaction: { mode: "index", intersect: false },
         plugins: {
-          title: { display: true, text: "Top 5 Productos Más Consumidos (Últimos 30 días)", color: getThemeColor("--color-text-main", "#e0e0e0") },
+          title: { display: true, text: "Top 5 Productos Más Consumidos (Últimos 30 días)", color: window.Utils.getThemeColor("--color-text-main", "#e0e0e0") },
           legend: { position: "top", labels: { usePointStyle: true, color: textColor } },
         },
         scales: {

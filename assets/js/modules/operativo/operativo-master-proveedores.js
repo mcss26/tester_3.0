@@ -2,7 +2,8 @@
 // Logic for Operativo Suppliers Master Page
 // initSlidePanel is global from panel.js
 
-document.addEventListener('DOMContentLoaded', async () => {
+(async function() {
+  'use strict';
     // 1. Auth Guard
     const session = await window.Auth.guardOrRedirect(['operativo', 'staff_barra', 'staff_operativo', 'admin', 'contable']);
     if (!session) return;
@@ -110,7 +111,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             html += `
                 <tr class="table-row row-clickable prov-row" data-id="${item.id}">
-                    <td class="table-cell cell-pad cell-strong">${item.nombre_fantasia}</td>
+                    <td class="table-cell cell-pad cell-strong">${window.Utils.escapeHtml(item.nombre_fantasia)}</td>
                     <td class="table-cell cell-pad muted">${contactoNombre}</td>
                     <td class="table-cell cell-pad muted">${telefono}</td>
                     <td class="table-cell cell-pad muted">${email}</td>
@@ -272,4 +273,4 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         });
     }
-});
+})();

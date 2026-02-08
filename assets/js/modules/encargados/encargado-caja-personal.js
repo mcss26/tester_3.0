@@ -359,10 +359,15 @@
                 <td class="table-cell muted">${staff.role || 'Staff'}</td>
                 <td class="table-cell"><span class="status-pill status-success">●</span></td>
                 <td class="table-cell text-right">
-                    <button class="btn-ghost btn-sm" onclick="window.Toast.info('Editar no habilitado')">✎</button>
+                    <button class="btn-ghost btn-sm js-btn-edit-staff" data-staff-id="${staff.id}">✎</button>
                 </td>
             </tr>
         `).join('');
+
+        // Delegate edit clicks
+        ui.nominaList.querySelectorAll('.js-btn-edit-staff').forEach(btn => {
+            btn.addEventListener('click', () => window.Toast?.info('Editar no habilitado'));
+        });
     }
 
     // 10. Action Functions
