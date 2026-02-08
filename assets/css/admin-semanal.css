@@ -132,3 +132,13 @@
 .week-select:hover {
     border-color: rgba(255, 255, 255, 0.3);
 }
+
+/* =========================================================================
+   FASE 9: Hygiene Remediation (2026-02-08)
+   ========================================================================= */
+.balance-card-warning { border-color: rgba(251, 191, 36, 0.3); }
+.flex-column-center { display: flex; flex: 1; flex-direction: column; justify-content: center; align-items: center; }
+.sub-label-center { text-align: center; margin-bottom: 8px; }
+.actions-bar-flex { display: flex; gap: 8px; align-items: center; }
+.status-pill-total { font-size: var(--text-sm); font-weight: 700; }
+.footer-actions-right { display: flex; justify-content: flex-end; padding: var(--space-4) 0; }

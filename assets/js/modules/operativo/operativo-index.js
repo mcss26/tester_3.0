@@ -1,6 +1,7 @@
 /**
  * Operativo Index/Landing Module
- * Handles dashboard data fetching (user profile, system status)
+ * Handles auth guard, user profile display, workday status widget,
+ * MCO QR counter, and user menu interactions.
  */
 (async function () {
   "use strict";
@@ -10,101 +11,104 @@
     "operativo",
     "staff_barra",
     "staff_operativo",
+    "admin",
+    "encargado_barra",
+    "encargado_caja",
   ]);
   if (!session) return;
 
   // 2. DOM References
-  const ui = {
-    userName: document.getElementById("user-name"),
-    systemStatus: document.getElementById("system-status"),
-    // New references for widget
-    statusWidget: document.getElementById("system-status-widget"),
-    statusValue: document.getElementById("system-status-value"),
-    moduleContent: document.querySelector(".module-grid") || document.body, // Fallback
-    pageCardLoading: document.getElementById("page-card-loading")
-  };
+  const avatar = document.getElementById("user-avatar");
+  const userNameDisplay = document.getElementById("user-name-display");
+  const userMenu = document.getElementById("user-menu");
+  const workdayStatus = document.getElementById("workday-status");
+  const workdayText = document.getElementById("workday-text");
+  const logoutBtn = document.getElementById("btn-logout");
 
-  if (!window.Utils.assertSbOrShowBlockingError()) return;
+  // 3. Set user info
+  const user = session.user;
+  const meta = user.user_metadata || {};
+  const fullName = meta.full_name || meta.name || user.email || "";
+  const initials =
+    fullName
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2) || "OP";
+  if (avatar) avatar.textContent = initials;
+  if (userNameDisplay) userNameDisplay.textContent = fullName || user.email;
 
-  // 3. Fetch User Profile
-  async function loadProfile() {
-    if (!ui.userName) return;
-    // Requested: "nombre de perfil operativo"
-    ui.userName.textContent = "Operativo";
-  }
-
-  // 4. Fetch System Status
-  async function loadSystemStatus() {
-    // Legacy support or new widget
-    const widget = ui.statusWidget || ui.systemStatus;
-    const valueLabel = ui.statusValue;
-
-    if (!widget) return;
-
-    try {
-      const { data: wd } = await window.sb
-        .from("work_days")
-        .select("work_date, status")
-        .eq("status", "open")
-        .maybeSingle();
-
-      if (wd) {
-        if (valueLabel) {
-          valueLabel.textContent = wd.work_date;
-          widget.classList.remove("hidden");
-          widget.classList.add("live");
-        } else {
-          // Fallback for old HTML if ever used
-          widget.textContent = `DÍA ${wd.work_date}`;
-          widget.className = "status-pill status-success";
-          widget.classList.remove("hidden");
-        }
-      } else {
-        if (valueLabel) {
-          valueLabel.textContent = "CERRADO";
-          widget.classList.remove("hidden");
-        } else {
-          widget.textContent = "CERRADO";
-          widget.className = "status-pill status-error";
-          widget.classList.remove("hidden");
-        }
+  // 4. Load workday status
+  try {
+    const workday = await window.WorkDayHelper.getOpenWorkDay();
+    if (workday) {
+      const date = new Date(workday.work_date + "T12:00:00");
+      const dayName = date.toLocaleDateString("es-AR", { weekday: "long" });
+      const dayNum = date.toLocaleDateString("es-AR", {
+        day: "2-digit",
+        month: "2-digit",
+      });
+      if (workdayText) workdayText.textContent = `${dayName} ${dayNum}`;
+      if (workdayStatus) {
+        workdayStatus.classList.remove("status-closed", "status-planning");
+        workdayStatus.classList.add(
+          workday.status === "open" ? "status-open" : "status-planning"
+        );
       }
-    } catch (err) {
-      console.warn("Error loading status", err);
+    } else {
+      if (workdayText) workdayText.textContent = "Sin jornada activa";
+      if (workdayStatus) {
+        workdayStatus.classList.remove("status-open", "status-planning");
+        workdayStatus.classList.add("status-closed");
+      }
     }
+  } catch (err) {
+    console.warn("WorkDay fetch error:", err);
+    if (workdayText) workdayText.textContent = "Error";
   }
 
-  /**
-   * Initializes MCO Member QR Counter widget.
-   */
+  // 5. Avatar Dropdown Toggle
+  if (avatar && userMenu) {
+    avatar.addEventListener("click", (e) => {
+      e.stopPropagation();
+      userMenu.classList.toggle("hidden");
+    });
+
+    document.addEventListener("click", () => {
+      userMenu.classList.add("hidden");
+    });
+  }
+
+  // 6. Logout
+  logoutBtn?.addEventListener("click", async (e) => {
+    e.preventDefault();
+    if (confirm("¿Cerrar sesión?")) {
+      await window.Auth.logout();
+    }
+  });
+
+  // 7. MCO QR Widget
   function initMcoQrWidget() {
-    const widget = document.getElementById('mco-qr-widget');
-    const elGenerated = document.getElementById('mco-qr-generated');
-    const elValidated = document.getElementById('mco-qr-validated');
-    
+    const widget = document.getElementById("mco-widget");
+    const elValidated = document.getElementById("mco-qr-validated");
+
     if (!widget) return;
 
-    const MCO_BATCH_ID = '141e44d9-42bc-4c2b-a3bb-4d9721e03802';
+    const MCO_BATCH_ID = "141e44d9-42bc-4c2b-a3bb-4d9721e03802";
 
     const fetchMcoStats = async () => {
       try {
-        const { count: generated } = await window.sb
-          .from('qr_codes')
-          .select('*', { count: 'exact', head: true })
-          .eq('batch_id', MCO_BATCH_ID);
-
         const { count: validated } = await window.sb
-          .from('qr_codes')
-          .select('*', { count: 'exact', head: true })
-          .eq('batch_id', MCO_BATCH_ID)
-          .eq('status', 'ACREDITADO');
+          .from("qr_codes")
+          .select("*", { count: "exact", head: true })
+          .eq("batch_id", MCO_BATCH_ID)
+          .eq("status", "ACREDITADO");
 
-        if (elGenerated) elGenerated.textContent = generated || 0;
         if (elValidated) elValidated.textContent = validated || 0;
-        
-        widget.classList.remove('hidden');
+        widget.style.display = "";
       } catch (err) {
-        console.warn('Error fetching MCO QR stats:', err);
+        console.warn("Error fetching MCO QR stats:", err);
       }
     };
 
@@ -112,11 +116,5 @@
     setInterval(fetchMcoStats, 60000);
   }
 
-  // Init
-  window.Utils.setPageState(ui, { loading: true });
-  try {
-    await Promise.all([loadProfile(), loadSystemStatus()]);
-    initMcoQrWidget();
-  } catch(e) { console.error(e); }
-  window.Utils.setPageState(ui, { loading: false });
+  initMcoQrWidget();
 })();

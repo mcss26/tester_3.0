@@ -1868,3 +1868,47 @@ body.admin-shell ::selection {
   opacity: 1;
 }
 
+
+/* =========================================================================
+   FASE 9: Hygiene Remediation (2026-02-08)
+   Classes extracted from inline styles
+   ========================================================================= */
+
+.import-preview-wrapper {
+  margin-top: var(--space-sm);
+}
+
+.filter-actions-group {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-left: 8px;
+  border-left: 1px solid var(--border-color);
+  padding-left: 12px;
+}
+
+.status-toggle-btn {
+  margin-right: 12px;
+}
+
+.category-select-wrap {
+  margin-right: 12px;
+}
+
+.category-dropdown-custom {
+  min-width: 200px;
+}
+
+.btn-icon-new-sku {
+  width: 32px;
+  height: 32px;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Scrollable table container (extracted from inline) */
+.table-scroll-sm {
+  max-height: 300px;
+  overflow-y: auto;
+}

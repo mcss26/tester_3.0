@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="../../assets/css/tokens.css">
     <link rel="stylesheet" href="../../assets/css/components.css">
     <link rel="stylesheet" href="../../assets/css/admin-central-stock.css">
+    <link rel="stylesheet" href="../../assets/css/staff-caja.css">
 </head>
 
 <body class="app-shell admin-shell admin-scroll" data-allowed-roles="staff_caja,admin,operativo">
@@ -49,60 +50,6 @@
         </div>
     </header>
 
-    <style>
-        /* WORKDAY STATUS BADGE */
-        .workday-status {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 14px;
-            border-radius: 99px;
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            transition: all 0.3s ease;
-        }
-
-        .workday-status.status-open {
-            border: 1px solid rgba(74, 222, 128, 0.3);
-            background: rgba(74, 222, 128, 0.08);
-            color: #4ade80;
-        }
-
-        .workday-status.status-planning {
-            border: 1px solid rgba(251, 191, 36, 0.3);
-            background: rgba(251, 191, 36, 0.08);
-            color: #fbbf24;
-        }
-
-        .workday-status.status-closed {
-            border: 1px solid rgba(161, 161, 170, 0.3);
-            background: rgba(161, 161, 170, 0.08);
-            color: #a1a1aa;
-        }
-
-        .workday-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: currentColor;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0.5;
-            }
-        }
-    </style>
-
     <!-- Main Content (operational — preserved) -->
     <main class="page-shell">
         <div class="page-card-wrap">
@@ -111,20 +58,17 @@
                 <section class="action-section container-narrow">
 
                     <!-- Status Alert -->
-                    <div id="status-message" class="alert hidden text-center text-sm font-bold"
-                        style="margin-bottom: var(--space-md);"></div>
+                    <div id="status-message" class="alert hidden text-center text-sm font-bold mb-md"></div>
 
                     <!-- Convocation Alert Card -->
-                    <div id="convocation-card" class="action-card hidden col-flex cursor-default p-6"
-                        style="margin-bottom: var(--space-md);">
-                        <div class="status-pill status-success text-sm font-bold tracking-wider"
-                            style="margin-bottom: var(--space-sm);">
+                    <div id="convocation-card" class="action-card hidden col-flex cursor-default p-6 mb-md">
+                        <div class="status-pill status-success text-sm font-bold tracking-wider mb-sm">
                             CONVOCATORIA CONFIRMADA
                         </div>
 
-                        <h3 class="text-2xl font-bold" style="margin-bottom: var(--space-xs);" id="convocation-date">...
+                        <h3 class="text-2xl font-bold mb-xs" id="convocation-date">...
                         </h3>
-                        <p class="faint text-sm" style="margin-bottom: var(--space-md);" id="convocation-role">...</p>
+                        <p class="faint text-sm mb-md" id="convocation-role">...</p>
 
                         <button id="btn-confirm-convocation" class="btn btn-primary w-full">
                             CONFIRMAR ASISTENCIA
@@ -135,9 +79,8 @@
                     <div id="step-dashboard" class="hidden animate-fade-in">
 
                         <!-- Info Card -->
-                        <div class="action-card cursor-default flex-col items-start !text-left p-5 w-full"
-                            style="margin-bottom: var(--space-md);">
-                            <div class="flex-between align-center w-full" style="margin-bottom: var(--space-xs);">
+                        <div class="action-card cursor-default flex-col items-start !text-left p-5 w-full mb-md">
+                            <div class="flex-between align-center w-full mb-xs">
                                 <div class="row-flex align-center gap-sm">
                                     <div class="icon-box">
                                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
@@ -153,7 +96,7 @@
                             </div>
 
                             <!-- Timeline -->
-                            <div id="status-timeline" class="status-timeline" style="margin-top: var(--space-sm);">
+                            <div id="status-timeline" class="status-timeline mt-sm">
                                 <div class="timeline-step" data-step="waiting">
                                     <div class="timeline-dot"></div>
                                     <span class="timeline-label">Esperando</span>
@@ -178,7 +121,7 @@
 
                         <!-- Closing Form -->
                         <form id="closing-form" class="w-full">
-                            <p class="label-welcome text-center" style="margin-bottom: var(--space-md);">Declaración</p>
+                            <p class="label-welcome text-center mb-md">Declaración</p>
 
                             <div class="card-section">
                                 <label for="input-cash" class="block text-sm uppercase faint mb-1">Total
@@ -202,8 +145,8 @@
 
                             <div class="card-section">
                                 <label class="block text-sm uppercase faint mb-2">Firma Digital</label>
-                                <div class="signature-wrapper relative border border-white/10 rounded-lg bg-black/20 overflow-hidden"
-                                    style="height: 160px; touch-action: none;">
+                                <div
+                                    class="signature-wrapper relative border border-white/10 rounded-lg bg-black/20 overflow-hidden signature-canvas-height">
                                     <canvas id="signature-canvas" class="w-full h-full cursor-crosshair"></canvas>
                                     <div id="signature-placeholder"
                                         class="signature-placeholder absolute inset-0 flex items-center justify-center text-white/20 pointer-events-none">

@@ -12,7 +12,7 @@
     <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
 </head>
 
-<body class="app-shell admin-shell admin-scroll" data-allowed-roles="operativo,logistico">
+<body class="app-shell admin-shell admin-scroll" data-allowed-roles="operativo,logistico,admin">
 
     <!-- Topbar: Golden Standard -->
     <header class="topbar">
@@ -25,13 +25,25 @@
         </nav>
 
         <div class="topbar-center header-search">
-            <input type="text" id="global-search" class="input" placeholder="Ir a...">
+            <input type="text" id="global-search" class="input" placeholder="Ir a..." aria-label="NavegaciÃ³n rÃ¡pida">
             <span class="header-shortcut">⌘K</span>
         </div>
 
         <div class="topbar-end">
             <div class="dropdown-container">
-                <button class="avatar avatar-sm" id="user-avatar">OP</button>
+                <button class="avatar avatar-sm" id="user-avatar" aria-label="Menú de usuario">OP</button>
+                <div class="dropdown-menu dropdown-user hidden" id="user-menu">
+                    <div class="dropdown-header" id="user-name-display">Usuario</div>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" id="btn-logout" class="dropdown-item dropdown-item-danger">
+                        <svg class="dropdown-icon" viewBox="0 0 24 24">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        Cerrar Sesión
+                    </a>
+                </div>
             </div>
         </div>
     </header>
@@ -41,12 +53,25 @@
             <div class="page-card">
 
                 <!-- Master Navigation -->
-                <nav class="master-nav">
-                    <a href="operativo-workday.html" class="master-nav-link">Work Day</a>
-                    <a href="operativo-stock.html" class="master-nav-link">Stock</a>
-                    <a href="operativo-solicitudes.html" class="master-nav-link active">Solicitudes</a>
-                    <a href="operativo-master-sku.html" class="master-nav-link">Configuración</a>
-                </nav>
+
+
+
+                <!-- Loading State -->
+                <div class="page-card-loading" id="page-card-loading">
+                    <div class="state-block loading">
+                        <div class="state-loader"></div>
+                        <p class="state-title">Cargando solicitudes...</p>
+                        <p class="state-desc">Sincronizando datos de reposición</p>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div class="page-card-empty" id="page-card-empty">
+                    <div class="state-block">
+                        <p class="state-title">Sin resultados</p>
+                        <p class="state-desc">No hay solicitudes disponibles.</p>
+                    </div>
+                </div>
 
                 <div class="staff-dashboard">
                     <div class="dashboard-header align-start">

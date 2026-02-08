@@ -44,8 +44,20 @@
                 </button>
             </div>
             <!-- User Avatar -->
-            <div class="dropdown-container">
-                <div class="avatar avatar-sm">AD</div>
+                        <div class="dropdown-container">
+                <button class="avatar avatar-sm" id="user-avatar" aria-label="Menú de usuario">AD</button>
+                <div class="dropdown-menu dropdown-user hidden" id="user-menu">
+                    <div class="dropdown-header" id="user-name-display">Usuario</div>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" id="btn-logout" class="dropdown-item dropdown-item-danger">
+                        <svg class="dropdown-icon" viewBox="0 0 24 24">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        Cerrar Sesión
+                    </a>
+                </div>
             </div>
         </div>
     </header>
@@ -63,16 +75,21 @@
                 <div class="dashboard-header align-start">
                     <div>
                         <h2 class="dashboard-title">Cierre Semanal</h2>
+                    </div>
+                    <div class="dashboard-actions actions-bar-flex">
                         <p class="dashboard-subtitle dashboard-subtitle-soft">Control de ingresos, egresos y
                             estimaciones fiscales</p>
                     </div>
                     <div class="actions-bar">
                         <!-- Week Selector -->
                         <select id="weekSelect" class="week-select"></select>
-                        <!-- Freeze Button -->
-                        <button id="btnFreeze" class="btn btn-primary hidden">
-                            ❄️ CONGELAR SEMANA
-                        </button>
+                        <!-- Acción principal: Cerrar Noche -->
+                        <div class="footer-actions-right">
+                            <!-- Freeze Button -->
+                            <button id="btnFreeze" class="btn btn-primary hidden">
+                                ❄️ CONGELAR SEMANA
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -123,12 +140,12 @@
                     </div>
 
                     <!-- Tax Estimate -->
-                    <div class="balance-card" style="border-color: rgba(251, 191, 36, 0.3);">
+                    <div class="balance-card balance-card-warning">
                         <p class="balance-label text-warning">Est. Impositivo</p>
-                        <div
-                            style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                            <span class="balance-sub-label" style="text-align: center; margin-bottom: 8px;">IVA + IIBB +
+                        <div class="flex-column-center">
+                            <span class="balance-sub-label sub-label-center">IVA + IIBB +
                                 Muni (Aprox)</span>
+                            <span class="status-pill status-pill-total" id="devencion-kpi-total">$0</span>
                             <p class="balance-value-lg text-warning" id="valTaxEst">$0</p>
                         </div>
                         <div class="text-center">

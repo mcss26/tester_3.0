@@ -1,0 +1,239 @@
+/* =========================================================================
+   ADMIN WORKDAYS - Page-Specific Styles
+   Golden Standard compliant (2026-02-08)
+   ========================================================================= */
+
+/* =========================================================================
+   GRID LAYOUTS
+   ========================================================================= */
+.planning-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.event-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+@media (max-width: 1024px) {
+    .planning-grid, .event-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .planning-grid, .event-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================================================================
+   COMPONENTS
+   ========================================================================= */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.table-row-border {
+    border-top: 1px solid var(--border-1);
+}
+
+.kpi-group {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+/* KPI Value Small - Overrides generic if needed or used as specific context */
+.kpi-value-sm-bold {
+    font-size: var(--text-sm);
+    font-weight: 700;
+}
+
+.footer-actions-right {
+    display: flex;
+    justify-content: flex-end;
+    padding: var(--space-4) 0;
+}
+
+.text-hint {
+    color: var(--text-muted);
+    font-size: 11px;
+}
+
+/* =========================================================================
+   GRID OVERRIDES
+   ========================================================================= */
+.stats-grid-4col {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+/* =========================================================================
+   STATE CLASSES
+   ========================================================================= */
+.is-checking {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+/* =========================================================================
+   UX IMPROVEMENTS (2026-02-08)
+   ========================================================================= */
+
+/* 1. Date Navigation */
+.workday-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-surface);
+    padding: 4px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-1);
+}
+
+.nav-date-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 12px;
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    color: var(--text-primary);
+    font-weight: 500;
+    min-width: 140px;
+    justify-content: center;
+}
+
+.icon-calendar {
+    width: 14px;
+    height: 14px;
+    color: var(--text-muted);
+}
+
+/* 2. Header Status */
+.status-pill-header {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-left: 12px;
+    vertical-align: middle;
+}
+
+/* 3. Semantic KPI Borders */
+.border-l-staff { border-left: 3px solid var(--green-500); }
+.border-l-costs { border-left: 3px solid var(--orange-500); }
+.border-l-breakeven { border-left: 3px solid var(--red-500); }
+.border-l-promo { border-left: 3px solid var(--blue-500); }
+
+/* 4. Staff Grid (Panel B) */
+.staff-grid-row {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr auto; /* Role | Budget | Cupos | Cost */
+    gap: 12px;
+    align-items: center;
+    padding: 12px;
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background-color var(--transition-fast);
+}
+
+.staff-grid-row:hover {
+    background-color: var(--bg-surface-hover);
+}
+
+.budget-bar-track {
+    height: 4px;
+    background: var(--bg-tertiary);
+    border-radius: 2px;
+    width: 100%;
+    margin-top: 6px;
+    overflow: hidden;
+}
+
+.budget-bar-fill {
+    height: 100%;
+    background: var(--blue-500);
+    width: 0%;
+    transition: width var(--transition-base);
+}
+
+.budget-bar-fill.is-over { background: var(--red-500); }
+.budget-bar-fill.is-warning { background: var(--orange-500); }
+
+
+
+/* 5. Sidebar Toggle Switch */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 36px;
+    height: 20px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--bg-tertiary);
+    transition: .4s;
+    border-radius: 20px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--orange-500);
+}
+
+input:checked + .slider:before {
+    transform: translateX(16px);
+}
+
+/* 6. Expandable Notes */
+.input-notes-expandable {
+    transition: height 0.2s ease;
+    min-height: 38px;
+    resize: none;
+    overflow: hidden;
+}
+
+.input-notes-expandable:focus {
+    min-height: 80px;
+    background-color: var(--bg-surface-hover);
+}
+
+/* =========================================================================
+   UTILITIES (Context-Specific)
+   ========================================================================= */
+.mb-input-group {
+    margin-bottom: 16px;
+}

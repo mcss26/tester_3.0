@@ -98,11 +98,11 @@
                 .select(`
                     id,
                     sku_id,
-                    quantity_requested,
-                    quantity_approved,
+                    requested_packs,
+                    adjust_packs,
                     status,
                     notes,
-                    master_sku!replenishment_items_sku_id_fkey(id, name)
+                    master_sku!replenishment_items_sku_id_fkey(id, nombre)
                 `)
                 .eq('request_id', requestId);
 
@@ -120,9 +120,9 @@
 
             return (data || []).map(item => ({
                 ...item,
-                sku_nombre: item.master_sku?.name || 'SKU desconocido',
+                sku_nombre: item.master_sku?.nombre || 'SKU desconocido',
                 stock_disponible: stockMap.get(item.sku_id) || 0,
-                quantity_to_dispatch: item.quantity_approved || item.quantity_requested
+                quantity_to_dispatch: item.adjust_packs || item.requested_packs
             }));
 
         } catch (err) {
@@ -245,7 +245,7 @@
             html += `
                 <tr class="table-row">
                     <td class="table-cell cell-pad cell-strong">${item.sku_nombre}</td>
-                    <td class="table-cell cell-pad">${item.quantity_requested}</td>
+                    <td class="table-cell cell-pad">${item.requested_packs}</td>
                     <td class="table-cell cell-pad ${stockClass}">${item.stock_disponible}</td>
                     <td class="table-cell cell-pad">
                         ${viewOnly ? item.quantity_to_dispatch : `
@@ -357,7 +357,7 @@
                     await window.sb
                         .from('replenishment_items')
                         .update({ 
-                            quantity_approved: item.quantity_to_dispatch,
+                            adjust_packs: item.quantity_to_dispatch,
                             status: 'DISPATCHED'
                         })
                         .eq('id', item.id);
@@ -366,7 +366,7 @@
 
             // 2. Actualizar status del pedido
             const allDispatched = dispatchItems.every(
-                item => item.quantity_to_dispatch >= item.quantity_requested
+                item => item.quantity_to_dispatch >= item.requested_packs
             );
             const newStatus = allDispatched ? 'DISPATCHED' : 'PARTIAL';
 

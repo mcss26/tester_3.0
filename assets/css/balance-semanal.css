@@ -1,0 +1,9 @@
+/* =========================================================================
+   BALANCE SEMANAL - Page-Specific Styles
+   Golden Standard compliant (2026-02-08)
+   ========================================================================= */
+
+/* KPI Grid: 3 columns */
+.balance-kpi-grid {
+    --grid-cols: 3;
+}

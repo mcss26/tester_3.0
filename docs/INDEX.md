@@ -30,6 +30,8 @@
 | Documento | Contenido |
 |:----------|:----------|
 | [navigation.md](./guides/navigation.md) | Navegación por rol, componentes de menú |
+| [state-management-guide.md](./guides/state-management-guide.md) | Patrones de estado JS por módulo |
+| [drive-troubleshooting.md](./guides/drive-troubleshooting.md) | Solución de problemas Google Drive MCP |
 
 ---
 
@@ -49,21 +51,12 @@ Documentación técnica y operativa por módulo, organizada por área:
 
 **Template**: [_template.md](./modules/_template.md)
 
----
-
-## QA (`/qa`)
-
-Templates y recursos para documentación Q&A.
-
-| Documento | Propósito |
-|:----------|:----------|
-| [QA_TEMPLATE.md](./qa/QA_TEMPLATE.md) | Template legado (usar `_template.md` para nuevos docs) |
 
 ---
 
 ## Skills (Fuente de Verdad Técnica)
 
-Ver `.agent/skills/` para reglas técnicas por dominio:
-- `frontend-developer/` - Reglas de UI/CSS
+Ver `.gemini/antigravity/skills/` para reglas técnicas por dominio:
+- `css-architect/` - Reglas de UI/CSS
 - `logic-engineer/` - Reglas de JS/lógica
 - `db-architect/` - Reglas de datos

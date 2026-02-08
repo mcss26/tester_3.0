@@ -65,9 +65,8 @@
       <h1 class="main-title">MIDNIGHT CLUB</h1>
 
       <!-- Search Bar -->
-      <div class="header-search" style="width: 100%; max-width: 400px; margin: 8px 0;">
-         <input type="text" id="global-search" class="input" placeholder="Buscar..."
-            style="width: 100%; padding-left: 36px;">
+      <div class="launcher-search">
+         <input type="text" id="global-search" class="input" placeholder="Buscar..." aria-label="NavegaciÃ³n rÃ¡pida">
          <svg class="header-search-icon" viewBox="0 0 24 24">
             <circle cx="11" cy="11" r="8"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -78,6 +77,7 @@
          <a href="admin-workdays.html" class="nav-link">Workdays</a>
          <a href="admin-central-stock.html" class="nav-link">Stock Central</a>
          <a href="admin-pagos.html" class="nav-link">Payments</a>
+         <a href="../operativo/operativo-index.html" class="nav-link">Operativo</a>
       </nav>
    </main>
 
@@ -97,65 +97,66 @@
    <script defer src="../../assets/js/core/navigation.js"></script>
 
    <script>
-  (async function () {
-   'use strict';
+      (async function () {
+         'use strict';
 
-   // Auth Guard
-   const session = await window.Auth.guardO(      admin']);
-   if (!ses         n) return;
+         // Auth Guard
+         const session = await window.Auth.guard(['admin']);
+         if (!session) return;
 
-            st avatar = do         ent.getElementById('user-avatar');
-   const userNameDisplay =          ument.getElementById('u         -name-display');
-   const userMenu = document.getElemen         Id('user-menu');
-   const workdayStatus = document.getElementById('wor         y-status');
-   const workdayText = document.getElementB         ('workday-text');
-   const logoutBtn = document.getElementById('b         logout');
+         const avatar = document.getElementById('user-avatar');
+         const userNameDisplay = document.getElementById('user-name-display');
+         const userMenu = document.getElementById('user-menu');
+         const workdayStatus = document.getElementById('workday-status');
+         const workdayText = document.getElementById('workday-text');
+         const logoutBtn = document.getElementById('btn-logout');
 
-   // 1. Set user info
-   const user = session.use            const meta = user.user_metadata || {};
-   const fullNam          meta.full_name || m         .name || user.email || '';
-         const initials = fullName.split(' ').ma          => n[0]).join('').toUpperCase().slice(0, 2) || 'U';
-   avatar.tex         ntent = initials;
-   userNameDisplay.textContent = fullName || user.email;
+         // 1. Set user info
+         const user = session.user;
+         const meta = user.user_metadata || {};
+         const fullName = meta.full_name || meta.name || user.email || '';
+         const initials = fullName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'U';
+         avatar.textContent = initials;
+         userNameDisplay.textContent = fullName || user.email;
 
-   // 2. Load workd         status
-   try {
-    const workd         = await window.WorkDayHelper.getOpenWorkDay();
-    if (         kday) {
-     const date =           Date(            day.work_date + 'T12:00:00');
-     const dayName = date.toLoc            ateString('es-A                weekday: 'long' });
-     const dayNum = date.toLocaleDa               ing('es-AR', { day: '2-digit', month: '2-digit' });
-     workdayText.te               tent = `${dayName} ${dayNum}`;
-     workdayStatus.classList.remove('status-closed', 'st               planning');
-     workdayStatus.classList.add(workd               atus === 'open' ? 'status-open' : 'status-planning');
-    } else {
-                orkdayText.textContent = 'Sin jornada activa';
-     workdayStatus.classList.remove('status-o            , 'status               ning');
-     workdayStatus.classList.add('status               ed');
-    }
-   } catch (err) {
-    console.warn('WorkDay fetch err                err);
-    workdayText.textContent = 'Error';
-            
+         // 2. Load workday status
+         try {
+            const workday = await window.WorkDayHelper.getOpenWorkDay();
+            if (workday) {
+               const date = new Date(workday.work_date + 'T12:00:00');
+               const dayName = date.toLocaleDateString('es-AR', { weekday: 'long' });
+               const dayNum = date.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' });
+               workdayText.textContent = `${dayName} ${dayNum}`;
+               workdayStatus.classList.remove('status-closed', 'status-planning');
+               workdayStatus.classList.add(workday.status === 'open' ? 'status-open' : 'status-planning');
+            } else {
+               workdayText.textContent = 'Sin jornada activa';
+               workdayStatus.classList.remove('status-open', 'status-planning');
+               workdayStatus.classList.add('status-closed');
+            }
+         } catch (err) {
+            console.warn('WorkDay fetch error:', err);
+            workdayText.textContent = 'Error';
+         }
 
-         // 3. Avatar Dro            n Toggle
-   avatar.addEventListener('click'            ) => {
-    e.stopPropagation();
-            erM         .classList.toggle('hidden');
+         // 3. Avatar Dropdown Toggle
+         avatar.addEventListener('click', (e) => {
+            e.stopPropagation();
+            userMenu.classList.toggle('hidden');
          });
 
-   document.addEventListener('click',            => {
-    userMenu.cla            st.add('hidden');
-   });
+         document.addEventListener('click', () => {
+            userMenu.classList.add('hidden');
+         });
 
-   // 4. Lo         t
-            outBtn?.addEventListener('click', async (e)            {
-    e.preventDefault();
-    if (         firm(         errar sesión?          {
-     await window.Auth.logout();
-    }
-   });
-  }            
+         // 4. Logout
+         logoutBtn?.addEventListener('click', async (e) => {
+            e.preventDefault();
+            if (confirm('¿Cerrar sesión?')) {
+               await window.Auth.logout();
+            }
+         });
+      })();
    </script>
 
 </body>

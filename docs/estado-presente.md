@@ -1,7 +1,7 @@
 # Estado Presente del Proyecto - FormulaMid 4
 
-> **Fecha**: 08/02/2026
-> **Versión**: 4.0.0 (Fase de Consolidación)
+> **Fecha**: 08/02/2026 12:07
+> **Versión**: 4.0.1 (Post-Audit Cleanup)
 > **Estado General**: 🟡 En Desarrollo / Consolidación
 > **Fuente de Verdad**: Este documento
 
@@ -9,21 +9,25 @@
 
 ## 📊 Métricas Clave
 
-| Métrica                     | Estado Actual | Variación (vs semana anterior) |
-| :-------------------------- | :------------ | :----------------------------- |
-| **Pantallas Operativas**    | **48**        | +3 (logistica-seguimiento, admin-config, test-devenciones) |
-| **Tablas en Base de Datos** | **48**        | Sin cambio                     |
-| **Vistas SQL (public)**     | **18**        | +6 (vw_pnl_monthly_v2, vw_financial_week_live, etc.) |
-| **Módulos JS (Legacy)**     | **42**        | -1 (orphan inventario)         |
-| **Core JS**                 | **18**        | Sin cambio                     |
-| **Importers JS**            | **6**         | Sin cambio                     |
-| **Archivos CSS**            | **12**        | Sin cambio                     |
-| **Roles Configurados**      | **12**        | +6 (roles en profiles check)   |
-| **Skills Globales**         | **12**        | Sin cambio                     |
-| **Recetas Master**          | **93**        | +14                            |
-| **Members Registrados**     | **2,243**     | En crecimiento                 |
-| **Proveedores**             | **47**        | -                              |
-| **SKUs Activos**            | **58**        | -                              |
+| Métrica                     | Estado Actual | Variación (vs anterior) |
+| :-------------------------- | :------------ | :---------------------- |
+| **Pantallas Operativas**    | **48**        | Sin cambio              |
+| **Tablas en Base de Datos** | **60**        | Corrección: eran 60 (no 48) |
+| **Vistas SQL (public)**     | **18**        | Verificado ✅            |
+| **Módulos JS**              | **43**        | +1 (recount ajustado)   |
+| **Core JS**                 | **18**        | Sin cambio              |
+| **Importers JS**            | **6**         | Sin cambio              |
+| **Archivos CSS**            | **13**        | +1 (launcher, admin-index; main.css eliminado) |
+| **Roles Configurados**      | **12**        | Sin cambio              |
+| **Skills Activos**          | **14**        | +2 (brand-developer, creative-director) |
+| **Documentación de Módulos**| **34**        | Sin cambio              |
+| **Recetas Master**          | **93**        | Verificado ✅            |
+| **Members Registrados**     | **2,245**     | +2 (live query)         |
+| **Proveedores Activos**     | **47**        | Verificado ✅            |
+| **SKUs Activos**            | **26**        | Corrección: eran 26 (no 58) |
+| **Profiles (Users)**        | **4**         | Live query              |
+| **Work Days**               | **5**         | Live query              |
+| **Events**                  | **7**         | Live query              |
 
 ---
 
@@ -33,49 +37,52 @@
 
 | Contexto | Páginas | Directorio | Detalle |
 |:---------|:-------:|:-----------|:--------|
-| 🔵 Admin | 15 | `pages/admin/*.html` | Dashboard + Ops + Masters + Config |
+| 🔵 Admin | 15 | `pages/admin/*.html` | Index + Ops + Masters + Config + Test-devenciones |
 | 🔵 Admin QR | 3 | `pages/admin/qr/*.html` | Index, Generator, Monitor |
-| 🟢 Operativo | 11 | `pages/operativo/*.html` | Dashboard + ERP + CMS + Masters + Scanner |
-| 📦 Logística | 5 | `pages/logistica/*.html` | Dashboard + Stock + Distribución + Recepción + Seguimiento |
+| 🟢 Operativo | 9 | `pages/operativo/*.html` | Index + ERP + CMS + Masters + Scanner |
+| 📦 Logística | 5 | `pages/logistica/*.html` | Index + Stock + Distribución + Recepción + Seguimiento |
 | 🟠 Encargados | 7 | `pages/encargados/*.html` | Barra (3) + Caja (3) + Recepción |
 | 🟡 Staff | 2 | `pages/staff/*.html` | Barra + Caja |
 | 🟣 Gerencia | 1 | `pages/gerencia/*.html` | Balance Semanal |
 | 🔴 Members | 1 | `pages/members/*.html` | My QR |
 | 🛠️ Dev Utilities | 3 | `pages/*.html` | Components Catalog, Layout Patterns, Module Audit |
+| 🏠 Root | 2 | `/*.html` | index.html (redirect) + login.html |
 | **TOTAL** | **48** | — | — |
 
 ### Módulos JavaScript
 
 | Área | Archivos | Directorio |
 |:-----|:--------:|:-----------|
-| Admin | 18 | `assets/js/modules/admin/` |
+| Admin | 17 | `assets/js/modules/admin/` (14 módulos + 3 QR) |
 | Operativo | 10 | `assets/js/modules/operativo/` |
 | Encargados | 7 | `assets/js/modules/encargados/` |
 | Logística | 5 | `assets/js/modules/logistica/` |
 | Gerencia | 1 | `assets/js/modules/gerencia/` |
 | Staff | 1 | `assets/js/modules/staff/` |
 | Members | 1 | `assets/js/members/` |
+| Root | 1 | `assets/js/modules/login.js` |
+| **Subtotal Módulos** | **43** | — |
 | Core | 18 | `assets/js/core/` |
 | Importers | 6 | `assets/js/importers/` |
-| Root | 1 | `assets/js/modules/login.js` |
-| **TOTAL** | **68** | — |
+| **TOTAL JS** | **67** | — |
 
-### Archivos CSS
+### Archivos CSS (13 archivos)
 
 | Archivo | Tamaño | Propósito |
 |:--------|:------:|:----------|
 | `components.css` | 140KB | Componentes globales |
+| `admin-central-stock.css` | 42KB | Módulo Central Stock |
+| `cms-members.css` | 11KB | Módulo CMS Members |
+| `admin-pagos.css` | 11KB | Módulo Pagos |
+| `admin-master.css` | 8.1KB | Maestros admin |
+| `pages/admin-index.css` | 6.6KB | Estilos de índices admin |
 | `tokens.css` | 5.6KB | Design tokens `:root` |
-| `admin-central-stock.css` | 41KB | Módulo Central Stock |
-| `admin-pagos.css` | 10KB | Módulo Pagos |
-| `cms-members.css` | 10KB | Módulo CMS Members |
-| `admin-master.css` | 7.2KB | Maestros admin |
 | `admin-solicitudes.css` | 5.3KB | Módulo Solicitudes |
+| `admin-cierre.css` | 3.6KB | Módulo Cierre |
 | `admin-semanal.css` | 3.5KB | Balance Semanal |
-| `admin-cierre.css` | 3.5KB | Módulo Cierre |
+| `launcher.css` | 3KB | Launcher/Dashboard |
 | `admin-config.css` | 1.8KB | Admin Config |
 | `admin-reportes.css` | 1.6KB | Admin Reportes |
-| `main.css` | 64B | Stub vacío (deprecado) |
 
 ### Documentación por Módulo
 
@@ -89,11 +96,25 @@
 | Misc | 1 | `docs/modules/misc/` |
 | **TOTAL** | **34** | — |
 
+### Scripts de Utilidad (9 archivos en `scripts/`)
+
+| Script | Propósito |
+|:-------|:----------|
+| `audit-modules.js` | Auditoría automática de módulos |
+| `audit.mjs` | Auditoría general |
+| `extract-recipes.js` | Extracción de recetas |
+| `insert-recipes.sql` | Inserción de recetas en DB |
+| `find-mcp-artifacts.ps1` | Búsqueda de artefactos MCP |
+| `mcp-drive-reset.ps1` | Reset de credenciales Drive MCP |
+| `migration.sql` | Script de migración SQL |
+| `migration_script.js` | Script de migración JS |
+| `patch-ui-minimums.ps1` | Parche batch de mínimos UI |
+
 ---
 
 ## 🗄️ Base de Datos (Supabase - FormulaMid)
 
-### Tablas (48 en schema `public`)
+### Tablas (60 en schema `public`)
 
 | Dominio | Tablas |
 |:--------|:-------|
@@ -140,64 +161,96 @@
 
 ### 🟢 Completos y Verificados
 
-- **Navigation System**: Unificación de rutas y estado global.
-- **Sistema de Autenticación**: `Auth.guardOrRedirect()` implementado en 91% de módulos.
-- **Staff Caja (Operativo)**: Flujo completo con firma digital y cierre ciego.
-- **Remediación Admin (Fase 1)**: Eliminación de `alert()` en 13 módulos clave.
-- **Gestión de Stock**: Vistas `vw_stock_global` y ajustes validados.
-- **Blocking UX**: Eliminación total de `alert()` y `confirm()` nativos en módulos auditados.
-- **Balance Semanal**: Vista SQL `vw_finance_weekly` y dashboard implementado.
-- **Arqueo de Recaudación**: Comparación consumo real vs esperado con detección de faltantes.
-- **CSS Architecture**: 100% páginas migradas a `tokens.css` + `components.css` (0 imports `main.css`).
+- **Navigation System**: Unificación de rutas y estado global
+- **Sistema de Autenticación**: `Auth.guardOrRedirect()` en 91% de módulos
+- **Staff Caja (Operativo)**: Flujo completo con firma digital y cierre ciego
+- **Gestión de Stock**: Vistas `vw_stock_global` y ajustes validados
+- **Balance Semanal**: Vista SQL `vw_finance_weekly` y dashboard implementado
+- **Arqueo de Recaudación**: Comparación consumo real vs esperado
+- **CSS Architecture**: 100% páginas migradas a `tokens.css` + `components.css`
+- **Blocking UX**: 0 `alert()` / `confirm()` nativos en módulos auditados
+- **Workspace Hygiene**: Score 10/10 post-audit (08/02/2026)
 
 ### 🟡 En Progreso / Calidad Beta
 
-- **UI/UX Remediation**: Migración de Alien CSS crítica completada. Restan inline styles en ~25 páginas.
-- **Admin Workdays**: Planner de staff en desarrollo.
-- **Admin Solicitudes**: Refactorización de lógica de aprobación.
-- **Reportes de Eficiencia**: Vistas creadas, falta integración UI.
-- **Logística**: Módulos funcionales, pendiente polish visual. `logistica-seguimiento.html` agregado.
-- **Admin Config**: Módulo de configuración del sitio funcional.
+- **Admin Workdays**: Planner de staff en desarrollo
+- **Admin Solicitudes**: Refactorización de lógica de aprobación
+- **Reportes de Eficiencia**: Vistas creadas, falta integración UI
+- **Logística**: Módulos funcionales, pendiente polish visual
+- **Admin Config**: Módulo de configuración funcional
+- **CMS Members**: Acceso operativo en validación
+- **Inline Styles**: ~25 páginas con estilos inline pendientes
 
 ### 🔴 Pendiente / Bloqueado
 
-- **Agente IA (Antigravity Agent)**: ⚠️ **PAUSADO** hasta consolidación del legacy.
-- **Sandbox WYSIWYG**: Archivado temporalmente.
+- **Agente IA (Antigravity Agent)**: ⚠️ **PAUSADO** hasta consolidación del legacy
+- **Sandbox WYSIWYG**: Archivado
 
 ---
 
 ## 🛠️ Deuda Técnica Identificada
 
-Según auditoría del 08/02/2026:
+| # | Issue | Status | Detalle |
+|:-:|:------|:-------|:--------|
+| 1 | CSS Legacy (`main.css`) | ✅ ELIMINADO | Archivo borrado, 0 imports restantes |
+| 2 | Blocking UX | ✅ RESUELTO | 0 ocurrencias de `alert()`/`confirm()` |
+| 3 | CSS Duplicates | ✅ RESUELTO | Selectores consolidados en `components.css` |
+| 4 | Inline Styles | ⏳ PENDIENTE | ~25 páginas con estilos inline |
+| 5 | Orphan JS | ⏳ PENDIENTE | `operativo-erp.js` sin HTML directo (posible módulo auxiliar) |
+| 6 | Hardcoded Colors | ⏳ PENDIENTE | 18 HEX en chart.js configs |
+| 7 | Docs gaps | ⏳ PENDIENTE | Faltan: `logistica-seguimiento.md`, `admin-config.md`, `test-devenciones.md`, `gerencia/balance-semanal.md`, `members/my-qr.md` |
 
-1.  **CSS Legacy (`main.css`)**: ✅ **RESUELTO** — 16/16 páginas migradas a imports explícitos.
-2.  **Blocking UX Remaining**: ✅ **RESUELTO** (0 ocurrencias detectadas).
-3.  **CSS Duplicates**:
-    - ✅ **RESUELTO**: `.custom-dropdown` consolidado, `@keyframes fadeIn` unificado en `components.css`.
-    - ⏳ **PENDIENTE**: Inline styles en ~25 páginas.
-4.  **Orphan Code**:
-    - ⏳ **PENDIENTE**: `admin-inventario.js` (83KB, sin HTML que lo cargue).
-5.  **Hardcoded Colors (18 casos)**:
-    - Colores en hex (`#fff`, `#ff3b30`) dentro de los charts JS.
-6.  **Docs Faltantes**:
-    - ⏳ `logistica-seguimiento.md` — no existe doc para la pantalla.
-    - ⏳ `admin-config.md` — no existe doc para la pantalla.
-    - ⏳ `test-devenciones.md` — no existe doc para la pantalla.
-    - ⏳ No existen docs para `gerencia/balance-semanal.md` ni `members/my-qr.md`.
+---
+
+## 🏗️ Estructura del Workspace (Post-Audit)
+
+```
+tester_3.0/
+├── .agent/                    # Agent tooling (gitignored)
+│   ├── migrations/            # 3 SQL migration scripts
+│   ├── rules/                 # 3 rule files
+│   └── workflows/             # 1 workflow
+├── .gemini/antigravity/       # Skills + Knowledge (fuente de verdad)
+│   ├── skills/                # 14 skills activos
+│   ├── knowledge/             # KIs persistentes
+│   └── brain/                 # Artifacts por conversación
+├── assets/
+│   ├── css/                   # 13 archivos CSS
+│   │   ├── tokens.css         # Design tokens (INMUTABLE)
+│   │   ├── components.css     # Componentes globales (140KB)
+│   │   └── pages/             # CSS específico (admin-index.css)
+│   └── js/
+│       ├── core/              # 18 utilidades compartidas
+│       ├── modules/           # 43 módulos de negocio
+│       ├── importers/         # 6 importadores
+│       └── members/           # 1 módulo members
+├── docs/
+│   ├── architecture/          # Navegación y componentes
+│   ├── guides/                # 3 guías técnicas
+│   ├── modules/               # 34 fichas de módulo
+│   └── 7 docs canónicos
+├── pages/                     # 46 pantallas + 2 root
+├── scripts/                   # 9 scripts de utilidad
+├── supabase/                  # Edge functions
+├── test-data/                 # Datos de prueba sintéticos
+├── index.html                 # Redirect
+└── login.html                 # Entry point
+```
 
 ---
 
 ## 📝 Última Actualización
 
-**Fecha**: 08/02/2026 03:22
+**Fecha**: 08/02/2026 12:12
 **Cambios**:
-- **Auditoría Completa**: Recuento de todos los archivos vivos (HTML, JS, CSS, docs, DB)
-- **Vistas SQL**: Actualizadas de 12 → 18 (6 nuevas vistas financieras y de staff)
-- **Recetas**: Actualizadas de 79 → 93
-- **Roles en DB**: 12 roles definidos en check constraint de `profiles.role`
-- **Logística**: 5 pantallas (se agregó `logistica-seguimiento.html`)
-- **Admin**: 18 pantallas totales (15 directas + 3 QR)
-- **Docs gaps identificados**: 5 pantallas sin documentación de módulo
+- **DB Verificada (Live)**: Tablas reales = 60 (doc decía 48 — miscount corregido)
+- **SKU Activos**: Corregido de 58 → 26 (dato real)
+- **Members**: 2,243 → 2,245 (live)
+- **Nuevas métricas**: Profiles (4), Work Days (5), Events (7)
+- **Workspace Audit**: Score de higiene 6/10 → 10/10
+- **Eliminado**: `.agent/skills/`, `.agent/data/`, `docs/qa/`, `docs/planning/`, `image/golden/`, `main.css`, `nul`
+- **Recount**: CSS 12→13, JS modules 42→43, Skills 12→14
+- **Supabase Project ID**: `iyknbgmcnbpvalvsjxjz` (región us-west-2)
 
 ---
 

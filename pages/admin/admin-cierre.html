@@ -34,8 +34,20 @@
         <div class="topbar-end">
             <span class="status-pill status-open" id="current-closing-status">ESTADO: —</span>
 
-            <div class="dropdown-container">
-                <div class="avatar avatar-sm">AD</div>
+                        <div class="dropdown-container">
+                <button class="avatar avatar-sm" id="user-avatar" aria-label="Menú de usuario">AD</button>
+                <div class="dropdown-menu dropdown-user hidden" id="user-menu">
+                    <div class="dropdown-header" id="user-name-display">Usuario</div>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" id="btn-logout" class="dropdown-item dropdown-item-danger">
+                        <svg class="dropdown-icon" viewBox="0 0 24 24">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        Cerrar Sesión
+                    </a>
+                </div>
             </div>
         </div>
     </header>
@@ -73,8 +85,7 @@
                         </div>
 
                         <!-- Toolbar -->
-                        <div class="filter-bar filter-bar-compact"
-                            style="border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 16px; margin-bottom: 24px;">
+                        <div class="filter-bar filter-bar-compact filter-bar-separator">
                             <div class="filter-group">
                                 <input type="date" id="input-date" class="input input-auto-width"
                                     aria-label="Seleccionar fecha">
@@ -89,10 +100,13 @@
 
                             <div class="filter-actions">
                                 <!-- Import Actions -->
-                                <div class="filter-group" style="gap: 8px;">
+                                <div class="filter-group filter-group-gap-sm">
                                     <button data-trigger="file-extracciones"
                                         class="btn btn-ghost btn-xs">RETIROS</button>
-                                    <button data-trigger="file-gbol" class="btn btn-ghost btn-xs">GBOL</button>
+                                    <button id="btn-sync-gbol" class="btn btn-ghost btn-xs"
+                                        title="Sincronizar datos desde GBOL API">⚡ SYNC GBOL</button>
+                                    <button data-trigger="file-gbol" class="btn btn-ghost btn-xs"
+                                        title="Importar CSV GBOL (fallback)">GBOL CSV</button>
                                     <button data-trigger="file-passline" class="btn btn-ghost btn-xs">PASSLINE</button>
                                     <button data-trigger="file-afip" class="btn btn-ghost btn-xs">TERMINALES</button>
                                 </div>
@@ -151,10 +165,9 @@
 
                             <!-- QR Reconciliation -->
                             <div class="reconcile-card">
-                                <div class="dashboard-header cell-pad"
-                                    style="padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.06);">
+                                <div class="dashboard-header cell-pad dashboard-header-bordered">
                                     <div>
-                                        <h3 class="dashboard-subtitle text-muted" style="margin: 0;">Conciliación
+                                        <h3 class="dashboard-subtitle text-muted m-0">Conciliación
                                             Entradas QR</h3>
                                         <span class="text-xs text-tertiary">Ingresos x Acreditación</span>
                                     </div>
@@ -213,10 +226,9 @@
 
                             <!-- System Sales Breakdown -->
                             <div class="reconcile-card">
-                                <div class="dashboard-header cell-pad"
-                                    style="padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.06);">
+                                <div class="dashboard-header cell-pad dashboard-header-bordered">
                                     <div>
-                                        <h3 class="dashboard-subtitle text-muted" style="margin: 0;">Desglose de Ventas
+                                        <h3 class="dashboard-subtitle text-muted m-0">Desglose de Ventas
                                             (Sistema)</h3>
                                         <span class="text-xs text-tertiary">Ventas Barra + Entradas</span>
                                     </div>
@@ -252,7 +264,7 @@
                                                     id="breakdown-qr-total">$0</td>
                                             </tr>
                                             <!-- Totals Row -->
-                                            <tr class="table-row" style="border-top: 1px solid rgba(255,255,255,0.1);">
+                                            <tr class="table-row row-separator">
                                                 <td class="table-cell font-bold text-accent">TOTAL SISTEMA</td>
                                                 <td class="table-cell text-right font-bold font-mono"
                                                     id="breakdown-total-cash">$0</td>
@@ -276,8 +288,7 @@
 
                         <!-- Sprint 2: Bar Stock Audit Section (Collapsible) -->
                         <details class="audit-details" open>
-                            <summary class="dashboard-subtitle font-bold text-muted"
-                                style="cursor: pointer; padding: 12px 0; margin-top: 16px;">
+                            <summary class="dashboard-subtitle font-bold text-muted audit-summary">
                                 📊 Auditoría de Stock de Barra
                             </summary>
                             <div id="bar-audit-section">
@@ -287,8 +298,7 @@
 
                         <!-- Sprint 3: Staff Performance Section (Collapsible) -->
                         <details class="audit-details">
-                            <summary class="dashboard-subtitle font-bold text-muted"
-                                style="cursor: pointer; padding: 12px 0; margin-top: 16px;">
+                            <summary class="dashboard-subtitle font-bold text-muted cursor-pointer py-3 mt-4">
                                 👥 Desempeño de Operarios
                             </summary>
                             <div id="staff-performance-section">
@@ -319,7 +329,7 @@
                 <h2 class="dashboard-title">Confirmar Cierre</h2>
             </div>
             <div class="modal-body">
-                <p class="text-center" style="margin-bottom: 16px;">¿Estás seguro de cerrar la noche permanentemente?
+                <p class="text-center confirm-text">¿Estás seguro de cerrar la noche permanentemente?
                 </p>
                 <div class="state-block">
                     <p class="state-title">Diferencia Total</p>
@@ -340,7 +350,7 @@
                 <button class="icon-btn" id="btnCloseInfo" aria-label="Cerrar modal">×</button>
             </div>
             <div class="modal-body">
-                <pre id="infoContent" class="font-mono text-sm" style="white-space: pre-wrap;"></pre>
+                <pre id="infoContent" class="font-mono text-sm pre-wrap"></pre>
             </div>
         </div>
     </div>
@@ -359,6 +369,7 @@
     <script defer src="../../assets/js/core/utils.js"></script>
     <script defer src="../../assets/js/core/toast.js"></script>
     <script defer src="../../assets/js/core/navigation.js"></script>
+    <script defer src="../../assets/js/core/gbol-service.js"></script>
 
     <!-- Importers & Logic -->
     <script defer src="../../assets/js/importers/importer-utils.js"></script>

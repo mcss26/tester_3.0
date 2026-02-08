@@ -10,102 +10,79 @@
     <link rel="stylesheet" href="../../assets/css/tokens.css">
     <link rel="stylesheet" href="../../assets/css/components.css">
     <link rel="stylesheet" href="../../assets/css/admin-central-stock.css">
+    <link rel="stylesheet" href="../../assets/css/launcher.css">
 </head>
 
-<body class="app-shell admin-shell admin-scroll"
+<body class="app-shell admin-shell launcher-page"
     data-allowed-roles="operativo,staff_barra,staff_operativo,admin,encargado_barra,encargado_caja">
 
-    <!-- Topbar: Golden Standard -->
+    <!-- TOPBAR -->
     <header class="topbar">
+        <!-- Left: Breadcrumb -->
         <nav class="breadcrumb topbar-start">
-            <span class="breadcrumb-item">
-                <a class="breadcrumb-link" href="operativo-index.html">Operaciones</a>
-            </span>
-            <span class="breadcrumb-sep">/</span>
-            <span class="breadcrumb-item current">Inicio</span>
+            <span class="breadcrumb-item current">OPERACIONES</span>
         </nav>
 
-        <div class="topbar-center header-search">
-            <input type="text" id="global-search" class="input" placeholder="Ir a...">
-            <svg class="header-search-icon" viewBox="0 0 24 24">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-            <span class="header-shortcut">⌘K</span>
+        <!-- Center: Workday Status -->
+        <div class="topbar-center">
+            <div id="workday-status" class="workday-status status-closed">
+                <span class="workday-dot"></span>
+                <span id="workday-text">Cargando...</span>
+            </div>
         </div>
 
+        <!-- Right: Avatar -->
         <div class="topbar-end">
             <!-- MCO Widget -->
-            <div class="status-indicator status-active" id="mco-widget" style="display: none;">
+            <div class="status-indicator status-active hidden" id="mco-widget">
                 <span class="status-dot"></span>
                 <span class="status-text">MCO: <span id="mco-qr-validated">0</span></span>
             </div>
 
             <div class="dropdown-container">
-                <button class="avatar avatar-sm" id="user-avatar">OP</button>
+                <button class="avatar avatar-sm" id="user-avatar" aria-label="Menú de usuario">OP</button>
                 <div class="dropdown-menu dropdown-user hidden" id="user-menu">
                     <div class="dropdown-header" id="user-name-display">Operativo</div>
                     <div class="dropdown-divider"></div>
-                    <a href="#" id="btn-logout" class="dropdown-item dropdown-item-danger">Cerrar Sesión</a>
+                    <a href="#" id="btn-logout" class="dropdown-item dropdown-item-danger">
+                        <svg class="dropdown-icon" viewBox="0 0 24 24">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        Cerrar Sesión
+                    </a>
                 </div>
             </div>
         </div>
     </header>
 
-    <main class="page-shell">
-        <div class="page-card-wrap">
-            <div class="page-card">
+    <!-- CENTER CONTENT -->
+    <main class="launcher-center">
+        <h1 class="main-title">OPERACIONES</h1>
 
-                <div id="module-content">
-                    <div class="staff-dashboard">
-                        <div class="dashboard-header align-start">
-                            <div class="welcome-text">
-                                <h1 class="dashboard-title">Panel de Operaciones</h1>
-                                <p class="dashboard-subtitle">Gestión diaria, stock y control operativo.</p>
-                            </div>
-                            <div class="status-row">
-                                <span class="badge status-success">SISTEMA ONLINE</span>
-                            </div>
-                        </div>
-
-                        <!-- Dashboard Shortcuts -->
-                        <div class="profiles-grid">
-                            <a href="operativo-workday.html" class="profile-card no-underline">
-                                <div class="profile-avatar">📅</div>
-                                <h3 class="profile-name">Work Day</h3>
-                                <p class="profile-role">Gestión de Jornada</p>
-                                <span class="profile-info">Links, Nómina y Solicitudes</span>
-                            </a>
-                            <a href="operativo-stock.html" class="profile-card no-underline">
-                                <div class="profile-avatar">📦</div>
-                                <h3 class="profile-name">Stock</h3>
-                                <p class="profile-role">Control de Inventario</p>
-                                <span class="profile-info">Stock operativo y ajustes</span>
-                            </a>
-                            <a href="operativo-solicitudes.html" class="profile-card no-underline">
-                                <div class="profile-avatar">📋</div>
-                                <h3 class="profile-name">Solicitudes</h3>
-                                <p class="profile-role">Requerimientos</p>
-                                <span class="profile-info">Reposición y pedidos</span>
-                            </a>
-                            <a href="cms-members.html" class="profile-card no-underline">
-                                <div class="profile-avatar">👥</div>
-                                <h3 class="profile-name">CMS Members</h3>
-                                <p class="profile-role">Gestión de Socios</p>
-                                <span class="profile-info">Altas, Bajas y Modificaciones</span>
-                            </a>
-                            <a href="operativo-master-sku.html" class="profile-card no-underline">
-                                <div class="profile-avatar">⚙️</div>
-                                <h3 class="profile-name">Configuración</h3>
-                                <p class="profile-role">Master Data</p>
-                                <span class="profile-info">SKUs y Proveedores</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <!-- Search Bar -->
+        <div class="header-search launcher-search">
+            <input type="text" id="global-search" class="input" placeholder="Buscar..." aria-label="NavegaciÃ³n rÃ¡pida">
+            <svg class="header-search-icon" viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
         </div>
+
+        <nav class="quick-links">
+            <a href="operativo-workday.html" class="nav-link">Work Day</a>
+            <a href="operativo-stock.html" class="nav-link">Stock</a>
+            <a href="operativo-solicitudes.html" class="nav-link">Solicitudes</a>
+            <a href="cms-members.html" class="nav-link">CMS Members</a>
+            <a href="operativo-master-sku.html" class="nav-link">Configuración</a>
+        </nav>
     </main>
+
+    <!-- FOOTER -->
+    <footer class="launcher-footer">
+        &copy; 2026 Midnight Systems
+    </footer>
 
     <!-- Core Scripts -->
     <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -115,7 +92,7 @@
     <script defer src="../../assets/js/core/auth.js"></script>
     <script defer src="../../assets/js/core/toast.js"></script>
     <script defer src="../../assets/js/core/work-day-helper.js"></script>
-    <script src="../../assets/js/core/navigation.js"></script>
+    <script defer src="../../assets/js/core/navigation.js"></script>
     <script defer src="../../assets/js/modules/operativo/operativo-index.js"></script>
 </body>
 

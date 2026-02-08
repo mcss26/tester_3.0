@@ -8,7 +8,7 @@
     const pageCardLoading = document.getElementById('page-card-loading');
     const pageCardEmpty = document.getElementById('page-card-empty');
 
-    const session = await window.Auth.guardOrRedirect(['operativo', 'logistico']);
+    const session = await window.Auth.guardOrRedirect(['operativo', 'logistico', 'admin']);
     if (!session) return;
 
     if (!window.Utils?.assertSbOrShowBlockingError?.(listContainer)) return;

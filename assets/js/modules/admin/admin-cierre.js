@@ -264,6 +264,48 @@
             window.Toast.success('Reporte de terminales procesado.');
         });
 
+        // ── GBOL API Sync ──────────────────────────────────────────
+        const btnSync = document.getElementById('btn-sync-gbol');
+        if (btnSync) {
+            btnSync.addEventListener('click', async () => {
+                if (!state.workDayId) {
+                    window.Toast.warning('Seleccioná una fecha y cargá la jornada primero.');
+                    return;
+                }
+                if (!window.GbolService) {
+                    window.Toast.error('GbolService no cargado. Verificá la inclusión del script.');
+                    return;
+                }
+
+                const dateVal = refs.inputDate.value;
+                setButtonLoading(btnSync, true);
+                const originalText = btnSync.textContent;
+                btnSync.textContent = '⏳ Sincronizando...';
+
+                try {
+                    // Phase 1: Sync fiscal data + comandas from GBOL API
+                    const result = await window.GbolService.syncNight(dateVal);
+                    const totalRecords = (result.facturacion || 0) + (result.comandas || 0);
+                    window.Toast.success(`GBOL sync: ${totalRecords} registros importados.`);
+
+                    // Phase 2: Populate system amounts on closing_terminals
+                    if (state.closingId) {
+                        await window.GbolService.populateSystemAmounts(state.closingId, dateVal);
+                        window.Toast.info('Montos del sistema actualizados desde GBOL.');
+                    }
+
+                    // Phase 3: Reload data to reflect changes
+                    await loadData();
+                } catch (err) {
+                    console.error('[admin-cierre] GBOL sync error:', err);
+                    window.Toast.error(`Error sync GBOL: ${err.message}`);
+                } finally {
+                    btnSync.textContent = originalText;
+                    setButtonLoading(btnSync, false);
+                }
+            });
+        }
+
         // QR Calculations
         refs.qrPassline.decl.addEventListener('input', updateQrDiffs);
         refs.qrBoleteria.decl.addEventListener('input', updateQrDiffs);

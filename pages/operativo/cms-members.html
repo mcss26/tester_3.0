@@ -4,11 +4,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#0a0a0f">
-    <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
+  <meta name="theme-color" content="#0a0a0f">
+  <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
   <title>CMS Members — Midnight</title>
   <link rel="stylesheet" href="../../assets/css/tokens.css">
   <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/admin-master.css">
   <link rel="stylesheet" href="../../assets/css/cms-members.css">
 </head>
 
@@ -22,14 +23,14 @@
   <header class="topbar">
     <!-- Left: Breadcrumb -->
     <nav class="breadcrumb topbar-start">
-      <a href="../operativo/operativo-cms.html" class="breadcrumb-item breadcrumb-link">CMS</a>
+      <a href="operativo-index.html" class="breadcrumb-item breadcrumb-link">Operativo</a>
       <span class="breadcrumb-sep">/</span>
-      <span class="breadcrumb-item current">Members</span>
+      <span class="breadcrumb-item current">CMS Members</span>
     </nav>
 
     <!-- Center: Search -->
     <div class="topbar-center header-search">
-      <input type="text" id="global-search" class="input" placeholder="Jump to...">
+      <input type="text" id="global-search" class="input" placeholder="Jump to..." aria-label="NavegaciÃ³n rÃ¡pida">
       <svg class="header-search-icon" viewBox="0 0 24 24">
         <circle cx="11" cy="11" r="8"></circle>
         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -42,6 +43,18 @@
       <!-- User Menu Dropdown -->
       <div class="dropdown-container">
         <button class="avatar avatar-sm" id="user-avatar" aria-label="Menú de usuario">??</button>
+        <div class="dropdown-menu dropdown-user hidden" id="user-menu">
+          <div class="dropdown-header" id="user-name-display">Usuario</div>
+          <div class="dropdown-divider"></div>
+          <a href="#" id="btn-logout" class="dropdown-item dropdown-item-danger">
+            <svg class="dropdown-icon" viewBox="0 0 24 24">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+            Cerrar Sesión
+          </a>
+        </div>
       </div>
     </div>
   </header>
@@ -49,6 +62,7 @@
   <main class="page-shell">
     <div class="page-card-wrap">
       <div class="page-card overflow-visible">
+
 
         <!-- 1. Loading State -->
         <div class="page-card-loading is-visible" id="page-card-loading">
@@ -184,16 +198,14 @@
 
   <!-- Scripts -->
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-
-  <script src="../../assets/js/core/config.js"></script>
-  <script src="../../assets/js/core/supabase-client.js"></script>
-  <script src="../../assets/js/core/utils.js"></script>
-  <script src="../../assets/js/core/auth.js"></script>
-  <script src="../../assets/js/core/toast.js"></script>
-
+  <script defer src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script defer src="../../assets/js/core/config.js"></script>
+  <script defer src="../../assets/js/core/supabase-client.js"></script>
+  <script defer src="../../assets/js/core/utils.js"></script>
+  <script defer src="../../assets/js/core/auth.js"></script>
+  <script defer src="../../assets/js/core/toast.js"></script>
   <script defer src="../../assets/js/core/navigation.js"></script>
-  <script src="../../assets/js/modules/operativo/cms-members.js"></script>
+  <script defer src="../../assets/js/modules/operativo/cms-members.js"></script>
 
 </body>
 

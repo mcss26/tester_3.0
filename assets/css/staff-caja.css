@@ -1,0 +1,10 @@
+/* =========================================================================
+   STAFF CAJA INDEX - Page-Specific Styles
+   Golden Standard compliant (2026-02-08)
+   ========================================================================= */
+
+/* Signature canvas (extracted from inline) */
+.signature-canvas-height {
+    height: 160px;
+    touch-action: none;
+}

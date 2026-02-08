@@ -1,58 +1,95 @@
-# Admin Workdays (Planner ZBB & Centro de Comando)
+# Admin Workdays (Dashboard de 3 Tabs)
 
 > **Ruta**: `pages/admin/admin-workdays.html`
+> **JS**: `assets/js/modules/admin/admin-workdays.js`
+> **CSS**: `assets/css/admin-workdays.css`
 > **Roles**: Admin, Contable
-> **Estándar**: logic-engineer (2026)
-> **Última Actualización**: 2026-02-01
+> **Estado**: Release Candidate
+> **Última Actualización**: 2026-02-08
+
+---
 
 ## Objetivo Operativo
 
-Transformado de un simple listado a un **Dashboard ZBB (Zero-Based Budgeting)**, este módulo permite planificar la operación completa antes de abrir la jornada. Sus objetivos son:
-1.  **Presupuestar** dotación (Staff) y costos fijos (Apertura) para calcular el Break-even.
-2.  **Integrar** costos automáticamente con el módulo de Finanzas (`accounts_payable`).
-3.  **Gestionar** solicitudes de reposición pendientes antes de operar.
-4.  **Vincular** eventos del calendario y configurar el countdown público.
+Centro de comando para la operación nocturna. Permite **planificar, ejecutar y cerrar** una jornada completa desde una sola pantalla.
 
-## Interfaz: El Dashboard de 4 Paneles
+## Arquitectura: 3 Tabs
 
-La UI se divide en 4 secciones lógicas para una planificación integral:
+```
+┌──────────────────────────────────────────────┐
+│  Tab 1: PLANIFICACIÓN (ZBB)                 │
+│  ├─ Panel A: Definición (fecha, evento)     │
+│  ├─ Panel B: Staff (dimensionamiento)       │
+│  └─ Panel C: Costos apertura                │
+├──────────────────────────────────────────────┤
+│  Tab 2: EVENTO (Cierre Operativo)           │
+│  ├─ KPIs: Sistema vs Declarado vs Diff      │
+│  ├─ Caja: Reconciliación terminales         │
+│  ├─ QR: Passline + Boletería + RRPP        │
+│  ├─ Desglose: Ventas Barra + Entradas       │
+│  ├─ Devenciones: Nómina devengada           │
+│  └─ Barra: Auditoría (placeholder)          │
+├──────────────────────────────────────────────┤
+│  Tab 3: HISTÓRICO                           │
+│  └─ Tabla de jornadas cerradas con KPIs     │
+└──────────────────────────────────────────────┘
+```
 
-1.  **Panel A (Evento)**: Definición de fecha, vínculo con eventos (`events`) y nivel de demanda.
-2.  **Panel B (Staff)**: Dimensionamiento de personal. Calcula costo de nómina en tiempo real basado en `base_rate`.
-3.  **Panel C (Costos)**: Costos de apertura (Hielo, Seguridad, Limpieza, etc.) configurables por jornada.
-4.  **Panel D (Solicitudes)**: Gestión visual de solicitudes de reposición (`replenishment_requests`) pendientes.
+## Flujos Principales
 
-## Flujo Principal (Workflows)
+### 1. Planificación ZBB (Tab 1)
+1. Admin selecciona **fecha** → sistema verifica si ya existe jornada.
+2. Configura **staff** por rol (cantidad + costo calculado).
+3. Ajusta **costos de apertura** (Hielo, Seguridad, etc.).
+4. Vincula **evento** del calendario y activa **countdown** web.
+5. **Guarda/Abre** → crea `work_days`, `work_day_staff_planning`, `finance_payments`.
 
-### 1. Planificación ZBB
-1.  **Definición**: Admin selecciona fecha y evento.
-2.  **Presupuesto**: Configura cantidad de staff (Panel B) y ajusta costos de apertura (Panel C).
-3.  **Validación**: Observa los KPIs en el header (Costo Staff, Costo Fijo, Total Break-even).
-4.  **Revisión**: Verifica solicitudes de stock en Panel D y hace click para ver detalle si es necesario.
-5.  **Confirmación**:
-    - Se crea la jornada en `work_days`.
-    - Se inserta el detalle de staff en `work_day_staff_planning`.
-    - **NUEVO**: Se generan deudas en `accounts_payable` (Source: `opening_cost`).
-    - **NUEVO**: Se abre la caja automáticamente (`cash_closings`).
+### 2. Cierre Operativo (Tab 2)
+1. Importa CSVs: **Retiros**, **GBol**, **Passline**, **Terminales AFIP**.
+2. Reconcilia caja por terminal (efectivo vs zoco, declarado vs sistema).
+3. Genera **devenciones** de nómina basado en staff convocado.
+4. Registra **notas de cierre**.
+5. **Cierra Noche** → actualiza estado a `closed`.
 
-### 2. Apertura de Jornada
-El sistema intenta ejecutar el RPC oficial `rpc_open_work_day`. Si falla (por permisos o inexistencia), utiliza un **Fallback Automático** que actualiza el estado directamente via SQL client, asegurando la operatividad.
+### 3. Histórico (Tab 3)
+- Tabla con fecha, evento, ingreso sistema, declarado, diferencia, staff, estado.
 
 ## Modelo de Datos
 
-| Operación | Tablas / Funciones | Descripción |
-|:----------|:-------------------|:------------|
-| **Lectura** | `work_days` | Historial |
-| **Lectura** | `master_staff_roles` | Panel B: Cargos y tarifas |
-| **Lectura** | `finance_opening_cost_defs` | Panel C: Costos default |
-| **Lectura** | `replenishment_requests` | Panel D: Solicitudes pendientes |
-| **Escritura** | `work_days` | Insertar nueva jornada |
-| **Escritura** | `work_day_staff_planning` | Guardar plan de staff |
-| **Escritura** | `accounts_payable` | **Integración**: Generación de deudas |
-| **Escritura** | `cash_closings` | **Integración**: Apertura de caja |
+| Operación | Tablas | Descripción |
+|:---|:---|:---|
+| **Lectura** | `work_days` | Historial de jornadas |
+| **Lectura** | `master_staff_roles` | Cargos y tarifas base |
+| **Lectura** | `finance_opening_cost_defs` | Costos recurrentes default |
+| **Lectura** | `events` | Eventos del calendario |
+| **Lectura** | `cash_closings` | Datos de cierre por terminal |
+| **Lectura** | `staff_accruals` | Devenciones de nómina |
+| **Lectura** | `vw_daily_sales` | Desglose de ventas (vista) |
+| **Escritura** | `work_days` | Crear/actualizar jornada |
+| **Escritura** | `work_day_staff_planning` | Plan de staff (upsert) |
+| **Escritura** | `staff_convocations` | Asignación de personal (upsert) |
+| **Escritura** | `finance_payments` | Costos de apertura |
+| **Escritura** | `staff_accruals` | Generar devenciones |
+| **RPC** | `rpc_open_work_day` | Apertura con fallback automático |
 
-## Bugs Corregidos & Mejoras (v2.0)
+## Importadores CSV (Tab Evento)
 
-- **Modal Eventos**: Eliminado campo `event_time` del insert para compatibilidad con esquema.
-- **Resiliencia**: Fallback automático si `rpc_open_work_day` falla.
-- **Optimizaciones**: Carga de datos paralela (`Promise.all`) para los 4 paneles.
+| Botón | Archivo | Función |
+|:---|:---|:---|
+| RETIROS | `file-extracciones` | `importer-extracciones.js` |
+| GBOL | `file-gbol` | `importer-gbol.js` |
+| PASSLINE | `file-passline` | `importer-passline.js` |
+| TERMINALES | `file-afip` | `importer-afip.js` |
+
+## Componentes UI
+
+- **Layout**: `app-shell admin-shell admin-scroll`
+- **Tab Bar**: `.tab-bar` con 3 tabs (Planificación / Evento / Histórico)
+- **Planner**: `.planner-layout` (sidebar + canvas)
+- **Modals**: Confirmar cierre, crear evento, agregar costo
+- **Sticky Footer**: Estado + botones Guardar / Abrir
+
+## Bugs Corregidos & Mejoras
+
+- **v2.0**: Modal Eventos fix, RPC fallback, carga paralela.
+- **v2.1**: Inline styles removidos, JS opacity refactorizado a CSS class `.is-checking`.

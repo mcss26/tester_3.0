@@ -10,26 +10,41 @@
     <link rel="stylesheet" href="../../assets/css/tokens.css">
     <link rel="stylesheet" href="../../assets/css/components.css">
     <link rel="stylesheet" href="../../assets/css/admin-master.css">
-    <!-- SheetJS (Chart.js loaded lazily via chart-loader) -->
-    <script src="../../assets/js/core/chart-loader.js"></script>
-    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 </head>
 
-<body class="app-shell admin-shell admin-scroll" data-allowed-roles="operativo,logistico">
+<body class="app-shell admin-shell admin-scroll" data-allowed-roles="operativo,logistico,admin">
 
+    <!-- Topbar: Golden Standard -->
     <header class="topbar">
-        <div class="topbar-left">
-            <button class="btn-icon btn-icon-flat" data-go="pages/operativo/operativo-erp.html"
-                aria-label="Volver">←</button>
-            <span class="topbar-back">ERP</span>
-        </div>
-
-        <nav class="topbar-center">
-            <button class="topbar-link active" data-go="#">Cargar Consumo</button>
+        <nav class="breadcrumb topbar-start">
+            <span class="breadcrumb-item">
+                <a class="breadcrumb-link" href="operativo-index.html">Operativo</a>
+            </span>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-item current">Análisis</span>
         </nav>
 
-        <div class="topbar-right">
-            <div class="topbar-brand">ERP</div>
+        <div class="topbar-center header-search">
+            <input type="text" id="global-search" class="input" placeholder="Ir a..." aria-label="NavegaciÃ³n rÃ¡pida">
+            <span class="header-shortcut">⌘K</span>
+        </div>
+
+        <div class="topbar-end">
+            <div class="dropdown-container">
+                <button class="avatar avatar-sm" id="user-avatar" aria-label="Menú de usuario">OP</button>
+                <div class="dropdown-menu dropdown-user hidden" id="user-menu">
+                    <div class="dropdown-header" id="user-name-display">Usuario</div>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" id="btn-logout" class="dropdown-item dropdown-item-danger">
+                        <svg class="dropdown-icon" viewBox="0 0 24 24">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        Cerrar Sesión
+                    </a>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -37,18 +52,17 @@
         <div class="page-card-wrap">
             <div class="page-card">
 
-                <div class="staff-dashboard">
-                    <div class="dashboard-header">
-                        <div>
-                            <h2 class="dashboard-title">Análisis de Consumo</h2>
-                            <p class="dashboard-subtitle">Importación y cálculo de ideales</p>
-                        </div>
-                    </div>
 
-                    <!-- TABS -->
-                    <div class="tabs-row">
+
+
+                <div class="staff-dashboard">
+                    <div class="dashboard-header align-start">
+                        <div>
+                            <h2 class="dashboard-title dashboard-title-soft">Análisis de Consumo</h2>
+                            <p class="text-sm text-muted">Importación y cálculo de ideales</p>
+                        </div>
+                        <!-- Tab Bar in Header -->
                         <div class="tab-bar" id="analysis-tabs-container">
-                            <!-- Injected by JS -->
                             <button class="tab-chip active">Importar</button>
                             <button class="tab-chip">Analizar</button>
                             <button class="tab-chip">Histórica</button>
@@ -59,7 +73,7 @@
                     <div id="analysis-tab-importar" class="p-4">
                         <div class="form-group mb-4">
                             <label class="form-label">Fecha Operativa</label>
-                            <input type="date" id="import-date" class="input input-compact" style="width: 200px;">
+                            <input type="date" id="import-date" class="input input-compact">
                         </div>
 
                         <div class="file-drop-area mb-4">
@@ -69,7 +83,6 @@
                         </div>
 
                         <div id="import-preview" class="table-wrap">
-                            <!-- Preview Table injected here -->
                             <div class="empty-state">Seleccione un archivo para comenzar.</div>
                         </div>
                     </div>
@@ -85,8 +98,7 @@
                                 <label class="form-label fs-11">Hasta</label>
                                 <input type="date" id="analyze-date-end" class="input input-compact">
                             </div>
-                            <button id="btn-analyze-ideal" class="btn-primary mt-auto">Calcular
-                                Ideales</button>
+                            <button id="btn-analyze-ideal" class="btn-primary mt-auto">Calcular Ideales</button>
                         </div>
 
                         <div id="analysis-results" class="table-wrap">
@@ -106,17 +118,17 @@
         </div>
     </main>
 
-    <div id="toast-container" class="toast-container"></div>
-
     <!-- Scripts -->
     <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script defer src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
     <script defer src="../../assets/js/core/config.js"></script>
     <script defer src="../../assets/js/core/supabase-client.js"></script>
     <script defer src="../../assets/js/core/auth.js"></script>
-    <script defer src="../../assets/js/core/navigation.js"></script>
-    <!-- Analysis Modules -->
+    <script defer src="../../assets/js/core/utils.js"></script>
+    <script defer src="../../assets/js/core/toast.js"></script>
+    <script defer src="../../assets/js/core/chart-loader.js"></script>
     <script defer src="../../assets/js/modules/operativo/operativo-analisis.js"></script>
-
+    <script defer src="../../assets/js/core/navigation.js"></script>
 
 </body>
 

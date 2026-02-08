@@ -33,13 +33,14 @@ tester_3.0 es un sistema web para gestionar las operaciones diarias de un club/v
 
 ```
 tester_3.0/
+├── .gemini/antigravity/
+│   └── skills/              # Skills técnicos (FUENTE DE VERDAD)
+│       ├── css-architect/
+│       ├── logic-engineer/
+│       ├── db-architect/
+│       └── ...
 ├── .agent/
-│   ├── skills/              # Skills técnicos (FUENTE DE VERDAD)
-│   │   ├── frontend-developer/
-│   │   ├── logic-engineer/
-│   │   ├── db-architect/
-│   │   └── ...
-│   ├── workflows/           # Workflows automatizados
+│   ├── workflows/           # Workflows de automatización
 │   └── data/                # Datos para ETL/testing
 ├── assets/
 │   ├── css/
@@ -77,9 +78,9 @@ tester_3.0/
 | **Roadmap**   | `docs/roadmap.md`                   | Plan estratégico    |
 | **Pantallas** | `docs/screen-map.md`                | Arquitectura de UI  |
 | **BD**        | `docs/scheme.md`                    | Esquema de datos    |
-| **Frontend**  | `.agent/skills/frontend-developer/` | Reglas de UI/CSS    |
-| **Backend**   | `.agent/skills/logic-engineer/`     | Reglas de JS/lógica |
-| **Database**  | `.agent/skills/db-architect/`       | Reglas de datos     |
+| **Frontend**  | `.gemini/antigravity/skills/css-architect/` | Reglas de UI/CSS    |
+| **Backend**   | `.gemini/antigravity/skills/logic-engineer/` | Reglas de JS/lógica |
+| **Database**  | `.gemini/antigravity/skills/db-architect/`  | Reglas de datos     |
 
 ---
 
@@ -119,7 +120,7 @@ Ver [`docs/roadmap.md`](./roadmap.md) para el plan estratégico v4.0.
 
 ## 🔗 Referencias Técnicas
 
-- **Skills**: `.agent/skills/` — Reglas técnicas por dominio
+- **Skills**: `.gemini/antigravity/skills/` — Reglas técnicas por dominio
 - **Esquema BD**: [`docs/scheme.md`](./scheme.md)
 - **Mapa de pantallas**: [`docs/screen-map.md`](./screen-map.md)
 
@@ -137,7 +138,7 @@ Ver [`docs/roadmap.md`](./roadmap.md) para el plan estratégico v4.0.
 | Nueva pantalla creada   | `docs/screen-map.md`                                           |
 | Nueva tabla/vista en BD | `docs/scheme.md` + `db-architect/SKILL.md`                     |
 | Cambio de métricas      | `docs/estado-presente.md`                                      |
-| Nuevo patrón de código  | Skill correspondiente (`frontend-developer`, `logic-engineer`) |
+| Nuevo patrón de código  | Skill correspondiente (`css-architect`, `logic-engineer`) |
 | Cambio de prioridades   | `docs/roadmap.md`                                              |
 
 ### Prohibiciones

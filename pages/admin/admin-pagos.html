@@ -26,7 +26,7 @@
 
         <!-- Center: Search -->
         <div class="topbar-center header-search">
-            <input type="text" id="global-search" class="input" placeholder="Jump to...">
+            <input type="text" id="global-search" class="input" placeholder="Jump to..." aria-label="NavegaciÃ³n rÃ¡pida">
             <svg class="header-search-icon" viewBox="0 0 24 24">
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -180,13 +180,13 @@
                                         aria-label="Tabla de pagos pendientes">
                                         <thead>
                                             <tr class="table-head" role="row">
-                                                <th class="table-cell is-header cell-pad text-center"
-                                                    role="columnheader" scope="col" style="width:40px">
+                                                <th class="table-cell is-header cell-pad text-center w-checkbox"
+                                                    role="columnheader" scope="col">
                                                     <input type="checkbox" id="checkAllPending"
                                                         aria-label="Seleccionar todos" />
                                                 </th>
-                                                <th class="table-cell is-header" role="columnheader" scope="col"
-                                                    style="width:4px"></th>
+                                                <th class="table-cell is-header w-spacer" role="columnheader"
+                                                    scope="col"></th>
                                                 <th class="table-cell is-header cell-pad" role="columnheader"
                                                     scope="col">PAGO</th>
                                                 <th class="table-cell is-header text-center" role="columnheader"
@@ -494,7 +494,7 @@
                                     <!-- Card: Herramientas -->
                                     <div class="config-card">
                                         <h4 class="config-card-title">Herramientas</h4>
-                                        <div class="row-flex gap-2 mt-2" style="flex-wrap:wrap">
+                                        <div class="row-flex gap-2 mt-2 flex-wrap">
                                             <button class="btn-ghost btn-sm" id="btnExportCosts">EXPORTAR
                                                 COSTOS</button>
                                         </div>

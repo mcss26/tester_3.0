@@ -392,8 +392,16 @@ body.admin-pagos .tab-chip.active {
     }
 }
 
+
 @media (max-width: 520px) {
     .admin-pagos .kpi-strip {
         grid-template-columns: 1fr;
     }
 }
+
+/* =========================================================================
+   FASE 9: Hygiene Remediation (2026-02-08)
+   ========================================================================= */
+.w-checkbox { width: 40px !important; }
+.w-spacer { width: 4px !important; }
+.flex-wrap { flex-wrap: wrap !important; }

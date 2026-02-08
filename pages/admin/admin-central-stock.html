@@ -34,7 +34,7 @@
 
         <!-- Center: Search -->
         <div class="topbar-center header-search">
-            <input type="text" id="global-search" class="input" placeholder="Jump to...">
+            <input type="text" id="global-search" class="input" placeholder="Jump to..." aria-label="NavegaciÃ³n rÃ¡pida">
             <svg class="header-search-icon" viewBox="0 0 24 24">
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -206,7 +206,7 @@
                                         </div>
                                     </div>
                                     <!-- Inline Import Preview -->
-                                    <div id="import-preview" class="hidden" style="margin-top:var(--space-sm)">
+                                    <div id="import-preview" class="hidden import-preview-wrapper">
                                         <div id="import-preview-content"></div>
                                     </div>
                                 </div>
@@ -333,14 +333,14 @@
                                     <!-- sku-filter-bar content reordered -->
                                     <!-- 1. Status Toggle -->
                                     <button id="filter-status-btn" class="status-toggle-btn" type="button"
-                                        data-status="active" style="margin-right: 12px;">
+                                        data-status="active">
                                         <span class="status-toggle-label">Activos</span>
                                         <span id="status-indicator" class="status-indicator status-active"></span>
                                     </button>
 
                                     <!-- 2. Category Dropdown -->
-                                    <div class="category-select-wrap" style="margin-right: 12px;">
-                                        <div class="custom-dropdown" id="category-dropdown" style="min-width: 200px;">
+                                    <div class="category-select-wrap">
+                                        <div class="custom-dropdown category-dropdown-custom" id="category-dropdown">
                                             <div class="custom-dropdown-trigger" id="category-trigger">
                                                 <span class="custom-dropdown-text">Todas las Categorías</span>
                                                 <svg class="custom-dropdown-icon" viewBox="0 0 24 24" fill="none"
@@ -379,13 +379,11 @@
                                     </span>
 
                                     <!-- 6. Actions -->
-                                    <div class="filter-actions"
-                                        style="display: flex; gap: 8px; align-items: center; margin-left: 8px; border-left: 1px solid var(--border-color); padding-left: 12px;">
+                                    <div class="filter-actions filter-actions-group">
                                         <button class="btn btn-secondary btn-sm" id="btn-manual-adjustment">Ajuste
                                             Manual</button>
-                                        <button class="btn-icon btn-icon-flat btn-icon-plus" id="btn-new-sku"
-                                            aria-label="Nuevo SKU"
-                                            style="width: 32px; height: 32px; display:flex; align-items:center; justify-content:center;">+</button>
+                                        <button class="btn-icon btn-icon-flat btn-icon-plus btn-icon-new-sku"
+                                            id="btn-new-sku" aria-label="Nuevo SKU">+</button>
                                     </div>
                                 </div>
 
@@ -866,7 +864,7 @@
                     </select>
                     <button id="btn-add-mapping" class="btn-primary">Asignar</button>
                 </div>
-                <div class="table-container mt-4" style="max-height: 300px; overflow-y: auto;">
+                <div class="table-container mt-4 table-scroll-sm">
                     <table class="table table-compact">
                         <thead>
                             <tr>

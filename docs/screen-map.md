@@ -1,14 +1,14 @@
 # 🗺️ Mapa de Pantallas - FormulaMid 4
 
 > **Última Actualización**: 2026-02-08  
-> **Total Pantallas**: 48  
+> **Total Pantallas**: 46  
 > **Documento**: Arquitectura de navegación y contextos de usuario
 
 ---
 
 ## 🎯 Propósito
 
-Este documento visualiza la **topografía completa** del sistema FormulaMid 4, organizando las 48 pantallas por rol operativo y contexto funcional. Útil para:
+Este documento visualiza la **topografía completa** del sistema FormulaMid 4, organizando las 46 pantallas por rol operativo y contexto funcional. Útil para:
 
 - Desarrolladores que necesitan entender el flujo de navegación
 - QA para validar cobertura de tests por módulo
@@ -77,14 +77,13 @@ graph TD
     end
 
     %% ═══════════════════════════════════════════════════════════════
-    %% OPERATIVO (11 pantallas)
+    %% OPERATIVO (9 pantallas)
     %% ═══════════════════════════════════════════════════════════════
-    subgraph FM4_OPE [🟢 OPERATIVO · 11 pantallas]
+    subgraph FM4_OPE [🟢 OPERATIVO · 9 pantallas]
         direction TB
         O_IDX[📊 Dashboard<br/><small><i>operativo-index</i></small>]
         
         subgraph OPE_ERP [📋 ERP Operativo]
-            O_ERP[🏭 ERP Hub<br/><small><i>operativo-erp</i></small>]
             O_STK[📦 Stock Real<br/><small><i>operativo-stock</i></small>]
             O_WD[📅 Work Day<br/><small><i>operativo-workday</i></small>]
             O_SOL[📬 Solicitudes<br/><small><i>operativo-solicitudes</i></small>]
@@ -93,7 +92,6 @@ graph TD
         end
         
         subgraph OPE_CMS [👥 Comunidad]
-            O_CMS[🎪 CMS Hub<br/><small><i>operativo-cms</i></small>]
             O_MEM[👤 Miembros<br/><small><i>cms-members</i></small>]
         end
         
@@ -171,7 +169,6 @@ graph TD
     A_IDX --> ADM_QR
     
     O_IDX --> OPE_ERP
-    O_IDX --> OPE_CMS
     O_IDX --> OPE_MST
     
     L_IDX --> L_STK
@@ -198,7 +195,7 @@ graph TD
 
     class Portal portal;
     class A_IDX,A_WD,A_SOL,A_CIE,A_REP,A_WKL,A_CFG,A_CEN,A_PRV,A_CAT,A_TAR,A_NOM,A_PAG,A_POS,QR_IDX,QR_GEN,QR_MON admin;
-    class O_IDX,O_ERP,O_STK,O_WD,O_SOL,O_ANA,O_SCN,O_CMS,O_MEM,O_SKU,O_PRV operative;
+    class O_IDX,O_STK,O_WD,O_SOL,O_ANA,O_SCN,O_MEM,O_SKU,O_PRV operative;
     class L_IDX,L_STK,L_DIS,L_REC,L_SEG logistics;
     class E_BAR,E_BNO,E_BPE,E_CAJ,E_CNO,E_CPE,E_REP supervisor;
     class S_BAR,S_CAJ staff;
@@ -213,14 +210,14 @@ graph TD
 | Contexto | Páginas | Directorio | Roles Permitidos |
 |:---------|:-------:|:-----------|:-----------------|
 | 🔵 **Admin** | 18 | `pages/admin/*` (incl. `qr/`) | `admin`, `contable` |
-| 🟢 **Operativo** | 11 | `pages/operativo/*` | `operativo`, `staff_operativo` |
+| 🟢 **Operativo** | 9 | `pages/operativo/*` | `operativo`, `staff_operativo` |
 | 📦 **Logística** | 5 | `pages/logistica/*` | `logistico`, `admin` |
 | 🟠 **Encargados** | 7 | `pages/encargados/*` | `encargado_barra`, `encargado_caja` |
 | 🟡 **Staff** | 2 | `pages/staff/*` | `staff_barra`, `staff_caja` |
 | 🟣 **Gerencia** | 1 | `pages/gerencia/*` | `gerencia`, `admin` |
 | 🔴 **Members** | 1 | `pages/members/*` | `member` |
 | 🛠️ **Dev Utilities** | 3 | `pages/*.html` | — |
-| **TOTAL** | **48** | — | — |
+| **TOTAL** | **46** | — | — |
 
 ---
 
@@ -248,20 +245,18 @@ graph TD
 | 17 | `qr/generator.html` | Generador de códigos QR |
 | 18 | `qr/monitor.html` | Monitor de escaneos QR |
 
-### 🟢 Operativo (11)
+### 🟢 Operativo (9)
 | # | Archivo | Propósito |
 |:-:|:--------|:----------|
 | 1 | `operativo-index.html` | Dashboard operativo |
-| 2 | `operativo-erp.html` | Hub de ERP |
-| 3 | `operativo-stock.html` | Control de stock en tiempo real |
-| 4 | `operativo-workday.html` | Jornada del día |
-| 5 | `operativo-solicitudes.html` | Solicitudes operativas |
-| 6 | `operativo-analisis.html` | Análisis de datos |
-| 7 | `scanner.html` | Scanner de códigos |
-| 8 | `operativo-cms.html` | Hub de comunidad |
-| 9 | `cms-members.html` | Gestión de miembros |
-| 10 | `operativo-master-sku.html` | SKUs (vista operativa) |
-| 11 | `operativo-master-proveedores.html` | Proveedores (vista operativa) |
+| 2 | `operativo-stock.html` | Control de stock en tiempo real |
+| 3 | `operativo-workday.html` | Jornada del día |
+| 4 | `operativo-solicitudes.html` | Solicitudes operativas |
+| 5 | `operativo-analisis.html` | Análisis de datos |
+| 6 | `scanner.html` | Scanner de códigos |
+| 7 | `cms-members.html` | Gestión de miembros |
+| 8 | `operativo-master-sku.html` | SKUs (vista operativa) |
+| 9 | `operativo-master-proveedores.html` | Proveedores (vista operativa) |
 
 ### 📦 Logística (5)
 | # | Archivo | Propósito |
@@ -291,7 +286,7 @@ graph TD
 
 ### 🟣 Gerencia (1)
 | # | Archivo | Propósito |
-|:-:|:-------|
+|:-:|:--------|:----------|
 | 1 | `balance-semanal.html` | Balance consolidado semanal |
 
 ### 🔴 Members (1)

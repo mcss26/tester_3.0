@@ -485,7 +485,6 @@
           `
           id,
           requested_packs,
-          quantity_requested,
           status,
           pre_approval_status,
           master_sku ( nombre, pack_qty )
@@ -513,15 +512,7 @@
           const requestedPacks = window.Utils?.numberOrNull?.(
             item.requested_packs
           );
-          const quantityRequested = window.Utils?.numberOrNull?.(
-            item.quantity_requested
-          );
-          const packs =
-            requestedPacks != null
-              ? requestedPacks
-              : quantityRequested != null
-                ? Math.ceil(quantityRequested / packQty)
-                : 0;
+          const packs = requestedPacks != null ? requestedPacks : 0;
 
           // Pre-approval badge
           const preStatus = item.pre_approval_status || "pending";

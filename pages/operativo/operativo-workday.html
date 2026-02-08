@@ -10,48 +10,6 @@
     <link rel="stylesheet" href="../../assets/css/tokens.css">
     <link rel="stylesheet" href="../../assets/css/components.css">
     <link rel="stylesheet" href="../../assets/css/admin-master.css">
-    <!-- Custom styles for Workday specific layout if needed, ideally consolidated -->
-    <style>
-        /* Lightweight styles for the 3-column layout specific to Workday */
-        .planner-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 24px;
-            margin-top: 24px;
-        }
-
-        @media (max-width: 768px) {
-            .planner-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .planner-panel {
-            background: var(--bg-surface);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-md);
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-
-        .panel-title-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-            font-weight: 600;
-            color: var(--text-primary);
-            font-size: 14px;
-        }
-
-        .panel-scroll {
-            flex: 1;
-            overflow-y: auto;
-            max-height: 400px;
-        }
-    </style>
 </head>
 
 <body class="app-shell admin-shell admin-scroll"
@@ -68,14 +26,26 @@
         </nav>
 
         <div class="topbar-center header-search">
-            <input type="text" id="global-search" class="input" placeholder="Ir a...">
+            <input type="text" id="global-search" class="input" placeholder="Ir a..." aria-label="NavegaciÃ³n rÃ¡pida">
             <span class="header-shortcut">⌘K</span>
         </div>
 
         <div class="topbar-end">
             <span class="badge status-neutral" id="workday-status">Jornada: --</span>
             <div class="dropdown-container">
-                <button class="avatar avatar-sm" id="user-avatar">OP</button>
+                <button class="avatar avatar-sm" id="user-avatar" aria-label="Menú de usuario">OP</button>
+                <div class="dropdown-menu dropdown-user hidden" id="user-menu">
+                    <div class="dropdown-header" id="user-name-display">Usuario</div>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" id="btn-logout" class="dropdown-item dropdown-item-danger">
+                        <svg class="dropdown-icon" viewBox="0 0 24 24">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        Cerrar Sesión
+                    </a>
+                </div>
             </div>
         </div>
     </header>
@@ -85,12 +55,7 @@
             <div class="page-card">
 
                 <!-- Master Navigation -->
-                <nav class="master-nav">
-                    <a href="operativo-workday.html" class="master-nav-link active">Work Day</a>
-                    <a href="operativo-stock.html" class="master-nav-link">Stock</a>
-                    <a href="operativo-solicitudes.html" class="master-nav-link">Solicitudes</a>
-                    <a href="operativo-master-sku.html" class="master-nav-link">Configuración</a>
-                </nav>
+
 
                 <!-- Loading State -->
                 <div class="page-card-loading" id="page-card-loading">
@@ -123,7 +88,7 @@
                                             <th class="table-cell is-header">Nombre</th>
                                             <th class="table-cell is-header">Descripción</th>
                                             <th class="table-cell is-header">URL</th>
-                                            <th class="table-cell is-header" style="width: 100px;">Acciones</th>
+                                            <th class="table-cell is-header">Acciones</th>
                                         </tr>
                                     </thead>
                                     <tbody id="links-table-body">

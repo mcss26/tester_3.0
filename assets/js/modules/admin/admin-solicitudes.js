@@ -710,7 +710,7 @@
     const dateMax = labels[labels.length - 1];
     const { data: repItems } = await window.sb
       .from('replenishment_items')
-      .select('created_at, quantity_requested')
+      .select('created_at, requested_packs')
       .gte('created_at', dateMin)
       .lte('created_at', dateMax + 'T23:59:59');
 
@@ -726,7 +726,7 @@
 
     (repItems || []).forEach(ri => {
       const d = ri.created_at?.split('T')[0];
-      if (d && pedidoByDate[d] !== undefined) pedidoByDate[d] += (ri.quantity_requested || 0);
+      if (d && pedidoByDate[d] !== undefined) pedidoByDate[d] += (ri.requested_packs || 0);
     });
 
     const consumoData = labels.map(d => consumoByDate[d]);

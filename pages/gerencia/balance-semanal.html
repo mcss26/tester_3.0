@@ -3,9 +3,13 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a0a0f">
+    <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
     <title>Balance Semanal — Midnight</title>
     <link rel="stylesheet" href="../../assets/css/tokens.css">
     <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/balance-semanal.css">
 </head>
 
 <body class="bg-dark text-white" data-allowed-roles="admin,gerente,contable">
@@ -29,7 +33,7 @@
         <main class="page-shell w-full max-w-1000">
 
             <!-- KPI Cards -->
-            <div class="grid-columns gap-md" style="margin-bottom: var(--space-lg); --grid-cols: 3;">
+            <div class="grid-columns gap-md mb-lg balance-kpi-grid">
                 <!-- KPI Card -->
                 <div class="stat-card">
                     <h3 class="stat-label">Ingresos Totales</h3>
@@ -52,7 +56,7 @@
 
             <!-- Detailed Table -->
             <div class="staff-dashboard">
-                <div class="dashboard-header flex-between align-center" style="margin-bottom: var(--space-md);">
+                <div class="dashboard-header flex-between align-center mb-md">
                     <h2 class="dashboard-title">Detalle Semanal</h2>
                     <div class="row-flex gap-sm">
                         <select id="filter-year" class="input input-sm">
@@ -96,9 +100,8 @@
                 </div>
 
                 <!-- Trend Chart -->
-                <div id="chart-card" class="staff-dashboard hidden"
-                    style="margin-top:var(--space-md); padding:var(--space-md);">
-                    <h3 class="dashboard-subtitle muted" style="margin-bottom:var(--space-sm)">Tendencia Semanal</h3>
+                <div id="chart-card" class="staff-dashboard hidden mt-md p-4">
+                    <h3 class="dashboard-subtitle muted mb-sm">Tendencia Semanal</h3>
                     <canvas id="trend-chart" height="220"></canvas>
                 </div>
             </div>

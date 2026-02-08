@@ -59,10 +59,23 @@
     font-size: 20px;
     line-height: 1;
     cursor: pointer;
-    transition: all 0.2s;
+
+    background: var(--primary-hover);
 }
 
-.btn-icon-plus:hover {
-    transform: scale(1.05);
-    background: var(--primary-hover);
+/* =========================================================================
+   FASE 9: Hygiene Remediation (2026-02-08)
+   Classes extracted from inline styles
+   ========================================================================= */
+
+.mb-4 {
+    margin-bottom: 16px !important;
+}
+
+.mt-2 {
+    margin-top: 8px !important;
+}
+
+.w-40-px {
+    width: 40px;
 }

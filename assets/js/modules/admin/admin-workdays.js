@@ -1,8 +1,8 @@
 /**
  * Module: admin-workdays.js
  * Standard: logic-engineer (2026)
- * Description: Workday Management - 3-Tab Dashboard (Planificación / Evento / Histórico)
- * Integrates cash closing (ex admin-cierre) into Evento tab.
+ * Description: Workday Management - 4-Tab Dashboard (Planificación / Evento / Stock Audit / Histórico)
+ * Integrates cash closing, GBOL sync, stock audit, and premium history.
  */
 
 (async function () {
@@ -30,7 +30,14 @@
         checkHighDemand: document.getElementById('check-high-demand'),
         // selectCountdownEvent: removed (dead ref)
         inputNotes: document.getElementById('input-notes'),
-        statusIndicator: document.getElementById('workday-status-indicator'),
+        inputNotes: document.getElementById('input-notes'),
+        statusIndicator: document.getElementById('workday-status-header'),
+        
+        // Date Nav
+        btnPrevDay: document.getElementById('btn-prev-day'),
+        btnNextDay: document.getElementById('btn-next-day'),
+        btnToday: document.getElementById('btn-today'),
+        currentDateDisplay: document.getElementById('current-date-display'),
         
         staffContainer: document.getElementById('staff-container'),
         costsContainer: document.getElementById('costs-container'),
@@ -60,6 +67,7 @@
         tabBar: document.getElementById('workday-tabs'),
         panelPlan: document.getElementById('panelPlan'),
         panelEvento: document.getElementById('panelEvento'),
+        panelStockAudit: document.getElementById('panelStockAudit'),
         panelHistorico: document.getElementById('panelHistorico'),
 
         cierreTableBody: document.getElementById('cierre-table-body'),
@@ -89,6 +97,25 @@
         devencionesTotalFooter: document.getElementById('devenciones-total-footer'),
         btnGenerateAccruals: document.getElementById('btn-generate-accruals'),
         sectionDevenciones: document.getElementById('section-devenciones'),
+
+        // ── GBOL Sync ──
+        btnSyncGbol: document.getElementById('btn-sync-gbol-wd'),
+        fiscalCards: document.getElementById('fiscal-summary-cards'),
+        fiscalBruto: document.getElementById('fiscal-total-bruto'),
+        fiscalPctBlanco: document.getElementById('fiscal-pct-blanco'),
+        fiscalIva: document.getElementById('fiscal-iva'),
+        fiscalTickets: document.getElementById('fiscal-tickets'),
+
+        // ── Stock Audit ──
+        saKpiPhysical: document.getElementById('sa-kpi-physical'),
+        saKpiTheoretical: document.getElementById('sa-kpi-theoretical'),
+        saKpiLoss: document.getElementById('sa-kpi-loss'),
+        saKpiLossDelta: document.getElementById('sa-kpi-loss-delta'),
+        saKpiRating: document.getElementById('sa-kpi-rating'),
+        saSessionsBody: document.getElementById('sa-sessions-body'),
+        saVarianceBody: document.getElementById('sa-variance-body'),
+        saFilterClasif: document.getElementById('sa-filter-clasif'),
+        saConsumoGbolBody: document.getElementById('sa-consumo-gbol-body'),
     };
 
     // Validation
@@ -109,7 +136,6 @@
         
         costsPlan: {},     // { costId: { amount, isAdjusted } }
         
-        history: [],
         isLoading: false,
         currentCountdownEventId: null,
 
@@ -117,7 +143,15 @@
         closingId: null,
         activeTab: 'panelPlan',
         cierreLoaded: false,
-        accruals: []      // staff_accruals for active workday
+        accrualsLoaded: false,
+        historyLoaded: false,
+        accruals: [],       // staff_accruals for active workday
+
+        // Stock Audit state
+        stockAuditLoaded: false,
+        barEfficiency: [],  // vw_bar_efficiency rows
+        barVariance: [],    // vw_bar_audit_variance rows
+        consumoTeorico: [], // vw_consumo_teorico rows
     };
 
     // 4. Utils
@@ -153,10 +187,24 @@
     function bindEvents() {
         ui.inputDate?.addEventListener('change', handleDateChange);
 
-        ui.btnHistory?.addEventListener('click', () => {
-            renderHistory();
-            ui.panelInstance?.open();
+        // ── Date Navigation (New) ──
+        ui.btnPrevDay?.addEventListener('click', () => changeDateByOffset(-1));
+        ui.btnNextDay?.addEventListener('click', () => changeDateByOffset(1));
+        ui.btnToday?.addEventListener('click', () => {
+             ui.inputDate.value = new Date().toISOString().split('T')[0];
+             handleDateChange();
         });
+
+        function changeDateByOffset(offset) {
+            const current = ui.inputDate.value ? new Date(ui.inputDate.value) : new Date();
+            current.setDate(current.getDate() + offset + 1); // +1 because inputs are YYYY-MM-DD
+            // Wait, Date input value is string.
+            // Let's use WorkDayHelper or specific logic
+            const base = ui.inputDate.value ? new Date(ui.inputDate.value + 'T12:00:00') : new Date();
+            base.setDate(base.getDate() + offset);
+            ui.inputDate.value = base.toISOString().split('T')[0];
+            handleDateChange();
+        }
 
         // History Actions
         ui.historyContainer?.addEventListener('click', (e) => {
@@ -240,6 +288,12 @@
 
         ui.btnSaveNotes?.addEventListener('click', handleSaveNotes);
 
+        // ── GBOL Sync ──
+        ui.btnSyncGbol?.addEventListener('click', handleGbolSync);
+
+        // ── Stock Audit Filter ──
+        ui.saFilterClasif?.addEventListener('change', () => renderVarianceTable(ui.saFilterClasif.value));
+
         // Import Triggers
         document.querySelectorAll('#panelEvento .btn-import').forEach(btn => {
             btn.addEventListener('click', (e) => {
@@ -276,7 +330,7 @@
     // ── Tab Switching ──
     function switchTab(tabId) {
         state.activeTab = tabId;
-        ['panelPlan', 'panelEvento', 'panelHistorico'].forEach(id => {
+        ['panelPlan', 'panelEvento', 'panelStockAudit', 'panelHistorico'].forEach(id => {
             const el = document.getElementById(id);
             if (el) el.classList.toggle('hidden', id !== tabId);
         });
@@ -289,12 +343,16 @@
         if (tabId === 'panelEvento' && state.activeWorkDay && !state.cierreLoaded) {
             loadCierreData();
         }
-        // Load accruals every time Evento tab is shown (to reflect real-time changes)
-        if (tabId === 'panelEvento' && state.activeWorkDay) {
+        // Lazy-load accruals (only re-fetch on date change or mutation)
+        if (tabId === 'panelEvento' && state.activeWorkDay && !state.accrualsLoaded) {
             loadAccruals();
         }
-        // Lazy-load history when entering Histórico tab
-        if (tabId === 'panelHistorico') {
+        // Lazy-load Stock Audit data
+        if (tabId === 'panelStockAudit' && state.activeWorkDay && !state.stockAuditLoaded) {
+            loadStockAuditData();
+        }
+        // Lazy-load history (only re-fetch on date change)
+        if (tabId === 'panelHistorico' && !state.historyLoaded) {
             renderHistoryTable();
         }
     }
@@ -325,11 +383,10 @@
     async function loadInitialData() {
         window.Utils.setPageState(ui, { loading: true });
         try {
-            const [rolesRes, costsRes, eventsRes, historyRes, usersRes] = await Promise.all([
-                window.sb.from('master_staff_roles').select('*').eq('active', true).order('name'),
-                window.sb.from('cost_definitions').select('*').eq('frequency', 'per_event').eq('is_active', true).order('title'),
-                window.sb.from('events').select('*').gte('date', new Date().toISOString().split('T')[0]).order('date').limit(20),
-                window.WorkDayHelper.getWorkDaySummary(),
+            const [rolesRes, costsRes, eventsRes, usersRes] = await Promise.all([
+                window.sb.from('master_staff_roles').select('id, name').eq('active', true).order('name'),
+                window.sb.from('cost_definitions').select('id, title, base_amount').eq('frequency', 'per_event').eq('is_active', true).order('title'),
+                window.sb.from('events').select('id, name, date').gte('date', new Date().toISOString().split('T')[0]).order('date').limit(20),
                 window.sb.from('profiles').select('id, full_name, role').order('full_name') // Fetch users
             ]);
 
@@ -337,7 +394,6 @@
             state.openingCosts = costsRes.data || [];
             state.events = eventsRes.data || [];
             state.users = usersRes.data || [];
-            state.history = flattenHistory(historyRes);
 
             // Init defaults
             state.roles.forEach(r => state.staffPlan[r.id] = 0);
@@ -352,27 +408,30 @@
         }
     }
 
-    function flattenHistory(summary) {
-        if (!summary) return [];
-        const list = [];
-        if (summary.open_day) list.push({ ...summary.open_day, _status: 'open' });
-        if (summary.planned_days) summary.planned_days.forEach(d => list.push({ ...d, _status: 'planning' }));
-        if (summary.closed_days) summary.closed_days.forEach(d => list.push({ ...d, _status: 'closed' }));
-        return list;
-    }
+    // flattenHistory removed — Histórico now served by vw_night_snapshot
 
     // 8. Day Management (Edit vs New)
     async function handleDateChange() {
         const dateVal = ui.inputDate.value;
         if (!dateVal) return;
 
-        // Reset cierre lazy-load flag for new date
+        // Reset lazy-load flags for new date
         state.cierreLoaded = false;
+        state.accrualsLoaded = false;
+        state.historyLoaded = false;
+        state.stockAuditLoaded = false;
         state.closingId = null;
 
-        ui.statusIndicator.className = 'status-pill staff-status-pending';
+        ui.statusIndicator.className = 'status-pill-header staff-status-pending';
         ui.statusIndicator.textContent = 'Verificando...';
-        ui.statusIndicator.style.opacity = '0.5';
+        ui.statusIndicator.classList.add('is-checking');
+        
+        // Update Date Display
+        if (ui.currentDateDisplay) {
+            const dateObj = new Date(dateVal + 'T12:00:00');
+            const options = { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' };
+            ui.currentDateDisplay.textContent = dateObj.toLocaleDateString('es-AR', options);
+        }
 
         // Reset State for Plans
         state.roles.forEach(r => {
@@ -401,8 +460,8 @@
                 // FOUND -> Edit Mode
                 state.activeWorkDay = day;
                 ui.statusIndicator.textContent = day.status === 'open' ? 'ABIERTA' : 'Planificada';
-                ui.statusIndicator.className = day.status === 'open' ? 'status-pill status-open' : 'status-pill status-planning';
-                ui.statusIndicator.style.opacity = '1';
+                ui.statusIndicator.className = day.status === 'open' ? 'status-pill-header status-open' : 'status-pill-header status-planning';
+                ui.statusIndicator.classList.remove('is-checking');
 
                 ui.btnConfirm.textContent = 'Actualizar Jornada';
                 ui.btnConfirm.classList.remove('btn-primary');
@@ -416,8 +475,8 @@
                 // NEW -> Draft Mode
                 state.activeWorkDay = null;
                 ui.statusIndicator.textContent = 'Nueva (Borrador)';
-                ui.statusIndicator.className = 'status-pill staff-status-pending';
-                ui.statusIndicator.style.opacity = '1';
+                ui.statusIndicator.className = 'status-pill-header staff-status-pending';
+                ui.statusIndicator.classList.remove('is-checking');
 
                 ui.btnConfirm.textContent = 'Guardar y Abrir';
                 ui.btnConfirm.classList.add('btn-primary');
@@ -779,19 +838,7 @@
         finally { ui.btnCreateEvent.textContent = 'Crear Evento'; }
     }
 
-    function renderHistory() {
-        const rows = state.history.map(item => `
-            <tr class="table-row">
-                <td class="table-cell cell-pad font-bold">${window.WorkDayHelper.formatDate(item.work_date)}</td>
-                <td class="table-cell cell-pad">${window.Utils.renderStatusBadge(item._status)}</td>
-                <td class="table-cell cell-pad text-right">
-                   <button class="btn-primary btn-xs js-load-workday" data-date="${item.work_date}">Ver</button>
-                   ${item._status === 'open' ? `<button class="btn-secondary btn-xs js-close-workday" data-id="${item.id}" data-date="${item.work_date}">Cerrar</button>` : ''}
-                </td>
-            </tr>
-        `).join('');
-        ui.historyContainer.innerHTML = `<table class="table table-compact"><tbody>${rows}</tbody></table>`;
-    }
+    // renderHistory removed — replaced by Histórico tab (vw_night_snapshot)
 
     async function handleCloseWorkday(id, date) {
         // Switch to Evento tab instead of closing directly
@@ -852,8 +899,12 @@
             ]);
 
             renderCierreTable(termRes.data || [], detailRes.data || []);
-            loadQrStats(wdId);
-            loadBreakdown(wdId);
+            // Fire sub-loads in parallel (previously sequential waterfall)
+            await Promise.all([
+                loadQrStats(wdId),
+                loadBreakdown(wdId),
+                loadFiscalSummary(state.activeWorkDay.work_date),
+            ]);
             state.cierreLoaded = true;
 
         } catch (err) {
@@ -1045,24 +1096,7 @@
         } catch (e) { window.Toast.error('Error guardando notas.'); }
     }
 
-    // ── Histórico Tab ──
-    function renderHistoryTable() {
-        if (!ui.historyTableBody) return;
-        const fmt = window.Utils.formatARS;
-        const rows = state.history.map(h => {
-            const ev = state.events.find(e => e.date === h.work_date);
-            return `<tr class="table-row">
-                <td class="table-cell cell-pad font-bold">${window.WorkDayHelper.formatDate(h.work_date)}</td>
-                <td class="table-cell">${ev ? window.Utils.escapeHtml(ev.name) : '—'}</td>
-                <td class="table-cell text-right font-mono">—</td>
-                <td class="table-cell text-right font-mono">—</td>
-                <td class="table-cell text-right font-mono">—</td>
-                <td class="table-cell text-center">—</td>
-                <td class="table-cell text-center">${window.Utils.renderStatusBadge(h._status)}</td>
-            </tr>`;
-        }).join('');
-        ui.historyTableBody.innerHTML = rows || '<tr><td colspan="7" class="p-4 text-center muted italic">Sin jornadas registradas.</td></tr>';
-    }
+    // Old renderHistoryTable removed — async version at bottom uses vw_night_snapshot
 
     // ═══════════════════════════════════════════════════════════
     // DEVENCIONES (Staff Accruals)
@@ -1076,13 +1110,14 @@
         try {
             const { data, error } = await window.sb
                 .from('staff_accruals')
-                .select('*, profiles(full_name), master_staff_roles(name)')
+                .select('id, work_day_id, user_id, role_id, amount, adjustment, status, created_at, profiles(full_name), master_staff_roles(name)')
                 .eq('work_day_id', state.activeWorkDay.id)
                 .order('created_at');
 
             if (error) throw error;
 
             state.accruals = data || [];
+            state.accrualsLoaded = true;
             renderAccruals();
 
             // Enable generate button only if no accruals yet
@@ -1204,6 +1239,293 @@
     // Bind devenciones events
     if (ui.btnGenerateAccruals) {
         ui.btnGenerateAccruals.addEventListener('click', generateAccruals);
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // GBOL SYNC (migrated from admin-cierre)
+    // ═══════════════════════════════════════════════════════════
+    async function handleGbolSync() {
+        if (!state.activeWorkDay) {
+            window.Toast.warning('Primero confirma una jornada.');
+            return;
+        }
+        if (!window.GbolService) {
+            window.Toast.error('GbolService no disponible.');
+            return;
+        }
+
+        const btn = ui.btnSyncGbol;
+        const prev = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = 'Sincronizando...';
+
+        try {
+            const dateStr = state.activeWorkDay.work_date;
+            const result = await window.GbolService.syncNight(dateStr);
+
+            if (result.facturacion > 0 || result.comandas > 0 || result.withdrawals > 0) {
+                const parts = [];
+                if (result.facturacion) parts.push(`${result.facturacion} fact`);
+                if (result.comandas) parts.push(`${result.comandas} comandas`);
+                if (result.withdrawals) parts.push(`${result.withdrawals} retiros`);
+                window.Toast.success(`GBOL sync: ${parts.join(', ')}.`);
+            } else {
+                window.Toast.info('GBOL: Sin datos nuevos para esta noche.');
+            }
+
+            // Populate system amounts for terminals
+            await window.GbolService.populateSystemAmounts(state.activeWorkDay.id, dateStr);
+
+            // Reload cierre data + fiscal summary
+            loadCierreData();
+            loadFiscalSummary(dateStr);
+            // Reset stock audit to re-fetch
+            state.stockAuditLoaded = false;
+
+        } catch (err) {
+            console.error('[GBOL Sync]', err);
+            window.Toast.error('Error sincronizando GBOL: ' + err.message);
+        } finally {
+            btn.textContent = prev;
+            btn.disabled = false;
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // FISCAL SUMMARY (GBOL mini-cards in Evento tab)
+    // ═══════════════════════════════════════════════════════════
+    async function loadFiscalSummary(dateStr) {
+        if (!dateStr) return;
+        try {
+            const { data, error } = await window.sb
+                .from('vw_fiscal_summary')
+                .select('*')
+                .eq('noche', dateStr)
+                .maybeSingle();
+
+            if (error) throw error;
+
+            if (data) {
+                if (ui.fiscalCards) ui.fiscalCards.style.display = '';
+                if (ui.fiscalBruto) ui.fiscalBruto.textContent = window.Utils.formatARS(data.total_bruto || 0);
+                if (ui.fiscalPctBlanco) ui.fiscalPctBlanco.textContent = `${data.pct_blanqueado || 0}%`;
+                if (ui.fiscalIva) ui.fiscalIva.textContent = window.Utils.formatARS(data.total_iva || 0);
+                if (ui.fiscalTickets) ui.fiscalTickets.textContent = data.total_tickets || 0;
+            } else {
+                if (ui.fiscalCards) ui.fiscalCards.style.display = 'none';
+            }
+        } catch (err) {
+            console.error('[fiscal-summary]', err);
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // STOCK AUDIT TAB
+    // ═══════════════════════════════════════════════════════════
+    async function loadStockAuditData() {
+        if (!state.activeWorkDay) return;
+        const wdId = state.activeWorkDay.id;
+        const dateStr = state.activeWorkDay.work_date;
+
+        try {
+            const [effRes, varRes, ctRes] = await Promise.all([
+                window.sb.from('vw_bar_efficiency').select('*').eq('work_day_id', wdId),
+                window.sb.from('vw_bar_audit_variance').select('*').eq('work_day_id', wdId),
+                window.sb.from('vw_consumo_teorico').select('*').eq('noche', dateStr),
+            ]);
+
+            state.barEfficiency = effRes.data || [];
+            state.barVariance = varRes.data || [];
+            state.consumoTeorico = ctRes.data || [];
+            state.stockAuditLoaded = true;
+
+            // KPIs
+            const totPhysical = state.barEfficiency.reduce((s, r) => s + Number(r.cost_physical || 0), 0);
+            const totTheoretical = state.barEfficiency.reduce((s, r) => s + Number(r.cost_theoretical || 0), 0);
+            const totLoss = state.barEfficiency.reduce((s, r) => s + Number(r.loss_amount || 0), 0);
+            const avgRating = state.barEfficiency.length
+                ? state.barEfficiency.reduce((s, r) => s + Number(r.efficiency_pct || 100), 0) / state.barEfficiency.length
+                : 0;
+
+            if (ui.saKpiPhysical) ui.saKpiPhysical.textContent = window.Utils.formatARS(totPhysical);
+            if (ui.saKpiTheoretical) ui.saKpiTheoretical.textContent = window.Utils.formatARS(totTheoretical);
+            if (ui.saKpiLoss) ui.saKpiLoss.textContent = window.Utils.formatARS(totLoss);
+            if (ui.saKpiLossDelta) {
+                const pctLoss = totTheoretical > 0 ? ((totLoss / totTheoretical) * 100).toFixed(1) : 0;
+                ui.saKpiLossDelta.textContent = `${pctLoss}% del teórico`;
+                ui.saKpiLossDelta.className = `stat-delta ${Number(pctLoss) > 5 ? 'is-negative' : 'is-positive'}`;
+            }
+            if (ui.saKpiRating) {
+                const { emoji, label } = getEfficiencyRating(avgRating);
+                ui.saKpiRating.textContent = `${emoji} ${avgRating.toFixed(0)}%`;
+                ui.saKpiRating.title = label;
+            }
+
+            renderSessionsTable();
+            renderVarianceTable('');
+            renderConsumoTeorico();
+
+        } catch (err) {
+            console.error('[stock-audit]', err);
+            window.Toast.error('Error cargando stock audit.');
+        }
+    }
+
+    function getEfficiencyRating(pct) {
+        if (pct >= 95) return { emoji: '🟢', label: 'Excelente' };
+        if (pct >= 85) return { emoji: '🟡', label: 'Aceptable' };
+        if (pct >= 70) return { emoji: '🟠', label: 'Bajo' };
+        return { emoji: '🔴', label: 'Crítico' };
+    }
+
+    function renderSessionsTable() {
+        if (!ui.saSessionsBody) return;
+        if (!state.barEfficiency.length) {
+            ui.saSessionsBody.innerHTML = '<tr><td colspan="8" class="cell-pad text-center muted">Sin sesiones de barra para esta noche</td></tr>';
+            return;
+        }
+
+        ui.saSessionsBody.innerHTML = state.barEfficiency.map(s => {
+            const varPct = s.efficiency_pct ? (100 - Number(s.efficiency_pct)).toFixed(1) : '—';
+            const { emoji } = getEfficiencyRating(Number(s.efficiency_pct || 0));
+            return `<tr class="table-row">
+                <td class="table-cell">${window.Utils.escapeHtml(s.location_name || 'Sin ubicación')}</td>
+                <td class="table-cell">${window.Utils.escapeHtml(s.barman_name || '—')}</td>
+                <td class="table-cell text-right font-mono">${window.Utils.formatARS(s.revenue || 0)}</td>
+                <td class="table-cell text-right font-mono">${window.Utils.formatARS(s.cost_physical || 0)}</td>
+                <td class="table-cell text-right font-mono">${window.Utils.formatARS(s.cost_theoretical || 0)}</td>
+                <td class="table-cell text-right font-mono">${window.Utils.formatARS(s.loss_amount || 0)}</td>
+                <td class="table-cell text-right font-mono">${varPct}%</td>
+                <td class="table-cell text-center">${emoji} ${Number(s.efficiency_pct || 0).toFixed(0)}%</td>
+            </tr>`;
+        }).join('');
+    }
+
+    function renderVarianceTable(filterClasif) {
+        if (!ui.saVarianceBody) return;
+        let rows = state.barVariance;
+        if (filterClasif) rows = rows.filter(r => r.clasificacion === filterClasif);
+
+        if (!rows.length) {
+            ui.saVarianceBody.innerHTML = '<tr><td colspan="9" class="cell-pad text-center muted">Sin datos de varianza</td></tr>';
+            return;
+        }
+
+        const statusMap = {
+            'ALERTA_PERDIDA': { cls: 'status-error', label: '🔴 Pérdida' },
+            'ERROR_REGISTRO': { cls: 'status-warning', label: '🟡 Error' },
+            'DENTRO_DE_RANGO': { cls: 'status-success', label: '🟢 OK' },
+            'SIN_MOVIMIENTO': { cls: 'status-muted', label: '⚪ Sin Mov.' },
+        };
+
+        ui.saVarianceBody.innerHTML = rows.map(r => {
+            const st = statusMap[r.clasificacion] || statusMap['SIN_MOVIMIENTO'];
+            return `<tr class="table-row">
+                <td class="table-cell">${window.Utils.escapeHtml(r.sku_name || r.sku_id || '—')}</td>
+                <td class="table-cell">${window.Utils.escapeHtml(r.category || '—')}</td>
+                <td class="table-cell text-right font-mono">${r.qty_apertura ?? '—'}</td>
+                <td class="table-cell text-right font-mono">${r.qty_cierre ?? '—'}</td>
+                <td class="table-cell text-right font-mono">${r.consumo_real ?? '—'}</td>
+                <td class="table-cell text-right font-mono">${r.consumo_sistema ?? '—'}</td>
+                <td class="table-cell text-right font-mono">${r.diferencia ?? '—'}</td>
+                <td class="table-cell text-right font-mono">${window.Utils.formatARS(r.costo_diferencia || 0)}</td>
+                <td class="table-cell text-center"><span class="status-pill ${st.cls}">${st.label}</span></td>
+            </tr>`;
+        }).join('');
+    }
+
+    function renderConsumoTeorico() {
+        if (!ui.saConsumoGbolBody) return;
+        if (!state.consumoTeorico.length) {
+            ui.saConsumoGbolBody.innerHTML = '<tr><td colspan="4" class="cell-pad text-center muted">Sin datos GBOL para esta noche</td></tr>';
+            return;
+        }
+
+        ui.saConsumoGbolBody.innerHTML = state.consumoTeorico.map(c => `
+            <tr class="table-row">
+                <td class="table-cell">${window.Utils.escapeHtml(c.sku_name || c.sku_id || '—')}</td>
+                <td class="table-cell text-right font-mono">${Number(c.qty_consumed || 0).toFixed(2)}</td>
+                <td class="table-cell text-right font-mono">${window.Utils.formatARS(c.cost_consumed || 0)}</td>
+                <td class="table-cell text-right font-mono">${c.ticket_count || 0}</td>
+            </tr>
+        `).join('');
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // HISTÓRICO TAB (Premium — vw_night_snapshot)
+    // ═══════════════════════════════════════════════════════════
+    async function renderHistoryTable() {
+        if (!ui.historyTableBody) return;
+
+        try {
+            const { data, error } = await window.sb
+                .from('vw_night_snapshot')
+                .select('work_date, event_name, status, total_income, gbol_efectivo, gbol_efectivo_neto, total_retiros, cant_retiros, cash_declared, conciliacion_diff, stock_loss, staff_cost')
+                .order('work_date', { ascending: false })
+                .limit(50);
+
+            state.historyLoaded = true;
+
+            if (error) throw error;
+
+            if (!data || !data.length) {
+                ui.historyTableBody.innerHTML = '<tr><td colspan="11" class="p-4 text-center muted italic">Sin jornadas registradas</td></tr>';
+                return;
+            }
+
+            const fmt = (v) => v != null ? window.Utils.formatARS(v) : '—';
+            const diffCell = (val) => {
+                if (val == null) return '<td class="table-cell text-right font-mono muted">—</td>';
+                const n = Number(val);
+                const cls = n < 0 ? 'text-danger' : n > 0 ? 'text-success' : '';
+                return `<td class="table-cell text-right font-mono ${cls}">${window.Utils.formatARS(n)}</td>`;
+            };
+
+            ui.historyTableBody.innerHTML = data.map(row => {
+                const date = row.work_date || '—';
+                const event = row.event_name || '—';
+                const statusMap = {
+                    'open': { cls: 'status-open', label: 'Abierta' },
+                    'closed': { cls: 'status-success', label: 'Cerrada' },
+                };
+                const st = statusMap[row.status] || { cls: 'status-muted', label: row.status || '—' };
+
+                const retiros = Number(row.total_retiros || 0);
+                const retirosLabel = retiros > 0
+                    ? `<span title="${row.cant_retiros} retiro(s)">${fmt(retiros)}</span>`
+                    : '<span class="muted">—</span>';
+
+                return `<tr class="table-row clickable-row" data-date="${date}" style="cursor:pointer;">
+                    <td class="table-cell cell-pad font-mono">${date}</td>
+                    <td class="table-cell">${window.Utils.escapeHtml(event)}</td>
+                    <td class="table-cell text-right font-mono">${fmt(row.total_income)}</td>
+                    <td class="table-cell text-right font-mono">${fmt(row.gbol_efectivo)}</td>
+                    <td class="table-cell text-right font-mono">${retirosLabel}</td>
+                    <td class="table-cell text-right font-mono">${fmt(row.gbol_efectivo_neto)}</td>
+                    <td class="table-cell text-right font-mono">${fmt(row.cash_declared)}</td>
+                    ${diffCell(row.conciliacion_diff)}
+                    <td class="table-cell text-right font-mono">${fmt(row.stock_loss)}</td>
+                    <td class="table-cell text-right font-mono">${fmt(row.staff_cost)}</td>
+                    <td class="table-cell text-center"><span class="status-pill ${st.cls}">${st.label}</span></td>
+                </tr>`;
+            }).join('');
+
+            // Click to navigate to that date
+            ui.historyTableBody.querySelectorAll('.clickable-row').forEach(tr => {
+                tr.addEventListener('click', () => {
+                    const d = tr.dataset.date;
+                    if (d && ui.inputDate) {
+                        ui.inputDate.value = d;
+                        handleDateChange();
+                        switchTab('panelPlan');
+                    }
+                });
+            });
+
+        } catch (err) {
+            console.error('[history]', err);
+            ui.historyTableBody.innerHTML = '<tr><td colspan="11" class="p-4 text-center text-danger">Error cargando historial</td></tr>';
+        }
     }
 
     // Start
