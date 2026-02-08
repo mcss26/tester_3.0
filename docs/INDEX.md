@@ -1,6 +1,6 @@
 # Índice de Documentación
 
-> **Última Actualización**: 2026-01-29
+> **Última Actualización**: 2026-02-08
 
 ---
 
@@ -39,12 +39,13 @@ Documentación técnica y operativa por módulo, organizada por área:
 
 | Área | Cantidad | Ruta |
 |:-----|:---------|:-----|
-| Admin | 13 | `modules/admin/` |
+| Admin | 11 | `modules/admin/` |
 | Encargados | 7 | `modules/encargados/` |
 | Operativo | 9 | `modules/operativo/` |
 | Logística | 4 | `modules/logistica/` |
 | Staff | 2 | `modules/staff/` |
-| Misc | 3 | `modules/misc/` |
+| Misc | 1 | `modules/misc/` |
+| **TOTAL** | **34** | — |
 
 **Template**: [_template.md](./modules/_template.md)
 

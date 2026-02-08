@@ -4,10 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Midnight - Operaciones</title>
+    <meta name="theme-color" content="#0a0a0f">
+    <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
+    <title>Operaciones — Midnight</title>
     <link rel="stylesheet" href="../../assets/css/tokens.css">
     <link rel="stylesheet" href="../../assets/css/components.css">
-    <link rel="stylesheet" href="../../assets/css/admin-master.css">
+    <link rel="stylesheet" href="../../assets/css/admin-central-stock.css">
 </head>
 
 <body class="app-shell admin-shell admin-scroll"
@@ -25,6 +27,10 @@
 
         <div class="topbar-center header-search">
             <input type="text" id="global-search" class="input" placeholder="Ir a...">
+            <svg class="header-search-icon" viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
             <span class="header-shortcut">⌘K</span>
         </div>
 
@@ -64,31 +70,31 @@
 
                         <!-- Dashboard Shortcuts -->
                         <div class="profiles-grid">
-                            <a href="operativo-workday.html" class="profile-card" style="text-decoration: none;">
+                            <a href="operativo-workday.html" class="profile-card no-underline">
                                 <div class="profile-avatar">📅</div>
                                 <h3 class="profile-name">Work Day</h3>
                                 <p class="profile-role">Gestión de Jornada</p>
                                 <span class="profile-info">Links, Nómina y Solicitudes</span>
                             </a>
-                            <a href="operativo-stock.html" class="profile-card" style="text-decoration: none;">
+                            <a href="operativo-stock.html" class="profile-card no-underline">
                                 <div class="profile-avatar">📦</div>
                                 <h3 class="profile-name">Stock</h3>
                                 <p class="profile-role">Control de Inventario</p>
                                 <span class="profile-info">Stock operativo y ajustes</span>
                             </a>
-                            <a href="operativo-solicitudes.html" class="profile-card" style="text-decoration: none;">
+                            <a href="operativo-solicitudes.html" class="profile-card no-underline">
                                 <div class="profile-avatar">📋</div>
                                 <h3 class="profile-name">Solicitudes</h3>
                                 <p class="profile-role">Requerimientos</p>
                                 <span class="profile-info">Reposición y pedidos</span>
                             </a>
-                            <a href="cms-members.html" class="profile-card" style="text-decoration: none;">
+                            <a href="cms-members.html" class="profile-card no-underline">
                                 <div class="profile-avatar">👥</div>
                                 <h3 class="profile-name">CMS Members</h3>
                                 <p class="profile-role">Gestión de Socios</p>
                                 <span class="profile-info">Altas, Bajas y Modificaciones</span>
                             </a>
-                            <a href="operativo-master-sku.html" class="profile-card" style="text-decoration: none;">
+                            <a href="operativo-master-sku.html" class="profile-card no-underline">
                                 <div class="profile-avatar">⚙️</div>
                                 <h3 class="profile-name">Configuración</h3>
                                 <p class="profile-role">Master Data</p>
@@ -101,18 +107,16 @@
         </div>
     </main>
 
-    <!-- Scripts -->
-    <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <!-- Core Scripts -->
+    <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script defer src="../../assets/js/core/config.js"></script>
     <script defer src="../../assets/js/core/supabase-client.js"></script>
-    <script defer src="../../assets/js/core/auth.js"></script>
     <script defer src="../../assets/js/core/utils.js"></script>
-
-    <!-- Module Script -->
-    <script src="../../assets/js/modules/operativo/operativo-index.js"></script>
-
-    <!-- Global Navigation -->
+    <script defer src="../../assets/js/core/auth.js"></script>
+    <script defer src="../../assets/js/core/toast.js"></script>
+    <script defer src="../../assets/js/core/work-day-helper.js"></script>
     <script src="../../assets/js/core/navigation.js"></script>
+    <script defer src="../../assets/js/modules/operativo/operativo-index.js"></script>
 </body>
 
 </html>

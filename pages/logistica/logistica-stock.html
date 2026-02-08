@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logística - Stock Depósito</title>
+    <meta name="theme-color" content="#0a0a0f">
+    <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
+    <title>Stock Depósito — Midnight</title>
     <link rel="stylesheet" href="../../assets/css/tokens.css">
     <link rel="stylesheet" href="../../assets/css/components.css">
     <link rel="stylesheet" href="../../assets/css/admin-master.css">
@@ -35,17 +37,6 @@
 
         <!-- Right: Notifications + Avatar -->
         <div class="topbar-end">
-            <!-- Notifications Dropdown -->
-            <div class="dropdown-container">
-                <button id="btn-notifications" class="icon-btn" aria-label="Notificaciones">
-                    <svg class="icon-notification" viewBox="0 0 24 24">
-                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                    </svg>
-                    <span class="notification-badge" id="notification-count">0</span>
-                </button>
-            </div>
-
             <!-- User Menu Dropdown -->
             <div class="dropdown-container">
                 <button class="avatar avatar-sm" id="user-avatar" aria-label="Menú de usuario">LG</button>
@@ -152,8 +143,7 @@
                 <p id="adjust-sku-name" class="text-muted mb-4 font-medium"></p>
                 <div class="form-group">
                     <label class="form-label">Stock Actual Sistema</label>
-                    <input type="text" id="adjust-current" class="input" readonly disabled
-                        style="background: var(--bg-surface);">
+                    <input type="text" id="adjust-current" class="input" readonly disabled class="bg-surface">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Cantidad Real (Conteo)</label>
@@ -161,8 +151,7 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Diferencia</label>
-                    <input type="text" id="adjust-diff" class="input" readonly disabled
-                        style="background: var(--bg-surface);">
+                    <input type="text" id="adjust-diff" class="input" readonly disabled class="bg-surface">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Motivo</label>
@@ -189,7 +178,7 @@
     </div>
 
     <!-- Scripts -->
-    <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script defer src="../../assets/js/core/config.js"></script>
     <script defer src="../../assets/js/core/supabase-client.js"></script>
     <script defer src="../../assets/js/core/auth.js"></script>
@@ -198,7 +187,7 @@
 
     <!-- Module Script -->
     <script defer src="../../assets/js/modules/logistica/logistica-stock.js"></script>
-    <script src="../../assets/js/core/navigation.js"></script>
+    <script defer src="../../assets/js/core/navigation.js"></script>
 </body>
 
 </html>

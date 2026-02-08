@@ -60,7 +60,10 @@
         consumptionReportsTbody: document.getElementById('consumption-reports-tbody'),
         revenueReportsTbody: document.getElementById('revenue-reports-tbody'),
         
-        // Import Modal — removed (replaced by sidebar dropboxes)
+        // Import Inline Preview
+        importPreview: document.getElementById('import-preview'),
+        importPreviewContent: document.getElementById('import-preview-content'),
+        
         btnCloseChart: document.getElementById('btn-close-chart'),
         btnRetry: document.getElementById('btn-retry'),
         
@@ -203,15 +206,18 @@
 
             // Initialize Dropboxes
             setupDropbox('dropbox-consumption', 'file-consumption', async (file) => {
-                console.log('Consumption file:', file.name);
-                // TODO: Implement consumption import logic
-                window.Toast?.info(`Archivo "${file.name}" listo para procesar (Consumo)`);
+                state.importType = 'consumo';
+                state.importFileName = file.name;
+                // Show preview container
+                if (ui.importPreview) ui.importPreview.classList.remove('hidden');
+                processFileForImport(file);
             });
 
             setupDropbox('dropbox-revenue', 'file-revenue', async (file) => {
-                console.log('Revenue file:', file.name);
-                // TODO: Implement revenue import logic
-                window.Toast?.info(`Archivo "${file.name}" listo para procesar (Recaudación)`);
+                state.importType = 'recaudacion';
+                state.importFileName = file.name;
+                if (ui.importPreview) ui.importPreview.classList.remove('hidden');
+                processFileForImport(file);
             });
 
             // Bind requests widget events
@@ -1169,18 +1175,25 @@
         }
     }
 
-    // --- IMPORT (LEGACY — modal removed, pending migration to dropbox flow) ---
-    // TODO: Wire parseCSV/parseExcel/processImportData/confirmImport into
-    //       setupDropbox callbacks. Remove dead ui.importPreview/btnConfirmImport/importModal refs.
+    // --- IMPORT PIPELINE (wired to sidebar dropboxes) ---
+
+    function processFileForImport(file) {
+        const reader = new FileReader();
+        if (file.name.toLowerCase().endsWith('.csv')) {
+            reader.onload = (e) => parseCSV(e.target.result);
+            reader.readAsText(file, 'ISO-8859-1');
+        } else {
+            reader.onload = (e) => parseExcel(new Uint8Array(e.target.result));
+            reader.readAsArrayBuffer(file);
+        }
+    }
 
     async function handleFileSelect(event) {
         const file = event.target.files[0];
         if (!file) return;
 
-        // Capture import type before processing
-        state.importType = ui.importType?.value || 'consumo';
+        state.importType = state.importType || 'consumo';
         state.importFileName = file.name;
-        if (ui.importFileName) ui.importFileName.textContent = file.name;
 
         const reader = new FileReader();
 
@@ -1301,7 +1314,8 @@
     }
 
     async function processImportData(json, foundHeader) {
-        ui.importPreview.innerHTML = '<p class="state-desc muted text-center">Procesando...</p>';
+        const previewTarget = ui.importPreviewContent || ui.importPreview;
+        if (previewTarget) previewTarget.innerHTML = '<p class="state-desc muted text-center">Procesando...</p>';
 
         try {
             if (state.importType === 'recaudacion') {
@@ -1321,7 +1335,8 @@
         if (error) throw error;
 
         if (!json || json.length === 0) {
-            ui.importPreview.innerHTML = '<p class="state-desc text-error text-center">No se encontraron filas.</p>';
+            const previewTarget = ui.importPreviewContent || ui.importPreview;
+            if (previewTarget) previewTarget.innerHTML = '<p class="state-desc text-error text-center">No se encontraron filas.</p>';
             return;
         }
 
@@ -1513,7 +1528,9 @@
         const unmatched = total - matched;
         const skuCount = Object.keys(state.revenueData).length;
 
-        ui.importPreview.innerHTML = `
+        const previewTarget = ui.importPreviewContent || ui.importPreview;
+        if (!previewTarget) return;
+        previewTarget.innerHTML = `
             <div class="mb-2" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
                 <div class="stat-card is-success" style="padding: 12px;">
                     <p class="stat-label">Recetas Match</p>
@@ -1569,7 +1586,21 @@
             <p class="text-xs muted mt-2">Al confirmar, los datos se guardarán en la tabla de recaudación con las cantidades y montos correspondientes.</p>
         `;
 
-        ui.btnConfirmImport.disabled = matched === 0;
+        if (ui.btnConfirmImport) ui.btnConfirmImport.disabled = matched === 0;
+
+        // Add inline confirm / dismiss buttons
+        const actionsRow = document.createElement('div');
+        actionsRow.style.cssText = 'display:flex;gap:8px;justify-content:flex-end;margin-top:var(--space-sm)';
+        actionsRow.innerHTML = `
+            <button class="btn-ghost btn-sm" id="btn-dismiss-import-rev">Cancelar</button>
+            <button class="btn-primary btn-sm" id="btn-inline-confirm-rev" ${matched === 0 ? 'disabled' : ''}>Confirmar Importación</button>
+        `;
+        previewTarget?.appendChild(actionsRow);
+        document.getElementById('btn-inline-confirm-rev')?.addEventListener('click', () => confirmImport());
+        document.getElementById('btn-dismiss-import-rev')?.addEventListener('click', () => {
+            if (ui.importPreview) ui.importPreview.classList.add('hidden');
+            state.importData = [];
+        });
     }
 
     function renderImportPreview(matched, foundHeader, showOnlyUnmatched = false) {
@@ -1581,7 +1612,9 @@
         // Store filter state for button handlers
         window._importFilterState = { matched, foundHeader };
 
-        ui.importPreview.innerHTML = `
+        const previewTarget = ui.importPreviewContent || ui.importPreview;
+        if (!previewTarget) return;
+        previewTarget.innerHTML = `
             <div class="mb-2" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; position: relative; z-index: 10;">
                 <button type="button" class="stat-card is-success ${!showOnlyUnmatched ? 'is-active' : ''}" id="btn-filter-matched" style="cursor: pointer; padding: 12px;">
                     <p class="stat-label">Vinculados</p>
@@ -1634,15 +1667,30 @@
             };
         }
 
-        ui.btnConfirmImport.disabled = matched === 0;
+        if (ui.btnConfirmImport) ui.btnConfirmImport.disabled = matched === 0;
+
+        // Add inline confirm / dismiss buttons at end of preview
+        const actionsRow = document.createElement('div');
+        actionsRow.style.cssText = 'display:flex;gap:8px;justify-content:flex-end;margin-top:var(--space-sm)';
+        actionsRow.innerHTML = `
+            <button class="btn-ghost btn-sm" id="btn-dismiss-import">Cancelar</button>
+            <button class="btn-primary btn-sm" id="btn-inline-confirm" ${matched === 0 ? 'disabled' : ''}>Confirmar Importación</button>
+        `;
+        (ui.importPreviewContent || ui.importPreview)?.appendChild(actionsRow);
+
+        document.getElementById('btn-inline-confirm')?.addEventListener('click', () => confirmImport());
+        document.getElementById('btn-dismiss-import')?.addEventListener('click', () => {
+            if (ui.importPreview) ui.importPreview.classList.add('hidden');
+            state.importData = [];
+        });
     }
 
 
 
     async function confirmImport() {
-        const date = ui.importDate?.value;
+        const date = ui.importDate?.value || document.getElementById('filter-date-end')?.value;
         if (!date) {
-            window.Toast?.warning('Seleccione una fecha operativa.');
+            window.Toast?.warning('Seleccione una fecha en los filtros del sidebar.');
             return;
         }
 

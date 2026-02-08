@@ -1,14 +1,14 @@
 # 🗺️ Mapa de Pantallas - FormulaMid 4
 
-> **Última Actualización**: 2026-02-07  
-> **Total Pantallas**: 45  
+> **Última Actualización**: 2026-02-08  
+> **Total Pantallas**: 48  
 > **Documento**: Arquitectura de navegación y contextos de usuario
 
 ---
 
 ## 🎯 Propósito
 
-Este documento visualiza la **topografía completa** del sistema FormulaMid 4, organizando las 47 pantallas por rol operativo y contexto funcional. Útil para:
+Este documento visualiza la **topografía completa** del sistema FormulaMid 4, organizando las 48 pantallas por rol operativo y contexto funcional. Útil para:
 
 - Desarrolladores que necesitan entender el flujo de navegación
 - QA para validar cobertura de tests por módulo
@@ -35,9 +35,9 @@ graph TD
     Portal --> M_QR
 
     %% ═══════════════════════════════════════════════════════════════
-    %% ADMINISTRACIÓN (21 pantallas)
+    %% ADMINISTRACIÓN (18 pantallas)
     %% ═══════════════════════════════════════════════════════════════
-    subgraph FM4_ADM [🔵 ADMINISTRACIÓN · 21 pantallas]
+    subgraph FM4_ADM [🔵 ADMINISTRACIÓN · 18 pantallas]
         direction TB
         A_IDX[📊 Dashboard<br/><small><i>admin-index</i></small>]
         
@@ -47,6 +47,7 @@ graph TD
             A_CIE[🔒 Cierres<br/><small><i>admin-cierre</i></small>]
             A_REP[📈 Reportes<br/><small><i>admin-reportes</i></small>]
             A_WKL[📊 Semanal<br/><small><i>admin-semanal</i></small>]
+            A_CFG[⚙️ Config<br/><small><i>admin-config</i></small>]
         end
         
         subgraph ADM_STK [📦 Control de Inventario]
@@ -54,7 +55,6 @@ graph TD
         end
         
         subgraph ADM_MST [🗃️ Maestros de Datos]
-            A_PRV[🏢 Proveedores<br/><small><i>admin-master-proveedores</i></small>]
             A_PRV[🏢 Proveedores<br/><small><i>admin-master-proveedores</i></small>]
             A_CAT[📁 Categorías<br/><small><i>admin-master-categorias</i></small>]
             A_TAR[💰 Tarifario<br/><small><i>admin-master-tarifario</i></small>]
@@ -104,14 +104,15 @@ graph TD
     end
 
     %% ═══════════════════════════════════════════════════════════════
-    %% LOGÍSTICA (4 pantallas)
+    %% LOGÍSTICA (5 pantallas)
     %% ═══════════════════════════════════════════════════════════════
-    subgraph FM4_LOG [📦 LOGÍSTICA · 4 pantallas]
+    subgraph FM4_LOG [📦 LOGÍSTICA · 5 pantallas]
         direction TB
         L_IDX[📊 Dashboard<br/><small><i>logistica-index</i></small>]
         L_STK[🏭 Stock Depósito<br/><small><i>logistica-stock</i></small>]
         L_DIS[🚚 Distribución<br/><small><i>logistica-distribucion</i></small>]
         L_REC[📥 Recepción<br/><small><i>logistica-recepcion</i></small>]
+        L_SEG[🔎 Seguimiento<br/><small><i>logistica-seguimiento</i></small>]
     end
 
     %% ═══════════════════════════════════════════════════════════════
@@ -196,9 +197,9 @@ graph TD
     classDef members fill:#1e293b,stroke:#ef4444,color:#fee2e2,stroke-width:2px;
 
     class Portal portal;
-    class A_IDX,A_WD,A_SOL,A_CIE,A_REP,A_WKL,A_CEN,A_PRV,A_CAT,A_TAR,A_NOM,A_PAG,A_POS,AB_IDX,AB_REC,AB_SES,QR_IDX,QR_GEN,QR_MON admin;
+    class A_IDX,A_WD,A_SOL,A_CIE,A_REP,A_WKL,A_CFG,A_CEN,A_PRV,A_CAT,A_TAR,A_NOM,A_PAG,A_POS,QR_IDX,QR_GEN,QR_MON admin;
     class O_IDX,O_ERP,O_STK,O_WD,O_SOL,O_ANA,O_SCN,O_CMS,O_MEM,O_SKU,O_PRV operative;
-    class L_IDX,L_STK,L_DIS,L_REC logistics;
+    class L_IDX,L_STK,L_DIS,L_REC,L_SEG logistics;
     class E_BAR,E_BNO,E_BPE,E_CAJ,E_CNO,E_CPE,E_REP supervisor;
     class S_BAR,S_CAJ staff;
     class G_BAL gerencia;
@@ -211,20 +212,21 @@ graph TD
 
 | Contexto | Páginas | Directorio | Roles Permitidos |
 |:---------|:-------:|:-----------|:-----------------|
-| 🔵 **Admin** | 19 | `pages/admin/*` | `admin`, `contable` |
+| 🔵 **Admin** | 18 | `pages/admin/*` (incl. `qr/`) | `admin`, `contable` |
 | 🟢 **Operativo** | 11 | `pages/operativo/*` | `operativo`, `staff_operativo` |
-| 📦 **Logística** | 4 | `pages/logistica/*` | `logistico`, `admin` |
+| 📦 **Logística** | 5 | `pages/logistica/*` | `logistico`, `admin` |
 | 🟠 **Encargados** | 7 | `pages/encargados/*` | `encargado_barra`, `encargado_caja` |
 | 🟡 **Staff** | 2 | `pages/staff/*` | `staff_barra`, `staff_caja` |
 | 🟣 **Gerencia** | 1 | `pages/gerencia/*` | `gerencia`, `admin` |
 | 🔴 **Members** | 1 | `pages/members/*` | `member` |
-| **TOTAL** | **45** | — | — |
+| 🛠️ **Dev Utilities** | 3 | `pages/*.html` | — |
+| **TOTAL** | **48** | — | — |
 
 ---
 
 ## 📂 Inventario Completo por Carpeta
 
-### 🔵 Admin (21)
+### 🔵 Admin (18)
 | # | Archivo | Propósito |
 |:-:|:--------|:----------|
 | 1 | `admin-index.html` | Dashboard principal de administración |
@@ -240,12 +242,11 @@ graph TD
 | 11 | `admin-master-nomina.html` | Gestión de personal |
 | 12 | `admin-pagos.html` | Control de pagos |
 | 13 | `admin-master-pos.html` | Terminales punto de venta |
-| 14 | `barras/index.html` | Hub de gestión de barras |
-| 15 | `barras/recipes.html` | Recetario de bebidas |
-| 16 | `barras/session.html` | Sesiones de barra |
-| 17 | `qr/index.html` | Hub del sistema QR |
-| 18 | `qr/generator.html` | Generador de códigos QR |
-| 19 | `qr/monitor.html` | Monitor de escaneos QR |
+| 14 | `admin-config.html` | Configuración del sitio |
+| 15 | `test-devenciones.html` | Testing de devengados de nómina |
+| 16 | `qr/index.html` | Hub del sistema QR |
+| 17 | `qr/generator.html` | Generador de códigos QR |
+| 18 | `qr/monitor.html` | Monitor de escaneos QR |
 
 ### 🟢 Operativo (11)
 | # | Archivo | Propósito |
@@ -262,13 +263,14 @@ graph TD
 | 10 | `operativo-master-sku.html` | SKUs (vista operativa) |
 | 11 | `operativo-master-proveedores.html` | Proveedores (vista operativa) |
 
-### 📦 Logística (4)
+### 📦 Logística (5)
 | # | Archivo | Propósito |
 |:-:|:--------|:----------|
 | 1 | `logistica-index.html` | Dashboard de logística |
 | 2 | `logistica-stock.html` | Stock en depósito |
 | 3 | `logistica-distribucion.html` | Órdenes de distribución |
 | 4 | `logistica-recepcion.html` | Recepción de mercadería |
+| 5 | `logistica-seguimiento.html` | Seguimiento de órdenes |
 
 ### 🟠 Encargados (7)
 | # | Archivo | Propósito |
@@ -333,16 +335,16 @@ cms-members → operativo-cms → admin-master-nomina
 | **Navegación** | `data-go` con `admin-navigation.js` |
 | **Estado** | `window.Utils.setPageState()` para loading/empty/ready |
 | **Realtime** | Supabase Channels en módulos de encargados |
-| **CSS** | Sistema en `main.css` + tokens en `:root` |
+| **CSS** | `tokens.css` + `components.css` + módulo-específicos (0 imports de `main.css`) |
 
 ### 📊 Distribución por Tipo
 
 ```
 Dashboards (índices):    7 pantallas (15%)
-Maestros de datos:       9 pantallas (20%)
-Operaciones:            14 pantallas (30%)
-Reportes/Análisis:       6 pantallas (13%)
-Sistemas especiales:    10 pantallas (22%)
+Maestros de datos:       9 pantallas (19%)
+Operaciones:            15 pantallas (31%)
+Reportes/Análisis:       6 pantallas (12%)
+Sistemas especiales:    11 pantallas (23%)
 ```
 
 ---

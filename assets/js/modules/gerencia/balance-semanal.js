@@ -14,14 +14,18 @@
         kpiProfit: document.getElementById('kpi-profit'),
         kpiProfitMargin: document.getElementById('kpi-profit-margin'),
         btnRefresh: document.getElementById('btn-refresh'),
+        btnExport: document.getElementById('btn-export'),
         filterYear: document.getElementById('filter-year'),
         filterMonth: document.getElementById('filter-month'),
+        chartCard: document.getElementById('chart-card'),
+        trendChart: document.getElementById('trend-chart'),
     };
 
     const state = {
         weeklyData: [],
         year: new Date().getFullYear(),
-        month: 'all' // 'all' or 1-12
+        month: 'all',
+        chartInstance: null
     };
 
     // 1. Auth & Init
@@ -49,6 +53,7 @@
             state.weeklyData = data || [];
             render();
             updateKPIs();
+            renderChart();
         } catch (error) {
             console.error(error);
             window.Toast?.error('Error cargando balance: ' + error.message);
@@ -122,8 +127,103 @@
         }
     }
 
-    // 4. Events
+    // 5. Chart (lazy-loaded)
+    async function renderChart() {
+        if (!ui.trendChart || state.weeklyData.length < 2) {
+            ui.chartCard?.classList.add('hidden');
+            return;
+        }
+
+        try {
+            await window.ChartLoader.load();
+        } catch {
+            return; // Chart.js not available — skip silently
+        }
+
+        ui.chartCard?.classList.remove('hidden');
+
+        // Sort ascending for chart
+        const sorted = [...state.weeklyData].sort((a, b) => a.week_number - b.week_number);
+        const labels = sorted.map(r => `S${r.week_number}`);
+
+        if (state.chartInstance) state.chartInstance.destroy();
+
+        state.chartInstance = new Chart(ui.trendChart, {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [
+                    {
+                        label: 'Ingresos',
+                        data: sorted.map(r => r.income_gross || 0),
+                        borderColor: 'rgb(34,197,94)',
+                        backgroundColor: 'rgba(34,197,94,0.1)',
+                        tension: 0.3,
+                        fill: true
+                    },
+                    {
+                        label: 'Gastos',
+                        data: sorted.map(r => r.expenses_total || 0),
+                        borderColor: 'rgb(239,68,68)',
+                        backgroundColor: 'rgba(239,68,68,0.1)',
+                        tension: 0.3,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { labels: { color: '#ccc' } }
+                },
+                scales: {
+                    x: { ticks: { color: '#888' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                    y: {
+                        ticks: {
+                            color: '#888',
+                            callback: v => `$${(v / 1000).toFixed(0)}k`
+                        },
+                        grid: { color: 'rgba(255,255,255,0.05)' }
+                    }
+                }
+            }
+        });
+    }
+
+    // 6. CSV Export
+    function exportCSV() {
+        if (state.weeklyData.length === 0) {
+            window.Toast?.warning('No hay datos para exportar.');
+            return;
+        }
+
+        const headers = 'Semana,Inicio,Fin,Ingresos,Gastos,IVA Ventas,IVA Pagar,Utilidad,Flujo Neto';
+        const rows = state.weeklyData.map(r => [
+            r.week_number,
+            new Date(r.week_start).toLocaleDateString('es-AR'),
+            new Date(r.week_end).toLocaleDateString('es-AR'),
+            r.income_gross || 0,
+            r.expenses_total || 0,
+            r.tax_vat_sales || 0,
+            r.tax_vat_payable || 0,
+            r.operating_profit || 0,
+            r.net_cash_flow || 0
+        ].join(','));
+
+        const csv = [headers, ...rows].join('\n');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `balance_semanal_${state.year}_${state.month}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+        window.Toast?.success('CSV exportado.');
+    }
+
+    // 7. Events
     ui.btnRefresh?.addEventListener('click', loadData);
+    ui.btnExport?.addEventListener('click', exportCSV);
     
     ui.filterYear?.addEventListener('change', (e) => {
         state.year = e.target.value;

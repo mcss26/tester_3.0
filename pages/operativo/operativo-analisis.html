@@ -4,18 +4,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Midnight - Análisis Operativo</title>
-    <link rel="stylesheet" href="../../assets/css/main.css">
+    <meta name="theme-color" content="#0a0a0f">
+    <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
+    <title>Análisis — Midnight</title>
+    <link rel="stylesheet" href="../../assets/css/tokens.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/admin-master.css">
     <!-- SheetJS (Chart.js loaded lazily via chart-loader) -->
     <script src="../../assets/js/core/chart-loader.js"></script>
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 </head>
 
-<body class="app-shell" data-allowed-roles="operativo,logistico">
+<body class="app-shell admin-shell admin-scroll" data-allowed-roles="operativo,logistico">
 
-    <header class="app-topbar">
+    <header class="topbar">
         <div class="topbar-left">
-            <button class="topbar-link" data-go="pages/operativo/operativo-erp.html">← Volver</button>
+            <button class="btn-icon btn-icon-flat" data-go="pages/operativo/operativo-erp.html"
+                aria-label="Volver">←</button>
+            <span class="topbar-back">ERP</span>
         </div>
 
         <nav class="topbar-center">
@@ -53,13 +59,13 @@
                     <div id="analysis-tab-importar" class="p-4">
                         <div class="form-group mb-4">
                             <label class="form-label">Fecha Operativa</label>
-                            <input type="date" id="import-date" class="input input-compact w-200">
+                            <input type="date" id="import-date" class="input input-compact" style="width: 200px;">
                         </div>
 
                         <div class="file-drop-area mb-4">
                             <label for="import-file" class="btn-secondary">Seleccionar Excel (.xlsx)</label>
                             <input type="file" id="import-file" accept=".xlsx, .xls" hidden>
-                            <span id="import-file-name" class="ml-2 text-muted text-sm"></span>
+                            <span id="import-file-name" class="form-hint ml-2"></span>
                         </div>
 
                         <div id="import-preview" class="table-wrap">
@@ -69,17 +75,18 @@
                     </div>
 
                     <!-- TAB CONTENT: ANALIZAR -->
-                    <div id="analysis-tab-analizar" class="p-4 hidden">
+                    <div id="analysis-tab-analizar" class="hidden p-4">
                         <div class="dashboard-toolbar mb-4 gap-4">
                             <div class="form-group">
-                                <label class="form-label text-xs">Desde</label>
+                                <label class="form-label fs-11">Desde</label>
                                 <input type="date" id="analyze-date-start" class="input input-compact">
                             </div>
                             <div class="form-group">
-                                <label class="form-label text-xs">Hasta</label>
+                                <label class="form-label fs-11">Hasta</label>
                                 <input type="date" id="analyze-date-end" class="input input-compact">
                             </div>
-                            <button id="btn-analyze-ideal" class="btn-primary mt-auto">Calcular Ideales</button>
+                            <button id="btn-analyze-ideal" class="btn-primary mt-auto">Calcular
+                                Ideales</button>
                         </div>
 
                         <div id="analysis-results" class="table-wrap">
@@ -88,7 +95,7 @@
                     </div>
 
                     <!-- TAB CONTENT: HISTORICA -->
-                    <div id="analysis-tab-historica" class="p-4 hidden">
+                    <div id="analysis-tab-historica" class="hidden p-4">
                         <div class="chart-container">
                             <canvas id="history-chart"></canvas>
                         </div>
@@ -102,11 +109,11 @@
     <div id="toast-container" class="toast-container"></div>
 
     <!-- Scripts -->
-    <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script defer src="../../assets/js/core/config.js"></script>
     <script defer src="../../assets/js/core/supabase-client.js"></script>
     <script defer src="../../assets/js/core/auth.js"></script>
-    <script src="../../assets/js/core/navigation.js"></script>
+    <script defer src="../../assets/js/core/navigation.js"></script>
     <!-- Analysis Modules -->
     <script defer src="../../assets/js/modules/operativo/operativo-analisis.js"></script>
 

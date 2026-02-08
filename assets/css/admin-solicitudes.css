@@ -8,47 +8,9 @@
    LAYOUT — Dashboard internal
    ========================================================================= */
 
-/* Staff-dashboard: transparent container with horizontal padding */
-body.admin-shell .staff-dashboard {
-  background: transparent !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  border: none !important;
-  box-shadow: none !important;
-  border-radius: 0 !important;
-  padding: 0 24px !important;
-  overflow: visible !important;
-}
-
-/* Dashboard Header — title left, tabs right, vertically centered */
-body.admin-shell .dashboard-header.align-start {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 8px;
-  padding-bottom: 24px;
-}
-
-body.admin-shell .dashboard-subtitle {
-  margin-top: 2px;
-}
-
-body.admin-shell .dashboard-subtitle-soft {
-  color: var(--text-secondary);
-  opacity: 1;
-  letter-spacing: 0.01em;
-}
-
-body.admin-shell .actions-bar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-body.admin-shell .actions-bar .tab-bar {
-  display: flex;
-  gap: 6px;
-}
+/* body.admin-shell overrides (.staff-dashboard, .dashboard-header.align-start,
+   .dashboard-subtitle, .dashboard-subtitle-soft, .actions-bar, .actions-bar .tab-bar)
+   → consolidated in components.css (AP-6 remediation, 2026-02-08) */
 
 /* =========================================================================
    SUMMARY METRICS — Refinements  
@@ -79,30 +41,8 @@ body.admin-shell .actions-bar .tab-bar {
   flex-wrap: wrap;
 }
 
-body.admin-shell .pill {
-  padding: 8px 16px !important;
-  font-size: 13px !important;
-  border-radius: 8px !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  background: transparent !important;
-  color: #a1a1aa !important;
-  transition: all 0.15s ease;
-  cursor: pointer;
-}
-
-body.admin-shell .pill:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.03) !important;
-  color: #d4d4d8 !important;
-}
-
-body.admin-shell .pill.is-active {
-  background: #ffffff !important;
-  color: #000000 !important;
-  border-color: #ffffff !important;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2);
-}
+/* body.admin-shell .pill + .pill:hover + .pill.is-active
+   → consolidated in components.css (AP-6 remediation, 2026-02-08) */
 
 /* Filter actions (bulk action group) */
 .filter-actions {
@@ -224,241 +164,24 @@ body.admin-shell .pill.is-active {
 }
 
 /* =========================================================================
-   AUDIT CHART — Custom Dropdown + Chart Section
-   Mirrored from admin-central-stock.css
+   AUDIT CHART — .custom-dropdown + .chart-kpi-* + .chart-header
+   → consolidated in components.css
    ========================================================================= */
 
-/* Custom Dropdown */
-.custom-dropdown {
-  position: relative;
-  width: fit-content;
-  min-width: 180px;
-}
-
-.custom-dropdown-trigger {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 10px;
-  background: rgba(30, 30, 30, 0.4);
-  border: 1px solid rgba(92, 92, 92, 0.3);
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  min-height: 36px;
-}
-
-.custom-dropdown-trigger:hover {
-  background: rgba(42, 42, 42, 0.5);
-  border-color: rgba(108, 108, 108, 0.4);
-}
-
-.custom-dropdown-text {
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 400;
-  color: #ffffff;
-  line-height: normal;
-  opacity: 0.8;
-}
-
-.custom-dropdown-icon {
-  width: 16px;
-  height: 16px;
-  margin-left: 10px;
-  color: #ffffff;
-  opacity: 0.6;
-  transition: transform 0.2s ease;
-  flex-shrink: 0;
-}
-
-.custom-dropdown.is-open .custom-dropdown-icon {
-  transform: rotate(180deg);
-}
-
-.custom-dropdown-menu {
-  position: absolute;
-  top: calc(100% + 4px);
-  left: 0;
-  right: 0;
-  background: rgba(30, 30, 30, 0.95);
-  border: 1px solid rgba(92, 92, 92, 0.4);
-  border-radius: 4px;
-  overflow: hidden;
-  z-index: 1000;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-8px);
-  transition: all 0.2s ease;
-  backdrop-filter: blur(8px);
-}
-
-.custom-dropdown.is-open .custom-dropdown-menu {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-
-.custom-dropdown-option {
-  padding: 8px 10px;
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 400;
-  color: #ffffff;
-  cursor: pointer;
-  border-bottom: 1px solid rgba(92, 92, 92, 0.3);
-  transition: background-color 0.15s ease;
-  opacity: 0.8;
-}
-
-.custom-dropdown-option:last-child { border-bottom: none; }
-.custom-dropdown-option:hover { background-color: rgba(42, 42, 42, 0.6); opacity: 1; }
-.custom-dropdown-option:first-child { border-radius: 4px 4px 0 0; }
-.custom-dropdown-option:last-child { border-radius: 0 0 4px 4px; }
-
-/* Chart Section */
-body.admin-shell .chart-section {
-  background: transparent !important;
-  border: none !important;
-  border-radius: 0 !important;
-  padding: 0 !important;
-  box-shadow: none;
-  margin-bottom: 8px;
-}
-
-.chart-header {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  margin-bottom: 10px;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-/* KPI Cards Grid */
-.chart-kpis-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0;
-  margin-bottom: 4px;
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.chart-kpi-card {
-  padding: 14px 16px;
-  text-align: center;
-  background: transparent;
-  border-radius: 0;
-  border: none;
-  border-right: 1px solid rgba(255, 255, 255, 0.06);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  box-shadow: none;
-}
-
-.chart-kpi-card:last-child { border-right: none; }
-
-.chart-kpi-label {
-  font-size: 10px;
-  margin-bottom: 6px;
-  margin-top: 0;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: #a1a1aa;
-  opacity: 0.6;
-}
-
-.chart-kpi-value {
-  font-size: 18px;
-  font-weight: 600;
-  margin: 0;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.01em;
-  color: #d4d4d8;
-  opacity: 0.8;
-}
-
-.chart-kpi-warning { color: var(--warning); }
-.chart-kpi-success { color: var(--success); }
-
-.chart-kpi-label-row {
-  display: flex;
-  align-items: baseline;
-  gap: 5px;
-  justify-content: center;
-  margin-bottom: 4px;
-}
-
-.chart-kpi-trend {
-  font-size: 10px;
-  font-weight: 600;
-  white-space: nowrap;
-  opacity: 0.85;
-}
-
-.chart-kpi-trend.trend-up { color: var(--success); }
-.chart-kpi-trend.trend-down { color: var(--error); }
-.chart-kpi-trend.trend-neutral { color: var(--text-tertiary); }
-
-/* Chart Canvas */
-.chart-canvas-max {
-  width: 100% !important;
-  max-height: 280px;
-}
+/* Chart Section — page-level override only */
+/* body.admin-shell .chart-section
+   → consolidated in components.css (AP-6 remediation, 2026-02-08) */
 
 .chart-section canvas {
   max-height: 280px;
   margin-top: 16px;
 }
 
-/* Ghost Button */
-.btn-ghost {
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #a1a1aa;
-  font-size: 12px;
-  font-weight: 500;
-  padding: 6px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  transition: all 0.15s ease;
-}
+/* .btn-ghost → consolidated in components.css */
+/* .btn-sm → consolidated in components.css */
 
-.btn-ghost:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.2);
-  color: #e0e0e0;
-}
-
-.btn-sm { padding: 5px 10px; font-size: 11px; }
-
-/* =========================================================================
-   LOADING OVERLAY — Fullscreen (mirrors admin-central-stock.css)
-   ========================================================================= */
-body.admin-shell .page-card-loading,
-body.admin-shell .page-card-empty {
-  position: fixed;
-  inset: 0;
-  z-index: 999;
-  background: var(--bg-body);
-  border-radius: 0;
-  backdrop-filter: none;
-  display: none;
-  align-items: center;
-  justify-content: center;
-}
-
-body.admin-shell .page-card-loading.is-visible,
-body.admin-shell .page-card-empty.is-visible {
-  display: flex !important;
-}
+/* body.admin-shell .page-card-loading + .page-card-empty + .is-visible
+   → consolidated in components.css (AP-6 remediation, 2026-02-08) */
 
 /* =========================================================================
    TAB TRANSITION — Subtle table fade (no fullscreen overlay)

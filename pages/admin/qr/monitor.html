@@ -1,18 +1,26 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Midnight — Monitor de Accesos</title>
-    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <meta name="theme-color" content="#0a0a0f">
+    <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
+    <title>QR Monitor — Midnight</title>
+    <link rel="stylesheet" href="../../../assets/css/tokens.css">
+    <link rel="stylesheet" href="../../../assets/css/components.css">
 </head>
+
 <body class="app-shell admin-shell" data-allowed-roles="admin,manager">
 
     <!-- Header -->
     <header class="app-topbar">
         <div class="topbar-left">
             <a href="index.html" class="btn-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m15 18-6-6 6-6" />
+                </svg>
             </a>
             <h1 class="topbar-brand">Monitor en Vivo</h1>
         </div>
@@ -25,26 +33,26 @@
     </header>
 
     <main class="dashboard-content">
-        
+
         <!-- Main Stats Card -->
         <div class="page-card large-monitor">
             <div class="kpi-grid">
                 <div class="w-full">
                     <h3 class="form-label">Progreso General de Acreditación</h3>
-                    
+
                     <!-- Progress Bar Component -->
                     <div class="progress-bar">
                         <div id="mainProgressBar" class="progress-bar-fill" style="width: 0%"></div>
                     </div>
-                    
+
                     <div class="actions-bar">
                         <span id="progressPercent" class="stat-value">0%</span>
                         <span id="progressRatio" class="muted">0 / 0</span>
                     </div>
                 </div>
-                
+
                 <div class="stat-card">
-                    <div id="totalScanned" class="stat-value text-6xl">0</div>
+                    <div id="totalScanned" class="stat-value" style="font-size:3.75rem">0</div>
                     <div class="stat-label text-success">Ingresados</div>
                 </div>
             </div>
@@ -63,10 +71,11 @@
 
     </main>
 
-    <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script defer src="../../../assets/js/core/config.js"></script>
     <script defer src="../../../assets/js/core/supabase-client.js"></script>
     <script defer src="../../../assets/js/core/auth.js"></script>
     <script defer src="../../../assets/js/modules/admin/qr-monitor.js"></script>
 </body>
+
 </html>

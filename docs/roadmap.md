@@ -1,6 +1,6 @@
 # Roadmap FormulaMid 4
 
-> **Última Actualización**: 2026-02-07
+> **Última Actualización**: 2026-02-08
 
 ---
 
@@ -32,6 +32,18 @@ Documento maestro de planificación. Los roadmaps detallados para módulos en de
 ---
 
 ## ✅ Hitos Completados
+
+### Phase 7: CSS Architecture Hardening & UI Consolidation
+
+**Completado**: 2026-02-08
+
+- **CSS Consolidation Sprint**: Migrated 100% of pages from `main.css` to explicit `tokens.css` + `components.css` imports.
+- **Inline Style Remediation**: En progreso (~25 páginas restantes).
+- **Module Coherence**: Auditoría de coherencia HTML↔JS↔CSS por módulo.
+- **CSS Governance**: Nuevo skill `css-architect` para gobernar capas CSS.
+- **DB Views**: 6 nuevas vistas SQL (financieras, staff performance, PNL mensual).
+- **Recipes → 93**: 14 nuevas recetas en `master_recipes`.
+- **System Hardening**: `admin-config.html` y `logistica-seguimiento.html` operativos.
 
 ### Phase 6: CSS Consolidation & Admin Refinement
 

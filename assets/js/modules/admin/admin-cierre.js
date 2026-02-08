@@ -651,7 +651,7 @@
                     `${a.sku_nombre}: Δ${a.diferencia} (${a.varianza_pct}%)`
                 ).join('\n');
 
-                const acceptMerma = confirm(
+                const acceptMerma = await window.Utils.confirmAction(
                     `⚠ Hay ${stockAlerts.length} SKUs con alertas de pérdida en la barra:\n\n` +
                     `${alertList}${stockAlerts.length > 5 ? '\n...y más' : ''}\n\n` +
                     `¿Aceptar merma y continuar con el cierre?`

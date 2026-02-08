@@ -28,7 +28,7 @@
         inputDate: document.getElementById('input-date'),
         selectEvent: document.getElementById('select-event'),
         checkHighDemand: document.getElementById('check-high-demand'),
-        selectCountdownEvent: document.getElementById('select-countdown-event'),
+        // selectCountdownEvent: removed (dead ref)
         inputNotes: document.getElementById('input-notes'),
         statusIndicator: document.getElementById('workday-status-indicator'),
         
@@ -751,8 +751,31 @@
             state.events.unshift(data);
             renderEventsDropdown();
             ui.selectEvent.value = data.id;
+
+            // QR Batch auto-generation
+            const qrQty = parseInt(document.getElementById('input-event-qr-qty')?.value) || 0;
+            if (qrQty > 0) {
+                const { data: batch, error: batchErr } = await window.sb.from('qr_batches').insert({
+                    name: `${name} - Auto`,
+                    financial_type: 'VENTA',
+                    created_by: session.user.id
+                }).select().single();
+                if (batchErr) throw batchErr;
+
+                const rows = Array.from({ length: qrQty }, () => ({
+                    batch_id: batch.id,
+                    code: crypto.randomUUID(),
+                    status: 'PENDIENTE'
+                }));
+                await window.sb.from('qr_codes').insert(rows);
+                window.Toast.success(`Lote de ${qrQty} QRs creado.`);
+            }
+
             closeEventModal();
-        } catch(e) { window.Toast.error('Error creando evento'); }
+        } catch(e) {
+            console.error(e);
+            window.Toast.error('Error creando evento');
+        }
         finally { ui.btnCreateEvent.textContent = 'Crear Evento'; }
     }
 

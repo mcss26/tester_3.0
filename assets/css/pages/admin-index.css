@@ -319,7 +319,4 @@ html {
   }
 }
 
-/* Utility for dynamic JS hiding */
-.hidden {
-  display: none !important;
-}
+/* .hidden → consolidated in components.css */

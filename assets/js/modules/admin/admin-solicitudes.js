@@ -77,7 +77,6 @@
     menuNotifications: document.getElementById("notifications-menu"),
     btnUserAvatar: document.getElementById("user-avatar"),
     menuUser: document.getElementById("user-menu"),
-    logoutBtn: document.getElementById("btn-logout"),
     userNameDisplay: document.getElementById("user-name-display"),
   };
 

@@ -4,16 +4,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FormulaMid — Control de Stock Barra</title>
-    <link rel="stylesheet" href="../../assets/css/main.css">
+    <meta name="theme-color" content="#0a0a0f">
+    <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
+    <title>Stock Barra — Midnight</title>
+    <link rel="stylesheet" href="../../assets/css/tokens.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
+    <style>
+        /* NOCHE MODULE - Layout */
+        .noche-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-5);
+            gap: var(--space-4);
+            margin-top: var(--topbar-h, 52px);
+        }
+
+        /* State containers share centered layout */
+        .noche-state {
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .noche-state .staff-dashboard {
+            text-align: left;
+        }
+
+        /* Loading spinner */
+        .noche-spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--border-1);
+            border-top-color: var(--text-primary, #fff);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 12px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .noche-loading-text {
+            color: var(--text-2, #a1a1aa);
+            font-size: var(--fs-sm, 13px);
+        }
+
+        /* Stock input rows */
+        .stock-input-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stock-input {
+            width: 80px;
+        }
+
+        .precarga-hint {
+            margin-top: 2px;
+        }
+
+        .precarga-delta {
+            font-size: 11px;
+            font-weight: 600;
+            min-width: 32px;
+        }
+
+        /* Topbar Title */
+        .topbar-title {
+            font-size: var(--fs-sm, 13px);
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-1, #fff);
+        }
+    </style>
 </head>
 
-<body class="app-shell admin-shell admin-scroll encargado-barra-noche-shell" data-allowed-roles="encargado_barra,admin">
+<body class="app-shell admin-shell admin-scroll" data-allowed-roles="encargado_barra,admin">
 
-    <!-- Topbar -->
+    <!-- Topbar (app-topbar pattern for sub-modules) -->
     <header class="app-topbar">
         <div class="topbar-left">
-            <button class="btn-icon btn-icon-flat" data-go="pages/encargados/encargado-barra-index.html">←</button>
+            <button class="btn-icon btn-icon-flat" data-go="pages/encargados/encargado-barra-index.html"
+                aria-label="Volver">←</button>
             <span class="topbar-back">INICIO</span>
         </div>
         <div class="topbar-center">
@@ -25,95 +105,100 @@
     </header>
 
     <!-- Main Content -->
-    <main class="page-shell">
-        <div class="page-card-wrap">
+    <main class="noche-content">
 
-            <!-- Loading State -->
-            <div class="page-card-loading" id="pageLoading">
-                <div class="loading-spinner"></div>
-                <span>Cargando información...</span>
-            </div>
+        <!-- Loading State -->
+        <div class="noche-state" id="pageLoading">
+            <div class="noche-spinner"></div>
+            <span class="noche-loading-text">Cargando información...</span>
+        </div>
 
-            <!-- Empty State: No Work Day -->
-            <div class="page-card-empty hidden" id="pageNoDay">
-                <p>🔴 No hay una jornada de trabajo activa.</p>
+        <!-- Empty State: No Work Day -->
+        <div class="noche-state hidden" id="pageNoDay">
+            <div class="staff-dashboard">
+                <div class="dashboard-header">
+                    <h2 class="dashboard-title">Sin Jornada Activa</h2>
+                </div>
                 <p class="muted">Contacta a Gerencia para abrir la jornada.</p>
-                <button class="btn-secondary" style="margin-top: var(--space-md);"
+                <button class="btn-secondary mt-md"
                     data-go="pages/encargados/encargado-barra-index.html">Volver</button>
             </div>
+        </div>
 
-            <!-- Session Closed State -->
-            <div class="page-card-empty hidden" id="pageSessionClosed">
-                <p>✅ Barra Cerrada</p>
+        <!-- Session Closed State -->
+        <div class="noche-state hidden" id="pageSessionClosed">
+            <div class="staff-dashboard">
+                <div class="dashboard-header">
+                    <h2 class="dashboard-title">✅ Barra Cerrada</h2>
+                </div>
                 <p class="muted" id="closedTime">Has finalizado tu turno correctamente.</p>
-                <button class="btn-secondary" style="margin-top: var(--space-md);"
+                <button class="btn-secondary mt-md"
                     data-go="pages/encargados/encargado-barra-index.html">Volver</button>
             </div>
+        </div>
 
-            <!-- Ready to Open State -->
-            <div class="page-content hidden" id="pageOpen">
+        <!-- Ready to Open State -->
+        <div class="noche-state hidden" id="pageOpen">
+            <div class="staff-dashboard">
+                <div class="dashboard-header">
+                    <h2 class="dashboard-title">Apertura de Barra</h2>
+                </div>
+                <p class="muted mb-md">Confirma el stock inicial para comenzar tu turno.</p>
+
+                <div id="openingStockList" class="staff-list">
+                    <!-- JS Injected SKU rows -->
+                </div>
+
+                <div class="form-group mt-md">
+                    <label>Notas de Apertura (Opcional)</label>
+                    <textarea id="openingNotes" class="input" rows="2"
+                        placeholder="Ej: Faltan hielos, vaso roto..."></textarea>
+                </div>
+
+                <button id="btnSubmitOpen" class="btn-primary w-full mt-md">Confirmar
+                    Apertura</button>
+            </div>
+        </div>
+
+        <!-- Active Session State -->
+        <div class="noche-state hidden" id="pageActive">
+            <div class="staff-dashboard">
+                <div class="dashboard-header">
+                    <h2 class="dashboard-title">Barra Activa</h2>
+                    <span class="status-pill status-success" id="activeSessionTime">--:--</span>
+                </div>
+
+                <div class="flex gap-sm mt-md">
+                    <button id="btnCloseSession" class="btn-danger w-full">Cerrar Barra</button>
+                </div>
+            </div>
+
+            <!-- Closing View (shown when closing) -->
+            <div id="closingView" class="hidden mt-lg">
                 <div class="staff-dashboard">
                     <div class="dashboard-header">
-                        <h2 class="dashboard-title">Apertura de Barra</h2>
+                        <h2 class="dashboard-title">Cierre de Barra</h2>
                     </div>
-                    <p class="muted mb-md">Confirma el stock inicial para comenzar tu
-                        turno.</p>
+                    <p class="muted mb-md">Ingresa el stock final (Sobrante
+                        físico).</p>
 
-                    <div id="openingStockList" class="staff-list">
+                    <div id="closingStockList" class="staff-list">
                         <!-- JS Injected SKU rows -->
                     </div>
 
                     <div class="form-group mt-md">
-                        <label>Notas de Apertura (Opcional)</label>
-                        <textarea id="openingNotes" class="input" rows="2"
-                            placeholder="Ej: Faltan hielos, vaso roto..."></textarea>
-                    </div>
-
-                    <button id="btnSubmitOpen" class="btn-primary w-full mt-md">Confirmar
-                        Apertura</button>
-                </div>
-            </div>
-
-            <!-- Active Session State -->
-            <div class="page-content hidden" id="pageActive">
-                <div class="staff-dashboard">
-                    <div class="dashboard-header">
-                        <h2 class="dashboard-title">Barra Activa</h2>
-                        <span class="status-pill status-success" id="activeSessionTime">--:--</span>
+                        <label>Notas de Cierre</label>
+                        <textarea id="closingNotes" class="input" rows="2"></textarea>
                     </div>
 
                     <div class="flex gap-sm mt-md">
-                        <button id="btnCloseSession" class="btn-danger w-full">Cerrar Barra</button>
-                    </div>
-                </div>
-
-                <!-- Closing View (shown when closing) -->
-                <div id="closingView" class="hidden mt-lg">
-                    <div class="staff-dashboard">
-                        <div class="dashboard-header">
-                            <h2 class="dashboard-title">Cierre de Barra</h2>
-                        </div>
-                        <p class="muted mb-md">Ingresa el stock final (Sobrante
-                            físico).</p>
-
-                        <div id="closingStockList" class="staff-list">
-                            <!-- JS Injected SKU rows -->
-                        </div>
-
-                        <div class="form-group mt-md">
-                            <label>Notas de Cierre</label>
-                            <textarea id="closingNotes" class="input" rows="2"></textarea>
-                        </div>
-
-                        <div class="flex gap-sm mt-md">
-                            <button id="btnCancelClose" class="btn-secondary flex-1">Cancelar</button>
-                            <button id="btnSubmitClose" class="btn-primary flex-1">Finalizar Turno</button>
-                        </div>
+                        <button id="btnCancelClose" class="btn-secondary flex-1">Cancelar</button>
+                        <button id="btnSubmitClose" class="btn-primary flex-1">Finalizar Turno</button>
                     </div>
                 </div>
             </div>
-
         </div>
+
     </main>
 
     <!-- Confirm Modal -->
@@ -134,14 +219,14 @@
     </dialog>
 
     <!-- Scripts -->
-    <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script defer src="../../assets/js/core/config.js"></script>
     <script defer src="../../assets/js/core/supabase-client.js"></script>
     <script defer src="../../assets/js/core/auth.js"></script>
     <script defer src="../../assets/js/core/utils.js"></script>
     <script defer src="../../assets/js/core/toast.js"></script>
     <script defer src="../../assets/js/core/work-day-helper.js"></script>
-    <script src="../../assets/js/core/navigation.js"></script>
+    <script defer src="../../assets/js/core/navigation.js"></script>
     <script defer src="../../assets/js/modules/encargados/encargado-barra-noche.js"></script>
 
 </body>

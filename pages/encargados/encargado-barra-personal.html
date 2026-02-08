@@ -4,11 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FormulaMid — Gestión Personal Barra</title>
-    <link rel="stylesheet" href="../../assets/css/main.css">
+    <meta name="theme-color" content="#0a0a0f">
+    <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
+    <title>Personal Barra — Midnight</title>
+    <link rel="stylesheet" href="../../assets/css/tokens.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
 </head>
 
-<body class="app-shell" data-allowed-roles="encargado_barra,admin">
+<body class="app-shell admin-shell admin-scroll" data-allowed-roles="encargado_barra,admin">
 
     <!-- Topbar -->
     <header class="app-topbar">
@@ -29,9 +32,9 @@
         <div class="page-card-wrap">
 
             <!-- Loading State -->
-            <div class="page-card-loading" id="pageLoading">
-                <div class="loading-spinner"></div>
-                <span>Cargando datos...</span>
+            <div id="pageLoading">
+                <div class="state-spinner"></div>
+                <span class="muted">Cargando datos...</span>
             </div>
 
             <!-- Empty State -->
@@ -196,14 +199,14 @@
     </dialog>
 
     <!-- Scripts -->
-    <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script defer src="../../assets/js/core/config.js"></script>
     <script defer src="../../assets/js/core/supabase-client.js"></script>
     <script defer src="../../assets/js/core/auth.js"></script>
     <script defer src="../../assets/js/core/utils.js"></script>
     <script defer src="../../assets/js/core/toast.js"></script>
     <script defer src="../../assets/js/core/work-day-helper.js"></script>
-    <script src="../../assets/js/core/navigation.js"></script>
+    <script defer src="../../assets/js/core/navigation.js"></script>
     <script defer src="../../assets/js/modules/encargados/encargado-barra-personal.js"></script>
 
 </body>

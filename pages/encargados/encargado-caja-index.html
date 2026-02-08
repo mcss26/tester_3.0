@@ -4,55 +4,196 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Caja - Midnight Club</title>
-  <link rel="stylesheet" href="../../assets/css/main.css">
+  <meta name="theme-color" content="#0a0a0f">
+  <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
+  <title>Encargado Caja — Midnight</title>
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/admin-central-stock.css">
+  <style>
+    /* LAUNCHER-SPECIFIC OVERRIDES */
+    body.launcher-page {
+      background: var(--bg-body);
+      overflow: hidden;
+    }
+
+    .launcher-center {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-top: calc(var(--topbar-height) + 40px);
+    }
+
+    .main-title {
+      font-size: 64px;
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: -1px;
+      margin: 0;
+      text-align: center;
+    }
+
+    /* WORKDAY STATUS BADGE - Center position */
+    .workday-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      transition: all 0.3s ease;
+    }
+
+    .workday-status.status-open {
+      border: 1px solid rgba(74, 222, 128, 0.3);
+      background: rgba(74, 222, 128, 0.08);
+      color: #4ade80;
+    }
+
+    .workday-status.status-planning {
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      background: rgba(251, 191, 36, 0.08);
+      color: #fbbf24;
+    }
+
+    .workday-status.status-closed {
+      border: 1px solid rgba(161, 161, 170, 0.3);
+      background: rgba(161, 161, 170, 0.08);
+      color: #a1a1aa;
+    }
+
+    .workday-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.5;
+      }
+    }
+
+    /* QUICK LINKS */
+    .quick-links {
+      display: flex;
+      gap: 32px;
+      margin-top: 8px;
+    }
+
+    .nav-link {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 12px 24px;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+      position: relative;
+    }
+
+    .nav-link:hover {
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.03);
+      border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .nav-link.is-disabled {
+      opacity: 0.3;
+      pointer-events: none;
+      cursor: not-allowed;
+    }
+
+    /* FOOTER */
+    .launcher-footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 10px;
+      color: var(--text-tertiary);
+      padding: 16px;
+      opacity: 0.5;
+    }
+  </style>
 </head>
 
-<body class="welcome-screen encargado-landing" data-allowed-roles="encargado_caja,admin">
+<body class="app-shell admin-shell launcher-page" data-allowed-roles="encargado_caja,admin">
 
-  <!-- Loading State -->
-  <div class="page-card-loading" id="page-card-loading">
-    <div class="state-block loading">
-      <div class="state-spinner" aria-hidden="true"></div>
-      <div class="state-loader"></div>
-      <p class="state-title">Cargando...</p>
+  <!-- TOPBAR (Golden Standard) -->
+  <header class="topbar">
+    <!-- Left: Breadcrumb -->
+    <nav class="breadcrumb topbar-start">
+      <span class="breadcrumb-item current">ENCARGADO CAJA</span>
+    </nav>
+
+    <!-- Center: Workday Status -->
+    <div class="topbar-center">
+      <div id="workday-status" class="workday-status status-closed">
+        <span class="workday-dot"></span>
+        <span id="workday-text">Cargando...</span>
+      </div>
     </div>
-  </div>
 
-  <!-- Empty State (if needed) -->
-  <div class="page-card-empty" id="page-card-empty">
-    <div class="state-block">
-      <p class="state-title">Sin datos disponibles</p>
+    <!-- Right: Avatar + Dropdown -->
+    <div class="topbar-end">
+      <div class="dropdown-container">
+        <button class="avatar avatar-sm" id="user-avatar" aria-label="Menú de usuario">...</button>
+        <div class="dropdown-menu dropdown-user hidden" id="user-menu">
+          <div class="dropdown-header" id="user-name-display">Usuario</div>
+          <div class="dropdown-divider"></div>
+          <a href="#" id="btn-logout" class="dropdown-item dropdown-item-danger">
+            <svg class="dropdown-icon" viewBox="0 0 24 24">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+            Cerrar Sesión
+          </a>
+        </div>
+      </div>
     </div>
-  </div>
+  </header>
 
-  <!-- Main Content -->
-  <main class="center-content" id="module-content">
-    <section class="welcome-section">
-      <p class="label-welcome">BIENVENIDO</p>
-      <h1 id="user-name" class="title-name">Cargando...</h1>
-      <p class="role-subtitle">Encargado de <strong>CAJA</strong></p>
+  <!-- CENTER CONTENT -->
+  <main class="launcher-center">
+    <h1 class="main-title">MIDNIGHT CLUB</h1>
 
-      <!-- System Status -->
-      <p id="system-status" class="system-status-pill">...</p>
-    </section>
-
-    <section class="mode-selection link-row">
-      <a href="#" data-go="pages/encargados/encargado-caja-personal.html" class="footer-link">Personal</a>
-      <a href="#" data-go="pages/encargados/encargado-caja-noche.html" class="footer-link">Noche</a>
-    </section>
+    <nav class="quick-links">
+      <a href="encargado-caja-personal.html" class="nav-link is-disabled" id="link-personal">Personal</a>
+      <a href="encargado-caja-noche.html" class="nav-link is-disabled" id="link-noche">Noche</a>
+    </nav>
   </main>
 
-  <footer class="footer">
-    <button id="btn-logout" class="footer-link">Cerrar Sesión</button>
+  <!-- FOOTER -->
+  <footer class="launcher-footer">
+    &copy; 2026 Midnight Systems
   </footer>
 
-  <!-- Scripts -->
-  <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <!-- Core Scripts -->
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script defer src="../../assets/js/core/config.js"></script>
   <script defer src="../../assets/js/core/supabase-client.js"></script>
-  <script defer src="../../assets/js/core/auth.js"></script>
   <script defer src="../../assets/js/core/utils.js"></script>
+  <script defer src="../../assets/js/core/auth.js"></script>
   <script defer src="../../assets/js/core/toast.js"></script>
   <script defer src="../../assets/js/core/work-day-helper.js"></script>
   <script src="../../assets/js/core/navigation.js"></script>

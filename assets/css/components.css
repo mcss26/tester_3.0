@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+/* Google Fonts 'Inter' loaded via <link rel="preload"> in HTML <head> for performance */
 
 /* =========================================================================
    RESET & BASE STYLES
@@ -2191,13 +2191,13 @@ body.app-shell {
   position: sticky;
   top: 0;
   width: 100%;
-  height: var(--topbar-h);
-  padding: 0 calc(var(--page-pad) - 6px);
+  height: var(--topbar-height); /* 56px — same as .topbar */
+  padding: 0 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: var(--space-4);
-  background: var(--bg-elev);
+  gap: 16px;
+  background: #000;
   border-bottom: 1px solid var(--border-1);
   backdrop-filter: blur(12px);
   z-index: 50;
@@ -2208,12 +2208,11 @@ body.app-shell {
 .topbar-right {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: 16px;
 }
 
 .topbar-center {
   justify-self: center;
-  gap: var(--space-5);
 }
 
 .topbar-brand {
@@ -2469,15 +2468,7 @@ body.initial-load {
   border-radius: 4px;
 }
 
-@keyframes shimmer {
-  0% {
-    background-position: 200% 0;
-  }
-
-  100% {
-    background-position: -200% 0;
-  }
-}
+/* @keyframes shimmer → consolidated at line ~551 */
 
 .skeleton-text {
   height: 1rem;
@@ -2712,15 +2703,7 @@ body.initial-load {
 }
 
 /* Animaciones */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
+/* @keyframes fadeIn → already defined at line ~2415 (page transition variant) */
 
 @keyframes slideUp {
   from {
@@ -2734,11 +2717,7 @@ body.initial-load {
   }
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
+/* @keyframes spin → consolidated at line ~586 */
 
 /* Links */
 a {
@@ -3030,15 +3009,7 @@ a:hover {
   margin-bottom: 10px;
 }
 
-@keyframes shimmer {
-  0% {
-    background-position: 200% 0;
-  }
-
-  100% {
-    background-position: -200% 0;
-  }
-}
+/* @keyframes shimmer → consolidated at line ~551 */
 
 .state-title {
   font-size: 13px;
@@ -3070,10 +3041,6 @@ a:hover {
   opacity: 0.6;
 }
 
-/* Typography utilities */
-.text-xs {
-  font-size: var(--fs-sm);
-}
 
 /* Calendar placeholder (spans full grid row) */
 .calendar-placeholder {
@@ -3256,11 +3223,7 @@ a:hover {
   cursor: not-allowed;
 }
 
-.status-pill {
-  border: 1px solid var(--border-1);
-  background: var(--surface-1);
-  color: var(--text-2);
-}
+/* .status-pill base → consolidated at line ~1698 */
 
 .status-success {
   color: var(--success);
@@ -3430,12 +3393,7 @@ a:hover {
   letter-spacing: 0.02em;
 }
 
-.actions-bar {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  flex-wrap: wrap;
-}
+/* .actions-bar → consolidated at line ~2559 */
 
 .actions-grid-2 {
   display: grid;
@@ -5489,19 +5447,7 @@ body.login .error-message:not(:empty) {
   animation: fadeIn 0.35s ease-out both;
 }
 
-@keyframes pulse {
-  0% {
-    opacity: 0.5;
-  }
-
-  50% {
-    opacity: 1;
-  }
-
-  100% {
-    opacity: 0.5;
-  }
-}
+/* @keyframes pulse → consolidated at line ~1303 */
 
 .animate-pulse {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
@@ -6020,41 +5966,7 @@ body.login .error-message:not(:empty) {
    REMODELACION TOPBAR 2026 (Clean & Minimal)
    ========================================================================= */
 
-.app-topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 64px;
-  padding: 0 32px;
-  background: rgba(13, 14, 18, 0.95);
-  /* surface-0 with opacity */
-  border-bottom: 1px solid var(--border-1);
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  backdrop-filter: blur(12px);
-}
-
-.topbar-left {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.area-brand {
-  font-family: var(--font-brand, sans-serif);
-  font-weight: 700;
-  font-size: 1.25rem;
-  letter-spacing: 0.1em;
-  color: var(--text-1);
-  text-transform: uppercase;
-}
-
-.topbar-right {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
+/* .app-topbar — canonical definition at line ~2190 */
 
 /* Breadcrumbs in Topbar (Right Aligned) */
 .app-topbar .breadcrumbs {
@@ -6761,3 +6673,344 @@ body.admin-shell .summary-metric-warning {
 .precarga-delta.text-error {
   background: rgba(239, 68, 68, 0.12);
 }
+
+/* =========================================================================
+   CUSTOM DROPDOWN (Consolidated from page CSS)
+   ========================================================================= */
+
+.custom-dropdown {
+  position: relative;
+  width: fit-content;
+  min-width: 180px;
+}
+
+.custom-dropdown-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  background: rgba(30, 30, 30, 0.4);
+  border: 1px solid rgba(92, 92, 92, 0.3);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  min-height: 36px;
+}
+
+.custom-dropdown-trigger:hover {
+  background: rgba(42, 42, 42, 0.5);
+  border-color: rgba(108, 108, 108, 0.4);
+}
+
+.custom-dropdown-text {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 400;
+  color: #ffffff;
+  line-height: normal;
+  opacity: 0.8;
+}
+
+.custom-dropdown-icon {
+  width: 16px;
+  height: 16px;
+  margin-left: 10px;
+  color: #ffffff;
+  opacity: 0.6;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.custom-dropdown.is-open .custom-dropdown-icon {
+  transform: rotate(180deg);
+}
+
+.custom-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: rgba(30, 30, 30, 0.95);
+  border: 1px solid rgba(92, 92, 92, 0.4);
+  border-radius: 4px;
+  overflow: hidden;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+}
+
+.custom-dropdown.is-open .custom-dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.custom-dropdown-option {
+  padding: 8px 10px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 400;
+  color: #ffffff;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(92, 92, 92, 0.3);
+  transition: background-color 0.15s ease;
+  opacity: 0.8;
+}
+
+.custom-dropdown-option:last-child { border-bottom: none; }
+.custom-dropdown-option:hover { background-color: rgba(42, 42, 42, 0.6); opacity: 1; }
+.custom-dropdown-option:first-child { border-radius: 4px 4px 0 0; }
+.custom-dropdown-option:last-child { border-radius: 0 0 4px 4px; }
+
+/* =========================================================================
+   CHART KPI SYSTEM (Consolidated from page CSS)
+   ========================================================================= */
+
+.chart-kpis-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  margin-bottom: 4px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.chart-kpi-card {
+  padding: 14px 16px;
+  text-align: center;
+  background: transparent;
+  border-radius: 0;
+  border: none;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-shadow: none;
+}
+
+.chart-kpi-card:last-child { border-right: none; }
+
+.chart-kpi-label {
+  font-size: 10px;
+  margin-bottom: 6px;
+  margin-top: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #a1a1aa;
+  opacity: 0.6;
+}
+
+.chart-kpi-value {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  color: #d4d4d8;
+  opacity: 0.8;
+}
+
+.chart-kpi-warning { color: var(--warning); }
+.chart-kpi-success { color: var(--success); }
+
+.chart-kpi-label-row {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.chart-kpi-trend {
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0.85;
+}
+
+.chart-kpi-trend.trend-up { color: var(--success); }
+.chart-kpi-trend.trend-down { color: var(--error); }
+.chart-kpi-trend.trend-neutral { color: var(--text-tertiary); }
+
+/* Chart Canvas */
+.chart-canvas-max {
+  width: 100% !important;
+  max-height: 280px;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* =========================================================================
+   SHARED ADMIN OVERRIDES — Consolidated from admin-central-stock.css
+   and admin-solicitudes.css (AP-6 remediation, 2026-02-08)
+   ========================================================================= */
+
+/* Staff-dashboard: transparent container (content floats on page bg) */
+body.admin-shell .staff-dashboard {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 24px !important;
+  overflow: visible !important;
+}
+
+/* Dashboard Header — title left, tabs right, vertically centered */
+body.admin-shell .dashboard-header.align-start {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 8px;
+  padding-bottom: 24px;
+}
+
+body.admin-shell .dashboard-subtitle {
+  margin-top: 2px;
+}
+
+body.admin-shell .dashboard-subtitle-soft {
+  color: var(--text-secondary);
+  opacity: 1;
+  letter-spacing: 0.01em;
+}
+
+body.admin-shell .actions-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+body.admin-shell .actions-bar .tab-bar {
+  display: flex;
+  gap: 6px;
+}
+
+/* Pill Filter — shared across admin modules */
+body.admin-shell .pill {
+  padding: 8px 16px !important;
+  font-size: 13px !important;
+  border-radius: 8px !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: transparent !important;
+  color: #a1a1aa !important;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
+body.admin-shell .pill:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03) !important;
+  color: #d4d4d8 !important;
+}
+
+body.admin-shell .pill.is-active {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border-color: #ffffff !important;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+/* Chart Section — transparent container */
+body.admin-shell .chart-section {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  box-shadow: none;
+}
+
+/* Loading Overlay — Fullscreen */
+body.admin-shell .page-card-loading,
+body.admin-shell .page-card-empty {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: var(--bg-body);
+  border-radius: 0;
+  backdrop-filter: none;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+body.admin-shell .page-card-loading.is-visible,
+body.admin-shell .page-card-empty.is-visible {
+  display: flex !important;
+}
+
+/* =========================================================================
+   UTILITY CLASSES (Inline Style Replacement)
+   Token-mapped helpers for spacing, layout, and text.
+   ========================================================================= */
+
+/* --- Margin Bottom --- */
+.mb-0  { margin-bottom: 0 !important; }
+.mb-1  { margin-bottom: 4px !important; }
+.mb-2  { margin-bottom: 8px !important; }
+.mb-3  { margin-bottom: 12px !important; }
+.mb-4  { margin-bottom: 16px !important; }
+.mb-6  { margin-bottom: 24px !important; }
+.mb-8  { margin-bottom: 32px !important; }
+
+/* --- Margin Top --- */
+.mt-0  { margin-top: 0 !important; }
+.mt-1  { margin-top: 4px !important; }
+.mt-2  { margin-top: 8px !important; }
+.mt-3  { margin-top: 12px !important; }
+.mt-4  { margin-top: 16px !important; }
+.mt-6  { margin-top: 24px !important; }
+.mt-auto { margin-top: auto !important; }
+
+/* --- Margin Left --- */
+.ml-2  { margin-left: 8px !important; }
+
+/* --- Padding --- */
+.p-0   { padding: 0 !important; }
+.p-2   { padding: 8px !important; }
+.p-4   { padding: 16px !important; }
+.p-6   { padding: 24px !important; }
+
+/* --- Width --- */
+.w-full   { width: 100% !important; }
+.w-fit    { width: fit-content !important; }
+
+/* --- Max Height (Table Scrolls) --- */
+.max-h-200 { max-height: 200px !important; }
+.max-h-250 { max-height: 250px !important; }
+.max-h-300 { max-height: 300px !important; }
+
+/* --- Display --- */
+.d-none    { display: none !important; }
+.d-flex    { display: flex !important; }
+.d-grid    { display: grid !important; }
+
+/* --- Text --- */
+.no-underline  { text-decoration: none !important; }
+.fs-xs         { font-size: var(--fs-xs) !important; }
+.fs-sm         { font-size: var(--fs-sm) !important; }
+.fs-11         { font-size: 11px !important; }
+
+/* --- Flex Helpers --- */
+.flex-col      { display: flex; flex-direction: column; }
+.items-center  { align-items: center; }
+.gap-2         { gap: 8px; }
+.gap-4         { gap: 16px; }
+.gap-8         { gap: 2rem; }
+
+/* --- Background Surface (inline replacement) --- */
+.bg-surface { background: var(--bg-surface) !important; }

@@ -3,8 +3,9 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Midnight - Balance Semanal</title>
-    <link rel="stylesheet" href="../../assets/css/main.css">
+    <title>Balance Semanal — Midnight</title>
+    <link rel="stylesheet" href="../../assets/css/tokens.css">
+    <link rel="stylesheet" href="../../assets/css/components.css">
 </head>
 
 <body class="bg-dark text-white" data-allowed-roles="admin,gerente,contable">
@@ -64,6 +65,7 @@
                             <option value="2">Febrero</option>
                             <!-- JS will populate if needed -->
                         </select>
+                        <button id="btn-export" class="btn-ghost btn-sm" title="Exportar CSV">📥 CSV</button>
                         <button id="btn-refresh" class="btn-icon btn-ghost" title="Actualizar">↻</button>
                     </div>
                 </div>
@@ -92,19 +94,30 @@
                         </table>
                     </div>
                 </div>
+
+                <!-- Trend Chart -->
+                <div id="chart-card" class="staff-dashboard hidden"
+                    style="margin-top:var(--space-md); padding:var(--space-md);">
+                    <h3 class="dashboard-subtitle muted" style="margin-bottom:var(--space-sm)">Tendencia Semanal</h3>
+                    <canvas id="trend-chart" height="220"></canvas>
+                </div>
             </div>
         </main>
     </div>
 
     <!-- Scripts -->
-    <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script defer src="../../assets/js/core/config.js"></script>
     <script defer src="../../assets/js/core/supabase-client.js"></script>
     <script defer src="../../assets/js/core/auth.js"></script>
     <script defer src="../../assets/js/core/utils.js"></script>
 
+    <script defer src="../../assets/js/core/toast.js"></script>
+    <script defer src="../../assets/js/core/chart-loader.js"></script>
+
     <!-- Module Script -->
     <script defer src="../../assets/js/modules/gerencia/balance-semanal.js"></script>
+    <script defer src="../../assets/js/core/navigation.js"></script>
 </body>
 
 </html>

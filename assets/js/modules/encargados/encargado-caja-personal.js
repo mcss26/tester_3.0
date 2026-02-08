@@ -95,7 +95,7 @@
     function showConfirmModal(title, message, action) {
         state.pendingConfirmAction = action;
         if (ui.confirmTitle) ui.confirmTitle.textContent = title;
-        if (ui.confirmMessage) ui.confirmMessage.textContent = message;
+        if (ui.confirmMessage) ui.confirmMessage.innerHTML = message;
         ui.confirmModal?.classList.remove('hidden');
     }
 
@@ -384,12 +384,18 @@
             return;
         }
 
-        // For multiple roles, show selection modal (simplified: first role)
-        // TODO: Implement proper role selection modal
+        // Multi-role selection via dropdown
+        const optionsHtml = roles.map(r =>
+            `<option value="${r.id}">${window.Utils.escapeHtml(r.name)}</option>`
+        ).join('');
         showConfirmModal(
             'Seleccionar Rol',
-            `Se asignará el rol "${roles[0].name}". ¿Continuar?`,
-            () => convocate(staffId, roles[0].id)
+            `<label class="form-label" style="margin-bottom:var(--space-xs)">Rol a asignar:</label>
+             <select id="role-select-modal" class="form-select w-full">${optionsHtml}</select>`,
+            () => {
+                const selectedId = document.getElementById('role-select-modal')?.value;
+                if (selectedId) convocate(staffId, selectedId);
+            }
         );
     }
 

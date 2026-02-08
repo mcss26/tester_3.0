@@ -74,10 +74,6 @@
       tab.addEventListener("click", (e) => switchTab(e.target));
     });
 
-    const logoutBtn = document.getElementById("btn-logout");
-    if (logoutBtn)
-      logoutBtn.addEventListener("click", () => window.Auth.logout());
-
     if (inputs.refresh) {
       inputs.refresh.addEventListener("click", () => loadData());
     }

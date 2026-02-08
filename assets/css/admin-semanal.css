@@ -80,9 +80,7 @@
     font-family: var(--font-mono);
 }
 
-.text-success { color: var(--success) !important; }
-.text-error { color: var(--danger) !important; }
-.text-warning { color: var(--warning) !important; }
+/* .text-success, .text-error, .text-warning → consolidated in components.css */
 
 /* Divider */
 .card-divider {
@@ -115,10 +113,7 @@
     color: var(--success);
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-4px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+/* @keyframes fadeIn → consolidated in components.css */
 
 /* =========================================================================
    WEEK SELECTOR IN HEADER

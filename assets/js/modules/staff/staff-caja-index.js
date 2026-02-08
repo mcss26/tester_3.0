@@ -24,8 +24,6 @@
         // Welcoming
         userName: document.getElementById('user-name'),
         roleSubtitle: document.getElementById('role-subtitle'),
-        btnLogout: document.getElementById('btn-logout'),
-
         // Status & Feedback
         statusMessage: document.getElementById('status-message'),
 

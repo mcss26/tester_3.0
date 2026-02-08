@@ -2,1313 +2,1345 @@
 <html lang="en">
 
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>Midnight V3.0 — Layout Patterns</title>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <meta name="theme-color" content="#0a0a0f">
+     <link rel="icon" type="image/svg+xml" href="../assets/img/favicon.svg">
+     <title>Layout Patterns — Midnight</title>
 
- <!-- Fonts -->
- <link rel="preconnect" href="https://fonts.googleapis.com">
- <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
- <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+     <!-- Fonts -->
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
- <style>
-  /* 
+     <style>
+          /* 
    * MIDNIGHT V3.0 - LAYOUT PATTERNS
    * Reference for page structure and layouts
    */
 
-  :root {
-   /* Palette - Deep Zinc */
-   --bg-body: #050505;
-   --bg-surface: #0a0a0a;
-   --bg-elevated: #111111;
-   --bg-surface-hover: #18181b;
+          :root {
+               /* Palette - Deep Zinc */
+               --bg-body: #050505;
+               --bg-surface: #0a0a0a;
+               --bg-elevated: #111111;
+               --bg-surface-hover: #18181b;
 
-   /* Borders */
-   --border-subtle: rgba(255, 255, 255, 0.08);
-   --border-active: rgba(255, 255, 255, 0.2);
-   --radius-sm: 4px;
-   --radius-md: 8px;
-   --radius-lg: 12px;
+               /* Borders */
+               --border-subtle: rgba(255, 255, 255, 0.08);
+               --border-active: rgba(255, 255, 255, 0.2);
+               --radius-sm: 4px;
+               --radius-md: 8px;
+               --radius-lg: 12px;
 
-   /* Text */
-   --text-primary: #fafafa;
-   --text-secondary: #a1a1aa;
-   --text-tertiary: #71717a;
+               /* Text */
+               --text-primary: #fafafa;
+               --text-secondary: #a1a1aa;
+               --text-tertiary: #71717a;
 
-   /* Semantic Colors */
-   --accent-success: #4ade80;
-   --accent-warning: #fbbf24;
-   --accent-error: #f87171;
-   --accent-info: #60a5fa;
-   --brand-primary: #f4f4f5;
+               /* Semantic Colors */
+               --accent-success: #4ade80;
+               --accent-warning: #fbbf24;
+               --accent-error: #f87171;
+               --accent-info: #60a5fa;
+               --brand-primary: #f4f4f5;
 
-   /* Spacing */
-   --space-xs: 4px;
-   --space-sm: 8px;
-   --space-md: 16px;
-   --space-lg: 24px;
-   --space-xl: 32px;
+               /* Spacing */
+               --space-xs: 4px;
+               --space-sm: 8px;
+               --space-md: 16px;
+               --space-lg: 24px;
+               --space-xl: 32px;
 
-   /* Layout */
-   --sidebar-width: 240px;
-   --topbar-height: 56px;
-   --header-height: 64px;
-   --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  }
+               /* Layout */
+               --sidebar-width: 240px;
+               --topbar-height: 56px;
+               --header-height: 64px;
+               --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+          }
 
-  * {
-   box-sizing: border-box;
-   margin: 0;
-   padding: 0;
-  }
+          * {
+               box-sizing: border-box;
+               margin: 0;
+               padding: 0;
+          }
 
-  body {
-   background-color: var(--bg-body);
-   color: var(--text-primary);
-   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-   font-size: 14px;
-   line-height: 1.5;
-   -webkit-font-smoothing: antialiased;
-  }
+          body {
+               background-color: var(--bg-body);
+               color: var(--text-primary);
+               font-family: 'Inter', system-ui, -apple-system, sans-serif;
+               font-size: 14px;
+               line-height: 1.5;
+               -webkit-font-smoothing: antialiased;
+          }
 
-  /* ========================================
+          /* ========================================
      PAGE CONTAINER
      ======================================== */
-  .page-container {
-   max-width: 1400px;
-   margin: 0 auto;
-   padding: 40px 20px;
-  }
+          .page-container {
+               max-width: 1400px;
+               margin: 0 auto;
+               padding: 40px 20px;
+          }
 
-  .page-header {
-   margin-bottom: 48px;
-  }
+          .page-header {
+               margin-bottom: 48px;
+          }
 
-  .page-title {
-   font-size: 32px;
-   font-weight: 700;
-   margin-bottom: 8px;
-  }
+          .page-title {
+               font-size: 32px;
+               font-weight: 700;
+               margin-bottom: 8px;
+          }
 
-  .page-subtitle {
-   color: var(--text-secondary);
-  }
+          .page-subtitle {
+               color: var(--text-secondary);
+          }
 
-  /* ========================================
+          /* ========================================
      LAYOUT PREVIEW FRAME
      ======================================== */
-  .layout-section {
-   margin-bottom: 64px;
-  }
+          .layout-section {
+               margin-bottom: 64px;
+          }
 
-  .layout-title {
-   font-size: 24px;
-   font-weight: 700;
-   margin-bottom: 8px;
-   padding-bottom: 12px;
-   border-bottom: 1px solid var(--border-subtle);
-  }
+          .layout-title {
+               font-size: 24px;
+               font-weight: 700;
+               margin-bottom: 8px;
+               padding-bottom: 12px;
+               border-bottom: 1px solid var(--border-subtle);
+          }
 
-  .layout-description {
-   color: var(--text-secondary);
-   font-size: 14px;
-   margin-bottom: 24px;
-  }
+          .layout-description {
+               color: var(--text-secondary);
+               font-size: 14px;
+               margin-bottom: 24px;
+          }
 
-  .layout-preview {
-   background: #000;
-   border: 1px solid var(--border-subtle);
-   border-radius: var(--radius-lg);
-   overflow: hidden;
-   height: 500px;
-   position: relative;
-  }
+          .layout-preview {
+               background: #000;
+               border: 1px solid var(--border-subtle);
+               border-radius: var(--radius-lg);
+               overflow: hidden;
+               height: 500px;
+               position: relative;
+          }
 
-  .layout-preview.short {
-   height: 350px;
-  }
+          .layout-preview.short {
+               height: 350px;
+          }
 
-  .layout-preview.tall {
-   height: 650px;
-  }
+          .layout-preview.tall {
+               height: 650px;
+          }
 
-  /* ========================================
+          /* ========================================
      COMMON LAYOUT ELEMENTS
      ======================================== */
 
-  /* Sidebar */
-  .sidebar {
-   width: var(--sidebar-width);
-   background: transparent;
-   border-right: 1px solid var(--border-subtle);
-   height: 100%;
-   padding: var(--space-md);
-   display: flex;
-   flex-direction: column;
-  }
-
-  .sidebar-logo {
-   font-size: 18px;
-   font-weight: 700;
-   padding: var(--space-md);
-   margin-bottom: var(--space-lg);
-   color: var(--text-primary);
-  }
-
-  .sidebar-nav {
-   flex: 1;
-   display: flex;
-   flex-direction: column;
-   gap: var(--space-xs);
-  }
-
-  .sidebar-link {
-   display: flex;
-   align-items: center;
-   gap: 12px;
-   padding: 10px 12px;
-   border-radius: var(--radius-md);
-   color: var(--text-secondary);
-   text-decoration: none;
-   font-size: 13px;
-   font-weight: 500;
-   transition: var(--transition);
-  }
-
-  .sidebar-link:hover {
-   background: var(--bg-surface-hover);
-   color: var(--text-primary);
-  }
-
-  .sidebar-link.active {
-   background: var(--bg-elevated);
-   color: var(--text-primary);
-  }
-
-  .sidebar-link svg {
-   width: 18px;
-   height: 18px;
-   stroke: currentColor;
-   stroke-width: 2;
-   stroke-linecap: round;
-   stroke-linejoin: round;
-   fill: none;
-  }
-
-  /* Topbar */
-  .topbar {
-   height: var(--topbar-height);
-   background: var(--bg-surface);
-   border-bottom: 1px solid var(--border-subtle);
-   display: flex;
-   align-items: center;
-   justify-content: space-between;
-   padding: 0 var(--space-lg);
-  }
-
-  .topbar-left {
-   display: flex;
-   align-items: center;
-   gap: var(--space-md);
-  }
-
-  .topbar-right {
-   display: flex;
-   align-items: center;
-   gap: var(--space-md);
-  }
-
-  .breadcrumb {
-   display: flex;
-   align-items: center;
-   gap: 8px;
-   font-size: 13px;
-  }
-
-  .breadcrumb-item {
-   color: var(--text-tertiary);
-   text-decoration: none;
-  }
-
-  .breadcrumb-item.current {
-   color: var(--text-primary);
-  }
-
-  .breadcrumb-sep {
-   color: var(--text-tertiary);
-  }
-
-  /* Main Content */
-  .main-content {
-   flex: 1;
-   padding: var(--space-lg);
-   overflow-y: auto;
-   background: var(--bg-body);
-  }
-
-  /* Page Header */
-  .dashboard-header {
-   display: flex;
-   justify-content: space-between;
-   align-items: flex-start;
-   margin-bottom: var(--space-lg);
-  }
-
-  .dashboard-title-block h1 {
-   font-size: 24px;
-   font-weight: 700;
-   margin-bottom: 4px;
-  }
-
-  .dashboard-title-block p {
-   font-size: 13px;
-   color: var(--text-secondary);
-  }
-
-  .dashboard-actions {
-   display: flex;
-   gap: var(--space-sm);
-  }
-
-  /* Buttons */
-  .btn {
-   display: inline-flex;
-   align-items: center;
-   gap: 8px;
-   padding: 0 16px;
-   height: 36px;
-   border-radius: var(--radius-md);
-   font-size: 13px;
-   font-weight: 500;
-   cursor: pointer;
-   border: 1px solid transparent;
-   transition: var(--transition);
-  }
-
-  .btn-primary {
-   background: var(--brand-primary);
-   color: #000;
-  }
-
-  .btn-outline {
-   background: transparent;
-   border-color: var(--border-subtle);
-   color: var(--text-primary);
-  }
-
-  .btn svg {
-   width: 16px;
-   height: 16px;
-   stroke: currentColor;
-   stroke-width: 2;
-   stroke-linecap: round;
-   stroke-linejoin: round;
-   fill: none;
-  }
-
-  /* Cards */
-  .card {
-   background: var(--bg-surface);
-   border: 1px solid var(--border-subtle);
-   border-radius: var(--radius-lg);
-   padding: var(--space-md);
-  }
-
-  .card-header {
-   display: flex;
-   justify-content: space-between;
-   align-items: center;
-   padding-bottom: var(--space-md);
-   border-bottom: 1px solid var(--border-subtle);
-   margin-bottom: var(--space-md);
-  }
-
-  .card-title {
-   font-size: 16px;
-   font-weight: 600;
-  }
-
-  /* Stats Grid */
-  .stats-grid {
-   display: grid;
-   grid-template-columns: repeat(4, 1fr);
-   gap: var(--space-md);
-   margin-bottom: var(--space-lg);
-  }
-
-  .stat-card {
-   background: var(--bg-surface);
-   border: 1px solid var(--border-subtle);
-   border-radius: var(--radius-lg);
-   padding: var(--space-md);
-  }
-
-  .stat-label {
-   font-size: 12px;
-   color: var(--text-tertiary);
-   margin-bottom: 8px;
-  }
-
-  .stat-value {
-   font-size: 28px;
-   font-weight: 700;
-   font-variant-numeric: tabular-nums;
-  }
-
-  /* Data Table */
-  .table-container {
-   background: var(--bg-surface);
-   border: 1px solid var(--border-subtle);
-   border-radius: var(--radius-lg);
-   overflow: hidden;
-  }
-
-  .table-header {
-   display: flex;
-   justify-content: space-between;
-   align-items: center;
-   padding: var(--space-md);
-   border-bottom: 1px solid var(--border-subtle);
-  }
-
-  .data-table {
-   width: 100%;
-   border-collapse: collapse;
-  }
-
-  .data-table th,
-  .data-table td {
-   padding: 12px 16px;
-   text-align: left;
-   border-bottom: 1px solid var(--border-subtle);
-  }
-
-  .data-table th {
-   font-size: 11px;
-   font-weight: 600;
-   text-transform: uppercase;
-   letter-spacing: 0.05em;
-   color: var(--text-tertiary);
-   background: var(--bg-elevated);
-  }
-
-  .data-table td {
-   font-size: 13px;
-  }
-
-  .data-table tr:last-child td {
-   border-bottom: none;
-  }
-
-  /* Form Elements */
-  .form-group {
-   margin-bottom: var(--space-lg);
-  }
-
-  .form-label {
-   display: block;
-   font-size: 13px;
-   font-weight: 500;
-   margin-bottom: 8px;
-   color: var(--text-secondary);
-  }
-
-  .form-input {
-   width: 100%;
-   padding: 10px 14px;
-   background: var(--bg-elevated);
-   border: 1px solid var(--border-subtle);
-   border-radius: var(--radius-md);
-   color: var(--text-primary);
-   font-size: 14px;
-  }
-
-  .form-input:focus {
-   outline: none;
-   border-color: var(--text-secondary);
-  }
-
-  .form-row {
-   display: grid;
-   grid-template-columns: 1fr 1fr;
-   gap: var(--space-md);
-  }
-
-  /* Detail Page */
-  .detail-grid {
-   display: grid;
-   grid-template-columns: 2fr 1fr;
-   gap: var(--space-lg);
-  }
-
-  .detail-section {
-   margin-bottom: var(--space-lg);
-  }
-
-  .detail-section-title {
-   font-size: 12px;
-   font-weight: 600;
-   text-transform: uppercase;
-   letter-spacing: 0.05em;
-   color: var(--text-tertiary);
-   margin-bottom: var(--space-md);
-  }
-
-  .detail-row {
-   display: flex;
-   justify-content: space-between;
-   padding: 12px 0;
-   border-bottom: 1px solid var(--border-subtle);
-  }
-
-  .detail-row:last-child {
-   border-bottom: none;
-  }
-
-  .detail-label {
-   color: var(--text-secondary);
-   font-size: 13px;
-  }
-
-  .detail-value {
-   font-weight: 500;
-   font-size: 13px;
-  }
-
-  /* Avatar */
-  .avatar {
-   width: 32px;
-   height: 32px;
-   border-radius: 50%;
-   background: linear-gradient(135deg, #3f3f46, #27272a);
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   font-size: 12px;
-   font-weight: 600;
-   color: var(--text-secondary);
-  }
-
-  /* Badge */
-  .badge {
-   display: inline-flex;
-   padding: 4px 10px;
-   border-radius: 999px;
-   font-size: 11px;
-   font-weight: 600;
-  }
-
-  .badge-success {
-   background: rgba(74, 222, 128, 0.1);
-   color: var(--accent-success);
-  }
-
-  .badge-warning {
-   background: rgba(251, 191, 36, 0.1);
-   color: var(--accent-warning);
-  }
-
-  /* Code Snippet */
-  .code-block {
-   background: #111;
-   padding: 16px;
-   border-radius: var(--radius-md);
-   font-family: 'SF Mono', 'Fira Code', monospace;
-   font-size: 12px;
-   color: var(--text-secondary);
-   overflow-x: auto;
-   margin-top: 16px;
-   white-space: pre-wrap;
-  }
-
-  /* Grid Layouts */
-  .flex-layout {
-   display: flex;
-   height: 100%;
-  }
-
-  .flex-grow {
-   flex: 1;
-   display: flex;
-   flex-direction: column;
-  }
-
-  /* Empty State */
-  .empty-state {
-   display: flex;
-   flex-direction: column;
-   align-items: center;
-   justify-content: center;
-   padding: 48px;
-   text-align: center;
-   color: var(--text-tertiary);
-  }
-
-  .empty-state svg {
-   width: 48px;
-   height: 48px;
-   stroke: currentColor;
-   stroke-width: 1.5;
-   margin-bottom: 16px;
-   opacity: 0.5;
-  }
-
-  /* Skeleton */
-  .skeleton {
-   background: linear-gradient(90deg, var(--bg-elevated) 25%, var(--bg-surface-hover) 50%, var(--bg-elevated) 75%);
-   background-size: 200% 100%;
-   animation: shimmer 1.5s infinite;
-   border-radius: var(--radius-sm);
-  }
-
-  @keyframes shimmer {
-   0% {
-    background-position: 200% 0;
-   }
-
-   100% {
-    background-position: -200% 0;
-   }
-  }
-
-  .skeleton-text {
-   height: 14px;
-   margin-bottom: 8px;
-  }
-
-  .skeleton-text.short {
-   width: 40%;
-  }
-
-  .skeleton-text.medium {
-   width: 70%;
-  }
-
-  .skeleton-text.long {
-   width: 100%;
-  }
- </style>
+          /* Sidebar */
+          .sidebar {
+               width: var(--sidebar-width);
+               background: transparent;
+               border-right: 1px solid var(--border-subtle);
+               height: 100%;
+               padding: var(--space-md);
+               display: flex;
+               flex-direction: column;
+          }
+
+          .sidebar-logo {
+               font-size: 18px;
+               font-weight: 700;
+               padding: var(--space-md);
+               margin-bottom: var(--space-lg);
+               color: var(--text-primary);
+          }
+
+          .sidebar-nav {
+               flex: 1;
+               display: flex;
+               flex-direction: column;
+               gap: var(--space-xs);
+          }
+
+          .sidebar-link {
+               display: flex;
+               align-items: center;
+               gap: 12px;
+               padding: 10px 12px;
+               border-radius: var(--radius-md);
+               color: var(--text-secondary);
+               text-decoration: none;
+               font-size: 13px;
+               font-weight: 500;
+               transition: var(--transition);
+          }
+
+          .sidebar-link:hover {
+               background: var(--bg-surface-hover);
+               color: var(--text-primary);
+          }
+
+          .sidebar-link.active {
+               background: var(--bg-elevated);
+               color: var(--text-primary);
+          }
+
+          .sidebar-link svg {
+               width: 18px;
+               height: 18px;
+               stroke: currentColor;
+               stroke-width: 2;
+               stroke-linecap: round;
+               stroke-linejoin: round;
+               fill: none;
+          }
+
+          /* Topbar */
+          .topbar {
+               height: var(--topbar-height);
+               background: var(--bg-surface);
+               border-bottom: 1px solid var(--border-subtle);
+               display: flex;
+               align-items: center;
+               justify-content: space-between;
+               padding: 0 var(--space-lg);
+          }
+
+          .topbar-left {
+               display: flex;
+               align-items: center;
+               gap: var(--space-md);
+          }
+
+          .topbar-right {
+               display: flex;
+               align-items: center;
+               gap: var(--space-md);
+          }
+
+          .breadcrumb {
+               display: flex;
+               align-items: center;
+               gap: 8px;
+               font-size: 13px;
+          }
+
+          .breadcrumb-item {
+               color: var(--text-tertiary);
+               text-decoration: none;
+          }
+
+          .breadcrumb-item.current {
+               color: var(--text-primary);
+          }
+
+          .breadcrumb-sep {
+               color: var(--text-tertiary);
+          }
+
+          /* Main Content */
+          .main-content {
+               flex: 1;
+               padding: var(--space-lg);
+               overflow-y: auto;
+               background: var(--bg-body);
+          }
+
+          /* Page Header */
+          .dashboard-header {
+               display: flex;
+               justify-content: space-between;
+               align-items: flex-start;
+               margin-bottom: var(--space-lg);
+          }
+
+          .dashboard-title-block h1 {
+               font-size: 24px;
+               font-weight: 700;
+               margin-bottom: 4px;
+          }
+
+          .dashboard-title-block p {
+               font-size: 13px;
+               color: var(--text-secondary);
+          }
+
+          .dashboard-actions {
+               display: flex;
+               gap: var(--space-sm);
+          }
+
+          /* Buttons */
+          .btn {
+               display: inline-flex;
+               align-items: center;
+               gap: 8px;
+               padding: 0 16px;
+               height: 36px;
+               border-radius: var(--radius-md);
+               font-size: 13px;
+               font-weight: 500;
+               cursor: pointer;
+               border: 1px solid transparent;
+               transition: var(--transition);
+          }
+
+          .btn-primary {
+               background: var(--brand-primary);
+               color: #000;
+          }
+
+          .btn-outline {
+               background: transparent;
+               border-color: var(--border-subtle);
+               color: var(--text-primary);
+          }
+
+          .btn svg {
+               width: 16px;
+               height: 16px;
+               stroke: currentColor;
+               stroke-width: 2;
+               stroke-linecap: round;
+               stroke-linejoin: round;
+               fill: none;
+          }
+
+          /* Cards */
+          .card {
+               background: var(--bg-surface);
+               border: 1px solid var(--border-subtle);
+               border-radius: var(--radius-lg);
+               padding: var(--space-md);
+          }
+
+          .card-header {
+               display: flex;
+               justify-content: space-between;
+               align-items: center;
+               padding-bottom: var(--space-md);
+               border-bottom: 1px solid var(--border-subtle);
+               margin-bottom: var(--space-md);
+          }
+
+          .card-title {
+               font-size: 16px;
+               font-weight: 600;
+          }
+
+          /* Stats Grid */
+          .stats-grid {
+               display: grid;
+               grid-template-columns: repeat(4, 1fr);
+               gap: var(--space-md);
+               margin-bottom: var(--space-lg);
+          }
+
+          .stat-card {
+               background: var(--bg-surface);
+               border: 1px solid var(--border-subtle);
+               border-radius: var(--radius-lg);
+               padding: var(--space-md);
+          }
+
+          .stat-label {
+               font-size: 12px;
+               color: var(--text-tertiary);
+               margin-bottom: 8px;
+          }
+
+          .stat-value {
+               font-size: 28px;
+               font-weight: 700;
+               font-variant-numeric: tabular-nums;
+          }
+
+          /* Data Table */
+          .table-container {
+               background: var(--bg-surface);
+               border: 1px solid var(--border-subtle);
+               border-radius: var(--radius-lg);
+               overflow: hidden;
+          }
+
+          .table-header {
+               display: flex;
+               justify-content: space-between;
+               align-items: center;
+               padding: var(--space-md);
+               border-bottom: 1px solid var(--border-subtle);
+          }
+
+          .data-table {
+               width: 100%;
+               border-collapse: collapse;
+          }
+
+          .data-table th,
+          .data-table td {
+               padding: 12px 16px;
+               text-align: left;
+               border-bottom: 1px solid var(--border-subtle);
+          }
+
+          .data-table th {
+               font-size: 11px;
+               font-weight: 600;
+               text-transform: uppercase;
+               letter-spacing: 0.05em;
+               color: var(--text-tertiary);
+               background: var(--bg-elevated);
+          }
+
+          .data-table td {
+               font-size: 13px;
+          }
+
+          .data-table tr:last-child td {
+               border-bottom: none;
+          }
+
+          /* Form Elements */
+          .form-group {
+               margin-bottom: var(--space-lg);
+          }
+
+          .form-label {
+               display: block;
+               font-size: 13px;
+               font-weight: 500;
+               margin-bottom: 8px;
+               color: var(--text-secondary);
+          }
+
+          .form-input {
+               width: 100%;
+               padding: 10px 14px;
+               background: var(--bg-elevated);
+               border: 1px solid var(--border-subtle);
+               border-radius: var(--radius-md);
+               color: var(--text-primary);
+               font-size: 14px;
+          }
+
+          .form-input:focus {
+               outline: none;
+               border-color: var(--text-secondary);
+          }
+
+          .form-row {
+               display: grid;
+               grid-template-columns: 1fr 1fr;
+               gap: var(--space-md);
+          }
+
+          /* Detail Page */
+          .detail-grid {
+               display: grid;
+               grid-template-columns: 2fr 1fr;
+               gap: var(--space-lg);
+          }
+
+          .detail-section {
+               margin-bottom: var(--space-lg);
+          }
+
+          .detail-section-title {
+               font-size: 12px;
+               font-weight: 600;
+               text-transform: uppercase;
+               letter-spacing: 0.05em;
+               color: var(--text-tertiary);
+               margin-bottom: var(--space-md);
+          }
+
+          .detail-row {
+               display: flex;
+               justify-content: space-between;
+               padding: 12px 0;
+               border-bottom: 1px solid var(--border-subtle);
+          }
+
+          .detail-row:last-child {
+               border-bottom: none;
+          }
+
+          .detail-label {
+               color: var(--text-secondary);
+               font-size: 13px;
+          }
+
+          .detail-value {
+               font-weight: 500;
+               font-size: 13px;
+          }
+
+          /* Avatar */
+          .avatar {
+               width: 32px;
+               height: 32px;
+               border-radius: 50%;
+               background: linear-gradient(135deg, #3f3f46, #27272a);
+               display: flex;
+               align-items: center;
+               justify-content: center;
+               font-size: 12px;
+               font-weight: 600;
+               color: var(--text-secondary);
+          }
+
+          /* Badge */
+          .badge {
+               display: inline-flex;
+               padding: 4px 10px;
+               border-radius: 999px;
+               font-size: 11px;
+               font-weight: 600;
+          }
+
+          .badge-success {
+               background: rgba(74, 222, 128, 0.1);
+               color: var(--accent-success);
+          }
+
+          .badge-warning {
+               background: rgba(251, 191, 36, 0.1);
+               color: var(--accent-warning);
+          }
+
+          /* Code Snippet */
+          .code-block {
+               background: #111;
+               padding: 16px;
+               border-radius: var(--radius-md);
+               font-family: 'SF Mono', 'Fira Code', monospace;
+               font-size: 12px;
+               color: var(--text-secondary);
+               overflow-x: auto;
+               margin-top: 16px;
+               white-space: pre-wrap;
+          }
+
+          /* Grid Layouts */
+          .flex-layout {
+               display: flex;
+               height: 100%;
+          }
+
+          .flex-grow {
+               flex: 1;
+               display: flex;
+               flex-direction: column;
+          }
+
+          /* Empty State */
+          .empty-state {
+               display: flex;
+               flex-direction: column;
+               align-items: center;
+               justify-content: center;
+               padding: 48px;
+               text-align: center;
+               color: var(--text-tertiary);
+          }
+
+          .empty-state svg {
+               width: 48px;
+               height: 48px;
+               stroke: currentColor;
+               stroke-width: 1.5;
+               margin-bottom: 16px;
+               opacity: 0.5;
+          }
+
+          /* Skeleton */
+          .skeleton {
+               background: linear-gradient(90deg, var(--bg-elevated) 25%, var(--bg-surface-hover) 50%, var(--bg-elevated) 75%);
+               background-size: 200% 100%;
+               animation: shimmer 1.5s infinite;
+               border-radius: var(--radius-sm);
+          }
+
+          @keyframes shimmer {
+               0% {
+                    background-position: 200% 0;
+               }
+
+               100% {
+                    background-position: -200% 0;
+               }
+          }
+
+          .skeleton-text {
+               height: 14px;
+               margin-bottom: 8px;
+          }
+
+          .skeleton-text.short {
+               width: 40%;
+          }
+
+          .skeleton-text.medium {
+               width: 70%;
+          }
+
+          .skeleton-text.long {
+               width: 100%;
+          }
+     </style>
 </head>
 
 <body>
- <div class="page-container">
+     <div class="page-container">
 
-  <header class="page-header">
-   <h1 class="page-title">Layout Patterns</h1>
-   <p class="page-subtitle">Page structure templates for the Midnight V3.0 Design System</p>
-  </header>
+          <header class="page-header">
+               <h1 class="page-title">Layout Patterns</h1>
+               <p class="page-subtitle">Page structure templates for the Midnight V3.0 Design System</p>
+          </header>
 
-  <!-- ═══════════════════════════════════════════════════════════════════
+          <!-- ═══════════════════════════════════════════════════════════════════
        1. DASHBOARD GRID
        ═══════════════════════════════════════════════════════════════════ -->
-  <section class="layout-section" id="dashboard-grid">
-   <h2 class="layout-title">1. Dashboard Grid</h2>
-   <p class="layout-description">
-    Main dashboard layout with sidebar navigation, stats cards, and content panels.
-    Use for overview/home pages.
-   </p>
+          <section class="layout-section" id="dashboard-grid">
+               <h2 class="layout-title">1. Dashboard Grid</h2>
+               <p class="layout-description">
+                    Main dashboard layout with sidebar navigation, stats cards, and content panels.
+                    Use for overview/home pages.
+               </p>
 
-   <div class="layout-preview">
-    <div class="flex-layout">
-     <!-- Sidebar -->
-     <aside class="sidebar">
-      <div class="sidebar-logo">⬡ FormulaMid</div>
-      <nav class="sidebar-nav">
-       <a href="#" class="sidebar-link active">
-        <svg viewBox="0 0 24 24">
-         <rect x="3" y="3" width="7" height="7"></rect>
-         <rect x="14" y="3" width="7" height="7"></rect>
-         <rect x="14" y="14" width="7" height="7"></rect>
-         <rect x="3" y="14" width="7" height="7"></rect>
-        </svg>
-        Dashboard
-       </a>
-       <a href="#" class="sidebar-link">
-        <svg viewBox="0 0 24 24">
-         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-         <circle cx="9" cy="7" r="4"></circle>
-         <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-         <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-        </svg>
-        Clientes
-       </a>
-       <a href="#" class="sidebar-link">
-        <svg viewBox="0 0 24 24">
-         <line x1="8" y1="6" x2="21" y2="6"></line>
-         <line x1="8" y1="12" x2="21" y2="12"></line>
-         <line x1="8" y1="18" x2="21" y2="18"></line>
-         <line x1="3" y1="6" x2="3.01" y2="6"></line>
-         <line x1="3" y1="12" x2="3.01" y2="12"></line>
-         <line x1="3" y1="18" x2="3.01" y2="18"></line>
-        </svg>
-        Transacciones
-       </a>
-       <a href="#" class="sidebar-link">
-        <svg viewBox="0 0 24 24">
-         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-         <polyline points="14 2 14 8 20 8"></polyline>
-         <line x1="16" y1="13" x2="8" y2="13"></line>
-         <line x1="16" y1="17" x2="8" y2="17"></line>
-         <polyline points="10 9 9 9 8 9"></polyline>
-        </svg>
-        Reportes
-       </a>
-      </nav>
-     </aside>
+               <div class="layout-preview">
+                    <div class="flex-layout">
+                         <!-- Sidebar -->
+                         <aside class="sidebar">
+                              <div class="sidebar-logo">⬡ FormulaMid</div>
+                              <nav class="sidebar-nav">
+                                   <a href="#" class="sidebar-link active">
+                                        <svg viewBox="0 0 24 24">
+                                             <rect x="3" y="3" width="7" height="7"></rect>
+                                             <rect x="14" y="3" width="7" height="7"></rect>
+                                             <rect x="14" y="14" width="7" height="7"></rect>
+                                             <rect x="3" y="14" width="7" height="7"></rect>
+                                        </svg>
+                                        Dashboard
+                                   </a>
+                                   <a href="#" class="sidebar-link">
+                                        <svg viewBox="0 0 24 24">
+                                             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                             <circle cx="9" cy="7" r="4"></circle>
+                                             <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                             <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                        </svg>
+                                        Clientes
+                                   </a>
+                                   <a href="#" class="sidebar-link">
+                                        <svg viewBox="0 0 24 24">
+                                             <line x1="8" y1="6" x2="21" y2="6"></line>
+                                             <line x1="8" y1="12" x2="21" y2="12"></line>
+                                             <line x1="8" y1="18" x2="21" y2="18"></line>
+                                             <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                                             <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                                             <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                                        </svg>
+                                        Transacciones
+                                   </a>
+                                   <a href="#" class="sidebar-link">
+                                        <svg viewBox="0 0 24 24">
+                                             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z">
+                                             </path>
+                                             <polyline points="14 2 14 8 20 8"></polyline>
+                                             <line x1="16" y1="13" x2="8" y2="13"></line>
+                                             <line x1="16" y1="17" x2="8" y2="17"></line>
+                                             <polyline points="10 9 9 9 8 9"></polyline>
+                                        </svg>
+                                        Reportes
+                                   </a>
+                              </nav>
+                         </aside>
 
-     <!-- Main -->
-     <div class="flex-grow">
-      <div class="main-content">
-       <!-- Header -->
-       <div class="dashboard-header">
-        <div class="dashboard-title-block">
-         <h1>Dashboard</h1>
-         <p>Resumen general del sistema</p>
-        </div>
-        <div class="dashboard-actions">
-         <button class="btn btn-outline">Exportar</button>
-         <button class="btn btn-primary">
-          <svg viewBox="0 0 24 24">
-           <line x1="12" y1="5" x2="12" y2="19"></line>
-           <line x1="5" y1="12" x2="19" y2="12"></line>
-          </svg>
-          Nuevo
-         </button>
-        </div>
-       </div>
+                         <!-- Main -->
+                         <div class="flex-grow">
+                              <div class="main-content">
+                                   <!-- Header -->
+                                   <div class="dashboard-header">
+                                        <div class="dashboard-title-block">
+                                             <h1>Dashboard</h1>
+                                             <p>Resumen general del sistema</p>
+                                        </div>
+                                        <div class="dashboard-actions">
+                                             <button class="btn btn-outline">Exportar</button>
+                                             <button class="btn btn-primary">
+                                                  <svg viewBox="0 0 24 24">
+                                                       <line x1="12" y1="5" x2="12" y2="19"></line>
+                                                       <line x1="5" y1="12" x2="19" y2="12"></line>
+                                                  </svg>
+                                                  Nuevo
+                                             </button>
+                                        </div>
+                                   </div>
 
-       <!-- Stats -->
-       <div class="stats-grid">
-        <div class="stat-card">
-         <div class="stat-label">Ingresos Totales</div>
-         <div class="stat-value">$142,500</div>
-        </div>
-        <div class="stat-card">
-         <div class="stat-label">Clientes Activos</div>
-         <div class="stat-value">1,234</div>
-        </div>
-        <div class="stat-card">
-         <div class="stat-label">Transacciones</div>
-         <div class="stat-value">8,492</div>
-        </div>
-        <div class="stat-card">
-         <div class="stat-label">Tasa de Éxito</div>
-         <div class="stat-value">98.2%</div>
-        </div>
-       </div>
+                                   <!-- Stats -->
+                                   <div class="stats-grid">
+                                        <div class="stat-card">
+                                             <div class="stat-label">Ingresos Totales</div>
+                                             <div class="stat-value">$142,500</div>
+                                        </div>
+                                        <div class="stat-card">
+                                             <div class="stat-label">Clientes Activos</div>
+                                             <div class="stat-value">1,234</div>
+                                        </div>
+                                        <div class="stat-card">
+                                             <div class="stat-label">Transacciones</div>
+                                             <div class="stat-value">8,492</div>
+                                        </div>
+                                        <div class="stat-card">
+                                             <div class="stat-label">Tasa de Éxito</div>
+                                             <div class="stat-value">98.2%</div>
+                                        </div>
+                                   </div>
 
-       <!-- Content Panels -->
-       <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px;">
-        <div class="card">
-         <div class="card-header">
-          <span class="card-title">Actividad Reciente</span>
-         </div>
-         <div class="skeleton skeleton-text long"></div>
-         <div class="skeleton skeleton-text medium"></div>
-         <div class="skeleton skeleton-text long"></div>
-        </div>
-        <div class="card">
-         <div class="card-header">
-          <span class="card-title">Quick Actions</span>
-         </div>
-         <div class="skeleton skeleton-text medium"></div>
-         <div class="skeleton skeleton-text short"></div>
-        </div>
-       </div>
-      </div>
-     </div>
-    </div>
-   </div>
+                                   <!-- Content Panels -->
+                                   <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px;">
+                                        <div class="card">
+                                             <div class="card-header">
+                                                  <span class="card-title">Actividad Reciente</span>
+                                             </div>
+                                             <div class="skeleton skeleton-text long"></div>
+                                             <div class="skeleton skeleton-text medium"></div>
+                                             <div class="skeleton skeleton-text long"></div>
+                                        </div>
+                                        <div class="card">
+                                             <div class="card-header">
+                                                  <span class="card-title">Quick Actions</span>
+                                             </div>
+                                             <div class="skeleton skeleton-text medium"></div>
+                                             <div class="skeleton skeleton-text short"></div>
+                                        </div>
+                                   </div>
+                              </div>
+                         </div>
+                    </div>
+               </div>
 
-   <div class="code-block">&lt;div class="page-shell"&gt;
-    &lt;aside class="sidebar"&gt;...&lt;/aside&gt;
-    &lt;main class="main-content"&gt;
-    &lt;header class="dashboard-header"&gt;...&lt;/header&gt;
-    &lt;div class="stats-grid"&gt;...&lt;/div&gt;
-    &lt;div class="content-grid"&gt;...&lt;/div&gt;
-    &lt;/main&gt;
-    &lt;/div&gt;</div>
-  </section>
+               <div class="code-block">&lt;div class="page-shell"&gt;
+                    &lt;aside class="sidebar"&gt;...&lt;/aside&gt;
+                    &lt;main class="main-content"&gt;
+                    &lt;header class="dashboard-header"&gt;...&lt;/header&gt;
+                    &lt;div class="stats-grid"&gt;...&lt;/div&gt;
+                    &lt;div class="content-grid"&gt;...&lt;/div&gt;
+                    &lt;/main&gt;
+                    &lt;/div&gt;</div>
+          </section>
 
-  <!-- ═══════════════════════════════════════════════════════════════════
+          <!-- ═══════════════════════════════════════════════════════════════════
        2. TABLE PAGE
        ═══════════════════════════════════════════════════════════════════ -->
-  <section class="layout-section" id="table-page">
-   <h2 class="layout-title">2. Table Page</h2>
-   <p class="layout-description">
-    Data listing page with filters, search, and paginated table.
-    Use for lists: customers, products, transactions, etc.
-   </p>
+          <section class="layout-section" id="table-page">
+               <h2 class="layout-title">2. Table Page</h2>
+               <p class="layout-description">
+                    Data listing page with filters, search, and paginated table.
+                    Use for lists: customers, products, transactions, etc.
+               </p>
 
-   <div class="layout-preview">
-    <div class="flex-layout">
-     <!-- Sidebar (collapsed) -->
-     <aside class="sidebar" style="width: 64px; padding: 12px;">
-      <div style="width: 40px; height: 40px; background: var(--bg-elevated); border-radius: 8px; margin-bottom: 24px;">
-      </div>
-      <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-       <div style="width: 40px; height: 40px; background: var(--bg-elevated); border-radius: 8px;"></div>
-       <div style="width: 40px; height: 40px; background: var(--bg-surface-hover); border-radius: 8px;"></div>
-       <div style="width: 40px; height: 40px; background: var(--bg-elevated); border-radius: 8px;"></div>
-      </div>
-     </aside>
+               <div class="layout-preview">
+                    <div class="flex-layout">
+                         <!-- Sidebar (collapsed) -->
+                         <aside class="sidebar" style="width: 64px; padding: 12px;">
+                              <div
+                                   style="width: 40px; height: 40px; background: var(--bg-elevated); border-radius: 8px; margin-bottom: 24px;">
+                              </div>
+                              <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
+                                   <div
+                                        style="width: 40px; height: 40px; background: var(--bg-elevated); border-radius: 8px;">
+                                   </div>
+                                   <div
+                                        style="width: 40px; height: 40px; background: var(--bg-surface-hover); border-radius: 8px;">
+                                   </div>
+                                   <div
+                                        style="width: 40px; height: 40px; background: var(--bg-elevated); border-radius: 8px;">
+                                   </div>
+                              </div>
+                         </aside>
 
-     <!-- Main -->
-     <div class="flex-grow">
-      <!-- Topbar -->
-      <div class="topbar">
-       <div class="topbar-left">
-        <nav class="breadcrumb">
-         <a href="#" class="breadcrumb-item">Admin</a>
-         <span class="breadcrumb-sep">/</span>
-         <span class="breadcrumb-item current">Clientes</span>
-        </nav>
-       </div>
-       <div class="topbar-right">
-        <div class="avatar">JD</div>
-       </div>
-      </div>
+                         <!-- Main -->
+                         <div class="flex-grow">
+                              <!-- Topbar -->
+                              <div class="topbar">
+                                   <div class="topbar-left">
+                                        <nav class="breadcrumb">
+                                             <a href="#" class="breadcrumb-item">Admin</a>
+                                             <span class="breadcrumb-sep">/</span>
+                                             <span class="breadcrumb-item current">Clientes</span>
+                                        </nav>
+                                   </div>
+                                   <div class="topbar-right">
+                                        <div class="avatar">JD</div>
+                                   </div>
+                              </div>
 
-      <div class="main-content">
-       <!-- Page Header -->
-       <div class="dashboard-header">
-        <div class="dashboard-title-block">
-         <h1>Clientes</h1>
-         <p>Gestión de clientes del sistema</p>
-        </div>
-        <div class="dashboard-actions">
-         <button class="btn btn-outline">Filtros</button>
-         <button class="btn btn-primary">+ Nuevo Cliente</button>
-        </div>
-       </div>
+                              <div class="main-content">
+                                   <!-- Page Header -->
+                                   <div class="dashboard-header">
+                                        <div class="dashboard-title-block">
+                                             <h1>Clientes</h1>
+                                             <p>Gestión de clientes del sistema</p>
+                                        </div>
+                                        <div class="dashboard-actions">
+                                             <button class="btn btn-outline">Filtros</button>
+                                             <button class="btn btn-primary">+ Nuevo Cliente</button>
+                                        </div>
+                                   </div>
 
-       <!-- Table -->
-       <div class="table-container">
-        <div class="table-header">
-         <span style="font-size: 13px; color: var(--text-secondary);">128 clientes</span>
-         <input type="text" class="form-input" placeholder="Buscar..."
-          style="width: 200px; height: 32px; padding: 6px 12px;">
-        </div>
-        <table class="data-table">
-         <thead>
-          <tr>
-           <th>Nombre</th>
-           <th>Email</th>
-           <th>Estado</th>
-           <th>Creado</th>
-           <th></th>
-          </tr>
-         </thead>
-         <tbody>
-          <tr>
-           <td>María García</td>
-           <td style="color: var(--text-secondary);">maria@email.com</td>
-           <td><span class="badge badge-success">Activo</span></td>
-           <td style="color: var(--text-tertiary);">Feb 1, 2026</td>
-           <td>...</td>
-          </tr>
-          <tr>
-           <td>Juan Pérez</td>
-           <td style="color: var(--text-secondary);">juan@email.com</td>
-           <td><span class="badge badge-success">Activo</span></td>
-           <td style="color: var(--text-tertiary);">Jan 28, 2026</td>
-           <td>...</td>
-          </tr>
-          <tr>
-           <td>Ana López</td>
-           <td style="color: var(--text-secondary);">ana@email.com</td>
-           <td><span class="badge badge-warning">Pendiente</span></td>
-           <td style="color: var(--text-tertiary);">Jan 25, 2026</td>
-           <td>...</td>
-          </tr>
-         </tbody>
-        </table>
-       </div>
-      </div>
-     </div>
-    </div>
-   </div>
+                                   <!-- Table -->
+                                   <div class="table-container">
+                                        <div class="table-header">
+                                             <span style="font-size: 13px; color: var(--text-secondary);">128
+                                                  clientes</span>
+                                             <input type="text" class="form-input" placeholder="Buscar..."
+                                                  style="width: 200px; height: 32px; padding: 6px 12px;">
+                                        </div>
+                                        <table class="data-table">
+                                             <thead>
+                                                  <tr>
+                                                       <th>Nombre</th>
+                                                       <th>Email</th>
+                                                       <th>Estado</th>
+                                                       <th>Creado</th>
+                                                       <th></th>
+                                                  </tr>
+                                             </thead>
+                                             <tbody>
+                                                  <tr>
+                                                       <td>María García</td>
+                                                       <td style="color: var(--text-secondary);">maria@email.com</td>
+                                                       <td><span class="badge badge-success">Activo</span></td>
+                                                       <td style="color: var(--text-tertiary);">Feb 1, 2026</td>
+                                                       <td>...</td>
+                                                  </tr>
+                                                  <tr>
+                                                       <td>Juan Pérez</td>
+                                                       <td style="color: var(--text-secondary);">juan@email.com</td>
+                                                       <td><span class="badge badge-success">Activo</span></td>
+                                                       <td style="color: var(--text-tertiary);">Jan 28, 2026</td>
+                                                       <td>...</td>
+                                                  </tr>
+                                                  <tr>
+                                                       <td>Ana López</td>
+                                                       <td style="color: var(--text-secondary);">ana@email.com</td>
+                                                       <td><span class="badge badge-warning">Pendiente</span></td>
+                                                       <td style="color: var(--text-tertiary);">Jan 25, 2026</td>
+                                                       <td>...</td>
+                                                  </tr>
+                                             </tbody>
+                                        </table>
+                                   </div>
+                              </div>
+                         </div>
+                    </div>
+               </div>
 
-   <div class="code-block">&lt;div class="page-shell"&gt;
-    &lt;aside class="sidebar collapsed"&gt;...&lt;/aside&gt;
-    &lt;div class="flex-grow"&gt;
-    &lt;header class="topbar"&gt;
-    &lt;nav class="breadcrumb"&gt;...&lt;/nav&gt;
-    &lt;/header&gt;
-    &lt;main class="main-content"&gt;
-    &lt;div class="dashboard-header"&gt;...&lt;/div&gt;
-    &lt;div class="table-container"&gt;
-    &lt;table class="data-table"&gt;...&lt;/table&gt;
-    &lt;/div&gt;
-    &lt;/main&gt;
-    &lt;/div&gt;
-    &lt;/div&gt;</div>
-  </section>
+               <div class="code-block">&lt;div class="page-shell"&gt;
+                    &lt;aside class="sidebar collapsed"&gt;...&lt;/aside&gt;
+                    &lt;div class="flex-grow"&gt;
+                    &lt;header class="topbar"&gt;
+                    &lt;nav class="breadcrumb"&gt;...&lt;/nav&gt;
+                    &lt;/header&gt;
+                    &lt;main class="main-content"&gt;
+                    &lt;div class="dashboard-header"&gt;...&lt;/div&gt;
+                    &lt;div class="table-container"&gt;
+                    &lt;table class="data-table"&gt;...&lt;/table&gt;
+                    &lt;/div&gt;
+                    &lt;/main&gt;
+                    &lt;/div&gt;
+                    &lt;/div&gt;</div>
+          </section>
 
-  <!-- ═══════════════════════════════════════════════════════════════════
+          <!-- ═══════════════════════════════════════════════════════════════════
        3. TOPBAR LAYOUT
        ═══════════════════════════════════════════════════════════════════ -->
-  <section class="layout-section" id="topbar-layout">
-   <h2 class="layout-title">3. Topbar Layout</h2>
-   <p class="layout-description">
-    Navigation structure with breadcrumbs, search, and user menu.
-    The topbar is the primary horizontal navigation element.
-   </p>
+          <section class="layout-section" id="topbar-layout">
+               <h2 class="layout-title">3. Topbar Layout</h2>
+               <p class="layout-description">
+                    Navigation structure with breadcrumbs, search, and user menu.
+                    The topbar is the primary horizontal navigation element.
+               </p>
 
-   <div class="layout-preview short">
-    <div class="flex-grow">
-     <!-- Full Topbar -->
-     <div class="topbar" style="height: 64px;">
-      <div class="topbar-left" style="gap: 24px;">
-       <div style="font-size: 18px; font-weight: 700;">⬡ FormulaMid</div>
-       <nav class="breadcrumb">
-        <a href="#" class="breadcrumb-item">Dashboard</a>
-        <span class="breadcrumb-sep">/</span>
-        <a href="#" class="breadcrumb-item">Finanzas</a>
-        <span class="breadcrumb-sep">/</span>
-        <span class="breadcrumb-item current">Cierre Semanal</span>
-       </nav>
-      </div>
-      <div class="topbar-right" style="gap: 16px;">
-       <div style="position: relative;">
-        <input type="text" class="form-input" placeholder="Buscar... ⌘K"
-         style="width: 240px; height: 36px; padding-left: 36px; border-radius: 999px;">
-        <svg
-         style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; stroke: var(--text-tertiary); stroke-width: 2; fill: none;"
-         viewBox="0 0 24 24">
-         <circle cx="11" cy="11" r="8"></circle>
-         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-        </svg>
-       </div>
-       <div style="width: 1px; height: 24px; background: var(--border-subtle);"></div>
-       <svg
-        style="width: 20px; height: 20px; stroke: var(--text-secondary); stroke-width: 2; fill: none; cursor: pointer;"
-        viewBox="0 0 24 24">
-        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-       </svg>
-       <div class="avatar">JD</div>
-      </div>
-     </div>
+               <div class="layout-preview short">
+                    <div class="flex-grow">
+                         <!-- Full Topbar -->
+                         <div class="topbar" style="height: 64px;">
+                              <div class="topbar-left" style="gap: 24px;">
+                                   <div style="font-size: 18px; font-weight: 700;">⬡ FormulaMid</div>
+                                   <nav class="breadcrumb">
+                                        <a href="#" class="breadcrumb-item">Dashboard</a>
+                                        <span class="breadcrumb-sep">/</span>
+                                        <a href="#" class="breadcrumb-item">Finanzas</a>
+                                        <span class="breadcrumb-sep">/</span>
+                                        <span class="breadcrumb-item current">Cierre Semanal</span>
+                                   </nav>
+                              </div>
+                              <div class="topbar-right" style="gap: 16px;">
+                                   <div style="position: relative;">
+                                        <input type="text" class="form-input" placeholder="Buscar... ⌘K"
+                                             style="width: 240px; height: 36px; padding-left: 36px; border-radius: 999px;">
+                                        <svg style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; stroke: var(--text-tertiary); stroke-width: 2; fill: none;"
+                                             viewBox="0 0 24 24">
+                                             <circle cx="11" cy="11" r="8"></circle>
+                                             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                        </svg>
+                                   </div>
+                                   <div style="width: 1px; height: 24px; background: var(--border-subtle);"></div>
+                                   <svg style="width: 20px; height: 20px; stroke: var(--text-secondary); stroke-width: 2; fill: none; cursor: pointer;"
+                                        viewBox="0 0 24 24">
+                                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                                   </svg>
+                                   <div class="avatar">JD</div>
+                              </div>
+                         </div>
 
-     <!-- Content -->
-     <div class="main-content" style="background: var(--bg-body);">
-      <div style="padding: 40px; text-align: center; color: var(--text-tertiary);">
-       <p>Main content area</p>
-      </div>
-     </div>
-    </div>
-   </div>
+                         <!-- Content -->
+                         <div class="main-content" style="background: var(--bg-body);">
+                              <div style="padding: 40px; text-align: center; color: var(--text-tertiary);">
+                                   <p>Main content area</p>
+                              </div>
+                         </div>
+                    </div>
+               </div>
 
-   <div class="code-block">&lt;header class="topbar"&gt;
-    &lt;div class="topbar-left"&gt;
-    &lt;div class="logo"&gt;⬡ Brand&lt;/div&gt;
-    &lt;nav class="breadcrumb"&gt;
-    &lt;a href="#" class="breadcrumb-item"&gt;Home&lt;/a&gt;
-    &lt;span class="breadcrumb-sep"&gt;/&lt;/span&gt;
-    &lt;span class="breadcrumb-item current"&gt;Page&lt;/span&gt;
-    &lt;/nav&gt;
-    &lt;/div&gt;
-    &lt;div class="topbar-right"&gt;
-    &lt;input type="search" placeholder="Search..."&gt;
-    &lt;div class="avatar"&gt;JD&lt;/div&gt;
-    &lt;/div&gt;
-    &lt;/header&gt;</div>
-  </section>
+               <div class="code-block">&lt;header class="topbar"&gt;
+                    &lt;div class="topbar-left"&gt;
+                    &lt;div class="logo"&gt;⬡ Brand&lt;/div&gt;
+                    &lt;nav class="breadcrumb"&gt;
+                    &lt;a href="#" class="breadcrumb-item"&gt;Home&lt;/a&gt;
+                    &lt;span class="breadcrumb-sep"&gt;/&lt;/span&gt;
+                    &lt;span class="breadcrumb-item current"&gt;Page&lt;/span&gt;
+                    &lt;/nav&gt;
+                    &lt;/div&gt;
+                    &lt;div class="topbar-right"&gt;
+                    &lt;input type="search" placeholder="Search..."&gt;
+                    &lt;div class="avatar"&gt;JD&lt;/div&gt;
+                    &lt;/div&gt;
+                    &lt;/header&gt;</div>
+          </section>
 
-  <!-- ═══════════════════════════════════════════════════════════════════
+          <!-- ═══════════════════════════════════════════════════════════════════
        4. DETAIL PAGE
        ═══════════════════════════════════════════════════════════════════ -->
-  <section class="layout-section" id="detail-page">
-   <h2 class="layout-title">4. Detail Page</h2>
-   <p class="layout-description">
-    Single entity view with key information, related data, and actions.
-    Use for viewing customer profiles, order details, etc.
-   </p>
+          <section class="layout-section" id="detail-page">
+               <h2 class="layout-title">4. Detail Page</h2>
+               <p class="layout-description">
+                    Single entity view with key information, related data, and actions.
+                    Use for viewing customer profiles, order details, etc.
+               </p>
 
-   <div class="layout-preview">
-    <div class="flex-grow">
-     <!-- Topbar -->
-     <div class="topbar">
-      <div class="topbar-left">
-       <button class="btn btn-outline" style="padding: 0 12px; height: 32px;">
-        <svg viewBox="0 0 24 24" style="width: 16px; height: 16px;">
-         <line x1="19" y1="12" x2="5" y2="12"></line>
-         <polyline points="12 19 5 12 12 5"></polyline>
-        </svg>
-        Volver
-       </button>
-       <nav class="breadcrumb">
-        <a href="#" class="breadcrumb-item">Clientes</a>
-        <span class="breadcrumb-sep">/</span>
-        <span class="breadcrumb-item current">María García</span>
-       </nav>
-      </div>
-      <div class="topbar-right">
-       <button class="btn btn-outline">Editar</button>
-       <button class="btn btn-primary">Acciones</button>
-      </div>
-     </div>
+               <div class="layout-preview">
+                    <div class="flex-grow">
+                         <!-- Topbar -->
+                         <div class="topbar">
+                              <div class="topbar-left">
+                                   <button class="btn btn-outline" style="padding: 0 12px; height: 32px;">
+                                        <svg viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+                                             <line x1="19" y1="12" x2="5" y2="12"></line>
+                                             <polyline points="12 19 5 12 12 5"></polyline>
+                                        </svg>
+                                        Volver
+                                   </button>
+                                   <nav class="breadcrumb">
+                                        <a href="#" class="breadcrumb-item">Clientes</a>
+                                        <span class="breadcrumb-sep">/</span>
+                                        <span class="breadcrumb-item current">María García</span>
+                                   </nav>
+                              </div>
+                              <div class="topbar-right">
+                                   <button class="btn btn-outline">Editar</button>
+                                   <button class="btn btn-primary">Acciones</button>
+                              </div>
+                         </div>
 
-     <div class="main-content">
-      <div class="detail-grid">
-       <!-- Main Column -->
-       <div>
-        <!-- Info Card -->
-        <div class="card" style="margin-bottom: 16px;">
-         <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 24px;">
-          <div class="avatar" style="width: 64px; height: 64px; font-size: 24px;">MG</div>
-          <div>
-           <h2 style="font-size: 20px; font-weight: 700;">María García</h2>
-           <p style="color: var(--text-secondary); font-size: 13px;">Cliente desde Feb 2024</p>
-          </div>
-         </div>
+                         <div class="main-content">
+                              <div class="detail-grid">
+                                   <!-- Main Column -->
+                                   <div>
+                                        <!-- Info Card -->
+                                        <div class="card" style="margin-bottom: 16px;">
+                                             <div
+                                                  style="display: flex; gap: 16px; align-items: center; margin-bottom: 24px;">
+                                                  <div class="avatar"
+                                                       style="width: 64px; height: 64px; font-size: 24px;">MG</div>
+                                                  <div>
+                                                       <h2 style="font-size: 20px; font-weight: 700;">María García</h2>
+                                                       <p style="color: var(--text-secondary); font-size: 13px;">Cliente
+                                                            desde Feb 2024</p>
+                                                  </div>
+                                             </div>
 
-         <div class="detail-section">
-          <div class="detail-section-title">Información de Contacto</div>
-          <div class="detail-row">
-           <span class="detail-label">Email</span>
-           <span class="detail-value">maria@email.com</span>
-          </div>
-          <div class="detail-row">
-           <span class="detail-label">Teléfono</span>
-           <span class="detail-value">+54 11 1234-5678</span>
-          </div>
-          <div class="detail-row">
-           <span class="detail-label">Dirección</span>
-           <span class="detail-value">Av. Corrientes 1234, CABA</span>
-          </div>
-         </div>
-        </div>
+                                             <div class="detail-section">
+                                                  <div class="detail-section-title">Información de Contacto</div>
+                                                  <div class="detail-row">
+                                                       <span class="detail-label">Email</span>
+                                                       <span class="detail-value">maria@email.com</span>
+                                                  </div>
+                                                  <div class="detail-row">
+                                                       <span class="detail-label">Teléfono</span>
+                                                       <span class="detail-value">+54 11 1234-5678</span>
+                                                  </div>
+                                                  <div class="detail-row">
+                                                       <span class="detail-label">Dirección</span>
+                                                       <span class="detail-value">Av. Corrientes 1234, CABA</span>
+                                                  </div>
+                                             </div>
+                                        </div>
 
-        <!-- Activity -->
-        <div class="card">
-         <div class="card-header">
-          <span class="card-title">Historial de Actividad</span>
-         </div>
-         <div class="skeleton skeleton-text long"></div>
-         <div class="skeleton skeleton-text medium"></div>
-         <div class="skeleton skeleton-text long"></div>
-        </div>
-       </div>
+                                        <!-- Activity -->
+                                        <div class="card">
+                                             <div class="card-header">
+                                                  <span class="card-title">Historial de Actividad</span>
+                                             </div>
+                                             <div class="skeleton skeleton-text long"></div>
+                                             <div class="skeleton skeleton-text medium"></div>
+                                             <div class="skeleton skeleton-text long"></div>
+                                        </div>
+                                   </div>
 
-       <!-- Side Column -->
-       <div>
-        <div class="card" style="margin-bottom: 16px;">
-         <div class="detail-section-title">Resumen</div>
-         <div class="detail-row">
-          <span class="detail-label">Estado</span>
-          <span class="badge badge-success">Activo</span>
-         </div>
-         <div class="detail-row">
-          <span class="detail-label">Total Gastado</span>
-          <span class="detail-value">$12,450</span>
-         </div>
-         <div class="detail-row">
-          <span class="detail-label">Órdenes</span>
-          <span class="detail-value">24</span>
-         </div>
-        </div>
+                                   <!-- Side Column -->
+                                   <div>
+                                        <div class="card" style="margin-bottom: 16px;">
+                                             <div class="detail-section-title">Resumen</div>
+                                             <div class="detail-row">
+                                                  <span class="detail-label">Estado</span>
+                                                  <span class="badge badge-success">Activo</span>
+                                             </div>
+                                             <div class="detail-row">
+                                                  <span class="detail-label">Total Gastado</span>
+                                                  <span class="detail-value">$12,450</span>
+                                             </div>
+                                             <div class="detail-row">
+                                                  <span class="detail-label">Órdenes</span>
+                                                  <span class="detail-value">24</span>
+                                             </div>
+                                        </div>
 
-        <div class="card">
-         <div class="detail-section-title">Notas</div>
-         <p style="font-size: 13px; color: var(--text-secondary);">Sin notas adicionales.</p>
-        </div>
-       </div>
-      </div>
-     </div>
-    </div>
-   </div>
+                                        <div class="card">
+                                             <div class="detail-section-title">Notas</div>
+                                             <p style="font-size: 13px; color: var(--text-secondary);">Sin notas
+                                                  adicionales.</p>
+                                        </div>
+                                   </div>
+                              </div>
+                         </div>
+                    </div>
+               </div>
 
-   <div class="code-block">&lt;div class="detail-grid"&gt;
-    &lt;div class="main-column"&gt;
-    &lt;div class="card entity-header"&gt;...&lt;/div&gt;
-    &lt;div class="card activity"&gt;...&lt;/div&gt;
-    &lt;/div&gt;
-    &lt;aside class="side-column"&gt;
-    &lt;div class="card summary"&gt;...&lt;/div&gt;
-    &lt;div class="card notes"&gt;...&lt;/div&gt;
-    &lt;/aside&gt;
-    &lt;/div&gt;</div>
-  </section>
+               <div class="code-block">&lt;div class="detail-grid"&gt;
+                    &lt;div class="main-column"&gt;
+                    &lt;div class="card entity-header"&gt;...&lt;/div&gt;
+                    &lt;div class="card activity"&gt;...&lt;/div&gt;
+                    &lt;/div&gt;
+                    &lt;aside class="side-column"&gt;
+                    &lt;div class="card summary"&gt;...&lt;/div&gt;
+                    &lt;div class="card notes"&gt;...&lt;/div&gt;
+                    &lt;/aside&gt;
+                    &lt;/div&gt;</div>
+          </section>
 
-  <!-- ═══════════════════════════════════════════════════════════════════
+          <!-- ═══════════════════════════════════════════════════════════════════
        5. EDIT / FORM PAGE
        ═══════════════════════════════════════════════════════════════════ -->
-  <section class="layout-section" id="form-page">
-   <h2 class="layout-title">5. Edit / Form Page</h2>
-   <p class="layout-description">
-    Data entry layout with form sections, validation, and save actions.
-    Use for creating or editing entities.
-   </p>
+          <section class="layout-section" id="form-page">
+               <h2 class="layout-title">5. Edit / Form Page</h2>
+               <p class="layout-description">
+                    Data entry layout with form sections, validation, and save actions.
+                    Use for creating or editing entities.
+               </p>
 
-   <div class="layout-preview">
-    <div class="flex-grow">
-     <!-- Topbar -->
-     <div class="topbar">
-      <div class="topbar-left">
-       <button class="btn btn-outline" style="padding: 0 12px; height: 32px;">Cancelar</button>
-       <nav class="breadcrumb">
-        <a href="#" class="breadcrumb-item">Clientes</a>
-        <span class="breadcrumb-sep">/</span>
-        <span class="breadcrumb-item current">Nuevo Cliente</span>
-       </nav>
-      </div>
-      <div class="topbar-right">
-       <button class="btn btn-primary">
-        <svg viewBox="0 0 24 24" style="width: 16px; height: 16px;">
-         <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-         <polyline points="17 21 17 13 7 13 7 21"></polyline>
-         <polyline points="7 3 7 8 15 8"></polyline>
-        </svg>
-        Guardar
-       </button>
-      </div>
-     </div>
+               <div class="layout-preview">
+                    <div class="flex-grow">
+                         <!-- Topbar -->
+                         <div class="topbar">
+                              <div class="topbar-left">
+                                   <button class="btn btn-outline"
+                                        style="padding: 0 12px; height: 32px;">Cancelar</button>
+                                   <nav class="breadcrumb">
+                                        <a href="#" class="breadcrumb-item">Clientes</a>
+                                        <span class="breadcrumb-sep">/</span>
+                                        <span class="breadcrumb-item current">Nuevo Cliente</span>
+                                   </nav>
+                              </div>
+                              <div class="topbar-right">
+                                   <button class="btn btn-primary">
+                                        <svg viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+                                             <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z">
+                                             </path>
+                                             <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                             <polyline points="7 3 7 8 15 8"></polyline>
+                                        </svg>
+                                        Guardar
+                                   </button>
+                              </div>
+                         </div>
 
-     <div class="main-content" style="max-width: 800px; margin: 0 auto;">
-      <h1 style="font-size: 24px; font-weight: 700; margin-bottom: 8px;">Nuevo Cliente</h1>
-      <p style="color: var(--text-secondary); margin-bottom: 32px;">Complete la información del cliente</p>
+                         <div class="main-content" style="max-width: 800px; margin: 0 auto;">
+                              <h1 style="font-size: 24px; font-weight: 700; margin-bottom: 8px;">Nuevo Cliente</h1>
+                              <p style="color: var(--text-secondary); margin-bottom: 32px;">Complete la información del
+                                   cliente</p>
 
-      <!-- Form -->
-      <div class="card">
-       <div class="detail-section-title" style="margin-bottom: 16px;">Información Personal</div>
+                              <!-- Form -->
+                              <div class="card">
+                                   <div class="detail-section-title" style="margin-bottom: 16px;">Información Personal
+                                   </div>
 
-       <div class="form-row">
-        <div class="form-group">
-         <label class="form-label">Nombre</label>
-         <input type="text" class="form-input" placeholder="John">
-        </div>
-        <div class="form-group">
-         <label class="form-label">Apellido</label>
-         <input type="text" class="form-input" placeholder="Doe">
-        </div>
-       </div>
+                                   <div class="form-row">
+                                        <div class="form-group">
+                                             <label class="form-label">Nombre</label>
+                                             <input type="text" class="form-input" placeholder="John">
+                                        </div>
+                                        <div class="form-group">
+                                             <label class="form-label">Apellido</label>
+                                             <input type="text" class="form-input" placeholder="Doe">
+                                        </div>
+                                   </div>
 
-       <div class="form-group">
-        <label class="form-label">Email</label>
-        <input type="email" class="form-input" placeholder="john@example.com">
-       </div>
+                                   <div class="form-group">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" class="form-input" placeholder="john@example.com">
+                                   </div>
 
-       <div class="form-group">
-        <label class="form-label">Teléfono</label>
-        <input type="tel" class="form-input" placeholder="+54 11 1234-5678">
-       </div>
-      </div>
+                                   <div class="form-group">
+                                        <label class="form-label">Teléfono</label>
+                                        <input type="tel" class="form-input" placeholder="+54 11 1234-5678">
+                                   </div>
+                              </div>
 
-      <div class="card" style="margin-top: 16px;">
-       <div class="detail-section-title" style="margin-bottom: 16px;">Dirección</div>
+                              <div class="card" style="margin-top: 16px;">
+                                   <div class="detail-section-title" style="margin-bottom: 16px;">Dirección</div>
 
-       <div class="form-group">
-        <label class="form-label">Dirección</label>
-        <input type="text" class="form-input" placeholder="Calle y número">
-       </div>
+                                   <div class="form-group">
+                                        <label class="form-label">Dirección</label>
+                                        <input type="text" class="form-input" placeholder="Calle y número">
+                                   </div>
 
-       <div class="form-row">
-        <div class="form-group">
-         <label class="form-label">Ciudad</label>
-         <input type="text" class="form-input" placeholder="Buenos Aires">
-        </div>
-        <div class="form-group">
-         <label class="form-label">Código Postal</label>
-         <input type="text" class="form-input" placeholder="C1000">
-        </div>
-       </div>
-      </div>
-     </div>
-    </div>
-   </div>
+                                   <div class="form-row">
+                                        <div class="form-group">
+                                             <label class="form-label">Ciudad</label>
+                                             <input type="text" class="form-input" placeholder="Buenos Aires">
+                                        </div>
+                                        <div class="form-group">
+                                             <label class="form-label">Código Postal</label>
+                                             <input type="text" class="form-input" placeholder="C1000">
+                                        </div>
+                                   </div>
+                              </div>
+                         </div>
+                    </div>
+               </div>
 
-   <div class="code-block">&lt;form class="form-page"&gt;
-    &lt;header class="topbar"&gt;
-    &lt;button type="button"&gt;Cancelar&lt;/button&gt;
-    &lt;button type="submit" class="btn-primary"&gt;Guardar&lt;/button&gt;
-    &lt;/header&gt;
+               <div class="code-block">&lt;form class="form-page"&gt;
+                    &lt;header class="topbar"&gt;
+                    &lt;button type="button"&gt;Cancelar&lt;/button&gt;
+                    &lt;button type="submit" class="btn-primary"&gt;Guardar&lt;/button&gt;
+                    &lt;/header&gt;
 
-    &lt;main class="main-content centered"&gt;
-    &lt;div class="card form-section"&gt;
-    &lt;div class="form-row"&gt;
-    &lt;div class="form-group"&gt;...&lt;/div&gt;
-    &lt;div class="form-group"&gt;...&lt;/div&gt;
-    &lt;/div&gt;
-    &lt;/div&gt;
-    &lt;/main&gt;
-    &lt;/form&gt;</div>
-  </section>
+                    &lt;main class="main-content centered"&gt;
+                    &lt;div class="card form-section"&gt;
+                    &lt;div class="form-row"&gt;
+                    &lt;div class="form-group"&gt;...&lt;/div&gt;
+                    &lt;div class="form-group"&gt;...&lt;/div&gt;
+                    &lt;/div&gt;
+                    &lt;/div&gt;
+                    &lt;/main&gt;
+                    &lt;/form&gt;</div>
+          </section>
 
-  <!-- ═══════════════════════════════════════════════════════════════════
+          <!-- ═══════════════════════════════════════════════════════════════════
        6. EMPTY STATE PAGE
        ═══════════════════════════════════════════════════════════════════ -->
-  <section class="layout-section" id="empty-state">
-   <h2 class="layout-title">6. Empty State</h2>
-   <p class="layout-description">
-    Placeholder state when no data exists. Always include a CTA to guide the user.
-   </p>
+          <section class="layout-section" id="empty-state">
+               <h2 class="layout-title">6. Empty State</h2>
+               <p class="layout-description">
+                    Placeholder state when no data exists. Always include a CTA to guide the user.
+               </p>
 
-   <div class="layout-preview short">
-    <div class="flex-grow">
-     <!-- Topbar -->
-     <div class="topbar">
-      <div class="topbar-left">
-       <nav class="breadcrumb">
-        <a href="#" class="breadcrumb-item">Reportes</a>
-        <span class="breadcrumb-sep">/</span>
-        <span class="breadcrumb-item current">Análisis</span>
-       </nav>
-      </div>
-     </div>
+               <div class="layout-preview short">
+                    <div class="flex-grow">
+                         <!-- Topbar -->
+                         <div class="topbar">
+                              <div class="topbar-left">
+                                   <nav class="breadcrumb">
+                                        <a href="#" class="breadcrumb-item">Reportes</a>
+                                        <span class="breadcrumb-sep">/</span>
+                                        <span class="breadcrumb-item current">Análisis</span>
+                                   </nav>
+                              </div>
+                         </div>
 
-     <div class="main-content">
-      <div class="empty-state">
-       <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-        <polyline points="14 2 14 8 20 8"></polyline>
-       </svg>
-       <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 8px; color: var(--text-secondary);">No hay datos
-        disponibles</h3>
-       <p style="font-size: 14px; max-width: 300px; margin-bottom: 24px;">Aún no tienes reportes generados. Crea tu
-        primer análisis para comenzar.</p>
-       <button class="btn btn-primary">
-        <svg viewBox="0 0 24 24" style="width: 16px; height: 16px;">
-         <line x1="12" y1="5" x2="12" y2="19"></line>
-         <line x1="5" y1="12" x2="19" y2="12"></line>
-        </svg>
-        Crear Reporte
-       </button>
-      </div>
-     </div>
-    </div>
-   </div>
+                         <div class="main-content">
+                              <div class="empty-state">
+                                   <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                        <polyline points="14 2 14 8 20 8"></polyline>
+                                   </svg>
+                                   <h3
+                                        style="font-size: 18px; font-weight: 600; margin-bottom: 8px; color: var(--text-secondary);">
+                                        No hay datos
+                                        disponibles</h3>
+                                   <p style="font-size: 14px; max-width: 300px; margin-bottom: 24px;">Aún no tienes
+                                        reportes generados. Crea tu
+                                        primer análisis para comenzar.</p>
+                                   <button class="btn btn-primary">
+                                        <svg viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+                                             <line x1="12" y1="5" x2="12" y2="19"></line>
+                                             <line x1="5" y1="12" x2="19" y2="12"></line>
+                                        </svg>
+                                        Crear Reporte
+                                   </button>
+                              </div>
+                         </div>
+                    </div>
+               </div>
 
-   <div class="code-block">&lt;div class="empty-state"&gt;
-    &lt;svg class="empty-icon"&gt;...&lt;/svg&gt;
-    &lt;h3&gt;No hay datos disponibles&lt;/h3&gt;
-    &lt;p&gt;Descripción de cómo proceder...&lt;/p&gt;
-    &lt;button class="btn btn-primary"&gt;Acción Principal&lt;/button&gt;
-    &lt;/div&gt;</div>
-  </section>
+               <div class="code-block">&lt;div class="empty-state"&gt;
+                    &lt;svg class="empty-icon"&gt;...&lt;/svg&gt;
+                    &lt;h3&gt;No hay datos disponibles&lt;/h3&gt;
+                    &lt;p&gt;Descripción de cómo proceder...&lt;/p&gt;
+                    &lt;button class="btn btn-primary"&gt;Acción Principal&lt;/button&gt;
+                    &lt;/div&gt;</div>
+          </section>
 
-  <!-- ═══════════════════════════════════════════════════════════════════
+          <!-- ═══════════════════════════════════════════════════════════════════
        7. SEARCH LAUNCHER LAYOUT
        ═══════════════════════════════════════════════════════════════════ -->
-  <section class="layout-section" id="search-launcher-layout">
-   <h2 class="layout-title">7. Search Launcher Layout</h2>
-   <p class="layout-description">
-    Immersive, minimalist entry point for complex applications. Focuses on search-first navigation
-    with high-impact typography and zero visual clutter. Ideal for admin home pages.
-   </p>
+          <section class="layout-section" id="search-launcher-layout">
+               <h2 class="layout-title">7. Search Launcher Layout</h2>
+               <p class="layout-description">
+                    Immersive, minimalist entry point for complex applications. Focuses on search-first navigation
+                    with high-impact typography and zero visual clutter. Ideal for admin home pages.
+               </p>
 
-   <div class="layout-preview" style="background: #000; display: flex; flex-direction: column;">
-    <!-- Top Bar -->
-    <div
-     style="height: 60px; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; position: relative; border-bottom: 1px solid rgba(255,255,255,0.05);">
-     <span
-      style="font-size: 10px; text-transform: uppercase; color: #a1a1aa; letter-spacing: 1px; font-weight: 600;">Admin</span>
+               <div class="layout-preview" style="background: #000; display: flex; flex-direction: column;">
+                    <!-- Top Bar -->
+                    <div
+                         style="height: 60px; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; position: relative; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                         <span
+                              style="font-size: 10px; text-transform: uppercase; color: #a1a1aa; letter-spacing: 1px; font-weight: 600;">Admin</span>
 
-     <!-- Absolute Center Badge -->
-     <span
-      style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 10px; color: #4ade80; background: rgba(74, 222, 128, 0.05); border: 1px solid rgba(74, 222, 128, 0.3); padding: 4px 12px; border-radius: 99px; font-weight: 600;">07-01-2026</span>
+                         <!-- Absolute Center Badge -->
+                         <span
+                              style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 10px; color: #4ade80; background: rgba(74, 222, 128, 0.05); border: 1px solid rgba(74, 222, 128, 0.3); padding: 4px 12px; border-radius: 99px; font-weight: 600;">07-01-2026</span>
 
-     <div style="display: flex; gap: 16px; align-items: center;">
-      <span style="width: 20px; height: 20px; background: #27272a; border-radius: 50%;"></span>
-     </div>
-    </div>
+                         <div style="display: flex; gap: 16px; align-items: center;">
+                              <span style="width: 20px; height: 20px; background: #27272a; border-radius: 50%;"></span>
+                         </div>
+                    </div>
 
-    <!-- Center -->
-    <div
-     style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px;">
-     <h1 style="font-size: 48px; font-weight: 800; color: #e4e4e7; margin: 0; letter-spacing: -1px;">APP TITLE</h1>
+                    <!-- Center -->
+                    <div
+                         style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px;">
+                         <h1
+                              style="font-size: 48px; font-weight: 800; color: #e4e4e7; margin: 0; letter-spacing: -1px;">
+                              APP TITLE</h1>
 
-     <div
-      style="width: 300px; padding: 10px 16px; background: #09090b; border: 1px solid #27272a; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
-      <span style="color: #52525b; font-size: 13px;">Buscar...</span>
-      <span
-       style="font-size: 10px; color: #52525b; border: 1px solid #27272a; padding: 1px 4px; border-radius: 4px;">⌘K</span>
-     </div>
+                         <div
+                              style="width: 300px; padding: 10px 16px; background: #09090b; border: 1px solid #27272a; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+                              <span style="color: #52525b; font-size: 13px;">Buscar...</span>
+                              <span
+                                   style="font-size: 10px; color: #52525b; border: 1px solid #27272a; padding: 1px 4px; border-radius: 4px;">⌘K</span>
+                         </div>
 
-     <div style="display: flex; gap: 16px;">
-      <span
-       style="font-size: 10px; font-weight: 700; color: #71717a; text-transform: uppercase; letter-spacing: 1px;">Link
-       1</span>
-      <span
-       style="font-size: 10px; font-weight: 700; color: #71717a; text-transform: uppercase; letter-spacing: 1px;">Link
-       2</span>
-     </div>
-    </div>
-   </div>
-  </section>
+                         <div style="display: flex; gap: 16px;">
+                              <span
+                                   style="font-size: 10px; font-weight: 700; color: #71717a; text-transform: uppercase; letter-spacing: 1px;">Link
+                                   1</span>
+                              <span
+                                   style="font-size: 10px; font-weight: 700; color: #71717a; text-transform: uppercase; letter-spacing: 1px;">Link
+                                   2</span>
+                         </div>
+                    </div>
+               </div>
+          </section>
 
-  <!-- ═══════════════════════════════════════════════════════════════════
+          <!-- ═══════════════════════════════════════════════════════════════════
        8. OPERATIONAL PLANNER LAYOUT
        ═══════════════════════════════════════════════════════════════════ -->
-  <section class="layout-section" id="operational-planner-layout">
-   <h2 class="layout-title">8. Operational Planner Layout</h2>
-   <p class="layout-description">
-    Complex layout for resource planning operations. Features a top KPI strip, a definition panel (Form), and a
-    multi-column detail grid with independent internal scrolling.
-   </p>
+          <section class="layout-section" id="operational-planner-layout">
+               <h2 class="layout-title">8. Operational Planner Layout</h2>
+               <p class="layout-description">
+                    Complex layout for resource planning operations. Features a top KPI strip, a definition panel
+                    (Form), and a
+                    multi-column detail grid with independent internal scrolling.
+               </p>
 
-   <div class="layout-preview" style="height: 600px;">
-    <div class="flex-layout">
-     <aside class="sidebar" style="width: 200px;">
-      <div class="sidebar-logo">⬡ FormulaMid</div>
-     </aside>
+               <div class="layout-preview" style="height: 600px;">
+                    <div class="flex-layout">
+                         <aside class="sidebar" style="width: 200px;">
+                              <div class="sidebar-logo">⬡ FormulaMid</div>
+                         </aside>
 
-     <div class="flex-grow" style="padding: 24px; background: var(--bg-body);">
-      <!-- Topbar -->
-      <div
-       style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 16px;">
-       <h1 style="font-size: 20px; font-weight: 700;">Planner de Jornada</h1>
-       <div class="btn btn-primary">Guardar</div>
-      </div>
+                         <div class="flex-grow" style="padding: 24px; background: var(--bg-body);">
+                              <!-- Topbar -->
+                              <div
+                                   style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 16px;">
+                                   <h1 style="font-size: 20px; font-weight: 700;">Planner de Jornada</h1>
+                                   <div class="btn btn-primary">Guardar</div>
+                              </div>
 
-      <!-- KPI Strip -->
-      <div style="display: flex; gap: 16px; margin-bottom: 24px;">
-       <div
-        style="padding: 12px; background: var(--bg-elevated); border: 1px solid var(--border-subtle); border-radius: 8px; flex: 1;">
-        <div style="font-size: 10px; text-transform: uppercase; color: var(--text-tertiary);">Costo Estimado</div>
-        <div style="font-size: 18px; font-weight: 700;">$450,000</div>
-       </div>
-       <div
-        style="padding: 12px; background: var(--bg-elevated); border: 1px solid var(--border-subtle); border-radius: 8px; flex: 1;">
-        <div style="font-size: 10px; text-transform: uppercase; color: var(--text-tertiary);">Break-even</div>
-        <div style="font-size: 18px; font-weight: 700;">$570,000</div>
-       </div>
-      </div>
+                              <!-- KPI Strip -->
+                              <div style="display: flex; gap: 16px; margin-bottom: 24px;">
+                                   <div
+                                        style="padding: 12px; background: var(--bg-elevated); border: 1px solid var(--border-subtle); border-radius: 8px; flex: 1;">
+                                        <div
+                                             style="font-size: 10px; text-transform: uppercase; color: var(--text-tertiary);">
+                                             Costo Estimado</div>
+                                        <div style="font-size: 18px; font-weight: 700;">$450,000</div>
+                                   </div>
+                                   <div
+                                        style="padding: 12px; background: var(--bg-elevated); border: 1px solid var(--border-subtle); border-radius: 8px; flex: 1;">
+                                        <div
+                                             style="font-size: 10px; text-transform: uppercase; color: var(--text-tertiary);">
+                                             Break-even</div>
+                                        <div style="font-size: 18px; font-weight: 700;">$570,000</div>
+                                   </div>
+                              </div>
 
-      <!-- Definition Panel -->
-      <div
-       style="padding: 16px; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 8px; margin-bottom: 16px;">
-       <div
-        style="font-size: 12px; font-weight: 600; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 12px;">
-        A. Definición</div>
-       <div style="display: flex; gap: 16px;">
-        <div style="flex: 1; height: 32px; background: var(--bg-elevated); border-radius: 4px;"></div>
-        <div style="flex: 2; height: 32px; background: var(--bg-elevated); border-radius: 4px;"></div>
-       </div>
-      </div>
+                              <!-- Definition Panel -->
+                              <div
+                                   style="padding: 16px; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 8px; margin-bottom: 16px;">
+                                   <div
+                                        style="font-size: 12px; font-weight: 600; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 12px;">
+                                        A. Definición</div>
+                                   <div style="display: flex; gap: 16px;">
+                                        <div
+                                             style="flex: 1; height: 32px; background: var(--bg-elevated); border-radius: 4px;">
+                                        </div>
+                                        <div
+                                             style="flex: 2; height: 32px; background: var(--bg-elevated); border-radius: 4px;">
+                                        </div>
+                                   </div>
+                              </div>
 
-      <!-- 3-Column Detail Grid -->
-      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; flex: 1; min-height: 0;">
-       <!-- Grid Items - Simplified for preview -->
-       <div
-        style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 8px; height: 100%;">
-       </div>
-       <div
-        style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 8px; height: 100%;">
-       </div>
-       <div
-        style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 8px; height: 100%;">
-       </div>
-      </div>
+                              <!-- 3-Column Detail Grid -->
+                              <div
+                                   style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; flex: 1; min-height: 0;">
+                                   <!-- Grid Items - Simplified for preview -->
+                                   <div
+                                        style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 8px; height: 100%;">
+                                   </div>
+                                   <div
+                                        style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 8px; height: 100%;">
+                                   </div>
+                                   <div
+                                        style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 8px; height: 100%;">
+                                   </div>
+                              </div>
+
+                         </div>
+                    </div>
+               </div>
+          </section>
 
      </div>
-    </div>
-   </div>
-  </section>
-
- </div>
 </body>
 
 </html>

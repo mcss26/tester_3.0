@@ -4,10 +4,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Midnight - Logística</title>
+  <meta name="theme-color" content="#0a0a0f">
+  <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
+  <title>Logística — Midnight</title>
   <link rel="stylesheet" href="../../assets/css/tokens.css">
   <link rel="stylesheet" href="../../assets/css/components.css">
-  <link rel="stylesheet" href="../../assets/css/admin-master.css">
+  <link rel="stylesheet" href="../../assets/css/admin-central-stock.css">
 </head>
 
 <body class="app-shell admin-shell admin-scroll" data-allowed-roles="logistico,admin">
@@ -35,17 +37,6 @@
 
     <!-- Right: Notifications + Avatar -->
     <div class="topbar-end">
-      <!-- Notifications Dropdown -->
-      <div class="dropdown-container">
-        <button id="btn-notifications" class="icon-btn" aria-label="Notificaciones">
-          <svg class="icon-notification" viewBox="0 0 24 24">
-            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-          </svg>
-          <span class="notification-badge" id="notification-count">0</span>
-        </button>
-      </div>
-
       <!-- User Menu Dropdown -->
       <div class="dropdown-container">
         <button class="avatar avatar-sm" id="user-avatar" aria-label="Menú de usuario">LG</button>
@@ -88,25 +79,25 @@
 
             <!-- Dashboard Widgets / Link Cards -->
             <div class="profiles-grid">
-              <a href="logistica-stock.html" class="profile-card" style="text-decoration: none;">
+              <a href="logistica-stock.html" class="profile-card no-underline">
                 <div class="profile-avatar">📦</div>
                 <h3 class="profile-name">Stock</h3>
                 <p class="profile-role">Gestión de Inventario</p>
                 <span class="profile-info">Consultar y ajustar stock</span>
               </a>
-              <a href="logistica-distribucion.html" class="profile-card" style="text-decoration: none;">
+              <a href="logistica-distribucion.html" class="profile-card no-underline">
                 <div class="profile-avatar">🔄</div>
                 <h3 class="profile-name">Distribución</h3>
                 <p class="profile-role">Movimientos Internos</p>
                 <span class="profile-info">Transferencias entre áreas</span>
               </a>
-              <a href="logistica-recepcion.html" class="profile-card" style="text-decoration: none;">
+              <a href="logistica-recepcion.html" class="profile-card no-underline">
                 <div class="profile-avatar">📥</div>
                 <h3 class="profile-name">Recepción</h3>
                 <p class="profile-role">Ingreso de Mercadería</p>
                 <span class="profile-info">Recepcionar proveedores</span>
               </a>
-              <a href="logistica-seguimiento.html" class="profile-card" style="text-decoration: none;">
+              <a href="logistica-seguimiento.html" class="profile-card no-underline">
                 <div class="profile-avatar">🚚</div>
                 <h3 class="profile-name">Seguimiento</h3>
                 <p class="profile-role">Trazabilidad</p>
@@ -119,17 +110,16 @@
     </div>
   </main>
 
-  <!-- Scripts -->
-  <script defer src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <!-- Core Scripts -->
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script defer src="../../assets/js/core/config.js"></script>
   <script defer src="../../assets/js/core/supabase-client.js"></script>
-  <script defer src="../../assets/js/core/auth.js"></script>
   <script defer src="../../assets/js/core/utils.js"></script>
+  <script defer src="../../assets/js/core/auth.js"></script>
   <script defer src="../../assets/js/core/toast.js"></script>
-
-  <!-- Page Specific Script -->
-  <script defer src="../../assets/js/modules/logistica/logistica-index.js"></script>
+  <script defer src="../../assets/js/core/work-day-helper.js"></script>
   <script src="../../assets/js/core/navigation.js"></script>
+  <script defer src="../../assets/js/modules/logistica/logistica-index.js"></script>
 </body>
 
 </html>

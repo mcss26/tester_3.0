@@ -478,8 +478,4 @@
     });
   }
 
-  // 6. Shared Events
-  document
-    .getElementById("btn-logout")
-    ?.addEventListener("click", () => window.Auth.signOutAndGoLogin());
 })();
