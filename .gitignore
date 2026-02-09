@@ -17,6 +17,7 @@ nul
 
 # Agent/AI
 .agent/
+mcp.json
 
 # Logs
 *.log

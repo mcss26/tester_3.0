@@ -61,6 +61,13 @@
         btnCreateEvent: document.getElementById('btnCreateEvent'),
 
         // Cost Modal
+        btnAddCost: document.getElementById('btn-add-cost'),
+        costModal: document.getElementById('costModal'),
+        costModalTitle: document.getElementById('costModalTitle'),
+        inputCostName: document.getElementById('input-cost-name'),
+        inputCostAmount: document.getElementById('input-cost-amount'),
+        inputCostId: document.getElementById('input-cost-id'),
+        btnCancelCostModal: document.getElementById('btnCancelCostModal'),
         btnSaveCost: document.getElementById('btnSaveCost'),
 
         // ── Cierre / Evento Tab ──
@@ -274,6 +281,17 @@
         ui.btnNewEvent?.addEventListener('click', openEventModal);
         ui.btnCancelEventModal?.addEventListener('click', closeEventModal);
         ui.btnCreateEvent?.addEventListener('click', handleCreateEvent);
+
+        // Cost Modal
+        ui.btnAddCost?.addEventListener('click', () => openCostModal());
+        ui.btnCancelCostModal?.addEventListener('click', closeCostModal);
+        ui.btnSaveCost?.addEventListener('click', handleSaveCost);
+
+        // Cost Edit (delegated)
+        ui.costsContainer?.addEventListener('click', (e) => {
+            const editBtn = e.target.closest('.js-edit-cost');
+            if (editBtn) openCostModal(editBtn.dataset.costId);
+        });
 
         // ── Tab Bar ──
         ui.tabBar?.addEventListener('click', (e) => {
@@ -632,6 +650,12 @@
                     <input type="number" min="0" value="${plan.amount}" 
                         class="input input-compact text-center w-200"
                         data-cost-id="${cost.id}">
+                    <button class="btn-icon btn-sm js-edit-cost" data-cost-id="${cost.id}" title="Editar definición">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                    </button>
                 </div>
             </div>
         `}).join('');
@@ -794,9 +818,103 @@
         }
     }
 
-    // 11. Modal Logic (Events)
+    // 11. Modal Logic (Events & Costs)
     function openEventModal() { ui.createEventModal.classList.remove('hidden'); }
     function closeEventModal() { ui.createEventModal.classList.add('hidden'); }
+
+    function openCostModal(costId) {
+        // Reset
+        ui.inputCostName.value = '';
+        ui.inputCostAmount.value = '';
+        ui.inputCostId.value = '';
+
+        if (costId) {
+            // Edit mode
+            const cost = state.openingCosts.find(c => c.id === costId);
+            if (cost) {
+                ui.costModalTitle.textContent = 'Editar Costo de Apertura';
+                ui.inputCostName.value = cost.title;
+                ui.inputCostAmount.value = cost.base_amount;
+                ui.inputCostId.value = cost.id;
+            }
+        } else {
+            // Add mode
+            ui.costModalTitle.textContent = 'Agregar Costo de Apertura';
+        }
+
+        ui.costModal.classList.remove('hidden');
+        ui.inputCostName.focus();
+    }
+
+    function closeCostModal() {
+        ui.costModal.classList.add('hidden');
+    }
+
+    async function handleSaveCost() {
+        const title = ui.inputCostName.value.trim();
+        const amount = parseFloat(ui.inputCostAmount.value);
+        const editId = ui.inputCostId.value || null;
+
+        if (!title || isNaN(amount) || amount < 0) {
+            return window.Toast.warning('Completa nombre y monto válido.');
+        }
+
+        const btn = ui.btnSaveCost;
+        const prevText = btn.textContent;
+        btn.textContent = 'Guardando...';
+        btn.disabled = true;
+
+        try {
+            if (editId) {
+                // ── UPDATE ──
+                const { error } = await window.sb.from('cost_definitions')
+                    .update({ title, base_amount: amount })
+                    .eq('id', editId);
+
+                if (error) throw error;
+
+                // Update local state
+                const idx = state.openingCosts.findIndex(c => c.id === editId);
+                if (idx !== -1) {
+                    state.openingCosts[idx].title = title;
+                    state.openingCosts[idx].base_amount = amount;
+                }
+                state.costsPlan[editId] = { amount, isAdjusted: false };
+
+                window.Toast.success('Costo actualizado.');
+            } else {
+                // ── INSERT ──
+                const { data, error } = await window.sb.from('cost_definitions')
+                    .insert({
+                        title,
+                        base_amount: amount,
+                        frequency: 'per_event',
+                        is_active: true
+                    })
+                    .select()
+                    .single();
+
+                if (error) throw error;
+
+                state.openingCosts.push(data);
+                state.costsPlan[data.id] = { amount: data.base_amount, isAdjusted: false };
+
+                window.Toast.success('Costo agregado.');
+            }
+
+            // Re-render
+            renderCostsList();
+            calculateTotals();
+            closeCostModal();
+
+        } catch (e) {
+            console.error(e);
+            window.Toast.error('Error guardando costo.');
+        } finally {
+            btn.textContent = prevText;
+            btn.disabled = false;
+        }
+    }
     
     async function handleCreateEvent() {
         const name = ui.inputEventName.value;

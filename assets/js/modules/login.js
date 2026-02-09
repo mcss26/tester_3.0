@@ -70,6 +70,13 @@
     });
   }
 
+  // 3. Staff Toggle
+  const staffBtn = document.getElementById('btn-staff-toggle');
+  const staffHint = document.getElementById('staff-hint');
+  if (staffBtn && staffHint) {
+    staffBtn.addEventListener('click', () => staffHint.classList.toggle('hidden'));
+  }
+
   // Simple error translator
   function translateError(msg) {
     if (msg.includes('Invalid login credentials')) return 'Credenciales incorrectas.';

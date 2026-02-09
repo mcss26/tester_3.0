@@ -1,8 +1,12 @@
 {
-    "builder.serverUrl": "https://localhost8000",
+    "builder.serverUrl": "http://localhost:8080/pages/admin/admin-workdays.html",
     "builder.command": "npm\n",
-    "builder.runDevServer": false,
+    "builder.runDevServer": true,
     "builder.autoDetectDevServer": true,
     "builder.launchType": "editor",
-    "pdf-preview.default.sidebar": false
+    "pdf-preview.default.sidebar": false,
+    "extensions.experimental.deferredStartupFinishedActivation": true,
+    "extensions.supportNodeGlobalNavigator": false,
+    "oneDarkPro.bold": true,
+    "oneDarkPro.editorTheme": "Dark Modern"
 }

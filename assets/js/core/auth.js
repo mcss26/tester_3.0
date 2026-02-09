@@ -117,6 +117,10 @@ window.Auth = {
   },
 
   async guardOrRedirect(allowedRoles = []) {
+    const allowed = (allowedRoles || [])
+      .map((r) => String(r).toLowerCase().trim())
+      .filter(Boolean);
+
     const session = await this.getSession();
 
     if (!session) {
@@ -125,24 +129,19 @@ window.Auth = {
     }
 
     const profile = await this.getMyProfile();
+
     if (!profile) {
-      console.error("Session exists but no profile found. Signing out.");
-      await this.signOutAndGoLogin();
+      console.error("Session exists but no profile found.");
       return null;
     }
 
-    // normalizar roles para comparar
-    const role = String(profile.role || "")
-      .toLowerCase()
-      .trim();
-    const allowed = (allowedRoles || [])
-      .map((r) => String(r).toLowerCase().trim())
-      .filter(Boolean);
+    const role = String(profile.role || "").toLowerCase().trim();
 
     if (allowed.length > 0 && !allowed.includes(role)) {
       const landingPath = this.roleLanding(role);
-      if (window.location.pathname !== landingPath)
+      if (window.location.pathname !== landingPath) {
         window.location.href = landingPath;
+      }
       return null;
     }
 

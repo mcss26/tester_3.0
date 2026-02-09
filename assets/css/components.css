@@ -4699,6 +4699,17 @@ body.login .error-message:not(:empty) {
   transform: translateY(0);
 }
 
+@keyframes cardEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 .visually-hidden {
   height: 1px;
   padding: 0;
@@ -5211,6 +5222,13 @@ body.login .error-message:not(:empty) {
   margin-top: 32px;
   padding-top: 16px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+}
+
+body.login .staff-hint {
+  font-size: 0.8rem;
+  opacity: 0.7;
+  margin-top: 0.5rem;
   text-align: center;
 }
 
