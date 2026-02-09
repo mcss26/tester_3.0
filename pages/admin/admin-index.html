@@ -35,8 +35,9 @@
 
          <!-- User Menu Dropdown -->
          <div class="dropdown-container">
-            <button class="avatar avatar-sm" id="user-avatar" aria-label="Menú de usuario">...</button>
-            <div class="dropdown-menu dropdown-user hidden" id="user-menu">
+            <button class="avatar avatar-sm" id="user-avatar" aria-label="Menú de usuario" aria-haspopup="true"
+               aria-expanded="false">...</button>
+            <div class="dropdown-menu dropdown-user hidden" id="user-menu" role="menu">
                <div class="dropdown-header" id="user-name-display">Usuario</div>
                <div class="dropdown-divider"></div>
                <a href="./admin-config.html" class="dropdown-item">
@@ -62,18 +63,19 @@
 
    <!-- CENTER CONTENT -->
    <main class="launcher-center">
-      <h1 class="main-title">MIDNIGHT CLUB</h1>
+      <h1 class="launcher-title">MIDNIGHT CLUB</h1>
 
       <!-- Search Bar -->
-      <div class="launcher-search">
-         <input type="text" id="global-search" class="input" placeholder="Buscar..." aria-label="NavegaciÃ³n rÃ¡pida">
-         <svg class="header-search-icon" viewBox="0 0 24 24">
+      <div class="search-wrapper">
+         <input type="text" id="global-search" class="search-input" placeholder="Buscar..."
+            aria-label="Navegación rápida">
+         <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
             <circle cx="11" cy="11" r="8"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
          </svg>
       </div>
 
-      <nav class="quick-links">
+      <nav class="main-nav">
          <a href="admin-workdays.html" class="nav-link">Workdays</a>
          <a href="admin-central-stock.html" class="nav-link">Stock Central</a>
          <a href="admin-pagos.html" class="nav-link">Payments</a>
@@ -96,68 +98,7 @@
    <script defer src="../../assets/js/core/work-day-helper.js"></script>
    <script defer src="../../assets/js/core/navigation.js"></script>
 
-   <script>
-      (async function () {
-         'use strict';
-
-         // Auth Guard
-         const session = await window.Auth.guard(['admin']);
-         if (!session) return;
-
-         const avatar = document.getElementById('user-avatar');
-         const userNameDisplay = document.getElementById('user-name-display');
-         const userMenu = document.getElementById('user-menu');
-         const workdayStatus = document.getElementById('workday-status');
-         const workdayText = document.getElementById('workday-text');
-         const logoutBtn = document.getElementById('btn-logout');
-
-         // 1. Set user info
-         const user = session.user;
-         const meta = user.user_metadata || {};
-         const fullName = meta.full_name || meta.name || user.email || '';
-         const initials = fullName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'U';
-         avatar.textContent = initials;
-         userNameDisplay.textContent = fullName || user.email;
-
-         // 2. Load workday status
-         try {
-            const workday = await window.WorkDayHelper.getOpenWorkDay();
-            if (workday) {
-               const date = new Date(workday.work_date + 'T12:00:00');
-               const dayName = date.toLocaleDateString('es-AR', { weekday: 'long' });
-               const dayNum = date.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' });
-               workdayText.textContent = `${dayName} ${dayNum}`;
-               workdayStatus.classList.remove('status-closed', 'status-planning');
-               workdayStatus.classList.add(workday.status === 'open' ? 'status-open' : 'status-planning');
-            } else {
-               workdayText.textContent = 'Sin jornada activa';
-               workdayStatus.classList.remove('status-open', 'status-planning');
-               workdayStatus.classList.add('status-closed');
-            }
-         } catch (err) {
-            console.warn('WorkDay fetch error:', err);
-            workdayText.textContent = 'Error';
-         }
-
-         // 3. Avatar Dropdown Toggle
-         avatar.addEventListener('click', (e) => {
-            e.stopPropagation();
-            userMenu.classList.toggle('hidden');
-         });
-
-         document.addEventListener('click', () => {
-            userMenu.classList.add('hidden');
-         });
-
-         // 4. Logout
-         logoutBtn?.addEventListener('click', async (e) => {
-            e.preventDefault();
-            if (confirm('¿Cerrar sesión?')) {
-               await window.Auth.logout();
-            }
-         });
-      })();
-   </script>
+   <script defer src="../../assets/js/modules/admin/admin-portal.js"></script>
 
 </body>
 

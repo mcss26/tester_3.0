@@ -1,6 +1,9 @@
 /* =========================================================================
    LAUNCHER PAGE — Shared styles for index/landing pages
-   Used by: admin-index.html, encargado-barra-index.html
+   Used by: admin-index.html, encargado-barra-index.html,
+            encargado-caja-index.html, staff-barra-index.html,
+            operativo-index.html
+   Component: Portal/Dashboard entry points
    ========================================================================= */
 
 body.launcher-page {
@@ -8,6 +11,7 @@ body.launcher-page {
   overflow: hidden;
 }
 
+/* MAIN CONTENT LAYOUT */
 .launcher-center {
   flex: 1;
   display: flex;
@@ -18,7 +22,8 @@ body.launcher-page {
   margin-top: calc(var(--topbar-height) + 40px);
 }
 
-.main-title {
+/* PAGE TITLE */
+.launcher-title {
   font-size: 64px;
   font-weight: 800;
   color: var(--text-primary);
@@ -31,25 +36,59 @@ body.launcher-page {
    Moved to components.css (Global Component)
 */
 
-/* QUICK LINKS */
-.quick-links {
+/* SEARCH COMPONENT */
+.search-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  margin: 8px 0;
+}
+
+.search-input {
+  width: 100%;
+  padding-left: 36px;
+}
+
+.search-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  color: var(--text-tertiary);
+  pointer-events: none;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* MAIN NAVIGATION */
+.main-nav {
   display: flex;
   gap: 32px;
   margin-top: 8px;
 }
 
 .nav-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-tertiary);
   font-size: 12px;
   font-weight: 600;
-  color: var(--text-tertiary);
   text-decoration: none;
   text-transform: uppercase;
   letter-spacing: 1px;
-  padding: 12px 24px;
-  border-radius: 8px;
   transition: all 0.2s ease;
-  border: 1px solid transparent;
-  position: relative;
+  cursor: pointer;
 }
 
 .nav-link:hover {
@@ -58,13 +97,18 @@ body.launcher-page {
   border-color: rgba(255, 255, 255, 0.08);
 }
 
+.nav-link:focus-visible {
+  outline: 2px solid var(--accent-focus);
+  outline-offset: 2px;
+}
+
 .nav-link.is-disabled {
   opacity: 0.3;
   pointer-events: none;
   cursor: not-allowed;
 }
 
-/* BADGE for pending items */
+/* BADGE INDICATOR for nav links */
 .nav-badge {
   position: absolute;
   top: -4px;
@@ -73,8 +117,8 @@ body.launcher-page {
   height: 18px;
   padding: 0 5px;
   border-radius: 99px;
-  background: #ef4444;
-  color: #fff;
+  background: var(--danger);
+  color: var(--neutral-1000);
   font-size: 10px;
   font-weight: 700;
   display: flex;
@@ -83,27 +127,35 @@ body.launcher-page {
   line-height: 1;
 }
 
-/* LAUNCHER SEARCH (replaces inline styles) */
-.launcher-search {
-  width: 100%;
-  max-width: 400px;
-  margin: 8px 0;
-}
-
-.launcher-search .input {
-  width: 100%;
-  padding-left: 36px;
-}
-
 /* FOOTER */
 .launcher-footer {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
+  padding: 16px;
   text-align: center;
   font-size: 10px;
   color: var(--text-tertiary);
-  padding: 16px;
   opacity: 0.5;
+}
+
+/* RESPONSIVE ADJUSTMENTS */
+@media (max-width: 768px) {
+  .launcher-title {
+    font-size: 40px;
+  }
+  .main-nav {
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    max-width: 300px;
+  }
+  .nav-link {
+    width: 100%;
+    justify-content: center;
+  }
+  .search-wrapper {
+    max-width: 300px;
+  }
 }
