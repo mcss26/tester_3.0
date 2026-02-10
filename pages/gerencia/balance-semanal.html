@@ -9,104 +9,135 @@
     <title>Balance Semanal — Midnight</title>
     <link rel="stylesheet" href="../../assets/css/tokens.css">
     <link rel="stylesheet" href="../../assets/css/components.css">
+    <link rel="stylesheet" href="../../assets/css/admin-master.css">
     <link rel="stylesheet" href="../../assets/css/balance-semanal.css">
 </head>
 
-<body class="bg-dark text-white" data-allowed-roles="admin,gerente,contable">
-    <div class="center-content">
-        <!-- Header -->
-        <header class="operativo-header">
-            <div class="row-flex align-center gap-md">
-                <button class="footer-link back-link" onclick="window.history.back()">
-                    <div class="icon-box">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M15 18l-6-6 6-6" />
+<body class="app-shell admin-shell admin-scroll" data-allowed-roles="admin,gerente,contable">
+
+    <!-- Topbar: Golden Standard -->
+    <header class="topbar">
+        <nav class="breadcrumb topbar-start">
+            <span class="breadcrumb-item">
+                <a class="breadcrumb-link" href="../admin/admin-index.html">Gerencia</a>
+            </span>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-item current">Balance Semanal</span>
+        </nav>
+
+        <div class="topbar-center header-search">
+            <input type="text" id="global-search" class="input" placeholder="Ir a..." aria-label="Navegación rápida">
+            <span class="header-shortcut">⌘K</span>
+        </div>
+
+        <div class="topbar-end">
+            <div class="dropdown-container">
+                <button class="avatar avatar-sm" id="user-avatar" aria-label="Menú de usuario">GR</button>
+                <div class="dropdown-menu dropdown-user hidden" id="user-menu">
+                    <div class="dropdown-header" id="user-name-display">Usuario</div>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" id="btn-logout" class="dropdown-item dropdown-item-danger">
+                        <svg class="dropdown-icon" viewBox="0 0 24 24">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
                         </svg>
-                    </div>
-                    <span>Volver</span>
-                </button>
-                <h1 class="panel-title">Balance Semanal</h1>
-            </div>
-        </header>
-
-        <main class="page-shell w-full max-w-1000">
-
-            <!-- KPI Cards -->
-            <div class="grid-columns gap-md mb-lg balance-kpi-grid">
-                <!-- KPI Card -->
-                <div class="stat-card">
-                    <h3 class="stat-label">Ingresos Totales</h3>
-                    <div class="stat-value status-success" id="kpi-income">$0.00</div>
-                    <div class="stat-trend" id="kpi-income-trend">--</div>
-                </div>
-                <!-- KPI Card -->
-                <div class="stat-card">
-                    <h3 class="stat-label">Gastos Operativos</h3>
-                    <div class="stat-value status-error" id="kpi-expenses">$0.00</div>
-                    <div class="stat-trend" id="kpi-expenses-trend">--</div>
-                </div>
-                <!-- KPI Card -->
-                <div class="stat-card is-highlight">
-                    <h3 class="stat-label">Profit Semanal</h3>
-                    <div class="stat-value text-white" id="kpi-profit">$0.00</div>
-                    <div class="stat-trend" id="kpi-profit-margin">Margen: 0%</div>
+                        Cerrar Sesión
+                    </a>
                 </div>
             </div>
+        </div>
+    </header>
 
-            <!-- Detailed Table -->
-            <div class="staff-dashboard">
-                <div class="dashboard-header flex-between align-center mb-md">
-                    <h2 class="dashboard-title">Detalle Semanal</h2>
-                    <div class="row-flex gap-sm">
-                        <select id="filter-year" class="input input-sm">
-                            <option value="2026">2026</option>
-                            <option value="2025">2025</option>
-                        </select>
-                        <select id="filter-month" class="input input-sm">
-                            <option value="all">Todo el Año</option>
-                            <option value="1">Enero</option>
-                            <option value="2">Febrero</option>
-                            <!-- JS will populate if needed -->
-                        </select>
-                        <button id="btn-export" class="btn-ghost btn-sm" title="Exportar CSV">📥 CSV</button>
-                        <button id="btn-refresh" class="btn-icon btn-ghost" title="Actualizar">↻</button>
-                    </div>
-                </div>
+    <main class="page-shell">
+        <div class="page-card-wrap">
+            <div class="page-card">
 
-                <div class="table-viewport min-h-400">
-                    <div id="loading-state" class="center-content p-8">
-                        <div class="spinner"></div>
-                        <p class="muted mt-2">Cargando datos financieros...</p>
+                <div class="staff-dashboard">
+                    <div class="dashboard-header align-start">
+                        <div>
+                            <h1 class="dashboard-title dashboard-title-soft">Balance Semanal</h1>
+                            <p class="text-sm text-muted">Resumen financiero semanal y tendencias.</p>
+                        </div>
                     </div>
 
-                    <div class="table-scroll hidden" id="table-container">
-                        <table class="table table-sticky">
-                            <thead>
-                                <tr class="table-head">
-                                    <th class="table-cell">Semana</th>
-                                    <th class="table-cell text-right">Ingresos</th>
-                                    <th class="table-cell text-right">Gastos</th>
-                                    <th class="table-cell text-right">Impuestos (Est)</th>
-                                    <th class="table-cell text-right">Profit</th>
-                                    <th class="table-cell text-right">Cash Flow</th>
-                                </tr>
-                            </thead>
-                            <tbody id="weekly-table-body">
-                                <!-- Injected by JS -->
-                            </tbody>
-                        </table>
+                    <!-- KPI Cards -->
+                    <div class="grid-columns gap-md mb-lg balance-kpi-grid">
+                        <!-- KPI Card -->
+                        <div class="stat-card">
+                            <h3 class="stat-label">Ingresos Totales</h3>
+                            <div class="stat-value status-success" id="kpi-income">$0.00</div>
+                            <div class="stat-trend" id="kpi-income-trend">--</div>
+                        </div>
+                        <!-- KPI Card -->
+                        <div class="stat-card">
+                            <h3 class="stat-label">Gastos Operativos</h3>
+                            <div class="stat-value status-error" id="kpi-expenses">$0.00</div>
+                            <div class="stat-trend" id="kpi-expenses-trend">--</div>
+                        </div>
+                        <!-- KPI Card -->
+                        <div class="stat-card is-highlight">
+                            <h3 class="stat-label">Profit Semanal</h3>
+                            <div class="stat-value text-white" id="kpi-profit">$0.00</div>
+                            <div class="stat-trend" id="kpi-profit-margin">Margen: 0%</div>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Trend Chart -->
-                <div id="chart-card" class="staff-dashboard hidden mt-md p-4">
-                    <h3 class="dashboard-subtitle muted mb-sm">Tendencia Semanal</h3>
-                    <canvas id="trend-chart" height="220"></canvas>
+                    <!-- Detailed Table -->
+                    <div class="staff-dashboard">
+                        <div class="dashboard-header flex-between align-center mb-md">
+                            <h2 class="dashboard-title">Detalle Semanal</h2>
+                            <div class="row-flex gap-sm">
+                                <select id="filter-year" class="input input-sm">
+                                    <option value="2026">2026</option>
+                                    <option value="2025">2025</option>
+                                </select>
+                                <select id="filter-month" class="input input-sm">
+                                    <option value="all">Todo el Año</option>
+                                    <option value="1">Enero</option>
+                                    <option value="2">Febrero</option>
+                                    <!-- JS will populate if needed -->
+                                </select>
+                                <button id="btn-export" class="btn-ghost btn-sm" title="Exportar CSV">📥 CSV</button>
+                                <button id="btn-refresh" class="btn-icon btn-ghost" title="Actualizar">↻</button>
+                            </div>
+                        </div>
+
+                        <div class="table-viewport min-h-400">
+                            <div id="loading-state" class="center-content p-8">
+                                <div class="spinner"></div>
+                                <p class="muted mt-2">Cargando datos financieros...</p>
+                            </div>
+
+                            <div class="table-scroll hidden" id="table-container">
+                                <table class="table table-sticky">
+                                    <thead>
+                                        <tr class="table-head">
+                                            <th class="table-cell">Semana</th>
+                                            <th class="table-cell text-right">Ingresos</th>
+                                            <th class="table-cell text-right">Gastos</th>
+                                            <th class="table-cell text-right">Impuestos (Est)</th>
+                                            <th class="table-cell text-right">Profit</th>
+                                            <th class="table-cell text-right">Cash Flow</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="weekly-table-body">
+                                        <!-- Injected by JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Trend Chart -->
+                        <div id="chart-card" class="staff-dashboard hidden mt-md p-4">
+                            <h3 class="dashboard-subtitle muted mb-sm">Tendencia Semanal</h3>
+                            <canvas id="trend-chart" height="220"></canvas>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </main>
-    </div>
+        </div>
+    </main>
 
     <!-- Scripts -->
     <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>

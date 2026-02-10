@@ -53,7 +53,7 @@
 /* KPI Value Small */
 .kpi-value-sm-bold {
     font-size: var(--text-sm);
-    font-weight: 700;
+    font-weight: var(--fw-bold);
 }
 
 .footer-actions-right {
@@ -93,7 +93,7 @@
 
 .summary-metric-label {
     font-size: 11px;
-    font-weight: 600;
+    font-weight: var(--fw-semibold);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: var(--text-muted);
@@ -101,7 +101,7 @@
 
 .summary-metric-value {
     font-size: var(--fs-xl);
-    font-weight: 700;
+    font-weight: var(--fw-bold);
     color: var(--text-primary);
     font-family: var(--font-mono);
 }
@@ -154,7 +154,7 @@
     font-family: var(--font-mono);
     font-size: var(--fs-sm);
     color: var(--text-primary);
-    font-weight: 500;
+    font-weight: var(--fw-medium);
     min-width: 140px;
     justify-content: center;
 }
@@ -172,7 +172,7 @@
     padding: 2px 8px;
     border-radius: var(--radius-full);
     font-size: 10px;
-    font-weight: 700;
+    font-weight: var(--fw-bold);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     margin-left: 12px;
@@ -241,8 +241,8 @@
     right: 0;
     bottom: 0;
     background-color: var(--bg-tertiary);
-    transition: .4s;
-    border-radius: 20px;
+    transition: var(--transition-slow);
+    border-radius: var(--radius-2xl);
 }
 
 .toggle-slider:before {
@@ -252,8 +252,8 @@
     width: 16px;
     left: 2px;
     bottom: 2px;
-    background-color: white;
-    transition: .4s;
+    background-color: var(--neutral-1000);
+    transition: var(--transition-slow);
     border-radius: 50%;
 }
 

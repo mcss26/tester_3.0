@@ -14,26 +14,26 @@
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     padding: 8px 12px;
-    border-radius: 8px;
+    border-radius: var(--radius-button);
 }
 
 .stat-chip.mco {
-    border-color: #e4d2a8;
+    border-color: var(--brand-gold);
 }
 
 .stat-chip.mco .stat-value {
-    color: #e4d2a8;
+    color: var(--brand-gold);
 }
 
 .stat-label {
     color: rgba(255, 255, 255, 0.5);
-    font-weight: 600;
+    font-weight: var(--fw-semibold);
 }
 
 .stat-value {
-    color: #fff;
-    font-weight: 700;
-    font-family: monospace;
+    color: var(--neutral-1000);
+    font-weight: var(--fw-bold);
+    font-family: var(--font-mono);
     font-size: 14px;
 }
 
@@ -51,19 +51,19 @@
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #e4d2a8 0%, #c9a96e 100%);
+    background: linear-gradient(135deg, var(--brand-gold) 0%, var(--brand-gold-dark) 100%);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 700;
+    font-weight: var(--fw-bold);
     font-size: 18px;
-    color: #000;
+    color: var(--neutral-0);
 }
 
 .member-name {
     font-size: 16px;
-    font-weight: 600;
-    color: #e4d2a8;
+    font-weight: var(--fw-semibold);
+    color: var(--brand-gold);
 }
 
 /* Fullscreen Overlay */
@@ -95,7 +95,7 @@
 
 .overlay-content {
     text-align: center;
-    color: #fff;
+    color: var(--neutral-1000);
     animation: pulse-in 0.3s ease-out;
 }
 
@@ -156,12 +156,12 @@
 
 /* Enhanced Status Card */
 .status-card.success {
-    border-color: #22c55e;
+    border-color: var(--green-500);
     background: rgba(34, 197, 94, 0.15);
 }
 
 .status-card.error {
-    border-color: #ef4444;
+    border-color: var(--red-500);
     background: rgba(239, 68, 68, 0.15);
 }
 

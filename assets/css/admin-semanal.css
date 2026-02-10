@@ -42,7 +42,7 @@
 
 .balance-label {
     font-size: 11px;
-    font-weight: 600;
+    font-weight: var(--fw-semibold);
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: var(--text-tertiary);
@@ -52,7 +52,7 @@
 /* Values */
 .balance-value-lg {
     font-size: 32px;
-    font-weight: 700;
+    font-weight: var(--fw-bold);
     font-family: var(--font-mono); /* Ensure we have a mono font stack or fallback */
     color: var(--text-primary);
     letter-spacing: -0.02em;
@@ -76,7 +76,7 @@
 
 .balance-sub-value {
     font-size: 18px;
-    font-weight: 500;
+    font-weight: var(--fw-medium);
     font-family: var(--font-mono);
 }
 
@@ -101,7 +101,7 @@
     padding: 12px;
     margin-bottom: 24px;
     text-align: center;
-    font-weight: 600;
+    font-weight: var(--fw-semibold);
     font-size: 13px;
     letter-spacing: 0.02em;
     animation: fadeIn 0.3s ease;
@@ -119,11 +119,11 @@
    WEEK SELECTOR IN HEADER
    ========================================================================= */
 .week-select {
-    background: #000;
+    background: var(--neutral-0);
     border: 1px solid rgba(255, 255, 255, 0.15);
-    color: #fff;
+    color: var(--neutral-1000);
     padding: 8px 12px;
-    border-radius: 6px;
+    border-radius: var(--radius-md);
     outline: none;
     font-size: 13px;
     min-width: 220px;

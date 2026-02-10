@@ -527,18 +527,18 @@
             <form id="ruleForm">
                 <input type="hidden" id="ruleId" />
                 <div class="form-group">
-                    <label class="form-label">Título</label>
+                    <label class="form-label" for="ruleTitle">Título</label>
                     <input id="ruleTitle" class="input" placeholder="Ej: Pago de Alquiler" required />
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Tipo</label>
+                    <label class="form-label" for="ruleType">Tipo</label>
                     <select id="ruleType" class="input">
                         <option value="WEEKLY">Semanal</option>
                         <option value="MONTHLY">Mensual</option>
                     </select>
                 </div>
                 <div class="form-group hidden" id="weeklyWrap">
-                    <label class="form-label">Día de la semana</label>
+                    <label class="form-label" for="ruleWeekday">Día de la semana</label>
                     <select id="ruleWeekday" class="input">
                         <option value="0">Lunes</option>
                         <option value="1">Martes</option>
@@ -550,12 +550,12 @@
                     </select>
                 </div>
                 <div class="form-group hidden" id="monthlyWrap">
-                    <label class="form-label">Día del mes</label>
+                    <label class="form-label" for="ruleDayOfMonth">Día del mes</label>
                     <input id="ruleDayOfMonth" type="number" class="input" min="1" max="31" value="1" />
                 </div>
                 <!-- Smart Rule Logic -->
                 <div class="form-group">
-                    <label class="form-label">Si cae feriado / no hábil:</label>
+                    <label class="form-label" for="ruleOnHoliday">Si cae feriado / no hábil:</label>
                     <select id="ruleOnHoliday" class="input">
                         <option value="IGNORE">Mantener fecha original</option>
                         <option value="PREV">Mover al día hábil anterior</option>
@@ -563,13 +563,13 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Proveedor</label>
+                    <label class="form-label" for="ruleSupplierInput">Proveedor</label>
                     <input list="suppliersList" id="ruleSupplierInput" class="input"
                         placeholder="Buscar proveedor..." />
                     <input type="hidden" id="ruleSupplier" />
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Monto</label>
+                    <label class="form-label" for="ruleAmountMode">Monto</label>
                     <div class="row-flex gap-1">
                         <select id="ruleAmountMode" class="input w-100">
                             <option value="FIXED">Fijo</option>
@@ -601,20 +601,20 @@
             <form id="openingForm">
                 <input type="hidden" id="openingId" />
                 <div class="form-group">
-                    <label class="form-label">Título</label>
+                    <label class="form-label" for="openingTitle">Título</label>
                     <input id="openingTitle" class="input" placeholder="Ej: Personal de Limpieza" required />
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Proveedor</label>
+                    <label class="form-label" for="openingSupplierInput">Proveedor</label>
                     <input list="suppliersList" id="openingSupplierInput" class="input" placeholder="Buscar..." />
                     <input type="hidden" id="openingSupplier" />
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Monto Default</label>
+                    <label class="form-label" for="openingDefaultAmount">Monto Default</label>
                     <input id="openingDefaultAmount" type="number" class="input" step="0.01" placeholder="0.00" />
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Vencimiento (Días antes de jornada)</label>
+                    <label class="form-label" for="openingDueDays">Vencimiento (Días antes de jornada)</label>
                     <input id="openingDueDays" type="number" class="input" value="0" />
                 </div>
                 <div class="form-group">
@@ -640,20 +640,20 @@
             <form id="extraForm">
                 <input type="hidden" id="extraId" />
                 <div class="form-group">
-                    <label class="form-label">Título</label>
+                    <label class="form-label" for="extraTitle">Título</label>
                     <input id="extraTitle" class="input" placeholder="Ej: Arreglo de Heladera" required />
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Proveedor</label>
+                    <label class="form-label" for="extraSupplierInput">Proveedor</label>
                     <input list="suppliersList" id="extraSupplierInput" class="input" placeholder="Buscar..." />
                     <input type="hidden" id="extraSupplier" />
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Vencimiento</label>
+                    <label class="form-label" for="extraDueDate">Vencimiento</label>
                     <input id="extraDueDate" type="date" class="input" required />
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Monto Total</label>
+                    <label class="form-label" for="extraAmount">Monto Total</label>
                     <input id="extraAmount" type="number" class="input" step="0.01" required placeholder="0.00" />
                 </div>
             </form>
@@ -680,13 +680,13 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Monto a pagar</label>
+                    <label class="form-label" for="payAmount">Monto a pagar</label>
                     <input id="payAmount" type="number" class="input" step="0.01" />
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
                     <div class="form-group">
-                        <label class="form-label">Comprobante</label>
+                        <label class="form-label" for="payVoucher">Comprobante</label>
                         <select id="payVoucher" class="input">
                             <option value="">Seleccionar...</option>
                             <option value="Factura A">Factura A</option>
@@ -698,7 +698,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Método</label>
+                        <label class="form-label" for="payMethod">Método</label>
                         <select id="payMethod" class="input">
                             <option value="">Seleccionar...</option>
                             <option value="Efectivo">Efectivo</option>
@@ -710,7 +710,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Nota observacional (opcional)</label>
+                    <label class="form-label" for="payNote">Nota observacional (opcional)</label>
                     <input id="payNote" class="input" placeholder="Ej: Pago parcial, observación..." />
                 </div>
             </div>
