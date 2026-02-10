@@ -49,8 +49,10 @@
   --space-unit: 4px;
   --radius-sm:  4px;
   --radius-md:  6px;
+  --radius-button: 8px;
   --radius-lg:  10px;
   --radius-xl:  12px;
+  --radius-2xl: 16px;
   --radius-full: 9999px;
 
   /* Transitions */
@@ -61,6 +63,12 @@
   /* Tipografías base */
   --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
   --font-mono: "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
+
+  /* Font Weights */
+  --fw-normal:   400;
+  --fw-medium:   500;
+  --fw-semibold: 600;
+  --fw-bold:     700;
 
   /* Escala tipográfica */
   --fs-xs: 10px;
@@ -133,6 +141,28 @@
   --space-md: 16px;
   --space-lg: 24px;
   --space-xl: 32px;
+
+  /* Shadows */
+  --shadow-sm:   0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.25);
+  --shadow-lg:   0 16px 48px rgba(0, 0, 0, 0.4);
+
+  /* Primary Aliases (used across 5+ files) */
+  --primary:       var(--brand-primary);
+  --primary-hover:  var(--neutral-900);
+  --primary-light:  var(--neutral-950);
+  --primary-color:  var(--brand-primary);
+
+  /* Z-Index Hierarchy */
+  --z-base:      1;
+  --z-dropdown:  50;
+  --z-sticky:    100;
+  --z-overlay:   200;
+  --z-modal:     300;
+  --z-panel:     1000;
+  --z-toast:     1200;
+  --z-skip-link: 9999;
+  --z-progress:  10000;
 
   /* Legacy Aliases (backward compatibility) */
   --bg-base:    var(--bg-body);

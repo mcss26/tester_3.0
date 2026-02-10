@@ -2420,9 +2420,6 @@ body.app-shell {
 .page-card {
   width: 100%;
   min-height: 70vh;
-}
-
-.page-card {
   position: relative;
 }
 
@@ -2522,7 +2519,7 @@ body.initial-load {
 .skeleton-card {
   padding: 1rem;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius-button);
   margin-bottom: 1rem;
 }
 
@@ -7001,6 +6998,9 @@ body.admin-shell .page-card-empty.is-visible {
    Token-mapped helpers for spacing, layout, and text.
    ========================================================================= */
 
+/* --- Margin All --- */
+.m-0   { margin: 0 !important; }
+
 /* --- Margin Bottom --- */
 .mb-0  { margin-bottom: 0 !important; }
 .mb-1  { margin-bottom: 4px !important; }
@@ -7036,6 +7036,7 @@ body.admin-shell .page-card-empty.is-visible {
 
 /* --- Width --- */
 .w-full   { width: 100% !important; }
+.w-100    { width: 100% !important; }
 .w-fit    { width: fit-content !important; }
 
 /* --- Max Height (Table Scrolls) --- */

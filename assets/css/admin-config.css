@@ -63,18 +63,7 @@
     background: var(--primary-hover);
 }
 
-/* =========================================================================
-   FASE 9: Hygiene Remediation (2026-02-08)
-   Classes extracted from inline styles
-   ========================================================================= */
-
-.mb-4 {
-    margin-bottom: 16px !important;
-}
-
-.mt-2 {
-    margin-top: 8px !important;
-}
+/* Utilities consolidated → components.css L7000+ */
 
 .w-40-px {
     width: 40px;
