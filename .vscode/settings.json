@@ -8,5 +8,12 @@
     "extensions.experimental.deferredStartupFinishedActivation": true,
     "extensions.supportNodeGlobalNavigator": false,
     "oneDarkPro.bold": true,
-    "oneDarkPro.editorTheme": "Dark Modern"
+    "oneDarkPro.editorTheme": "Dark Modern",
+    "liveServer.settings.port": 5501,
+    "workbench.editor.limit.enabled": true,
+    "workbench.editor.decorations.colors": true,
+    "workbench.editor.alwaysShowEditorActions": false,
+    "workbench.editor.limit.excludeDirty": false,
+    "workbench.editor.navigationScope": "default",
+    "workbench.editor.openPositioning": "right"
 }

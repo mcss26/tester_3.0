@@ -11,7 +11,6 @@ const modules = [
     ['admin/admin-config.html', 'Admin Config', 'Configuración sitio'],
     ['admin/admin-reportes.html', 'Admin Reportes', 'Reportes financieros'],
     ['admin/admin-semanal.html', 'Admin Semanal', 'Cierre semanal'],
-    ['admin/admin-cierre.html', 'Admin Cierre', 'Cierre de caja'],
     ['admin/admin-master-nomina.html', 'Master Nómina', 'Roles/staff'],
     ['admin/admin-master-pos.html', 'Master POS', 'Terminales'],
     ['admin/admin-master-proveedores.html', 'Master Proveedores', 'Proveedores'],

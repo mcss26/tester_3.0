@@ -1,12 +1,33 @@
 /**
  * Module: admin-workdays.js
  * Standard: logic-engineer (2026)
- * Description: Workday Management - 4-Tab Dashboard (Planificación / Evento / Stock Audit / Histórico)
+ * Description: Workday Management - 3-Tab Dashboard (PLANNER / NIGHT CHIEF / REPORT)
+ * Status Machine: DRAFT → PLANNED → ACTIVE → CLOSED
  * Integrates cash closing, GBOL sync, stock audit, and premium history.
  */
 
 (async function () {
     'use strict';
+
+    // ── Status Machine Constants ──
+    const STATUS = Object.freeze({
+        DRAFT:     'DRAFT',
+        PLANNED:   'PLANNED',
+        ACTIVE:    'ACTIVE',
+        CLOSED:    'CLOSED',
+        CANCELLED: 'CANCELLED',
+    });
+
+    const STATUS_DISPLAY = Object.freeze({
+        [STATUS.DRAFT]:   { label: 'Borrador',    cls: 'status-draft' },
+        [STATUS.PLANNED]: { label: 'Planificada', cls: 'status-planned' },
+        [STATUS.ACTIVE]:  { label: 'ABIERTA',     cls: 'status-open' },
+        [STATUS.CLOSED]:  { label: 'Cerrada',     cls: 'status-closed' },
+    });
+
+    function getStatusDisplay(status) {
+        return STATUS_DISPLAY[status] || { label: status || '—', cls: 'status-muted' };
+    }
 
     // 1. Auth Guard
     const session = await window.Auth.guardOrRedirect(['admin', 'contable']);
@@ -29,7 +50,6 @@
         selectEvent: document.getElementById('select-event'),
         checkHighDemand: document.getElementById('check-high-demand'),
         // selectCountdownEvent: removed (dead ref)
-        inputNotes: document.getElementById('input-notes'),
         inputNotes: document.getElementById('input-notes'),
         statusIndicator: document.getElementById('workday-status-header'),
         
@@ -96,6 +116,21 @@
         confirmDiffDisplay: document.getElementById('confirm-diff-display'),
         btnConfirmCloseNight: document.getElementById('btnConfirmCloseNight'),
         btnCancelCloseNight: document.getElementById('btnCancelCloseNight'),
+
+        // ── P&L Modal (Sprint 3) ──
+        pnlHealthBadge: document.getElementById('pnl-health-badge'),
+        pnlIncomeCash: document.getElementById('pnl-income-cash'),
+        pnlIncomeQr: document.getElementById('pnl-income-qr'),
+        pnlIncomeBar: document.getElementById('pnl-income-bar'),
+        pnlTotalIncome: document.getElementById('pnl-total-income'),
+        pnlExpenseStaff: document.getElementById('pnl-expense-staff'),
+        pnlExpenseStock: document.getElementById('pnl-expense-stock'),
+        pnlExpenseExtras: document.getElementById('pnl-expense-extras'),
+        pnlTotalExpense: document.getElementById('pnl-total-expense'),
+        pnlNetResult: document.getElementById('pnl-net-result'),
+        pnlMarginPct: document.getElementById('pnl-margin-pct'),
+        pnlBreakevenFill: document.getElementById('pnl-breakeven-fill'),
+        pnlBreakevenLabel: document.getElementById('pnl-breakeven-label'),
         historyTableBody: document.getElementById('history-table-body'),
 
         // ── Devenciones ──
@@ -123,6 +158,13 @@
         saVarianceBody: document.getElementById('sa-variance-body'),
         saFilterClasif: document.getElementById('sa-filter-clasif'),
         saConsumoGbolBody: document.getElementById('sa-consumo-gbol-body'),
+
+        // ── Pre-flight Modal (Sprint 3) ──
+        preFlightModal: document.getElementById('preFlightModal'),
+        preFlightChecks: document.getElementById('preflight-checks'),
+        preFlightStatusBadge: document.getElementById('preflight-status-badge'),
+        btnConfirmPreFlight: document.getElementById('btnConfirmPreFlight'),
+        btnCancelPreFlight: document.getElementById('btnCancelPreFlight'),
     };
 
     // Validation
@@ -304,6 +346,10 @@
         ui.btnConfirmCloseNight?.addEventListener('click', performCloseNight);
         ui.btnCancelCloseNight?.addEventListener('click', () => ui.closeNightModal?.classList.add('hidden'));
 
+        // ── Pre-flight events (Sprint 3) ──
+        ui.btnConfirmPreFlight?.addEventListener('click', handlePreFlightConfirm);
+        ui.btnCancelPreFlight?.addEventListener('click', () => ui.preFlightModal?.classList.add('hidden'));
+
         ui.btnSaveNotes?.addEventListener('click', handleSaveNotes);
 
         // ── GBOL Sync ──
@@ -345,10 +391,22 @@
         ui.qrBoleteria.decl?.addEventListener('input', updateQrDiffs);
     }
 
-    // ── Tab Switching ──
+    // ── Tab Switching (Status-Aware) ──
+    const TAB_IDS = ['panelPlanner', 'panelNightChief', 'panelReport'];
+
     function switchTab(tabId) {
+        // Guard: enforce visibility rules
+        const status = state.activeWorkDay?.status;
+        if (tabId === 'panelNightChief' && status !== STATUS.ACTIVE) {
+            window.Toast.warning('Night Chief solo disponible con jornada ABIERTA.');
+            return;
+        }
+        if (tabId === 'panelReport' && status !== STATUS.CLOSED && !state.historyLoaded) {
+            // Allow report tab if history has been loaded or day is closed
+        }
+
         state.activeTab = tabId;
-        ['panelPlan', 'panelEvento', 'panelStockAudit', 'panelHistorico'].forEach(id => {
+        TAB_IDS.forEach(id => {
             const el = document.getElementById(id);
             if (el) el.classList.toggle('hidden', id !== tabId);
         });
@@ -357,22 +415,59 @@
             btn.setAttribute('aria-selected', btn.dataset.tab === tabId ? 'true' : 'false');
         });
 
-        // Lazy-load cierre data when entering Evento tab
-        if (tabId === 'panelEvento' && state.activeWorkDay && !state.cierreLoaded) {
+        // Lazy-load cierre data when entering Night Chief tab
+        if (tabId === 'panelNightChief' && state.activeWorkDay && !state.cierreLoaded) {
             loadCierreData();
         }
         // Lazy-load accruals (only re-fetch on date change or mutation)
-        if (tabId === 'panelEvento' && state.activeWorkDay && !state.accrualsLoaded) {
+        if (tabId === 'panelNightChief' && state.activeWorkDay && !state.accrualsLoaded) {
             loadAccruals();
         }
-        // Lazy-load Stock Audit data
-        if (tabId === 'panelStockAudit' && state.activeWorkDay && !state.stockAuditLoaded) {
+        // Lazy-load Stock Audit data (now part of Night Chief panel)
+        if (tabId === 'panelNightChief' && state.activeWorkDay && !state.stockAuditLoaded) {
             loadStockAuditData();
         }
-        // Lazy-load history (only re-fetch on date change)
-        if (tabId === 'panelHistorico' && !state.historyLoaded) {
+        // Lazy-load history (Report tab)
+        if (tabId === 'panelReport' && !state.historyLoaded) {
             renderHistoryTable();
         }
+
+        // Polling lifecycle
+        if (tabId === 'panelNightChief') {
+            startPolling();
+        } else {
+            stopPolling();
+        }
+    }
+
+    // ── Tab Visibility Update (called on status change) ──
+    function updateTabVisibility() {
+        const status = state.activeWorkDay?.status;
+        const tabs = ui.tabBar?.querySelectorAll('.tab-chip') || [];
+
+        tabs.forEach(btn => {
+            const tab = btn.dataset.tab;
+            switch (tab) {
+                case 'panelPlanner':
+                    btn.disabled = false;
+                    btn.classList.remove('tab-disabled');
+                    break;
+                case 'panelNightChief':
+                    if (status === STATUS.ACTIVE) {
+                        btn.disabled = false;
+                        btn.classList.remove('tab-disabled');
+                    } else {
+                        btn.disabled = true;
+                        btn.classList.add('tab-disabled');
+                    }
+                    break;
+                case 'panelReport':
+                    // Always accessible (shows history)
+                    btn.disabled = false;
+                    btn.classList.remove('tab-disabled');
+                    break;
+            }
+        });
     }
 
     // ── File handler helper ──
@@ -469,7 +564,7 @@
                 .from('work_days')
                 .select('*')
                 .eq('work_date', dateVal)
-                .neq('status', 'cancelled')
+                .neq('status', STATUS.CANCELLED)
                 .maybeSingle();
 
             if (error) throw error;
@@ -477,14 +572,14 @@
             if (day) {
                 // FOUND -> Edit Mode
                 state.activeWorkDay = day;
-                ui.statusIndicator.textContent = day.status === 'open' ? 'ABIERTA' : 'Planificada';
-                ui.statusIndicator.className = day.status === 'open' ? 'status-pill-header status-open' : 'status-pill-header status-planning';
+                const sd = getStatusDisplay(day.status);
+                ui.statusIndicator.textContent = sd.label;
+                ui.statusIndicator.className = `status-pill-header ${sd.cls}`;
                 ui.statusIndicator.classList.remove('is-checking');
 
-                ui.btnConfirm.textContent = 'Actualizar Jornada';
-                ui.btnConfirm.classList.remove('btn-primary');
-                ui.btnConfirm.classList.add('btn-secondary');
-                // If open, maybe restrict some edits? For now allow updating staff.
+                // Dynamic button label per status
+                updateFooterButtons(day.status);
+                updateTabVisibility();
 
                 // Load Details
                 await loadDayDetails(day.id);
@@ -493,12 +588,11 @@
                 // NEW -> Draft Mode
                 state.activeWorkDay = null;
                 ui.statusIndicator.textContent = 'Nueva (Borrador)';
-                ui.statusIndicator.className = 'status-pill-header staff-status-pending';
+                ui.statusIndicator.className = 'status-pill-header status-draft';
                 ui.statusIndicator.classList.remove('is-checking');
 
-                ui.btnConfirm.textContent = 'Guardar y Abrir';
-                ui.btnConfirm.classList.add('btn-primary');
-                ui.btnConfirm.classList.remove('btn-secondary');
+                updateFooterButtons(null); // No day yet → create mode
+                updateTabVisibility();
             }
 
             renderStaffList(); // Re-render with/without slots
@@ -688,31 +782,45 @@
         ui.kpiTotal.textContent = window.Utils.formatARS(staffTotal + fixedTotal);
     }
 
-    // 10. Actions
+    // 10. Actions — Status Machine Dispatcher
     async function handleConfirmOrUpdate() {
-        if (state.activeWorkDay) {
-            await handleUpdate();
-        } else {
+        if (!state.activeWorkDay) {
             await handleCreate();
+            return;
+        }
+
+        // Dispatch by current status
+        switch (state.activeWorkDay.status) {
+            case STATUS.DRAFT:
+                await handleConfirmPlan(); // DRAFT → PLANNED
+                break;
+            case STATUS.PLANNED:
+                await handleOpen(); // PLANNED → ACTIVE
+                break;
+            case STATUS.ACTIVE:
+                await handleUpdate(); // Save edits while ACTIVE
+                break;
+            default:
+                await handleUpdate();
         }
     }
 
+    // ── Create Day (no status yet → DRAFT) ──
     async function handleCreate() {
-        // ... (Existing Logic refined)
         const dateVal = ui.inputDate.value;
         if (!dateVal) return window.Toast.warning('Selecciona fecha.');
 
         const confirmed = await window.Utils.confirmAction(
-            `¿Crear y ABRIR jornada para ${window.WorkDayHelper.formatDate(dateVal)}?`, { confirmText: 'Crear' }
+            `¿Crear jornada para ${window.WorkDayHelper.formatDate(dateVal)}?`, { confirmText: 'Crear' }
         );
         if (!confirmed) return;
 
         window.Utils.setPageState(ui, { loading: true });
         
         try {
-            // A. Create Day
+            // A. Create Day in DRAFT
             const { data: day, error: errDay } = await window.sb.from('work_days')
-                .insert({ work_date: dateVal, notes: ui.inputNotes.value, status: 'planning' })
+                .insert({ work_date: dateVal, notes: ui.inputNotes.value, status: STATUS.DRAFT })
                 .select().single();
             if (errDay) throw errDay;
 
@@ -746,10 +854,8 @@
                 }));
             if (costsPayload.length > 0) await window.sb.from('finance_payments').insert(costsPayload);
 
-            // D. Open
-            await window.sb.rpc('rpc_open_work_day', { p_work_day_id: day.id });
-
-            window.Toast.success('Jornada creada. Ahora puedes asignar personal.');
+            // NOTE: No rpc_open_work_day here — day stays in DRAFT until confirmed
+            window.Toast.success('Jornada creada en Borrador.');
             
             // Reload to enter "Edit Mode"
             handleDateChange();
@@ -759,6 +865,207 @@
             window.Toast.error('Falló creación.');
         } finally {
             window.Utils.setPageState(ui, { loading: false });
+        }
+    }
+
+    // ── Confirm Plan (DRAFT → PLANNED) ──
+    async function handleConfirmPlan() {
+        if (!state.activeWorkDay) return;
+        const ok = await window.Utils.confirmAction(
+            '¿Confirmar planificación? La jornada quedará lista para abrir.',
+            { confirmText: 'Confirmar Plan' }
+        );
+        if (!ok) return;
+
+        window.Utils.setPageState(ui, { loading: true });
+        try {
+            // Save any pending staff/cost changes first
+            await handleUpdate();
+
+            const { error } = await window.sb.rpc('rpc_confirm_work_day', {
+                p_work_day_id: state.activeWorkDay.id
+            });
+            if (error) throw error;
+
+            window.Toast.success('Planificación confirmada.');
+            handleDateChange();
+        } catch (e) {
+            console.error(e);
+            window.Toast.error('Error al confirmar plan.');
+        } finally {
+            window.Utils.setPageState(ui, { loading: false });
+        }
+    }
+
+    // ── Open Day (PLANNED → ACTIVE) — Sprint 3: Pre-flight gate ──
+    function handleOpen() {
+        if (!state.activeWorkDay) return;
+        showPreFlightModal();
+    }
+
+    function showPreFlightModal() {
+        const wd = state.activeWorkDay;
+        const checks = runPreFlightChecks(wd);
+        const criticalFails = checks.filter(c => !c.pass && c.critical);
+
+        // Render checklist
+        ui.preFlightChecks.innerHTML = checks.map(c => `
+            <div class="preflight-item ${c.pass ? 'preflight-pass' : (c.critical ? 'preflight-fail' : 'preflight-warn')}">
+                <span class="preflight-icon">${c.pass ? '✅' : (c.critical ? '❌' : '⚠️')}</span>
+                <div class="preflight-detail">
+                    <span class="preflight-label">${c.label}</span>
+                    <span class="preflight-info text-xs muted">${c.info}</span>
+                </div>
+            </div>
+        `).join('');
+
+        // Badge
+        if (criticalFails.length > 0) {
+            ui.preFlightStatusBadge.textContent = 'Bloqueado';
+            ui.preFlightStatusBadge.className = 'status-pill staff-status-absent';
+        } else if (!checks.every(c => c.pass)) {
+            ui.preFlightStatusBadge.textContent = 'Con advertencias';
+            ui.preFlightStatusBadge.className = 'status-pill staff-status-pending';
+        } else {
+            ui.preFlightStatusBadge.textContent = 'Listo';
+            ui.preFlightStatusBadge.className = 'status-pill staff-status-active';
+        }
+
+        ui.btnConfirmPreFlight.disabled = criticalFails.length > 0;
+        ui.preFlightModal?.classList.remove('hidden');
+    }
+
+    function runPreFlightChecks(wd) {
+        const checks = [];
+
+        // 1. Staff convocado (critical)
+        const staffCards = ui.staffContainer?.querySelectorAll('.staff-role-card') || [];
+        const assignedStaff = Array.from(staffCards).filter(card => {
+            const select = card.querySelector('select');
+            return select && select.value;
+        }).length;
+        checks.push({
+            label: 'Staff convocado',
+            info: assignedStaff > 0 ? `${assignedStaff} persona(s) asignada(s)` : 'Sin staff asignado',
+            pass: assignedStaff > 0,
+            critical: true
+        });
+
+        // 2. Costos de apertura (warning)
+        const costCards = ui.costsContainer?.querySelectorAll('.cost-item') || [];
+        checks.push({
+            label: 'Costos de apertura',
+            info: costCards.length > 0 ? `${costCards.length} costo(s) cargado(s)` : 'Sin costos — procederá con $0',
+            pass: costCards.length > 0,
+            critical: false
+        });
+
+        // 3. Evento vinculado (warning)
+        const hasEvent = ui.selectEvent?.value && ui.selectEvent.value !== '';
+        checks.push({
+            label: 'Evento vinculado',
+            info: hasEvent ? ui.selectEvent.options[ui.selectEvent.selectedIndex]?.text || 'Sí' : 'Sin evento — noche genérica',
+            pass: hasEvent,
+            critical: false
+        });
+
+        // 4. Fecha válida (critical)
+        const dateVal = ui.inputDate?.value;
+        checks.push({
+            label: 'Fecha operativa',
+            info: dateVal || 'Sin fecha',
+            pass: !!dateVal,
+            critical: true
+        });
+
+        return checks;
+    }
+
+    async function handlePreFlightConfirm() {
+        ui.preFlightModal?.classList.add('hidden');
+        window.Utils.setPageState(ui, { loading: true });
+        try {
+            await window.sb.rpc('rpc_open_work_day', { p_work_day_id: state.activeWorkDay.id });
+            window.Toast.success('Jornada abierta.');
+            handleDateChange();
+        } catch (e) {
+            console.error(e);
+            window.Toast.error('Error al abrir jornada.');
+        } finally {
+            window.Utils.setPageState(ui, { loading: false });
+        }
+    }
+
+    // ── Revert Plan (PLANNED → DRAFT) ──
+    async function handleRevert() {
+        if (!state.activeWorkDay) return;
+        const ok = await window.Utils.confirmAction(
+            '¿Revertir a Borrador? Podré modificar la planificación.',
+            { confirmText: 'Revertir' }
+        );
+        if (!ok) return;
+
+        window.Utils.setPageState(ui, { loading: true });
+        try {
+            const { error } = await window.sb.rpc('rpc_revert_work_day', {
+                p_work_day_id: state.activeWorkDay.id
+            });
+            if (error) throw error;
+
+            window.Toast.success('Jornada revertida a borrador.');
+            handleDateChange();
+        } catch (e) {
+            console.error(e);
+            window.Toast.error('Error al revertir.');
+        } finally {
+            window.Utils.setPageState(ui, { loading: false });
+        }
+    }
+
+    // ── Dynamic footer buttons ──
+    function updateFooterButtons(status) {
+        const btnSave = document.getElementById('btn-save-planning');
+        if (!ui.btnConfirm) return;
+
+        if (!status) {
+            // New day — create mode
+            ui.btnConfirm.textContent = 'Crear Jornada';
+            ui.btnConfirm.classList.add('btn-primary');
+            ui.btnConfirm.classList.remove('btn-secondary', 'btn-danger');
+            ui.btnConfirm.disabled = false;
+            if (btnSave) btnSave.disabled = true;
+            return;
+        }
+
+        switch (status) {
+            case STATUS.DRAFT:
+                ui.btnConfirm.textContent = 'Confirmar Plan';
+                ui.btnConfirm.classList.add('btn-primary');
+                ui.btnConfirm.classList.remove('btn-secondary', 'btn-danger');
+                ui.btnConfirm.disabled = false;
+                if (btnSave) btnSave.disabled = false;
+                break;
+            case STATUS.PLANNED:
+                ui.btnConfirm.textContent = 'Abrir Jornada';
+                ui.btnConfirm.classList.add('btn-primary');
+                ui.btnConfirm.classList.remove('btn-secondary', 'btn-danger');
+                ui.btnConfirm.disabled = false;
+                if (btnSave) btnSave.disabled = false;
+                break;
+            case STATUS.ACTIVE:
+                ui.btnConfirm.textContent = 'Actualizar Jornada';
+                ui.btnConfirm.classList.add('btn-secondary');
+                ui.btnConfirm.classList.remove('btn-primary', 'btn-danger');
+                ui.btnConfirm.disabled = false;
+                if (btnSave) btnSave.disabled = false;
+                break;
+            case STATUS.CLOSED:
+                ui.btnConfirm.textContent = 'Cerrada';
+                ui.btnConfirm.disabled = true;
+                ui.btnConfirm.classList.remove('btn-primary', 'btn-danger');
+                ui.btnConfirm.classList.add('btn-secondary');
+                if (btnSave) btnSave.disabled = true;
+                break;
         }
     }
 
@@ -959,10 +1266,10 @@
     // renderHistory removed — replaced by Histórico tab (vw_night_snapshot)
 
     async function handleCloseWorkday(id, date) {
-        // Switch to Evento tab instead of closing directly
+        // Switch to Night Chief tab for review before closing
         ui.inputDate.value = date;
         await handleDateChange();
-        switchTab('panelEvento');
+        switchTab('panelNightChief');
         window.Toast.info('Revisa la rendición antes de cerrar la noche.');
     }
 
@@ -998,7 +1305,7 @@
             if (!closing) {
                 const { data: newC, error: createErr } = await window.sb
                     .from('cash_closings')
-                    .insert({ work_day_id: wdId, status: 'open', total_system: 0, total_declared: 0, total_difference: 0 })
+                    .insert({ work_day_id: wdId, status: STATUS.ACTIVE, total_system: 0, total_declared: 0, total_difference: 0 })
                     .select().single();
                 if (createErr) { window.Toast.error('No se pudo crear cierre de caja.'); return; }
                 closing = newC;
@@ -1007,8 +1314,8 @@
 
             state.closingId = closing.id;
             ui.closingNotes.value = closing.notes || '';
-            ui.btnCloseNight.disabled = closing.status === 'closed';
-            ui.btnCloseNight.textContent = closing.status === 'closed' ? 'CERRADO' : 'CERRAR NOCHE';
+            ui.btnCloseNight.disabled = closing.status === STATUS.CLOSED;
+            ui.btnCloseNight.textContent = closing.status === STATUS.CLOSED ? 'CERRADO' : 'CERRAR NOCHE';
 
             // B. Load terminals
             const [termRes, detailRes] = await Promise.all([
@@ -1140,10 +1447,73 @@
         if (el('breakdown-total-global')) el('breakdown-total-global').textContent = fmt(globalTotal);
     }
 
-    // ── Close Night ──
-    function openCloseNightModal() {
-        if (!state.closingId) return;
+    // ── Close Night (Sprint 3 — P&L enriched) ──
+    async function openCloseNightModal() {
+        if (!state.closingId || !state.activeWorkDay) return;
+
+        // Copy cash diff (original behavior)
         ui.confirmDiffDisplay.textContent = ui.totalDiff.textContent;
+
+        // Fetch P&L + Health Score in parallel
+        const fmtPnl = (v) => v != null ? window.Utils.formatARS(v) : '—';
+        try {
+            const [pnlRes, hsRes] = await Promise.all([
+                window.sb.from('vw_workday_pnl')
+                    .select('*')
+                    .eq('work_day_id', state.activeWorkDay.id)
+                    .maybeSingle(),
+                window.sb.rpc('calculate_health_score', {
+                    p_work_day_id: state.activeWorkDay.id
+                })
+            ]);
+
+            // Populate P&L card
+            const pnl = pnlRes.data;
+            if (pnl) {
+                ui.pnlIncomeCash.textContent = fmtPnl(pnl.income_cash);
+                ui.pnlIncomeQr.textContent = fmtPnl(pnl.income_qr);
+                ui.pnlIncomeBar.textContent = fmtPnl(pnl.income_bar);
+                ui.pnlTotalIncome.textContent = fmtPnl(pnl.total_income);
+                ui.pnlExpenseStaff.textContent = fmtPnl(pnl.expense_staff);
+                ui.pnlExpenseStock.textContent = fmtPnl(pnl.expense_stock);
+                ui.pnlExpenseExtras.textContent = fmtPnl(pnl.expense_extras);
+                ui.pnlTotalExpense.textContent = fmtPnl(pnl.total_expense);
+
+                const net = pnl.net_result || 0;
+                ui.pnlNetResult.textContent = fmtPnl(net);
+                ui.pnlNetResult.classList.toggle('text-success', net > 0);
+                ui.pnlNetResult.classList.toggle('text-danger', net < 0);
+
+                const margin = pnl.margin_pct;
+                ui.pnlMarginPct.textContent = margin != null ? `${Number(margin).toFixed(1)}%` : '—';
+
+                // Break-even progress
+                const totalIncome = pnl.total_income || 0;
+                const totalExpense = pnl.total_expense || 0;
+                const bePct = totalExpense > 0 ? Math.min((totalIncome / totalExpense) * 100, 150) : 0;
+                ui.pnlBreakevenFill.style.width = `${Math.min(bePct, 100)}%`;
+                ui.pnlBreakevenFill.classList.toggle('be-over', bePct >= 100);
+                ui.pnlBreakevenFill.classList.toggle('be-under', bePct < 100);
+                ui.pnlBreakevenLabel.textContent = `Break-even: ${bePct.toFixed(0)}%`;
+            }
+
+            // Populate Health Score badge
+            const hs = hsRes.data;
+            if (hs != null) {
+                const score = Number(hs);
+                ui.pnlHealthBadge.textContent = `${score}/100`;
+                ui.pnlHealthBadge.className = 'status-pill ' +
+                    (score >= 75 ? 'staff-status-active' :
+                     score >= 50 ? 'staff-status-pending' : 'staff-status-absent');
+            } else {
+                ui.pnlHealthBadge.textContent = '—';
+                ui.pnlHealthBadge.className = 'status-pill';
+            }
+        } catch (err) {
+            console.warn('[pnl-modal] Could not load P&L data:', err);
+            // Modal still opens — P&L fields just show '—'
+        }
+
         ui.closeNightModal?.classList.remove('hidden');
     }
 
@@ -1156,7 +1526,7 @@
             // Checkpoints: bar sessions + terminal closings
             const [barRes, termRes] = await Promise.all([
                 window.sb.from('bar_sessions').select('id, location, profiles(full_name)')
-                    .eq('work_day_id', state.activeWorkDay.id).neq('status', 'closed'),
+                    .eq('work_day_id', state.activeWorkDay.id).neq('status', STATUS.CLOSED),
                 window.sb.from('closing_terminals').select('id, pos_terminals(friendly_name)')
                     .eq('cash_closing_id', state.closingId).not('status', 'in', '(submitted,verified)')
             ]);
@@ -1178,22 +1548,24 @@
             const closedAt = new Date().toISOString();
             const userId = session.user.id;
 
-            const [closingRes, wdRes] = await Promise.all([
-                window.sb.from('cash_closings').update({
-                    status: 'closed',
-                    closed_at: closedAt,
-                    closed_by: userId,
+            // Update cash_closing totals first (separate operation)
+            if (state.closingId) {
+                const { error: closingErr } = await window.sb.from('cash_closings').update({
                     total_system: totalSys,
                     total_declared: totalDecl,
                     total_difference: totalDiff
-                }).eq('id', state.closingId),
-                window.sb.from('work_days').update({
-                    status: 'closed', closed_at: closedAt, closed_by: userId
-                }).eq('id', state.activeWorkDay.id)
-            ]);
+                }).eq('id', state.closingId);
+                if (closingErr) throw closingErr;
+            }
 
-            if (closingRes.error) throw closingRes.error;
-            if (wdRes.error) throw wdRes.error;
+            // Close via RPC (handles work_days + cash_closings status + health_score + net_result)
+            const { data: closeResult, error: closeErr } = await window.sb.rpc('rpc_close_work_day', {
+                p_work_day_id: state.activeWorkDay.id,
+                p_cash_closing_id: state.closingId || null
+            });
+            if (closeErr) throw closeErr;
+
+            console.log('[cierre] Result:', closeResult);
 
             window.Toast.success('Noche cerrada exitosamente.');
             setTimeout(() => window.location.reload(), 1500);
@@ -1215,6 +1587,117 @@
     }
 
     // Old renderHistoryTable removed — async version at bottom uses vw_night_snapshot
+
+    // ═══════════════════════════════════════════════════════════
+    // 13. NIGHT CHIEF LIVE (Phase D)
+    // ═══════════════════════════════════════════════════════════
+
+    let pollingTimer = null;
+    const POLL_INTERVAL_MS = 60_000; // 60 seconds
+
+    function startPolling() {
+        if (pollingTimer) return; // Already running
+        if (state.activeWorkDay?.status !== STATUS.ACTIVE) return;
+        console.log('[night-chief] Polling started (60s)');
+        pollingTimer = setInterval(pollKPIs, POLL_INTERVAL_MS);
+        pollKPIs(); // Immediate first fetch
+    }
+
+    function stopPolling() {
+        if (pollingTimer) {
+            clearInterval(pollingTimer);
+            pollingTimer = null;
+            console.log('[night-chief] Polling stopped');
+        }
+    }
+
+    async function pollKPIs() {
+        if (!state.activeWorkDay || state.activeWorkDay.status !== STATUS.ACTIVE) {
+            stopPolling();
+            return;
+        }
+
+        try {
+            const wdId = state.activeWorkDay.id;
+
+            // Parallel fetch: cierre totals + daily sales
+            const [closingRes, salesRes] = await Promise.all([
+                window.sb.from('cash_closings')
+                    .select('total_system, total_declared, total_difference')
+                    .eq('work_day_id', wdId).maybeSingle(),
+                window.sb.from('vw_daily_sales')
+                    .select('bar_sales_system, qr_total')
+                    .eq('work_day_id', wdId).maybeSingle()
+            ]);
+
+            // Update KPI displays if elements exist
+            const closing = closingRes.data;
+            const sales = salesRes.data;
+
+            if (closing) {
+                if (ui.evtKpiSystem) ui.evtKpiSystem.textContent = window.Utils.formatARS(closing.total_system || 0);
+                if (ui.evtKpiDeclared) ui.evtKpiDeclared.textContent = window.Utils.formatARS(closing.total_declared || 0);
+                if (ui.totalDiff) {
+                    const diff = closing.total_difference || 0;
+                    ui.totalDiff.textContent = window.Utils.formatARS(diff);
+                    applyDiffClass(ui.totalDiff, diff);
+                }
+            }
+
+            // Run anomaly checks
+            checkAnomalies(closing, sales);
+
+        } catch (err) {
+            console.warn('[night-chief] Poll error:', err.message);
+        }
+    }
+
+    function checkAnomalies(closing, sales) {
+        const alertContainer = document.getElementById('anomaly-alerts');
+        if (!alertContainer) return;
+
+        const alerts = [];
+
+        // A. Cash difference > threshold
+        if (closing) {
+            const diff = Math.abs(closing.total_difference || 0);
+            if (diff > 5000) {
+                alerts.push({
+                    type: 'error',
+                    icon: '💰',
+                    message: `Diferencia de caja: ${window.Utils.formatARS(closing.total_difference)}`,
+                });
+            }
+        }
+
+        // B. Stock variance > 15% (from stock audit KPIs if loaded)
+        const varianceEl = document.getElementById('stock-variance');
+        if (varianceEl) {
+            const variance = parseFloat(varianceEl.textContent) || 0;
+            if (Math.abs(variance) > 15) {
+                alerts.push({
+                    type: 'warning',
+                    icon: '📦',
+                    message: `Variación de stock: ${variance.toFixed(1)}% (umbral: ±15%)`,
+                });
+            }
+        }
+
+        // Render alerts
+        if (alerts.length === 0) {
+            alertContainer.innerHTML = '';
+            alertContainer.classList.add('hidden');
+            return;
+        }
+
+        alertContainer.classList.remove('hidden');
+        alertContainer.innerHTML = alerts.map(a =>
+            `<div class="alert-strip alert-${a.type}">
+                <span class="alert-icon">${a.icon}</span>
+                <span class="alert-message">${a.message}</span>
+            </div>`
+        ).join('');
+    }
 
     // ═══════════════════════════════════════════════════════════
     // DEVENCIONES (Staff Accruals)
@@ -1578,7 +2061,7 @@
         try {
             const { data, error } = await window.sb
                 .from('vw_night_snapshot')
-                .select('work_date, event_name, status, total_income, gbol_efectivo, gbol_efectivo_neto, total_retiros, cant_retiros, cash_declared, conciliacion_diff, stock_loss, staff_cost')
+                .select('work_date, event_name, status, total_income, gbol_efectivo, gbol_efectivo_neto, total_retiros, cant_retiros, cash_declared, conciliacion_diff, stock_loss, staff_cost, net_result, health_score')
                 .order('work_date', { ascending: false })
                 .limit(50);
 
@@ -1587,7 +2070,7 @@
             if (error) throw error;
 
             if (!data || !data.length) {
-                ui.historyTableBody.innerHTML = '<tr><td colspan="11" class="p-4 text-center muted italic">Sin jornadas registradas</td></tr>';
+                ui.historyTableBody.innerHTML = '<tr><td colspan="13" class="p-4 text-center muted italic">Sin jornadas registradas</td></tr>';
                 return;
             }
 
@@ -1602,11 +2085,7 @@
             ui.historyTableBody.innerHTML = data.map(row => {
                 const date = row.work_date || '—';
                 const event = row.event_name || '—';
-                const statusMap = {
-                    'open': { cls: 'status-open', label: 'Abierta' },
-                    'closed': { cls: 'status-success', label: 'Cerrada' },
-                };
-                const st = statusMap[row.status] || { cls: 'status-muted', label: row.status || '—' };
+                const st = getStatusDisplay(row.status);
 
                 const retiros = Number(row.total_retiros || 0);
                 const retirosLabel = retiros > 0
@@ -1624,6 +2103,8 @@
                     ${diffCell(row.conciliacion_diff)}
                     <td class="table-cell text-right font-mono">${fmt(row.stock_loss)}</td>
                     <td class="table-cell text-right font-mono">${fmt(row.staff_cost)}</td>
+                    ${diffCell(row.net_result)}
+                    <td class="table-cell text-center">${row.health_score != null ? `<span class="status-pill ${Number(row.health_score) >= 75 ? 'staff-status-active' : Number(row.health_score) >= 50 ? 'staff-status-pending' : 'staff-status-absent'}">${row.health_score}</span>` : '<span class="muted">—</span>'}</td>
                     <td class="table-cell text-center"><span class="status-pill ${st.cls}">${st.label}</span></td>
                 </tr>`;
             }).join('');
@@ -1635,14 +2116,14 @@
                     if (d && ui.inputDate) {
                         ui.inputDate.value = d;
                         handleDateChange();
-                        switchTab('panelPlan');
+                        switchTab('panelPlanner');
                     }
                 });
             });
 
         } catch (err) {
             console.error('[history]', err);
-            ui.historyTableBody.innerHTML = '<tr><td colspan="11" class="p-4 text-center text-danger">Error cargando historial</td></tr>';
+            ui.historyTableBody.innerHTML = '<tr><td colspan="13" class="p-4 text-center text-danger">Error cargando historial</td></tr>';
         }
     }
 

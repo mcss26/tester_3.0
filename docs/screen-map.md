@@ -1,14 +1,14 @@
 # 🗺️ Mapa de Pantallas - FormulaMid 4
 
-> **Última Actualización**: 2026-02-08  
-> **Total Pantallas**: 46  
+> **Última Actualización**: 2026-02-10  
+> **Total Pantallas**: 45  
 > **Documento**: Arquitectura de navegación y contextos de usuario
 
 ---
 
 ## 🎯 Propósito
 
-Este documento visualiza la **topografía completa** del sistema FormulaMid 4, organizando las 46 pantallas por rol operativo y contexto funcional. Útil para:
+Este documento visualiza la **topografía completa** del sistema FormulaMid 4, organizando las 45 pantallas por rol operativo y contexto funcional. Útil para:
 
 - Desarrolladores que necesitan entender el flujo de navegación
 - QA para validar cobertura de tests por módulo
@@ -35,16 +35,15 @@ graph TD
     Portal --> M_QR
 
     %% ═══════════════════════════════════════════════════════════════
-    %% ADMINISTRACIÓN (18 pantallas)
+    %% ADMINISTRACIÓN (17 pantallas)
     %% ═══════════════════════════════════════════════════════════════
-    subgraph FM4_ADM [🔵 ADMINISTRACIÓN · 18 pantallas]
+    subgraph FM4_ADM [🔵 ADMINISTRACIÓN · 17 pantallas]
         direction TB
         A_IDX[📊 Dashboard<br/><small><i>admin-index</i></small>]
         
         subgraph ADM_OPS [⚙️ Operaciones Diarias]
             A_WD[📅 Work Days<br/><small><i>admin-workdays</i></small>]
             A_SOL[📬 Solicitudes<br/><small><i>admin-solicitudes</i></small>]
-            A_CIE[🔒 Cierres<br/><small><i>admin-cierre</i></small>]
             A_REP[📈 Reportes<br/><small><i>admin-reportes</i></small>]
             A_WKL[📊 Semanal<br/><small><i>admin-semanal</i></small>]
             A_CFG[⚙️ Config<br/><small><i>admin-config</i></small>]
@@ -194,7 +193,7 @@ graph TD
     classDef members fill:#1e293b,stroke:#ef4444,color:#fee2e2,stroke-width:2px;
 
     class Portal portal;
-    class A_IDX,A_WD,A_SOL,A_CIE,A_REP,A_WKL,A_CFG,A_CEN,A_PRV,A_CAT,A_TAR,A_NOM,A_PAG,A_POS,QR_IDX,QR_GEN,QR_MON admin;
+    class A_IDX,A_WD,A_SOL,A_REP,A_WKL,A_CFG,A_CEN,A_PRV,A_CAT,A_TAR,A_NOM,A_PAG,A_POS,QR_IDX,QR_GEN,QR_MON admin;
     class O_IDX,O_STK,O_WD,O_SOL,O_ANA,O_SCN,O_MEM,O_SKU,O_PRV operative;
     class L_IDX,L_STK,L_DIS,L_REC,L_SEG logistics;
     class E_BAR,E_BNO,E_BPE,E_CAJ,E_CNO,E_CPE,E_REP supervisor;
@@ -209,7 +208,7 @@ graph TD
 
 | Contexto | Páginas | Directorio | Roles Permitidos |
 |:---------|:-------:|:-----------|:-----------------|
-| 🔵 **Admin** | 18 | `pages/admin/*` (incl. `qr/`) | `admin`, `contable` |
+| 🔵 **Admin** | 17 | `pages/admin/*` (incl. `qr/`) | `admin`, `contable` |
 | 🟢 **Operativo** | 9 | `pages/operativo/*` | `operativo`, `staff_operativo` |
 | 📦 **Logística** | 5 | `pages/logistica/*` | `logistico`, `admin` |
 | 🟠 **Encargados** | 7 | `pages/encargados/*` | `encargado_barra`, `encargado_caja` |
@@ -217,33 +216,32 @@ graph TD
 | 🟣 **Gerencia** | 1 | `pages/gerencia/*` | `gerencia`, `admin` |
 | 🔴 **Members** | 1 | `pages/members/*` | `member` |
 | 🛠️ **Dev Utilities** | 3 | `pages/*.html` | — |
-| **TOTAL** | **46** | — | — |
+| **TOTAL** | **45** | — | — |
 
 ---
 
 ## 📂 Inventario Completo por Carpeta
 
-### 🔵 Admin (18)
+### 🔵 Admin (17)
 | # | Archivo | Propósito |
 |:-:|:--------|:----------|
 | 1 | `admin-index.html` | Dashboard principal de administración |
-| 2 | `admin-workdays.html` | Gestión de jornadas laborales |
+| 2 | `admin-workdays.html` | Gestión de jornadas laborales (+ Night Chief + Cierre) |
 | 3 | `admin-solicitudes.html` | Centro de solicitudes de insumos |
-| 4 | `admin-cierre.html` | Módulo de cierre de operaciones |
-| 5 | `admin-reportes.html` | Generación de reportes |
-| 6 | `admin-semanal.html` | Cierre semanal y balance |
-| 7 | `admin-central-stock.html` | Gestión centralizada: Stock, Recetas, Rentabilidad |
-| 8 | `admin-master-proveedores.html` | Maestro de proveedores |
-| 9 | `admin-master-categorias.html` | Maestro de categorías |
-| 10 | `admin-master-tarifario.html` | Tarifario de precios |
-| 11 | `admin-master-nomina.html` | Gestión de personal |
-| 12 | `admin-pagos.html` | Control de pagos |
-| 13 | `admin-master-pos.html` | Terminales punto de venta |
-| 14 | `admin-config.html` | Configuración del sitio |
-| 15 | `test-devenciones.html` | Testing de devengados de nómina |
-| 16 | `qr/index.html` | Hub del sistema QR |
-| 17 | `qr/generator.html` | Generador de códigos QR |
-| 18 | `qr/monitor.html` | Monitor de escaneos QR |
+| 4 | `admin-reportes.html` | Generación de reportes |
+| 5 | `admin-semanal.html` | Cierre semanal y balance |
+| 6 | `admin-central-stock.html` | Gestión centralizada: Stock, Recetas, Rentabilidad |
+| 7 | `admin-master-proveedores.html` | Maestro de proveedores |
+| 8 | `admin-master-categorias.html` | Maestro de categorías |
+| 9 | `admin-master-tarifario.html` | Tarifario de precios |
+| 10 | `admin-master-nomina.html` | Gestión de personal |
+| 11 | `admin-pagos.html` | Control de pagos |
+| 12 | `admin-master-pos.html` | Terminales punto de venta |
+| 13 | `admin-config.html` | Configuración del sitio |
+| 14 | `test-devenciones.html` | Testing de devengados de nómina |
+| 15 | `qr/index.html` | Hub del sistema QR |
+| 16 | `qr/generator.html` | Generador de códigos QR |
+| 17 | `qr/monitor.html` | Monitor de escaneos QR |
 
 ### 🟢 Operativo (9)
 | # | Archivo | Propósito |
@@ -314,7 +312,7 @@ Solicitud de Insumos:
 operativo-solicitudes → admin-solicitudes → logistica-distribucion
 
 Cierre de Jornada:
-encargado-barra-noche → admin-workdays → admin-cierre
+encargado-barra-noche → admin-workdays (Night Chief tab)
 
 Gestión de Miembros:
 cms-members → operativo-cms → admin-master-nomina

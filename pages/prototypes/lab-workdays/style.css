@@ -1,0 +1,1113 @@
+/* =========================================================================
+   LOCAL STYLES — Workdays Planner v3 (High-End)
+   Premium monochrome dark UI. Hierarchy through spacing and weight.
+   Uses ONLY tokens from design-system/tokens.css.
+   ========================================================================= */
+
+/* Page shell: inherited from design-system/base.css (.lab-shell) */
+
+/* ── Premium: Scrollbar ── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+/* ── Premium: Selection ── */
+::selection {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--text-primary);
+}
+
+
+/* ── Toolbar ── */
+.wd-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: var(--space-sm);
+}
+.wd-toolbar__title {
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  display: none; /* hidden — breadcrumb handles title */
+}
+
+.wd-btn-create {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 20px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--neutral-900);
+  background: var(--neutral-0);
+  border: none;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: background var(--transition-fast), box-shadow var(--transition-fast);
+  letter-spacing: 0.01em;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+.wd-btn-create:hover {
+  background: var(--neutral-100);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+.wd-btn-create:active {
+  transform: scale(0.97);
+}
+.wd-btn-create:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.25);
+}
+.wd-btn-create svg {
+  opacity: 0.7;
+}
+
+/* =========================================================================
+   TABLE
+   ========================================================================= */
+
+.wd-table-wrap {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow:
+    0 1px 6px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  margin-bottom: var(--space-md);
+}
+
+.wd-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+/* ── Table Header — strong separation from rows ── */
+.wd-th {
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  text-align: center;
+  border-bottom: 1px solid var(--white-alpha-08);
+  background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+  position: relative;
+}
+
+/* Column widths — compact, Evento gets remaining space */
+.wd-th--status    { width: 10%; }
+.wd-th--date      { width: 12%; }
+.wd-th--event     { width: auto; }
+.wd-th--countdown { width: 14%; }
+.wd-th--actions   { width: 8%; text-align: center; }
+
+/* ── Table Rows ── */
+.wd-row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.wd-row:last-child { border-bottom: none; }
+.wd-row:hover {
+  background: rgba(255, 255, 255, 0.025);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+}
+
+.wd-row[data-status="CANCELLED"] { opacity: 0.4; }
+
+.wd-row--expanded {
+  background: rgba(255, 255, 255, 0.015);
+  border-bottom: none;
+}
+
+/* ── Table Cells — unified single font style ── */
+.wd-td {
+  padding: var(--space-sm) var(--space-md);
+  font-size: 13px;
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+  vertical-align: middle;
+  line-height: 1.4;
+  text-align: center;
+}
+.wd-td--actions {
+  text-align: center;
+}
+
+/* =========================================================================
+   STATUS BADGES — monochrome with subtle distinction
+   ========================================================================= */
+
+.wd-status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: 4px 10px;
+  font-size: var(--fs-2xs, 10px);
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-secondary);
+  transition: background var(--transition-fast), box-shadow var(--transition-fast);
+}
+.wd-status--draft {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.08);
+}
+.wd-status--planned {
+  color: var(--text-secondary);
+}
+.wd-status--active {
+  color: var(--success);
+  background: var(--accent-success-bg);
+  box-shadow: 0 0 8px rgba(74, 222, 128, 0.15), inset 0 0 0 1px rgba(74, 222, 128, 0.1);
+}
+.wd-status--closed {
+  color: var(--text-placeholder);
+  background: rgba(255, 255, 255, 0.03);
+}
+.wd-status--cancelled {
+  color: var(--text-placeholder);
+  background: rgba(255, 255, 255, 0.03);
+  text-decoration: line-through;
+}
+
+/* Dot animation for ACTIVE only */
+.wd-status__dot {
+  width: 6px;
+  height: 6px;
+  background: var(--success);
+  border-radius: var(--radius-full);
+  animation: wd-pulse 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+@keyframes wd-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* ── Date & Event — simplified, same font size as cells ── */
+.wd-date-label {
+  color: var(--text-secondary);
+  font-weight: var(--fw-medium);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  justify-content: center;
+  width: 100%;
+}
+.wd-date-label svg { color: var(--text-placeholder); width: 12px; height: 12px; }
+.wd-date-label--muted { color: var(--text-placeholder); }
+.wd-date-label--muted svg { color: var(--text-placeholder); }
+
+.wd-event-name { color: var(--text-secondary); }
+.wd-event-empty { color: var(--text-placeholder); font-style: italic; }
+
+/* ── Countdown — business-class inline ── */
+.wd-countdown {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+  font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums;
+  justify-content: center;
+  width: 100%;
+}
+.wd-countdown__block {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+  padding: var(--space-xs) var(--space-sm);
+  font-size: 14px;
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+.wd-countdown__num {
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+}
+.wd-countdown__unit {
+  font-size: 9px;
+  font-weight: var(--fw-medium);
+  text-transform: uppercase;
+  color: var(--text-placeholder);
+  letter-spacing: 0.04em;
+}
+.wd-countdown__sep {
+  color: var(--text-placeholder);
+  font-size: 10px;
+  margin: 0;
+  opacity: 0.4;
+  line-height: 1;
+}
+
+.wd-countdown-active {
+  font-size: 13px;
+  color: var(--success);
+  font-weight: var(--fw-semibold);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  text-shadow: 0 0 12px rgba(74, 222, 128, 0.25);
+}
+.wd-countdown-off {
+  color: var(--text-placeholder);
+  font-size: 13px;
+}
+
+/* =========================================================================
+   BUTTONS — neutral, no accent colors
+   ========================================================================= */
+
+.wd-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  padding: 6px 14px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast),
+              border-color var(--transition-fast), box-shadow var(--transition-fast),
+              transform var(--transition-fast);
+  white-space: nowrap;
+}
+.wd-btn:active {
+  transform: scale(0.97);
+}
+.wd-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+}
+.wd-btn--ghost {
+  background: transparent;
+  color: var(--text-tertiary);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+.wd-btn--ghost:hover {
+  color: var(--text-secondary);
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+}
+.wd-btn--primary {
+  background: var(--neutral-0);
+  color: var(--neutral-900);
+  border-color: var(--neutral-0);
+  font-weight: var(--fw-semibold);
+}
+.wd-btn--primary:hover {
+  background: var(--neutral-100);
+}
+.wd-btn--primary:hover {
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
+}
+.wd-btn--primary:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+/* Accent → neutralized */
+.wd-btn--accent {
+  background: transparent;
+  color: var(--text-secondary);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+.wd-btn--accent:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.14);
+}
+.wd-btn--danger {
+  background: transparent;
+  color: var(--text-secondary);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+.wd-btn--danger:hover {
+  color: var(--danger);
+  border-color: color-mix(in srgb, var(--danger) 20%, transparent);
+  background: color-mix(in srgb, var(--danger) 6%, transparent);
+}
+
+/* =========================================================================
+   PLANNER EXPANDED PANEL
+   ========================================================================= */
+
+.wd-panel-row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+.wd-panel-cell {
+  padding: 0;
+}
+
+.wd-planner {
+  padding: clamp(var(--space-sm), 2vw, var(--space-md))
+           clamp(var(--space-md), 3vw, var(--space-lg))
+           clamp(var(--space-sm), 2vw, var(--space-md));
+  background: linear-gradient(180deg, rgba(255,255,255,0.015) 0%, rgba(0,0,0,0.05) 100%);
+  animation: wd-slide-in 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  content-visibility: auto;
+  contain-intrinsic-size: auto 400px;
+}
+@keyframes wd-slide-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.wd-planner__cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: clamp(var(--space-sm), 1.5vw, var(--space-md));
+  margin-bottom: var(--space-md);
+}
+
+/* ── Card ── */
+.wd-card--glass {
+  background: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.015) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md) var(--space-md) var(--space-sm);
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+  box-shadow:
+    0 2px 12px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(255, 255, 255, 0.02),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(8px);
+  container-type: inline-size;
+  container-name: workday-card;
+}
+.wd-card--glass:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* Container Queries — card self-adaptation */
+@container workday-card (max-width: 280px) {
+  .wd-card__header-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-xs);
+    padding-bottom: var(--space-xs);
+  }
+  .wd-badge-sm {
+    font-size: 9px;
+  }
+  .wd-area__subtotal {
+    font-size: var(--fs-xs);
+  }
+}
+
+@container workday-card (max-width: 220px) {
+  .wd-card__total {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-xs);
+  }
+}
+
+/* Card locked */
+.wd-card--locked {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* Card header */
+.wd-card__header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.wd-card__title {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: 11px;
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.wd-card__title svg {
+  color: var(--text-placeholder);
+  opacity: 0.4;
+  width: 14px;
+  height: 14px;
+  transition: opacity var(--transition-fast);
+}
+.wd-card--glass:hover .wd-card__title svg {
+  opacity: 0.6;
+}
+
+/* Shared small badge */
+.wd-badge-sm {
+  font-size: 10px;
+  font-weight: var(--fw-medium);
+  color: var(--text-placeholder);
+  letter-spacing: 0.02em;
+}
+
+/* =========================================================================
+   STAFF: Progressive Disclosure
+   ========================================================================= */
+
+.wd-area { margin-bottom: 1px; }
+.wd-area__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  width: 100%;
+  padding: var(--space-sm) var(--space-sm);
+  background: transparent;
+  border: none;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  border-radius: var(--radius-sm);
+  color: inherit;
+}
+.wd-area__header:hover {
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.wd-area__toggle {
+  display: flex;
+  align-items: center;
+  color: var(--text-placeholder);
+  transition: transform var(--transition-fast);
+}
+.wd-area:not(.wd-area--collapsed) .wd-area__toggle {
+  transform: rotate(90deg);
+}
+.wd-area__name {
+  font-size: 13px;
+  font-weight: var(--fw-medium);
+  flex: 1;
+  text-align: left;
+  color: var(--text-secondary);
+}
+.wd-area__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-left: auto;
+}
+.wd-area__count {
+  font-size: var(--fs-2xs, 10px);
+  font-weight: var(--fw-medium);
+  color: var(--text-placeholder);
+}
+.wd-area__subtotal {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+}
+
+.wd-area__roles {
+  list-style: none;
+  padding: 0 0 0 var(--space-lg);
+  animation: wd-slide-in 0.2s ease-out;
+}
+.wd-area__roles[hidden] { display: none; }
+
+.wd-role {
+  display: flex;
+  justify-content: space-between;
+  padding: 3px var(--space-sm);
+  font-size: var(--fs-xs);
+  color: var(--text-tertiary);
+  border-left: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+/* =========================================================================
+   COSTOS FIJOS
+   ========================================================================= */
+
+.wd-cost-list { list-style: none; padding: 0; }
+.wd-cost-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+.wd-cost-item:last-child { border-bottom: none; }
+.wd-cost-item__name { flex: 1; }
+.wd-cost-item__amount {
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  min-width: 70px;
+  text-align: right;
+}
+
+/* Pay toggle — monochrome */
+.wd-pay-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  color: var(--text-placeholder);
+  cursor: pointer;
+  transition: border-color var(--transition-fast), color var(--transition-fast), background var(--transition-fast);
+  flex-shrink: 0;
+}
+.wd-pay-toggle:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+  color: var(--text-secondary);
+}
+.wd-pay-toggle--paid {
+  border-color: rgba(255, 255, 255, 0.2);
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* =========================================================================
+   SOLICITUDES — single-line items, monochrome badges
+   ========================================================================= */
+
+.wd-sol-list { list-style: none; padding: 0; }
+
+.wd-sol-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  font-size: 13px;
+}
+.wd-sol-item:last-child { border-bottom: none; }
+
+/* For the flat single-line layout */
+.wd-sol-item__origin {
+  font-size: 10px;
+  font-weight: var(--fw-semibold);
+  color: var(--text-placeholder);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  min-width: 44px;
+}
+.wd-sol-item__name {
+  flex: 1;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+.wd-sol-item__amount {
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  font-size: var(--fs-sm);
+  min-width: 60px;
+  text-align: right;
+}
+.wd-sol-item__status {
+  font-size: var(--fs-2xs, 10px);
+  font-weight: var(--fw-medium);
+  color: var(--text-placeholder);
+  min-width: 70px;
+  text-align: right;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Legacy 2-row layout (kept for compatibility) */
+.wd-sol-item__top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 3px;
+}
+.wd-sol-item__bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: var(--space-xl, 42px);
+}
+
+/* Origin badges — all monochrome */
+.wd-origin-badge {
+  font-size: var(--fs-2xs, 10px);
+  font-weight: var(--fw-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-tertiary);
+}
+/* No per-origin colors — all same monochrome */
+.wd-origin--barra,
+.wd-origin--puerta,
+.wd-origin--oper,
+.wd-origin--admin {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-tertiary);
+}
+
+/* Status badges — semantic color coding */
+.wd-sol-status {
+  font-size: var(--fs-2xs, 10px);
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-placeholder);
+}
+.wd-sol-status--pendiente  { color: var(--warning); }
+.wd-sol-status--aprobada   { color: var(--success); }
+.wd-sol-status--entregada  { color: var(--purple-400); }
+.wd-sol-status--rechazada  { color: var(--danger); }
+
+/* ── Card Total ── */
+.wd-card__total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-sm) 0 var(--space-sm);
+  margin-top: auto;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 13px;
+  color: var(--text-tertiary);
+}
+.wd-card__total strong {
+  font-size: 16px;
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Card Actions ── */
+.wd-card__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-xs);
+  margin-top: var(--space-xs);
+}
+
+/* =========================================================================
+   PLANNER FOOTER (replaces separate evento strip + KPI bar)
+   ========================================================================= */
+
+.wd-planner__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: clamp(var(--space-sm), 2vw, var(--space-md));
+  padding-top: clamp(var(--space-sm), 2vw, var(--space-md));
+  margin-top: var(--space-xs);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Inline evento select (inside table row) */
+.wd-evento-select--inline {
+  width: 180px;
+  padding: 5px 10px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 26px;
+  transition: border-color var(--transition-fast);
+}
+.wd-evento-select--inline:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+.wd-evento-select--inline:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.06);
+}
+.wd-evento-select--inline option {
+  background: var(--neutral-900);
+  color: var(--text-primary);
+}
+
+/* KPI pill badge */
+.wd-kpi-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px;
+  font-size: 11px;
+  font-weight: var(--fw-semibold);
+  color: var(--text-secondary);
+  background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.03) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-full);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  height: 28px;
+  flex-shrink: 0;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.wd-td--evento {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  justify-content: center;
+}
+
+
+/* Footer total */
+.wd-planner__total {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-md);
+  justify-self: end;
+}
+.wd-planner__total-label {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+.wd-planner__total-value {
+  font-size: 20px;
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+/* Budget bar */
+.wd-budget-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  min-width: 140px;
+}
+.wd-budget-bar__track {
+  flex: 1;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+.wd-budget-bar__fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width var(--transition-slow);
+  box-shadow: 0 0 6px currentColor;
+}
+.wd-budget--green  { background: rgba(255, 255, 255, 0.45); color: rgba(255,255,255,0.15); }
+.wd-budget--amber  { background: rgba(255, 255, 255, 0.35); color: rgba(255,255,255,0.10); }
+.wd-budget--red    { background: rgba(255, 255, 255, 0.25); color: rgba(255,255,255,0.08); }
+
+.wd-budget-bar__label {
+  font-size: var(--fs-2xs, 10px);
+  font-weight: var(--fw-semibold);
+  color: var(--text-tertiary);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Legacy containers (hidden if still in HTML) */
+.wd-evento-strip { display: none; }
+.wd-kpi-bar { display: none; }
+.wd-kpi-bar__items,
+.wd-kpi-bar__right,
+.wd-kpi-item,
+.wd-kpi-item__label,
+.wd-kpi-item__value,
+.wd-kpi-bar__sep,
+.wd-evento-strip__info,
+.wd-evento-strip__qr,
+.wd-qr-badge { display: none; }
+
+/* ── Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .wd-status__dot { animation: none; }
+  .wd-planner,
+  .wd-area__roles { animation: none; }
+  .wd-toast { animation: none; }
+  .wd-toast--exiting { animation: none; }
+  .wd-modal-overlay { animation: none; }
+  .wd-modal { animation: none; }
+  .wd-btn, .wd-btn-create, .wd-card--glass,
+  .wd-pay-toggle, .wd-area__header,
+  .wd-area__toggle, .wd-row,
+  .wd-evento-select--inline,
+  .wd-budget-bar__fill { transition: none; }
+}
+
+/* =========================================================================
+   RESPONSIVE
+   ========================================================================= */
+
+@media (max-width: 1024px) {
+  .wd-th--countdown,
+  .wd-row .wd-td:nth-child(4) { display: none; }
+
+  .wd-planner__footer {
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+}
+
+@media (max-width: 768px) {
+  .wd-th--event,
+  .wd-td--evento { display: none; }
+}
+
+/* =========================================================================
+   POLISH: Hover Micro-Interactions
+   ========================================================================= */
+
+/* Card hover lift is handled in the main .wd-card--glass block above */
+.wd-card--glass:hover {
+  transform: translateY(-2px);
+}
+
+.wd-cost-item {
+  transition: background var(--transition-fast);
+}
+.wd-cost-item:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.wd-sol-item {
+  transition: background var(--transition-fast);
+}
+.wd-sol-item:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.wd-pay-toggle {
+  transition: transform var(--transition-fast), border-color var(--transition-fast),
+              background var(--transition-fast);
+}
+.wd-pay-toggle:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.06);
+}
+.wd-pay-toggle:active {
+  transform: scale(0.9);
+}
+.wd-pay-toggle:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+}
+
+.wd-area__header {
+  transition: background var(--transition-fast);
+  border-radius: var(--radius-sm);
+}
+.wd-area__header:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* =========================================================================
+   POLISH: Closed/History Row Styles
+   ========================================================================= */
+
+.wd-row[data-status="CLOSED"]  { opacity: 0.5; }
+.wd-row[data-status="CLOSED"]:hover  { opacity: 0.7; }
+.wd-row[data-status="CANCELLED"]:hover { opacity: 0.55; }
+
+.wd-status--closed {
+  font-size: var(--fs-2xs, 10px);
+  font-weight: var(--fw-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  color: var(--text-placeholder);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.wd-closed-label {
+  font-size: 13px;
+  font-weight: var(--fw-semibold);
+  color: var(--text-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* =========================================================================
+   POLISH: Toast Notification System
+   ========================================================================= */
+
+.wd-toast-container {
+  position: fixed;
+  bottom: var(--space-lg);
+  right: var(--space-lg);
+  z-index: var(--z-toast);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  pointer-events: none;
+}
+
+.wd-toast {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background: rgba(20, 20, 20, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-lg);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: var(--fw-medium);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    0 2px 8px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  pointer-events: auto;
+  animation: wd-toast-in 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  max-width: 360px;
+}
+.wd-toast--exiting {
+  animation: wd-toast-out 0.25s ease-in forwards;
+}
+
+.wd-toast__icon {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+}
+.wd-toast--success .wd-toast__icon { color: var(--success); }
+.wd-toast--info    .wd-toast__icon { color: var(--info); }
+.wd-toast--warning .wd-toast__icon { color: var(--warning); }
+.wd-toast--danger  .wd-toast__icon { color: var(--danger); }
+
+.wd-toast--success { border-left: 3px solid var(--success); }
+.wd-toast--info    { border-left: 3px solid var(--info); }
+.wd-toast--warning { border-left: 3px solid var(--warning); }
+.wd-toast--danger  { border-left: 3px solid var(--danger); }
+
+@keyframes wd-toast-in {
+  from { opacity: 0; transform: translateX(40px) scale(0.95); }
+  to   { opacity: 1; transform: translateX(0) scale(1); }
+}
+@keyframes wd-toast-out {
+  from { opacity: 1; transform: translateX(0); }
+  to   { opacity: 0; transform: translateX(40px); }
+}
+
+/* =========================================================================
+   POLISH: Confirmation Modal
+   ========================================================================= */
+
+.wd-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-progress);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  animation: wd-modal-bg-in 0.2s ease-out;
+}
+.wd-modal-overlay[hidden] { display: none; }
+
+.wd-modal {
+  background: linear-gradient(180deg, rgba(24,24,24,0.98) 0%, rgba(14,14,14,0.99) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-xl, 16px);
+  padding: var(--space-xl);
+  max-width: 420px;
+  width: 90%;
+  text-align: center;
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.6),
+    0 8px 24px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  animation: wd-modal-in 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.wd-modal__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full);
+  background: var(--accent-error-bg);
+  color: var(--danger);
+  margin: 0 auto var(--space-md);
+}
+
+.wd-modal__title {
+  font-size: 18px;
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-sm);
+}
+
+.wd-modal__desc {
+  font-size: 13px;
+  color: var(--text-tertiary);
+  line-height: 1.5;
+  margin-bottom: var(--space-lg);
+}
+
+.wd-modal__actions {
+  display: flex;
+  gap: var(--space-sm);
+  justify-content: center;
+}
+.wd-modal__actions .wd-btn {
+  flex: 1;
+  justify-content: center;
+  min-height: 38px;
+}
+
+@keyframes wd-modal-bg-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes wd-modal-in {
+  from { opacity: 0; transform: scale(0.95) translateY(8px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}

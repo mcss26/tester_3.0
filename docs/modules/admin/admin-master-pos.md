@@ -224,5 +224,5 @@ R: Desactiva las terminales del proveedor anterior y registra las nuevas termina
 
 ## 11. Referencias y Links
 
-- [Admin Cierre de Caja](admin-cierre.md) - Conciliación de transacciones por terminal
+- [Admin Workdays — Night Chief](workdays.md) - Cierre de caja integrado en Night Chief tab
 - [Screen Map](../../screen-map.md#admin-master-pos) - Ubicación en arquitectura de pantallas

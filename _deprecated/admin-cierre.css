@@ -1,0 +1,179 @@
+/* =========================================================================
+   ADMIN CIERRE - Golden Standard UI
+   Page-specific styles for the closing module
+   Version: 2026-02-07
+   ========================================================================= */
+
+/* =========================================================================
+   LAYOUT & GRID
+   ========================================================================= */
+
+.reconcile-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 24px;
+}
+
+@media (max-width: 1024px) {
+    .reconcile-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.reconcile-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+/* =========================================================================
+   TABLE VARIANTS
+   ========================================================================= */
+
+.table-viewport-limited {
+    max-height: 400px; /* Limit height for main table */
+}
+
+/* Input inside tables */
+.input-reconcile-compact {
+    height: 28px;
+    padding: 0 8px;
+    font-size: 13px;
+    width: 100%;
+    text-align: right;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+}
+
+.input-reconcile-compact:focus {
+    border-color: var(--primary);
+    outline: none;
+}
+
+/* Notes Panel */
+.notes-panel {
+    margin-top: 24px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+}
+
+.notes-input {
+    width: 100%;
+    min-height: 100px;
+    resize: vertical;
+    margin: 12px 0 16px 0;
+    font-family: var(--font-sans);
+    line-height: 1.5;
+}
+
+.notes-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* =========================================================================
+   STATUS PILL
+   ========================================================================= */
+/* .status-pill base + variants → consolidated in components.css (L1698) */
+
+/* PRECARGA ELEMENTS — Moved to components.css (shared across modules) */
+
+/* =========================================================================
+   SPRINT 2: BAR STOCK AUDIT SECTION
+   ========================================================================= */
+.audit-details {
+    margin-top: 24px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-lg);
+    padding: 16px 24px;
+}
+
+.audit-details[open] > summary {
+    margin-bottom: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    padding-bottom: 12px;
+}
+
+.audit-details summary::-webkit-details-marker,
+.audit-details summary::marker {
+    color: var(--text-tertiary);
+}
+
+/* KPI Row */
+.kpi-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.kpi-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    text-align: center;
+}
+
+.kpi-value {
+    font-size: 22px;
+    font-weight: var(--fw-bold);
+    font-family: var(--font-mono);
+    color: var(--text-primary);
+    line-height: 1.2;
+}
+
+.kpi-label {
+
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 4px;
+}
+
+/* =========================================================================
+   FASE 9: Hygiene Remediation (2026-02-08)
+   Classes extracted from inline styles
+   ========================================================================= */
+
+.filter-bar-separator {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+}
+
+.filter-group-gap-sm {
+    gap: 8px;
+}
+
+.dashboard-header-bordered {
+    padding: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* .m-0 → consolidated in components.css */
+
+.row-separator {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.audit-summary {
+    cursor: pointer;
+    padding: 12px 0;
+    margin-top: 16px;
+}
+
+.confirm-text {
+    margin-bottom: 16px;
+}
+
+.pre-wrap {
+    white-space: pre-wrap;
+}

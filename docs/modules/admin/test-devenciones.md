@@ -32,25 +32,30 @@ Utiliza un ejecutor de pruebas ligero (sin dependencias externas salvo Supabase 
 La suite valida 7 áreas críticas:
 
 ### 2.1 Conexión & Auth
+
 - Verifica inicialización de `window.sb`.
 - Confirma sesión activa y roles permitidos (`admin`, `contable`).
 
 ### 2.2 Schema Verification
+
 - Existencia de tabla `staff_accruals`.
 - Integridad referencial (Foreign Keys).
 - Constraints únicos (prevención de duplicados por jornada/usuario).
 - Columnas calculadas (Generated Columns).
 
 ### 2.3 Vistas
+
 - Accesibilidad de `vw_staff_accruals_summary`.
 
 ### 2.4 RPC Functions (Core Logic)
+
 - **`admin_generate_workday_accruals`**: Prueba la generación de sueldos basada en convocatorias.
   - Test de Idempotencia (correrlo 2 veces no duplica deuda).
   - Test de Ajuste Manual (verificar que se respeten edits manuales).
 - **`admin_export_accruals_to_payments`**: Verifica la función de exportación a pagos.
 
 ### 2.5 RLS Policies
+
 - Verifica que Admin pueda leer/escribir.
 - Confirma que las reglas de seguridad no bloqueen operaciones legítimas.
 
@@ -76,5 +81,4 @@ La suite valida 7 áreas críticas:
 
 ## 5. Referencias
 
-- [Módulo Workdays](admin-workdays.md)
-- [Módulo Nómina](admin-master-nomina.md)
+- [Módulo Workdays](workdays.md)

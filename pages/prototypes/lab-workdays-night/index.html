@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <meta name="description" content="Night Chief — Cierre de noche con Stock Audit y Caja">
+     <meta name="theme-color" content="#000000">
+     <title>Night Chief — Cierre de Noche</title>
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+     <link rel="stylesheet" href="../../../assets/css/tokens.css">
+     <link rel="stylesheet" href="../../../assets/css/components.css">
+     <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+     <!-- Skip to content (a11y) -->
+     <a href="#main-content" class="skip-link">Ir al contenido principal</a>
+
+     <!-- ===== TOPBAR ===== -->
+     <header class="lab-topbar" role="banner">
+          <nav class="lab-topbar__breadcrumb" aria-label="Navegación de ruta">
+               <ol class="breadcrumb__list">
+                    <li class="breadcrumb__item">
+                         <a href="#" class="breadcrumb__link">Administración</a>
+                    </li>
+                    <li class="breadcrumb__item">
+                         <a href="../lab-workdays/index.html" class="breadcrumb__link">Workdays</a>
+                    </li>
+                    <li class="breadcrumb__item" aria-current="page">
+                         <span class="breadcrumb__current">Night Chief</span>
+                    </li>
+               </ol>
+          </nav>
+          <div class="lab-topbar__center"></div>
+          <div class="lab-topbar__actions">
+               <button class="topbar-icon" type="button" aria-label="Notificaciones">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                         <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                         <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                    </svg>
+               </button>
+               <button class="topbar-avatar" type="button" aria-label="Menú de usuario">MC</button>
+          </div>
+     </header>
+
+     <!-- ===== MAIN CONTENT ===== -->
+     <main class="lab-shell" id="main-content">
+
+          <!-- ── Night Chief Header ── -->
+          <div class="nc-header">
+               <div class="nc-header__info">
+                    <div>
+                         <h1 class="nc-header__title" id="nc-title">Sáb 15 Feb · Noche Electrónica</h1>
+                         <p class="nc-header__event" id="nc-event-meta">Apertura: 23:30 · Stock contado a las 03:45 por
+                              Enc. Barra — Martín
+                         </p>
+                    </div>
+               </div>
+               <div class="nc-kpi-strip__imports" id="import-sources" role="region" aria-label="Importaciones externas">
+                    <!-- Rendered by JS -->
+               </div>
+               <span class="nc-live-badge">
+                    <span class="nc-live-badge__dot" aria-hidden="true"></span>
+                    EN VIVO
+               </span>
+          </div>
+
+          <!-- ── KPI Strip ── -->
+          <div class="nc-kpi-strip" role="region" aria-label="Indicadores clave">
+               <div class="nc-kpi">
+                    <div class="nc-kpi__label">Revenue Total</div>
+                    <div class="nc-kpi__value" id="kpi-revenue">—</div>
+               </div>
+               <div class="nc-kpi">
+                    <div class="nc-kpi__label">Merma Stock</div>
+                    <div class="nc-kpi__value nc-kpi__value--danger" id="kpi-merma">—</div>
+               </div>
+               <div class="nc-kpi">
+                    <div class="nc-kpi__label">Diferencia Caja</div>
+                    <div class="nc-kpi__value" id="kpi-caja-diff">—</div>
+               </div>
+               <div class="nc-kpi">
+                    <div class="nc-kpi__label">Precisión Stock</div>
+                    <div class="nc-kpi__value nc-kpi__value--success" id="kpi-precision">—</div>
+               </div>
+               <div class="nc-kpi">
+                    <div class="nc-kpi__label">Nómina</div>
+                    <div class="nc-kpi__value" id="kpi-nomina">—</div>
+               </div>
+
+          </div>
+
+          <!-- ══════════════════════════════════════════════════
+       50/50 SPLIT: STOCK AUDIT | RENDICIÓN DE CAJA
+       ══════════════════════════════════════════════════ -->
+          <div class="nc-split">
+
+               <!-- ── LEFT: Stock Audit ── -->
+               <div class="nc-panel" role="region" aria-label="Stock Audit">
+                    <div class="nc-panel__header">
+                         <div class="nc-panel__title">
+                              Stock Audit
+                         </div>
+                         <span class="nc-panel__badge nc-panel__badge--ok" id="stock-status">Conteo recibido</span>
+                    </div>
+                    <div class="nc-panel__body">
+                         <!-- Filter Chips -->
+                         <div class="nc-filter-chips" id="stock-filters" role="group"
+                              aria-label="Filtrar por categoría">
+                              <button class="nc-chip nc-chip--active" data-cat="all" aria-pressed="true">Todos</button>
+                              <button class="nc-chip" data-cat="Destilados" aria-pressed="false">Destilados</button>
+                              <button class="nc-chip" data-cat="Cerveza" aria-pressed="false">Cerveza</button>
+                              <button class="nc-chip" data-cat="Sin Alcohol" aria-pressed="false">Sin
+                                   Alcohol</button>
+                              <button class="nc-chip" data-cat="Insumos" aria-pressed="false">Insumos</button>
+                         </div>
+                         <!-- Stock Table -->
+                         <table class="nc-table" id="stock-table">
+                              <thead>
+                                   <tr>
+                                        <th>SKU</th>
+                                        <th>Sistema</th>
+                                        <th>Conteo</th>
+                                        <th>Diff</th>
+                                        <th>Valorizado</th>
+                                   </tr>
+                              </thead>
+                              <tbody id="stock-tbody">
+                                   <!-- Rendered by JS -->
+                              </tbody>
+                         </table>
+                    </div>
+                    <div class="nc-panel__footer">
+                         <span class="nc-footer-label">
+                              <span id="stock-items-count">0</span> SKUs con diferencia
+                         </span>
+                         <span class="nc-footer-value" id="stock-total-diff">$0</span>
+                    </div>
+               </div>
+
+               <!-- ── RIGHT: Rendición de Caja ── -->
+               <div class="nc-panel" role="region" aria-label="Rendición de Caja">
+                    <div class="nc-panel__header">
+                         <div class="nc-panel__title">
+                              Rendición de Caja
+                         </div>
+                         <span class="nc-panel__badge" id="caja-status">4 terminales</span>
+                    </div>
+                    <div class="nc-panel__body">
+                         <!-- Caja Table -->
+                         <table class="nc-table" id="caja-table">
+                              <thead>
+                                   <tr>
+                                        <th>Terminal</th>
+                                        <th>Efvo Sist</th>
+                                        <th>Efvo Decl</th>
+                                        <th>Diff</th>
+                                        <th>Digital</th>
+                                        <th>Retiros</th>
+                                        <th>Total</th>
+                                   </tr>
+                              </thead>
+                              <tbody id="caja-tbody">
+                                   <!-- Rendered by JS -->
+                              </tbody>
+                         </table>
+
+                         <!-- Acceso: QR Propio Audit -->
+                         <div class="nc-qr-audit">
+                              <div class="nc-card__title">Auditoría de Acceso · QR Propio</div>
+                              <table class="nc-table nc-table--compact">
+                                   <thead>
+                                        <tr>
+                                             <th>Canal</th>
+                                             <th>Cantidad</th>
+                                        </tr>
+                                   </thead>
+                                   <tbody>
+                                        <tr>
+                                             <td>Passline validados</td>
+                                             <td id="qr-passline">—</td>
+                                        </tr>
+                                        <tr>
+                                             <td>Boletería vendidos</td>
+                                             <td id="qr-boleteria">—</td>
+                                        </tr>
+                                        <tr class="nc-table__summary-row">
+                                             <td>Esperado (P + B)</td>
+                                             <td id="qr-expected">—</td>
+                                        </tr>
+                                        <tr>
+                                             <td>QR Propios escaneados</td>
+                                             <td id="qr-scanned">—</td>
+                                        </tr>
+                                        <tr class="nc-table__summary-row">
+                                             <td>Diferencia</td>
+                                             <td id="qr-diff">—</td>
+                                        </tr>
+                                   </tbody>
+                              </table>
+                              <div class="nc-qr-kpis">
+                                   <div>
+                                        <div class="nc-kpi__label">Guardarropas</div>
+                                        <div class="nc-qr-kpis__value" id="guardarropas-info">—</div>
+                                   </div>
+                                   <div>
+                                        <div class="nc-kpi__label">Per Cápita</div>
+                                        <div class="nc-qr-kpis__value" id="percapita-info">—</div>
+                                   </div>
+                                   <div>
+                                        <div class="nc-kpi__label">Conciliación</div>
+                                        <div class="nc-qr-kpis__value" id="qr-conciliation-status">—</div>
+                                   </div>
+                              </div>
+                         </div>
+                    </div>
+                    <div class="nc-panel__footer">
+                         <span class="nc-footer-label">Diferencia total efectivo</span>
+                         <span class="nc-footer-value" id="caja-total-diff">$0</span>
+                    </div>
+               </div>
+          </div>
+
+          <!-- ── Bottom: Nómina + Historical Performance ── -->
+          <div class="nc-footer-section">
+               <!-- Nómina -->
+               <div class="nc-card">
+                    <div class="nc-card__title">Nómina / Devenciones</div>
+                    <div id="nomina-list">
+                         <!-- Rendered by JS -->
+                    </div>
+                    <div class="nc-panel__footer nc-panel__footer--inline">
+                         <span class="nc-footer-label" id="nomina-staff-count">0 personas</span>
+                         <span class="nc-footer-value" id="nomina-total">$0</span>
+                    </div>
+               </div>
+               <!-- Historical Performance Sparklines -->
+               <div class="nc-card">
+                    <div class="nc-card__title">Rendimiento vs Historial <span class="nc-card__subtitle">Últimas 8
+                              noches</span></div>
+                    <div class="nc-spark-grid" id="spark-grid">
+                         <!-- Rendered by JS -->
+                    </div>
+               </div>
+          </div>
+
+          <!-- ── Notas de Cierre + Acciones ── -->
+          <div class="nc-card nc-card--full">
+               <div class="nc-card__header-row">
+                    <div class="nc-card__title">Notas de Cierre</div>
+                    <div class="nc-action-bar__buttons">
+                         <button class="nc-btn nc-btn--ghost" type="button" id="btn-save-draft">Guardar
+                              Borrador</button>
+                         <button class="nc-btn nc-btn--primary" type="button" id="btn-close-night">Cerrar Noche</button>
+                    </div>
+               </div>
+               <textarea class="nc-notes" id="nc-notes" aria-label="Notas de cierre"
+                    placeholder="Observaciones de la noche, incidentes, decisiones tomadas…"></textarea>
+          </div>
+
+     </main>
+
+     <!-- ===== FOOTER ===== -->
+     <footer class="lab-footer" role="contentinfo">
+          <p>Midnight Club — Prototype Lab · Night Chief v1</p>
+     </footer>
+
+     <script type="module" src="app.js"></script>
+
+</body>
+
+</html>

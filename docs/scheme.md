@@ -1,6 +1,6 @@
 # Esquema de Base de Datos - FormulaMid 4
 
-Listado actualizado automáticamente al 07/02/2026.
+Listado actualizado automáticamente al 10/02/2026.
 
 > **Actualización Fase 4** (Updated: 2026-02-07 12:15): Se agregaron tablas de auditoría, configuración de costos y reportes financieros semanales.
 > - `auth_audit_log` - Auditoría de accesos.
@@ -25,6 +25,7 @@ _Tabla de cuentas por pagar (gastos)._
 - **work_day_id** (uuid) - FK -> work_days.id
 - **source_type** (text)
 - **source_id** (uuid)
+- **category** (text) - DEFAULT 'other', CHECK: 'transport','technical','supplies','entertainment','staff','venue','other'
 
 ### auth_audit_log
 
@@ -611,10 +612,10 @@ _Solicitudes de reposición (pedidos internos)._
 - **id** (uuid) - PK
 - **user_id** (uuid) - FK -> profiles.id
 - **status** (text)
-- **priority** (text)
-- **desired_date** (date)
-- **notes** (text)
+- **operational_date** (date)
 - **created_at** (timestamp with time zone)
+- **updated_at** (timestamp with time zone)
+- **target_work_day_id** (uuid) - FK -> work_days.id — Jornada destino
 
 ### replenishment_supplier_orders
 
@@ -677,6 +678,7 @@ _Reportes de recaudación._
 - **created_by** (uuid) - FK -> auth.users.id
 - **updated_at** (timestamp with time zone)
 - **updated_by** (uuid) - FK -> auth.users.id
+- **work_day_id** (uuid) - FK -> work_days.id — Jornada asociada
 
 ### site_config
 
@@ -742,17 +744,23 @@ _Planificación de personal por día._
 
 ### work_days
 
-_Días operativos (jornadas)._
+_Días operativos (jornadas). Lifecycle: DRAFT → PLANNED → ACTIVE → CLOSED._
 
 - **id** (uuid) - PK
-- **work_date** (date)
-- **status** (text)
+- **work_date** (date) - UNIQUE
+- **status** (text) - CHECK: 'DRAFT', 'PLANNED', 'ACTIVE', 'CLOSED'
 - **opened_by** (uuid) - FK -> profiles.id
 - **closed_by** (uuid) - FK -> profiles.id
 - **opened_at** (timestamp with time zone)
 - **closed_at** (timestamp with time zone)
 - **created_at** (timestamp with time zone)
 - **notes** (text)
+- **attendance** (integer) - Asistencia (default: 0)
+- **event_id** (uuid) - FK -> events.id ON DELETE SET NULL
+- **event_name** (text) - Cache desnormalizado del nombre
+- **countdown_active** (boolean) - Toggle countdown web (default: false)
+- **health_score** (integer) - Score 0-100 calculado por calculate_health_score()
+- **net_result** (numeric) - Resultado neto (ingresos - egresos)
 
 ## Tablas de Staging (Fase 1 / Admin Cierre)
 
@@ -1013,3 +1021,80 @@ _Resumen de devenciones por persona/rol para reportes de nómina._
 - **total_pending** (numeric) - Total pendiente (accrued + exported)
 - **first_date** (date) - Primera jornada
 - **last_date** (date) - Última jornada
+
+### vw_per_capita_revenue
+
+_Revenue per capita por jornada: ingresos totales / asistencia._
+
+**Fuentes**: `work_days`, `cash_closings`, `qr_codes`, `qr_batches`, `bar_sessions`, `bar_session_sales`
+
+- **work_day_id** (uuid)
+- **work_date** (date)
+- **entries** (integer) - Asistencia
+- **total_revenue** (numeric)
+- **revenue_per_capita** (numeric)
+
+### vw_workday_pnl
+
+_P&L por jornada: ingresos (cash, QR, bar) vs egresos (staff, stock, extras)._
+
+**Fuentes**: `work_days`, `cash_closings`, `qr_codes`, `qr_batches`, `bar_sessions`, `bar_session_sales`, `staff_accruals`, `consumption_reports`, `consumption_details`, `master_sku`, `accounts_payable`
+
+- **work_day_id** (uuid)
+- **work_date** (date)
+- **status** (text)
+- **event_name** (text)
+- **attendance** (integer)
+- **income_cash** (numeric)
+- **income_qr** (numeric)
+- **income_bar** (numeric)
+- **total_income** (numeric)
+- **expense_staff** (numeric)
+- **expense_stock** (numeric)
+- **expense_extras** (numeric)
+- **total_expense** (numeric)
+- **net_result** (numeric)
+- **margin_pct** (numeric)
+
+### vw_workday_benchmarks
+
+_Promedios históricos por día de semana y tipo de evento para benchmarking._
+
+**Fuentes**: `work_days`, `vw_workday_pnl`
+
+- **day_of_week** (integer) - 0=Sunday...6=Saturday
+- **event_type** (text) - Nombre del evento o 'regular'
+- **sample_count** (bigint)
+- **avg_income** (numeric)
+- **avg_expense** (numeric)
+- **avg_net_result** (numeric)
+- **avg_margin_pct** (numeric)
+- **avg_attendance** (numeric)
+
+## Tabla de Plantillas
+
+### work_day_templates
+
+_Plantillas reutilizables para jornadas: configuración de staff, costos asociados y promedios históricos._
+
+- **id** (uuid) - PK
+- **name** (text) - NOT NULL
+- **staff_config** (jsonb) - Configuración de dotación por cargo
+- **cost_ids** (uuid[]) - IDs de cost_definitions asociados
+- **avg_revenue** (numeric) - Promedio de ingresos
+- **avg_attendance** (integer) - Promedio de asistencia
+- **usage_count** (integer) - Veces utilizada
+- **created_at** (timestamptz)
+
+## RPCs de Workday
+
+| RPC | Retorna | Descripción |
+|-----|---------|-------------|
+| `rpc_create_work_day(date, event_id?, event_name?, notes?)` | void | Crea jornada en DRAFT |
+| `rpc_confirm_work_day(id)` | void | DRAFT → PLANNED |
+| `rpc_revert_work_day(id)` | void | PLANNED → DRAFT |
+| `rpc_open_work_day(id)` | jsonb | PLANNED → ACTIVE + pre-flight checks |
+| `rpc_close_work_day(id)` | void | ACTIVE → CLOSED |
+| `calculate_health_score(id)` | integer | Score 0-100 (staff 40, bar 20, requests 20, stock 20) |
+| `admin_generate_workday_accruals(id)` | jsonb | Genera devenciones (guard: ACTIVE/CLOSED) |
+| `admin_export_accruals_to_payments(id)` | jsonb | Exporta devenciones a finance_payments |

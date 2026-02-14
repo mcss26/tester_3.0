@@ -173,25 +173,23 @@
                         </div>
 
                         <!-- ═══════════════════════════════════════════ -->
-                        <!-- TAB BAR: 4 Vistas                          -->
+                        <!-- TAB BAR: 3 Vistas (Status Machine)        -->
                         <!-- ═══════════════════════════════════════════ -->
                         <div class="actions-bar">
                             <div class="tab-bar" id="workday-tabs" role="tablist" aria-label="Vistas de jornada">
-                                <button class="tab-chip active" data-tab="panelPlan" role="tab" aria-selected="true"
-                                    aria-controls="panelPlan">Planificación</button>
-                                <button class="tab-chip" data-tab="panelEvento" role="tab" aria-selected="false"
-                                    aria-controls="panelEvento">Evento</button>
-                                <button class="tab-chip" data-tab="panelStockAudit" role="tab" aria-selected="false"
-                                    aria-controls="panelStockAudit">📦 Stock Audit</button>
-                                <button class="tab-chip" data-tab="panelHistorico" role="tab" aria-selected="false"
-                                    aria-controls="panelHistorico">Histórico</button>
+                                <button class="tab-chip active" data-tab="panelPlanner" role="tab" aria-selected="true"
+                                    aria-controls="panelPlanner">Planificación</button>
+                                <button class="tab-chip" data-tab="panelNightChief" role="tab" aria-selected="false"
+                                    aria-controls="panelNightChief">Night Chief</button>
+                                <button class="tab-chip" data-tab="panelReport" role="tab" aria-selected="false"
+                                    aria-controls="panelReport">Report</button>
                             </div>
                         </div>
 
                         <!-- ═══════════════════════════════════════════ -->
-                        <!-- TAB 1: PLANIFICACIÓN (contenido actual)    -->
+                        <!-- TAB 1: PLANNER (Planificación)             -->
                         <!-- ═══════════════════════════════════════════ -->
-                        <section id="panelPlan" class="tab-content" role="tabpanel">
+                        <section id="panelPlanner" class="tab-content" role="tabpanel">
 
                             <!-- Stats Grid (4 KPIs) -->
                             <!-- Summary Metrics (Golden Standard — 4-col variant) -->
@@ -309,9 +307,12 @@
                         </section>
 
                         <!-- ═══════════════════════════════════════════ -->
-                        <!-- TAB 2: EVENTO (Caja + Barra)               -->
+                        <!-- TAB 2: NIGHT CHIEF (Caja + Stock Audit)    -->
                         <!-- ═══════════════════════════════════════════ -->
-                        <section id="panelEvento" class="tab-content hidden" role="tabpanel">
+                        <section id="panelNightChief" class="tab-content hidden" role="tabpanel">
+
+                            <!-- Anomaly Alerts (populated by JS polling) -->
+                            <div id="anomaly-alerts" class="hidden"></div>
 
                             <!-- Sección de Planificación -->
                             <div class="planning-grid">
@@ -601,14 +602,11 @@
                                     CERRAR NOCHE
                                 </button>
                             </div>
-                        </section>
 
-                        <!-- ═══════════════════════════════════════════ -->
-                        <!-- TAB 3: STOCK AUDIT                         -->
-                        <!-- ═══════════════════════════════════════════ -->
-                        <section id="panelStockAudit" class="tab-content hidden" role="tabpanel">
-
-                            <!-- Stock Audit KPIs -->
+                            <!-- ═════════════════════════════════════════════════ -->
+                            <!-- NIGHT CHIEF continued: STOCK AUDIT (merged in)  -->
+                            <!-- ═════════════════════════════════════════════════ -->
+                            <!-- Stock Audit Section (inside Night Chief) -->
                             <div class="stats-grid stats-grid-4col">
                                 <div class="stat-card">
                                     <div class="stat-label">Costo Físico</div>
@@ -746,9 +744,9 @@
                         </section>
 
                         <!-- ═══════════════════════════════════════════ -->
-                        <!-- TAB 4: HISTÓRICO (PREMIUM)                 -->
+                        <!-- TAB 3: REPORT (Histórico)                  -->
                         <!-- ═══════════════════════════════════════════ -->
-                        <section id="panelHistorico" class="tab-content hidden" role="tabpanel">
+                        <section id="panelReport" class="tab-content hidden" role="tabpanel">
                             <div class="staff-dashboard">
                                 <div class="dashboard-header align-start">
                                     <div>
@@ -773,12 +771,14 @@
                                                     <th class="table-cell is-header text-right">Conciliación</th>
                                                     <th class="table-cell is-header text-right">Loss Stock</th>
                                                     <th class="table-cell is-header text-right">Nómina</th>
+                                                    <th class="table-cell is-header text-right">Resultado</th>
+                                                    <th class="table-cell is-header text-center">Health</th>
                                                     <th class="table-cell is-header text-center">Estado</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="history-table-body">
                                                 <tr>
-                                                    <td colspan="11" class="p-4 text-center muted italic">Cargando
+                                                    <td colspan="13" class="p-4 text-center muted italic">Cargando
                                                         historial...</td>
                                                 </tr>
                                             </tbody>
@@ -849,19 +849,82 @@
         </div>
     </div>
 
-    <!-- Close Night Confirm Modal -->
+    <!-- Close Night Confirm Modal (Sprint 3 — P&L extended) -->
     <div class="modal-overlay hidden" id="closeNightModal">
-        <div class="modal-card modal-sm">
+        <div class="modal-card modal-md">
             <div class="modal-header">
-                <h2 class="modal-title">Confirmar Cierre</h2>
+                <h2 class="modal-title">Resumen de Cierre</h2>
+                <span class="status-pill" id="pnl-health-badge" title="Health Score">—</span>
             </div>
             <div class="modal-body">
-                <p class="text-center mb-4">¿Estás seguro de cerrar la noche
-                    permanentemente?</p>
-                <div class="state-block">
-                    <p class="state-title">Diferencia Total</p>
-                    <p class="dashboard-title" id="confirm-diff-display">$0.00</p>
+                <!-- P&L Summary Grid -->
+                <div class="pnl-summary-grid">
+                    <!-- Income Column -->
+                    <div class="pnl-column pnl-income">
+                        <h4 class="pnl-column-title text-success">Ingresos</h4>
+                        <div class="pnl-line">
+                            <span class="pnl-label">Efectivo</span>
+                            <span class="pnl-value font-mono" id="pnl-income-cash">—</span>
+                        </div>
+                        <div class="pnl-line">
+                            <span class="pnl-label">QR / Entradas</span>
+                            <span class="pnl-value font-mono" id="pnl-income-qr">—</span>
+                        </div>
+                        <div class="pnl-line">
+                            <span class="pnl-label">Barra</span>
+                            <span class="pnl-value font-mono" id="pnl-income-bar">—</span>
+                        </div>
+                        <div class="pnl-line pnl-line-total">
+                            <span class="pnl-label font-bold">Total Ingresos</span>
+                            <span class="pnl-value font-mono font-bold" id="pnl-total-income">—</span>
+                        </div>
+                    </div>
+                    <!-- Expense Column -->
+                    <div class="pnl-column pnl-expense">
+                        <h4 class="pnl-column-title text-danger">Egresos</h4>
+                        <div class="pnl-line">
+                            <span class="pnl-label">Staff</span>
+                            <span class="pnl-value font-mono" id="pnl-expense-staff">—</span>
+                        </div>
+                        <div class="pnl-line">
+                            <span class="pnl-label">Stock</span>
+                            <span class="pnl-value font-mono" id="pnl-expense-stock">—</span>
+                        </div>
+                        <div class="pnl-line">
+                            <span class="pnl-label">Extras</span>
+                            <span class="pnl-value font-mono" id="pnl-expense-extras">—</span>
+                        </div>
+                        <div class="pnl-line pnl-line-total">
+                            <span class="pnl-label font-bold">Total Egresos</span>
+                            <span class="pnl-value font-mono font-bold" id="pnl-total-expense">—</span>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Net Result Bar -->
+                <div class="pnl-net-result">
+                    <div class="pnl-net-row">
+                        <span class="pnl-net-label">Resultado Neto</span>
+                        <span class="pnl-net-value font-mono font-bold" id="pnl-net-result">—</span>
+                    </div>
+                    <div class="pnl-net-row muted">
+                        <span class="pnl-net-label">Margen</span>
+                        <span class="pnl-net-value font-mono" id="pnl-margin-pct">—</span>
+                    </div>
+                    <!-- Break-even progress -->
+                    <div class="pnl-breakeven-bar">
+                        <div class="pnl-breakeven-fill" id="pnl-breakeven-fill" style="width: 0%"></div>
+                    </div>
+                    <p class="text-xs muted text-center mt-1" id="pnl-breakeven-label">Break-even: —</p>
+                </div>
+
+                <!-- Cash Diff (original) -->
+                <div class="pnl-cash-diff">
+                    <span class="pnl-label muted">Diferencia de Caja</span>
+                    <span class="dashboard-title font-mono" id="confirm-diff-display">$0.00</span>
+                </div>
+
+                <p class="text-center text-xs muted mt-4">¿Confirmar cierre permanente de la noche?</p>
             </div>
             <div class="modal-footer">
                 <button class="btn-secondary" id="btnCancelCloseNight">Cancelar</button>
@@ -925,6 +988,26 @@
             <div class="modal-footer">
                 <button class="btn-secondary" id="btnCancelCostModal">Cancelar</button>
                 <button class="btn-primary" id="btnSaveCost">Guardar Costo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pre-flight Checklist Modal (Sprint 3) -->
+    <div class="modal-overlay hidden" id="preFlightModal">
+        <div class="modal-card modal-md">
+            <div class="modal-header">
+                <h2 class="modal-title">Pre-flight Checklist</h2>
+                <span class="status-pill" id="preflight-status-badge">Verificando...</span>
+            </div>
+            <div class="modal-body">
+                <p class="text-xs muted mb-4">Verificación antes de abrir operaciones</p>
+                <div id="preflight-checks" class="preflight-list">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="btnCancelPreFlight">Cancelar</button>
+                <button class="btn-primary" id="btnConfirmPreFlight" disabled>Abrir Jornada</button>
             </div>
         </div>
     </div>
