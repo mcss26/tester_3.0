@@ -170,9 +170,11 @@ function Test-NewFiles {
                 Log "TIP"   "Se crearon muchos archivos de golpe en '$dn'. Esto es tipico de"
                 Log "TIP"   "un agente haciendo scaffolding sin permiso (como paso con god-mode)."
                 Log "TIP"   "Revisa que hay nuevo: Get-ChildItem '$d' -Recurse | Sort LastWriteTime -Desc | Select -First 10"
+                $initialCounts[$d] = $cnt  # Actualizo baseline para no repetir
             } elseif ($diff -gt 0) {
                 Log "WARN" "$($dn): +$diff archivos nuevos"
                 Log "TIP"  "Pocos archivos nuevos. Puede ser normal si estas trabajando."
+                $initialCounts[$d] = $cnt  # Actualizo baseline para no repetir
             } else { Log "OK" "$($dn): estable ($cnt archivos)" }
         } else {
             $initialCounts[$d] = $cnt
@@ -296,7 +298,7 @@ function Test-Processes {
     }
 
     $nodeProcs = @(Get-Process -Name "node" -EA SilentlyContinue)
-    $expectedMax = 10
+    $expectedMax = 15  # Incluye MCP servers + Claude CLI
     if ($nodeProcs.Count -gt $expectedMax) {
         Log "WARN" "Hay $($nodeProcs.Count) procesos Node.js (lo normal es max $expectedMax)"
         Log "TIP"  "Muchos procesos Node pueden indicar MCP servers extra o procesos zombie."
