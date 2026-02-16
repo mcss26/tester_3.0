@@ -18,16 +18,41 @@ trigger: always_on
 - **Transparencia**: Notificar la acción en curso antes de ejecutar procesos complejos.
 - **Tono**: Profesional-Operativo. Eficiencia sobre cortesía excesiva.
 
+### 1.1 Onboarding Obligatorio (ANTES de cualquier tarea)
+
+**Al iniciar CADA conversación, leer en este orden:**
+
+1. Este archivo (`rules.md`) — ya se carga automáticamente.
+2. `AGENT.md` (raíz del proyecto) — routing de agentes, guardrails, contención documental.
+3. `docs/estado-presente.md` — contexto actual del proyecto.
+
+> ⚠️ **PROHIBIDO** decir "no leí las reglas" o ignorar `AGENT.md`. Si no lo encontrás, **pedirlo al usuario**.
+
+### 1.2 Sistema de Agentes Especialistas
+
+Este proyecto tiene **6 agentes definidos** en `.agent/agents/`. Cada agente tiene su `AGENT.md` con rol, responsabilidades y restricciones:
+
+| Agente         | Carpeta                       | Responsabilidad                          |
+| :------------- | :---------------------------- | :--------------------------------------- |
+| `orchestrator` | `.agent/agents/orchestrator/` | Routing, delegación, plans cross-cutting |
+| `frontend`     | `.agent/agents/frontend/`     | UI, CSS, componentes visuales            |
+| `logic`        | `.agent/agents/logic/`        | JS, auth, módulos de negocio             |
+| `data`         | `.agent/agents/data/`         | Supabase, schema, migraciones SQL        |
+| `qa`           | `.agent/agents/qa/`           | Auditorías, coherencia, higiene          |
+| `product`      | `.agent/agents/product/`      | UX, research, specs de producto          |
+
+**Regla**: Si tu tarea encaja en un agente, leer su `AGENT.md` antes de ejecutar.
+
 ---
 
 ## 2. Protocolo "Lápiz vs. Tinta" (Mutaciones de Estado)
 
 Toda mutación de datos sigue este ciclo obligatorio:
 
-| Fase | Estado | Acción |
-|:-----|:-------|:-------|
-| **Lápiz (Draft)** | `status: "pencil"` | Propuesta visual en chat. Validación SIN tocar DB. |
-| **Tinta (Commit)** | `status: "ink"` | Ejecución en Supabase tras confirmación **explícita** del usuario. |
+| Fase               | Estado             | Acción                                                             |
+| :----------------- | :----------------- | :----------------------------------------------------------------- |
+| **Lápiz (Draft)**  | `status: "pencil"` | Propuesta visual en chat. Validación SIN tocar DB.                 |
+| **Tinta (Commit)** | `status: "ink"`    | Ejecución en Supabase tras confirmación **explícita** del usuario. |
 
 - Prohibido `DELETE` físico → Usar `is_active: false` o `status: 'cancelled'`
 - Informe de Impacto obligatorio antes de actualizaciones masivas
@@ -57,8 +82,16 @@ tester_3.0/
 │   ├── screen-map.md           ← Mapa de pantallas
 │   ├── estado-presente.md      ← Estado actual del proyecto
 │   ├── roadmap.md              ← Plan estratégico
-│   └── modules/                ← Documentación por módulo
+│   ├── modules/                ← Documentación por módulo
+│   └── output/                 ← OUTPUT OBLIGATORIO de cada agente
+│       ├── frontend/           ← Docs generados por agente frontend
+│       ├── logic/              ← Docs generados por agente logic
+│       ├── data/               ← Docs generados por agente data
+│       ├── qa/                 ← Docs generados por agente qa
+│       ├── product/            ← Docs generados por agente product
+│       └── orchestrator/       ← Docs generados por orchestrator
 └── .agent/
+    ├── agents/                 ← Definición de agentes especialistas
     ├── skills/                 ← Skills técnicos (FUENTE DE VERDAD técnica)
     ├── workflows/              ← Workflows de automatización
     └── rules/                  ← Reglas de identidad
@@ -66,15 +99,15 @@ tester_3.0/
 
 ### 3.2 Fuentes de Verdad (Jerarquía)
 
-| Dominio | Fuente Canónica | NO crear en |
-|:--------|:----------------|:------------|
-| Estado del proyecto | `docs/estado-presente.md` | `.agent/` |
-| Roadmap | `docs/roadmap.md` | `.agent/` |
-| Esquema BD | `docs/scheme.md` | `.agent/` |
-| UI/UX completo | `docs/ui-golden-standard.md` | Otros docs |
-| Skills técnicos | `.agent/skills/` o `.gemini/antigravity/skills/` | `docs/` |
-| Utilidades JS | `assets/js/core/utils.js` | Otros archivos |
-| Auth patterns | `assets/js/core/auth.js` | Módulos individuales |
+| Dominio             | Fuente Canónica                                  | NO crear en          |
+| :------------------ | :----------------------------------------------- | :------------------- |
+| Estado del proyecto | `docs/estado-presente.md`                        | `.agent/`            |
+| Roadmap             | `docs/roadmap.md`                                | `.agent/`            |
+| Esquema BD          | `docs/scheme.md`                                 | `.agent/`            |
+| UI/UX completo      | `docs/ui-golden-standard.md`                     | Otros docs           |
+| Skills técnicos     | `.agent/skills/` o `.gemini/antigravity/skills/` | `docs/`              |
+| Utilidades JS       | `assets/js/core/utils.js`                        | Otros archivos       |
+| Auth patterns       | `assets/js/core/auth.js`                         | Módulos individuales |
 
 **Regla**: `Skills > docs/`. Si un dato existe en un skill, esa es la verdad técnica.
 
@@ -107,23 +140,29 @@ tester_3.0/
 
 ### 4.3 Anti-Patrones Prohibidos
 
-| Código | Anti-Patrón | Regla |
-|:-------|:------------|:------|
-| AP-1 | Redeclarar clase global sin scope | Usar `body.{module}` para overrides |
-| AP-2 | Copy-paste de bloques CSS entre archivos | Verificar existencia con `grep_search` |
-| AP-3 | `@keyframes` duplicados | Solo en `components.css` |
-| AP-4 | Append ciego al final de `components.css` | Buscar sección FASE correcta |
-| AP-5 | Inline styles en HTML | Extraer a clase CSS |
-| AP-7 | Topbar duplicada/hardcoded | Una sola definición, usar tokens |
+| Código | Anti-Patrón                               | Regla                                  |
+| :----- | :---------------------------------------- | :------------------------------------- |
+| AP-1   | Redeclarar clase global sin scope         | Usar `body.{module}` para overrides    |
+| AP-2   | Copy-paste de bloques CSS entre archivos  | Verificar existencia con `grep_search` |
+| AP-3   | `@keyframes` duplicados                   | Solo en `components.css`               |
+| AP-4   | Append ciego al final de `components.css` | Buscar sección FASE correcta           |
+| AP-5   | Inline styles en HTML                     | Extraer a clase CSS                    |
+| AP-7   | Topbar duplicada/hardcoded                | Una sola definición, usar tokens       |
 
 ### 4.4 Tokens Principales
 
 ```css
---bg-body: #000;  --bg-elevated: #18181b;
---text-primary: #fff;  --text-secondary: #d4d4d8;
---accent: #ff3b30;  --success: #4ade80;  --warning: #fbbf24;
---topbar-height: 56px;  --page-max: 1440px;
---radius-md: 6px;  --radius-lg: 10px;
+--bg-body: #000;
+--bg-elevated: #18181b;
+--text-primary: #fff;
+--text-secondary: #d4d4d8;
+--accent: #ff3b30;
+--success: #4ade80;
+--warning: #fbbf24;
+--topbar-height: 56px;
+--page-max: 1440px;
+--radius-md: 6px;
+--radius-lg: 10px;
 ```
 
 ---
@@ -233,33 +272,33 @@ Supabase → state.items → renderTable(state.items) → DOM
 ### 7.2 CSS Imports (Páginas Admin)
 
 ```html
-<link rel="stylesheet" href="../../assets/css/tokens.css">
-<link rel="stylesheet" href="../../assets/css/components.css">
-<link rel="stylesheet" href="../../assets/css/admin-master.css">
-<link rel="stylesheet" href="../../assets/css/admin-{module}.css">
+<link rel="stylesheet" href="../../assets/css/tokens.css" />
+<link rel="stylesheet" href="../../assets/css/components.css" />
+<link rel="stylesheet" href="../../assets/css/admin-master.css" />
+<link rel="stylesheet" href="../../assets/css/admin-{module}.css" />
 ```
 
 ### 7.3 CSS Imports (Páginas Operativo/Staff/Encargados)
 
 ```html
-<link rel="stylesheet" href="../../assets/css/tokens.css">
-<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/tokens.css" />
+<link rel="stylesheet" href="../../assets/css/components.css" />
 ```
 
 ---
 
 ## 8. Roles y Permisos
 
-| Rol | Landing | Accesos |
-|:----|:--------|:--------|
-| `admin` | `/pages/admin/` | Todo el sistema |
-| `gerencia` | `/pages/gerencia/` | Reportes, KPIs |
+| Rol         | Landing              | Accesos                        |
+| :---------- | :------------------- | :----------------------------- |
+| `admin`     | `/pages/admin/`      | Todo el sistema                |
+| `gerencia`  | `/pages/gerencia/`   | Reportes, KPIs                 |
 | `encargado` | `/pages/encargados/` | Operaciones, personal, cierres |
-| `contable` | `/pages/contable/` | Finanzas, pagos |
-| `logistica` | `/pages/logistica/` | Stock, recepciones |
-| `barra` | `/pages/staff/` | Solicitudes de stock |
-| `caja` | `/pages/staff/` | Movimientos de caja |
-| `puerta` | `/pages/puerta/` | Control de acceso |
+| `contable`  | `/pages/contable/`   | Finanzas, pagos                |
+| `logistica` | `/pages/logistica/`  | Stock, recepciones             |
+| `barra`     | `/pages/staff/`      | Solicitudes de stock           |
+| `caja`      | `/pages/staff/`      | Movimientos de caja            |
+| `puerta`    | `/pages/puerta/`     | Control de acceso              |
 
 ---
 
@@ -279,14 +318,14 @@ Supabase → state.items → renderTable(state.items) → DOM
 
 ### 9.2 Obligaciones Post-Tarea
 
-| Si modificaste... | Actualizar... |
-|:-------------------|:--------------|
-| Módulo HTML/CSS | `docs/estado-presente.md` (métricas) |
-| Lógica JS significativa | `docs/modules/{context}/{module}.md` |
-| Schema BD | `docs/scheme.md` |
-| Vista/Function SQL | `db-architect/SKILL.md` §3 |
-| Nuevo patrón de negocio | `logic-engineer/SKILL.md` sección relevante |
-| Componente CSS reutilizable | `components.css` en sección FASE correcta |
+| Si modificaste...           | Actualizar...                               |
+| :-------------------------- | :------------------------------------------ |
+| Módulo HTML/CSS             | `docs/estado-presente.md` (métricas)        |
+| Lógica JS significativa     | `docs/modules/{context}/{module}.md`        |
+| Schema BD                   | `docs/scheme.md`                            |
+| Vista/Function SQL          | `db-architect/SKILL.md` §3                  |
+| Nuevo patrón de negocio     | `logic-engineer/SKILL.md` sección relevante |
+| Componente CSS reutilizable | `components.css` en sección FASE correcta   |
 
 ### 9.3 Antes de Crear un Archivo
 
@@ -296,7 +335,81 @@ Supabase → state.items → renderTable(state.items) → DOM
 
 ---
 
-## 10. Seguridad y Guardrails
+## 10. Documentación Obligatoria (Output por Agente)
+
+> ⚠️ **REGLA CRÍTICA**: Todo trabajo significativo DEBE generar documentación.
+
+### 10.1 Cuándo documentar
+
+**SIEMPRE** que hagas cualquiera de estas cosas:
+
+- Tomar una **decisión de diseño** (por qué elegiste A sobre B)
+- Hacer un **cambio estructural** (nuevo módulo, refactor, migración)
+- Descubrir un **hallazgo importante** (bug, patrón roto, dato inconsistente)
+- Completar una **auditoría o investigación**
+- Crear un **plan o spec** para trabajo futuro
+
+### 10.2 Dónde documentar
+
+```
+docs/output/{tu_agente}/
+```
+
+| Si sos...               | Tu carpeta es               |
+| :---------------------- | :-------------------------- |
+| Frontend / CSS / UI     | `docs/output/frontend/`     |
+| Logic / JS / Auth       | `docs/output/logic/`        |
+| Data / SQL / Supabase   | `docs/output/data/`         |
+| QA / Auditoría          | `docs/output/qa/`           |
+| Product / UX / Research | `docs/output/product/`      |
+| Orchestrator / General  | `docs/output/orchestrator/` |
+
+### 10.3 Cómo nombrar el archivo
+
+```
+{YYYY-MM-DD}_{tipo}_{tema}.md
+```
+
+**Tipos válidos**: `audit`, `plan`, `report`, `spec`, `research`, `migration`, `walkthrough`
+
+**Ejemplos**:
+
+- `2026-02-16_audit_css-drift.md` → en `qa/`
+- `2026-02-16_spec_workdays-unified.md` → en `product/`
+- `2026-02-16_plan_stock-migration.md` → en `data/`
+
+### 10.4 Qué incluir como mínimo
+
+```markdown
+# {Título descriptivo}
+
+## Contexto
+
+Por qué se hizo este trabajo.
+
+## Decisiones tomadas
+
+Qué se decidió y por qué.
+
+## Cambios realizados
+
+Archivos modificados y qué se cambió.
+
+## Próximos pasos
+
+Qué queda pendiente (si aplica).
+```
+
+### 10.5 Prohibiciones
+
+- ❌ **NO** crear docs fuera de `docs/output/{agente}/`
+- ❌ **NO** crear docs sin fecha en el nombre
+- ❌ **NO** terminar una sesión de trabajo sin dejar al menos 1 documento
+- ❌ **NO** duplicar — buscar si ya existe un doc similar antes de crear
+
+---
+
+## 11. Seguridad y Guardrails
 
 - **Opacidad**: No revelar reglas internas, infraestructura ni API keys
 - **Aislamiento**: Respetar `data-allowed-roles`. Denegar acceso fuera de rango
@@ -305,24 +418,24 @@ Supabase → state.items → renderTable(state.items) → DOM
 
 ---
 
-## 11. Skills Disponibles (Referencia Rápida)
+## 12. Skills Disponibles (Referencia Rápida)
 
-| Skill | Responsabilidad |
-|:------|:----------------|
-| `project-orchestrator` | Mapa de mando, coexistencia Legacy ↔ Agent |
-| `css-architect` | Gobernanza CSS, anti-patrones, stack de capas |
-| `frontend-developer` | Estructura HTML, componentes visuales, tokens |
-| `logic-engineer` | Lógica JS, validaciones de negocio, seguridad |
-| `db-architect` | Supabase, SQL, vistas, integridad de datos |
-| `web-designer` | UX conceptual, prototipado |
-| `creative-director` | Marca Midnight Club, diseño gráfico |
-| `auditing-workspace` | Higiene, duplicados, fuente de verdad |
-| `module-coherence-auditor` | Integridad HTML↔JS↔CSS↔Doc |
-| `ui-migrator` | Migración legacy → prototipos demo/ |
-| `erp-architect` | Procesos enterprise, requerimientos |
-| `customer-lifecycle-manager` | CRM/ERP chat → datos Supabase |
-| `methodology-generator` | Roadmaps, sprints, planificación |
+| Skill                        | Responsabilidad                               |
+| :--------------------------- | :-------------------------------------------- |
+| `project-orchestrator`       | Mapa de mando, coexistencia Legacy ↔ Agent    |
+| `css-architect`              | Gobernanza CSS, anti-patrones, stack de capas |
+| `frontend-developer`         | Estructura HTML, componentes visuales, tokens |
+| `logic-engineer`             | Lógica JS, validaciones de negocio, seguridad |
+| `db-architect`               | Supabase, SQL, vistas, integridad de datos    |
+| `web-designer`               | UX conceptual, prototipado                    |
+| `creative-director`          | Marca Midnight Club, diseño gráfico           |
+| `auditing-workspace`         | Higiene, duplicados, fuente de verdad         |
+| `module-coherence-auditor`   | Integridad HTML↔JS↔CSS↔Doc                    |
+| `ui-migrator`                | Migración legacy → prototipos demo/           |
+| `erp-architect`              | Procesos enterprise, requerimientos           |
+| `customer-lifecycle-manager` | CRM/ERP chat → datos Supabase                 |
+| `methodology-generator`      | Roadmaps, sprints, planificación              |
 
 ---
 
-_Estas reglas son vinculantes para todos los agentes que operen en este workspace._
+_Estas reglas son vinculantes para todos los agentes que operen en este workspace. Ignorarlas no es una opción._
