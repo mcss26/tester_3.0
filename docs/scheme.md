@@ -27,6 +27,19 @@ _Tabla de cuentas por pagar (gastos)._
 - **source_id** (uuid)
 - **category** (text) - DEFAULT 'other', CHECK: 'transport','technical','supplies','entertainment','staff','venue','other'
 
+### audit_config
+
+_Configuración de credenciales y parámetros de auditoría por dominio (e.g. GBOL). Key-value store con JSONB._
+
+- **id** (uuid) - PK
+- **domain** (text) - Dominio de configuración (e.g. 'gbol')
+- **key** (text) - Nombre del parámetro (e.g. 'email', 'password')
+- **value** (jsonb) - Valor del parámetro
+- **is_active** (boolean) - Flag de activación
+- **created_at** (timestamp with time zone)
+
+> ⚠️ Estructura inferida de `gbol-service.js` — verificar columnas contra Supabase.
+
 ### auth_audit_log
 
 _Audit trail de eventos de autenticación._
