@@ -1,0 +1,7 @@
+# Gemini CLI ignore patterns
+# Negar patrones para que Gemini CLI pueda leer archivos de agente
+
+# Permitir archivos clave del proyecto
+!AGENT.md
+!.agent/
+!.agent/**

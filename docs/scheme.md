@@ -1054,6 +1054,53 @@ _P&L por jornada: ingresos (cash, QR, bar) vs egresos (staff, stock, extras)._
 - **net_result** (numeric)
 - **margin_pct** (numeric)
 
+### vw_night_snapshot
+
+_Snapshot completo por noche: ingresos, caja, stock, staff y health score. Alimenta el tab Histórico y el dashboard de reporte._
+
+**Fuentes**: `work_days`, `cash_closings`, `bar_sessions`, `consumption_reports`, `staff_accruals`, `vw_workday_pnl`
+
+- **work_date** (date)
+- **event_name** (text)
+- **status** (text)
+- **total_income** (numeric)
+- **gbol_efectivo** (numeric) - Efectivo bruto GBOL
+- **gbol_efectivo_neto** (numeric) - Efectivo neto GBOL
+- **total_retiros** (numeric) - Total retiros de caja
+- **cant_retiros** (integer) - Cantidad de retiros
+- **cash_declared** (numeric) - Caja declarada
+- **conciliacion_diff** (numeric) - Diferencia de conciliación
+- **stock_loss** (numeric) - Pérdida de stock
+- **staff_cost** (numeric) - Costo de personal
+- **net_result** (numeric) - Resultado neto
+- **health_score** (integer) - Score de salud 0-100
+
+### vw_fiscal_summary
+
+_Resumen fiscal por noche: totales AFIP/GBOL para mini-cards en tab Evento._
+
+**Fuentes**: `revenue_details`, `work_days`
+
+- **noche** (date) - Fecha de la jornada
+- **total_bruto** (numeric) - Total bruto facturado
+- **pct_blanqueado** (numeric) - Porcentaje blanqueado
+- **total_iva** (numeric) - Total IVA
+- **total_tickets** (integer) - Cantidad de tickets
+
+### vw_bar_audit_variance
+
+_Varianza de auditoría de barra: diferencia entre stock teórico y físico por producto._
+
+**Fuentes**: `bar_sessions`, `bar_session_sales`, `consumption_reports`, `consumption_details`, `master_sku`
+
+- **work_day_id** (uuid)
+- **sku_id** (uuid)
+- **sku_name** (text)
+- **theoretical_qty** (numeric) - Cantidad teórica
+- **physical_qty** (numeric) - Cantidad física
+- **variance_qty** (numeric) - Diferencia
+- **variance_pct** (numeric) - Porcentaje de varianza
+
 ### vw_workday_benchmarks
 
 _Promedios históricos por día de semana y tipo de evento para benchmarking._

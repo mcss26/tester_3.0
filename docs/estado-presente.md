@@ -1,7 +1,7 @@
 # Estado Presente del Proyecto - FormulaMid 4
 
-> **Fecha**: 16/02/2026 00:10
-> **Versión**: 4.0.5 (Docs Sync)
+> **Fecha**: 16/02/2026 12:00
+> **Versión**: 4.0.6 (Verifier + Security)
 > **Estado General**: 🟡 En Desarrollo / Consolidación
 > **Fuente de Verdad**: Este documento
 
@@ -9,25 +9,25 @@
 
 ## 📊 Métricas Clave
 
-| Métrica                      | Estado Actual | Variación (vs anterior)                     |
-| :--------------------------- | :------------ | :------------------------------------------ |
-| **Pantallas Operativas**     | **47**        | −1 (recount: 45 pages/ + 2 root)            |
-| **Tablas en Base de Datos**  | **60**        | Corrección: eran 60 (no 48)                 |
-| **Vistas SQL (public)**      | **18**        | Verificado ✅                               |
-| **Módulos JS**               | **42**        | −1 (recount verificado)                     |
-| **Core JS**                  | **20**        | +2 (navigation-debug, navigation-analytics) |
-| **Importers JS**             | **6**         | Sin cambio                                  |
-| **Archivos CSS**             | **18**        | −1 (recount verificado)                     |
-| **Roles Configurados**       | **12**        | Sin cambio                                  |
-| **Skills Activos**           | **13**        | −3 (cleanup previo)                         |
-| **Documentación de Módulos** | **38**        | +4 (excl. template, verificado)             |
-| **Recetas Master**           | **93**        | Verificado ✅                               |
-| **Members Registrados**      | **2,245**     | +2 (live query)                             |
-| **Proveedores Activos**      | **47**        | Verificado ✅                               |
-| **SKUs Activos**             | **26**        | Corrección: eran 26 (no 58)                 |
-| **Profiles (Users)**         | **4**         | Live query                                  |
-| **Work Days**                | **5**         | Live query                                  |
-| **Events**                   | **7**         | Live query                                  |
+| Métrica                      | Estado Actual | Variación (vs anterior)                         |
+| :--------------------------- | :------------ | :---------------------------------------------- |
+| **Pantallas Operativas**     | **50**        | +3 (recount: 45 pages/ + 3 prototipos + 2 root) |
+| **Tablas en Base de Datos**  | **60**        | Corrección: eran 60 (no 48)                     |
+| **Vistas SQL (public)**      | **18**        | Verificado ✅                                   |
+| **Módulos JS**               | **42**        | −1 (recount verificado)                         |
+| **Core JS**                  | **20**        | +2 (navigation-debug, navigation-analytics)     |
+| **Importers JS**             | **6**         | Sin cambio                                      |
+| **Archivos CSS**             | **18**        | −1 (recount verificado)                         |
+| **Roles Configurados**       | **12**        | Sin cambio                                      |
+| **Skills Activos**           | **13**        | −3 (cleanup previo)                             |
+| **Documentación de Módulos** | **38**        | +4 (excl. template, verificado)                 |
+| **Recetas Master**           | **93**        | Verificado ✅                                   |
+| **Members Registrados**      | **2,245**     | +2 (live query)                                 |
+| **Proveedores Activos**      | **47**        | Verificado ✅                                   |
+| **SKUs Activos**             | **26**        | Corrección: eran 26 (no 58)                     |
+| **Profiles (Users)**         | **4**         | Live query                                      |
+| **Work Days**                | **5**         | Live query                                      |
+| **Events**                   | **7**         | Live query                                      |
 
 ---
 
@@ -46,8 +46,9 @@
 | 🟣 Gerencia      |    1    | `pages/gerencia/*.html`   | Balance Semanal                                        |
 | 🔴 Members       |    1    | `pages/members/*.html`    | My QR                                                  |
 | 🛠️ Dev Utilities |    3    | `pages/*.html`            | Components Catalog, Layout Patterns, Module Audit      |
+| 🧪 Prototypes    |    3    | `pages/prototypes/*.html` | lab-balance-semanal, lab-workdays, lab-workdays-night  |
 | 🏠 Root          |    2    | `/*.html`                 | index.html (redirect) + login.html                     |
-| **TOTAL**        | **47**  | —                         | —                                                      |
+| **TOTAL**        | **50**  | —                         | —                                                      |
 
 ### Módulos JavaScript
 
@@ -103,15 +104,25 @@
 | Misc       |   1    | `docs/modules/misc/`       |
 | **TOTAL**  | **38** | —                          |
 
-### Scripts de Utilidad (5 archivos en `scripts/`)
+### Scripts de Utilidad (15 ejecutables en `scripts/`)
 
-| Script               | Propósito                       |
-| :------------------- | :------------------------------ |
-| `audit-css.js`       | Auditoría CSS                   |
-| `audit-links.js`     | Auditoría de links internos     |
-| `audit-modules.js`   | Auditoría automática de módulos |
-| `audit.mjs`          | Auditoría general               |
-| `extract-recipes.js` | Extracción de recetas           |
+| Script                  | Propósito                                             |
+| :---------------------- | :---------------------------------------------------- |
+| `audit-css.js`          | Auditoría CSS                                         |
+| `audit-links.js`        | Auditoría de links internos                           |
+| `audit-modules.js`      | Auditoría automática de módulos                       |
+| `audit.mjs`             | Auditoría general                                     |
+| `extract-recipes.js`    | Extracción de recetas                                 |
+| `security-watchdog.ps1` | Watchdog de seguridad (permisos, integridad, leaks)   |
+| `security-startup.ps1`  | Checks iniciales al abrir VS Code                     |
+| `security-shutdown.ps1` | Checks finales al cerrar VS Code                      |
+| `backup-configs.ps1`    | Backup de configs (.env, credenciales) en ZIP         |
+| `ops-watchdog.ps1`      | Watchdog operativo (health checks continuos)          |
+| `flow-tracer.ps1`       | Trazador de flujos v2 (nav, tablas R/W, cross-module) |
+| `context-loader.ps1`    | Generador de contexto por tópico (KIs + código + git) |
+| `workdays-verifier.ps1` | Verifier progresivo 8 fases para admin-workdays       |
+| `persona_generator.py`  | Generador de personas sintéticas                      |
+| `testing-tracker.js`    | Tracker de testing por módulo                         |
 
 ---
 
@@ -176,7 +187,7 @@
 
 ### 🟡 En Progreso / Calidad Beta
 
-- **Admin Workdays**: Planner de staff en desarrollo
+- **Admin Workdays**: Módulo verificado 100/100 (verifier progresivo), pendiente Sprint 5 (live badge)
 - **Admin Solicitudes**: Refactorización de lógica de aprobación
 - **Reportes de Eficiencia**: Vistas creadas, falta integración UI
 - **Logística**: Módulos funcionales, pendiente polish visual
@@ -237,8 +248,8 @@ tester_3.0/
 │   ├── modules/               # 38 fichas de módulo
 │   ├── output/                # Output por agente (6 subdirs)
 │   └── 5 docs canónicos
-├── pages/                     # 45 pantallas + 3 prototipos + 2 root
-├── scripts/                   # 5 scripts de utilidad
+├── pages/                     # 45 pantallas + 3 prototipos + 2 root = 50
+├── scripts/                   # 15 scripts (5 audit + 5 ops PS1 + 3 security PS1 + 2 misc)
 ├── supabase/                  # Edge functions
 ├── test-data/                 # Datos de prueba sintéticos
 ├── AGENT.md                   # Reglas globales de agentes
@@ -250,13 +261,15 @@ tester_3.0/
 
 ## 📝 Última Actualización
 
-**Fecha**: 16/02/2026 00:10
+**Fecha**: 16/02/2026 12:00
 **Cambios**:
 
-- **Docs Sync**: Métricas corregidas contra filesystem real (scripts 18→5, modules docs 34→38, JS 43→42, skills 16→13)
-- **Agent Infra**: Indexados agents/ (5 sub-agentes), REGISTRY.yml, AGENT.md
-- **Deuda #7**: Marcada como RESUELTO (los 5 docs faltantes ya existen)
-- **Workspace Tree**: Corregido (eliminado `docs/architecture/` fantasma, conteos actualizados)
+- **Verifier peak 100/100**: `workdays-verifier.ps1` alcanzó score perfecto (single-run 11:31). Score progresivo actual: 96/100 con 10 findings residuales
+- **Security Watchdog v3**: `security-watchdog.ps1` con fix de acumulación de avisos (`$sessionWarnLog`)
+- **Scripts 5→15**: Agregados 5 PS1 ops + 3 PS1 security + `persona_generator.py` + `testing-tracker.js`
+- **Admin Workdays**: Promovido de beta a verificado (36 buttons+type, 15 inputs+aria, 6 modals+role, 3 views documentadas)
+- **Deep Verification**: Reporte cross-module generado (`docs/output/qa/2026-02-16_audit_workdays-deep-verification.md`)
+- **F0 Remediación**: Archivos movidos a `output/qa/`, naming R2 corregido, métricas actualizadas
 - **Supabase Project ID**: `iyknbgmcnbpvalvsjxjz` (región us-west-2)
 
 ---

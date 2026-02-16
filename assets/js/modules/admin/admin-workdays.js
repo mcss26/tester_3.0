@@ -64,7 +64,6 @@
 
         // Actions
         btnConfirm: document.getElementById('btn-confirm-jornada'),
-        btnHistory: document.getElementById('btn-back-list'),
 
         // Slide Panel (History)
         panelInstance: null,
@@ -92,10 +91,6 @@
 
         // ── Cierre / Evento Tab ──
         tabBar: document.getElementById('workday-tabs'),
-        panelPlan: document.getElementById('panelPlan'),
-        panelEvento: document.getElementById('panelEvento'),
-        panelStockAudit: document.getElementById('panelStockAudit'),
-        panelHistorico: document.getElementById('panelHistorico'),
 
         cierreTableBody: document.getElementById('cierre-table-body'),
         totalCashDecl: document.getElementById('total-cash-decl'),
@@ -193,6 +188,27 @@
         preFlightStatusBadge: document.getElementById('preflight-status-badge'),
         btnConfirmPreFlight: document.getElementById('btnConfirmPreFlight'),
         btnCancelPreFlight: document.getElementById('btnCancelPreFlight'),
+
+        // ── LIVE Indicator (Sprint 5) ──
+        liveDot: document.getElementById('live-dot'),
+        liveChip: document.getElementById('live-chip'),
+        liveChipTime: document.getElementById('live-chip-time'),
+
+        // ── Sprint 4: Templates & Break-Even ──
+        selectTemplate: document.getElementById('select-template'),
+        btnSaveTemplate: document.getElementById('btn-save-template'),
+        templateModal: document.getElementById('templateModal'),
+        templateModalTitle: document.getElementById('templateModalTitle'),
+        inputTemplateName: document.getElementById('input-template-name'),
+        inputTemplateId: document.getElementById('input-template-id'),
+        btnCancelTemplateModal: document.getElementById('btnCancelTemplateModal'),
+        btnSaveTemplateConfirm: document.getElementById('btnSaveTemplate'),
+        breakevenCard: document.getElementById('breakeven-card'),
+        beCost: document.getElementById('be-cost'),
+        beAvgRevenue: document.getElementById('be-avg-revenue'),
+        beProgressBar: document.getElementById('be-progress-bar'),
+        beProgressPct: document.getElementById('be-progress-pct'),
+        benchmarkPills: document.getElementById('benchmark-pills'),
     };
 
     // Validation
@@ -233,6 +249,10 @@
         // Report Dashboard state
         reportDashboardLoaded: false,
         reportChartInstance: null,
+
+        // Sprint 4: Templates & Benchmarks
+        templates: [],
+        benchmarks: null,   // { avg_revenue, avg_attendance, avg_margin, sample_count }
     };
 
     // 4. Utils
@@ -381,6 +401,12 @@
         // ── Pre-flight events (Sprint 3) ──
         ui.btnConfirmPreFlight?.addEventListener('click', handlePreFlightConfirm);
         ui.btnCancelPreFlight?.addEventListener('click', () => ui.preFlightModal?.classList.add('hidden'));
+
+        // ── Sprint 4: Template events ──
+        ui.selectTemplate?.addEventListener('change', handleApplyTemplate);
+        ui.btnSaveTemplate?.addEventListener('click', openTemplateModal);
+        ui.btnCancelTemplateModal?.addEventListener('click', () => ui.templateModal?.classList.add('hidden'));
+        ui.btnSaveTemplateConfirm?.addEventListener('click', handleSaveTemplate);
 
         ui.btnSaveNotes?.addEventListener('click', handleSaveNotes);
 
@@ -548,6 +574,10 @@
             state.openingCosts.forEach(c => state.costsPlan[c.id] = { amount: c.base_amount, isAdjusted: false });
 
             renderBasicPanels();
+
+            // Sprint 4: Load templates & benchmarks in background
+            loadTemplates();
+            loadBenchmarks();
         } catch (e) {
             console.error('Init Error:', e);
             window.Toast.error('Falló carga inicial.');
@@ -815,6 +845,9 @@
         ui.kpiStaff.textContent = window.Utils.formatARS(staffTotal);
         ui.kpiFixed.textContent = window.Utils.formatARS(fixedTotal);
         ui.kpiTotal.textContent = window.Utils.formatARS(staffTotal + fixedTotal);
+
+        // Sprint 4: Update break-even card
+        updateBreakEvenCard(staffTotal + fixedTotal);
     }
 
     // 10. Actions — Status Machine Dispatcher
@@ -1031,31 +1064,7 @@
         }
     }
 
-    // ── Revert Plan (PLANNED → DRAFT) ──
-    async function handleRevert() {
-        if (!state.activeWorkDay) return;
-        const ok = await window.Utils.confirmAction(
-            '¿Revertir a Borrador? Podré modificar la planificación.',
-            { confirmText: 'Revertir' }
-        );
-        if (!ok) return;
-
-        window.Utils.setPageState(ui, { loading: true });
-        try {
-            const { error } = await window.sb.rpc('rpc_revert_work_day', {
-                p_work_day_id: state.activeWorkDay.id
-            });
-            if (error) throw error;
-
-            window.Toast.success('Jornada revertida a borrador.');
-            handleDateChange();
-        } catch (e) {
-            console.error(e);
-            window.Toast.error('Error al revertir.');
-        } finally {
-            window.Utils.setPageState(ui, { loading: false });
-        }
-    }
+    // handleRevert removed — PLANNED→DRAFT revert not yet wired in UI
 
     // ── Dynamic footer buttons ──
     function updateFooterButtons(status) {
@@ -1636,6 +1645,10 @@
         console.log('[night-chief] Polling started (60s)');
         pollingTimer = setInterval(pollKPIs, POLL_INTERVAL_MS);
         pollKPIs(); // Immediate first fetch
+
+        // Sprint 5: Show LIVE indicator
+        ui.liveDot?.classList.remove('hidden');
+        ui.liveChip?.classList.remove('hidden');
     }
 
     function stopPolling() {
@@ -1644,6 +1657,10 @@
             pollingTimer = null;
             console.log('[night-chief] Polling stopped');
         }
+
+        // Sprint 5: Hide LIVE indicator
+        ui.liveDot?.classList.add('hidden');
+        ui.liveChip?.classList.add('hidden');
     }
 
     async function pollKPIs() {
@@ -1681,6 +1698,12 @@
 
             // Run anomaly checks
             checkAnomalies(closing, sales);
+
+            // Sprint 5: Update LIVE timestamp
+            if (ui.liveChipTime) {
+                const now = new Date();
+                ui.liveChipTime.textContent = now.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            }
 
         } catch (err) {
             console.warn('[night-chief] Poll error:', err.message);
@@ -1766,6 +1789,7 @@
             }
         } catch (err) {
             console.error('[devenciones] Load error:', err);
+            window.Toast?.error('Error cargando devenciones.');
         }
     }
 
@@ -2158,6 +2182,7 @@
 
         } catch (err) {
             console.error('[history]', err);
+            window.Toast?.error('Error cargando historial.');
             ui.historyTableBody.innerHTML = '<tr><td colspan="13" class="p-4 text-center text-danger">Error cargando historial</td></tr>';
         }
     }
@@ -2468,6 +2493,168 @@
             const totalCost = accruals.reduce((s, a) => s + Number(a.base_amount || 0) + Number(a.adjustments || 0), 0);
             if (ui.rptOpsNominaCount) ui.rptOpsNominaCount.textContent = String(accruals.length);
             if (ui.rptOpsNominaCost) ui.rptOpsNominaCost.textContent = fmt(totalCost);
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // Sprint 4: Templates & Break-Even
+    // ═══════════════════════════════════════════════════════════════
+
+    async function loadTemplates() {
+        try {
+            const { data, error } = await window.sb
+                .from('work_day_templates')
+                .select('id, name, staff_config, cost_ids, avg_revenue, avg_attendance, usage_count')
+                .order('usage_count', { ascending: false });
+            if (error) throw error;
+            state.templates = data || [];
+            renderTemplateDropdown();
+        } catch (e) {
+            console.warn('Templates load failed:', e);
+        }
+    }
+
+    function renderTemplateDropdown() {
+        if (!ui.selectTemplate) return;
+        const opts = state.templates.map(t =>
+            `<option value="${t.id}">${t.name} (${t.usage_count || 0} usos)</option>`
+        ).join('');
+        ui.selectTemplate.innerHTML = `<option value="">-- Sin plantilla --</option>${opts}`;
+    }
+
+    async function handleApplyTemplate() {
+        const id = ui.selectTemplate?.value;
+        if (!id) return;
+        const tpl = state.templates.find(t => t.id === id);
+        if (!tpl) return;
+
+        // Apply staff config
+        if (tpl.staff_config && typeof tpl.staff_config === 'object') {
+            Object.entries(tpl.staff_config).forEach(([roleId, qty]) => {
+                if (state.staffPlan.hasOwnProperty(roleId)) {
+                    state.staffPlan[roleId] = Number(qty);
+                }
+            });
+            renderStaffList();
+        }
+
+        // Apply costs (activate matching cost_ids)
+        if (Array.isArray(tpl.cost_ids)) {
+            state.openingCosts.forEach(c => {
+                if (tpl.cost_ids.includes(c.id)) {
+                    state.costsPlan[c.id] = { amount: c.base_amount, isAdjusted: false };
+                }
+            });
+            renderCostsList();
+        }
+
+        calculateTotals();
+
+        // Increment usage_count
+        await window.sb.from('work_day_templates')
+            .update({ usage_count: (tpl.usage_count || 0) + 1 })
+            .eq('id', id);
+        tpl.usage_count = (tpl.usage_count || 0) + 1;
+
+        window.Toast.success(`Plantilla "${tpl.name}" aplicada.`);
+    }
+
+    function openTemplateModal() {
+        if (!ui.templateModal) return;
+        ui.inputTemplateId.value = '';
+        ui.inputTemplateName.value = '';
+        ui.templateModalTitle.textContent = 'Guardar Plantilla';
+        ui.templateModal.classList.remove('hidden');
+        ui.inputTemplateName.focus();
+    }
+
+    async function handleSaveTemplate() {
+        const name = ui.inputTemplateName?.value.trim();
+        if (!name) { window.Toast.error('Ingresá un nombre.'); return; }
+
+        const payload = {
+            name,
+            staff_config: { ...state.staffPlan },
+            cost_ids: Object.keys(state.costsPlan),
+        };
+
+        const editId = ui.inputTemplateId?.value;
+        try {
+            if (editId) {
+                const { error } = await window.sb.from('work_day_templates').update(payload).eq('id', editId);
+                if (error) throw error;
+                window.Toast.success('Plantilla actualizada.');
+            } else {
+                const { error } = await window.sb.from('work_day_templates').insert(payload);
+                if (error) throw error;
+                window.Toast.success('Plantilla creada.');
+            }
+            ui.templateModal?.classList.add('hidden');
+            await loadTemplates();
+        } catch (e) {
+            console.error('Save template error:', e);
+            window.Toast.error('Error guardando plantilla.');
+        }
+    }
+
+    async function loadBenchmarks() {
+        try {
+            // Get day_of_week for the selected date
+            const dateVal = ui.inputDate?.value;
+            if (!dateVal) return;
+            const dow = new Date(dateVal + 'T12:00:00').getDay(); // 0=Sun, 6=Sat
+
+            const { data, error } = await window.sb
+                .from('vw_workday_benchmarks')
+                .select('*')
+                .eq('day_of_week', dow)
+                .maybeSingle();
+            if (error) throw error;
+            state.benchmarks = data;
+            renderBenchmarkPills();
+            // Re-run break-even with benchmarks
+            calculateTotals();
+        } catch (e) {
+            console.warn('Benchmarks load failed:', e);
+        }
+    }
+
+    function renderBenchmarkPills() {
+        if (!ui.benchmarkPills || !state.benchmarks) {
+            if (ui.benchmarkPills) ui.benchmarkPills.innerHTML = '<span class="wd-benchmark-pill muted">Sin datos históricos</span>';
+            return;
+        }
+        const b = state.benchmarks;
+        const fmt = window.Utils.formatARS;
+        ui.benchmarkPills.innerHTML = [
+            `<span class="wd-benchmark-pill">📊 Avg Revenue: ${fmt(b.avg_revenue || 0)}</span>`,
+            `<span class="wd-benchmark-pill">👥 Avg Asistencia: ${Math.round(b.avg_attendance || 0)}</span>`,
+            `<span class="wd-benchmark-pill">📈 Avg Margen: ${(b.avg_margin || 0).toFixed(1)}%</span>`,
+            `<span class="wd-benchmark-pill muted">Muestra: ${b.sample_count || 0} jornadas</span>`,
+        ].join('');
+    }
+
+    function updateBreakEvenCard(totalCost) {
+        if (!ui.beCost) return;
+        const fmt = window.Utils.formatARS;
+        ui.beCost.textContent = fmt(totalCost);
+
+        const avgRev = state.benchmarks?.avg_revenue || 0;
+        ui.beAvgRevenue.textContent = avgRev ? `${fmt(avgRev)} avg` : 'Sin datos';
+
+        if (avgRev > 0) {
+            const pct = Math.min(Math.round((totalCost / avgRev) * 100), 100);
+            ui.beProgressBar.style.width = `${pct}%`;
+            ui.beProgressPct.textContent = `${pct}%`;
+
+            // Color coding: green if under 70%, yellow 70-90%, red 90+%
+            ui.beProgressBar.classList.remove('be-safe', 'be-warn', 'be-danger');
+            if (pct < 70) ui.beProgressBar.classList.add('be-safe');
+            else if (pct < 90) ui.beProgressBar.classList.add('be-warn');
+            else ui.beProgressBar.classList.add('be-danger');
+        } else {
+            ui.beProgressBar.style.width = '0%';
+            ui.beProgressPct.textContent = '—';
         }
     }
 

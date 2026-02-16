@@ -20,7 +20,7 @@ param(
     [Parameter(Mandatory=$true)]
     [string]$Topic,
     [switch]$Clipboard,     # Copiar al clipboard en vez de archivo
-    [switch]$Analyze        # Pasar a Claude CLI para resumen
+    [switch]$Analyze        # Pasar a Gemini CLI para resumen
 )
 
 $ProjectRoot    = "C:\Users\siste\Documents\GitHub\tester_3.0"
@@ -384,10 +384,10 @@ if ($Clipboard) {
 }
 
 if ($Analyze) {
-    $claudeExists = Get-Command claude -EA SilentlyContinue
-    if ($claudeExists) {
+    $geminiExists = Get-Command gemini -EA SilentlyContinue
+    if ($geminiExists) {
         Write-Host ""
-        Write-Host "  Invocando Claude CLI para resumen ejecutivo..." -ForegroundColor Cyan
+        Write-Host "  Invocando Gemini CLI para resumen ejecutivo..." -ForegroundColor Cyan
         $content = $report -join "`n"
         $prompt = @"
 Sos un asistente que prepara contexto para agentes de IA.
@@ -401,9 +401,9 @@ Lee este reporte de contexto sobre "$Topic" del proyecto FormulaMid 4 y genera:
 Reporte:
 $content
 "@
-        claude -p $prompt
+        gemini -p $prompt
     } else {
-        Write-Host "  Claude CLI no disponible. Usa -Clipboard para copiar y pegar manualmente." -ForegroundColor Yellow
+        Write-Host "  Gemini CLI no disponible. Usa -Clipboard para copiar y pegar manualmente." -ForegroundColor Yellow
     }
 }
 

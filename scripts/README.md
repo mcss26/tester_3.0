@@ -42,19 +42,19 @@ powershell -ExecutionPolicy Bypass -File scripts/ops-watchdog.ps1
 
 ---
 
-## 🔍 Flow Tracer
+## 🔍 Flow Tracer v2
 
-Análisis estático del flujo de datos y navegación. Traza `data-go`, cruza `.from()` con `scheme.md`, detecta JS huérfanos. Al pausar, genera reporte e invoca Claude CLI automáticamente.
+Análisis estático de navegación y datos. Detecta `data-go` + `<a href>` + `navigateTo()`, clasifica operaciones Supabase como READ/WRITE, y cruza flujos entre módulos. Ejecución single-run (no requiere Ctrl+C).
 
 ```powershell
-# Con análisis Claude CLI al pausar
+# Solo reporte (default)
 powershell -ExecutionPolicy Bypass -File scripts/flow-tracer.ps1
 
-# Solo reporte (sin Claude)
-powershell -ExecutionPolicy Bypass -File scripts/flow-tracer.ps1 -NoAnalysis
+# Con análisis Gemini CLI
+powershell -ExecutionPolicy Bypass -File scripts/flow-tracer.ps1 -WithAnalysis
 ```
 
-**Ctrl+C** → genera `docs/output/qa/{fecha}_audit_flow-trace.md` → Claude CLI analiza.
+Output: `docs/output/qa/{fecha}_audit_flow-trace.md`
 
 ---
 
@@ -69,11 +69,35 @@ powershell -ExecutionPolicy Bypass -File scripts/context-loader.ps1 -Topic "work
 # Copiar al clipboard (para pegar directo en chat)
 powershell -ExecutionPolicy Bypass -File scripts/context-loader.ps1 -Topic "stock" -Clipboard
 
-# Con análisis Claude CLI
+# Con análisis Gemini CLI
 powershell -ExecutionPolicy Bypass -File scripts/context-loader.ps1 -Topic "cashflow" -Analyze
 ```
 
 Output: `docs/output/qa/context-{topic}.md`
+
+---
+
+## 📊 Workdays Verifier v2 (Progressive Scanner)
+
+Escanea el módulo Workdays en 8 fases progresivas. Cada ciclo analiza algo diferente y acumula hallazgos con score ponderado. Estado persistido en JSON para sobrevivir crashes.
+
+**Fases:** Baseline → Deep JS → Deep HTML → Deep CSS → Cross-Module → Supabase → UX Patterns → Summary + Delta
+
+```powershell
+# Una sola vez (8 fases, genera reporte y sale)
+powershell -ExecutionPolicy Bypass -File scripts/workdays-verifier.ps1
+
+# Progresivo: 1 fase por ciclo cada 60s
+powershell -ExecutionPolicy Bypass -File scripts/workdays-verifier.ps1 -Watch
+
+# Full scan cada ciclo (8 fases cada 60s)
+powershell -ExecutionPolicy Bypass -File scripts/workdays-verifier.ps1 -Watch -FullScan
+
+# Reset: limpiar estado y empezar de cero
+powershell -ExecutionPolicy Bypass -File scripts/workdays-verifier.ps1 -Reset
+```
+
+**Ctrl+C** → resumen de sesión. Output: `docs/output/workdays-progressive.md`
 
 ---
 
@@ -103,9 +127,10 @@ powershell -ExecutionPolicy Bypass -File scripts/security-shutdown.ps1
 ABRO VS CODE
   └─ security-startup.ps1          (una vez)
 
-DURANTE LA SESION (3 terminales)
+DURANTE LA SESION (4 terminales)
   ├─ security-watchdog.ps1 -LogToFile   (siempre corriendo)
   ├─ ops-watchdog.ps1                    (siempre corriendo)
+  ├─ workdays-verifier.ps1 -Watch        (durante sprints workdays)
   └─ flow-tracer.ps1                     (cuando quiero auditar flujo)
 
 CIERRO VS CODE
@@ -114,10 +139,11 @@ CIERRO VS CODE
 
 ## Archivos generados
 
-| Script            | Output           | Ubicación                                       |
-| :---------------- | :--------------- | :---------------------------------------------- |
-| security-watchdog | Log diario       | `scripts/logs/watchdog-{fecha}.log`             |
-| flow-tracer       | Reporte de flujo | `docs/output/qa/{fecha}_audit_flow-trace.md`    |
-| backup-configs    | ZIP de configs   | `scripts/backups/config-backup-{timestamp}.zip` |
+| Script            | Output             | Ubicación                                       |
+| :---------------- | :----------------- | :---------------------------------------------- |
+| security-watchdog | Log diario         | `scripts/logs/watchdog-{fecha}.log`             |
+| flow-tracer       | Reporte de flujo   | `docs/output/qa/{fecha}_audit_flow-trace.md`    |
+| workdays-verifier | Reporte progresivo | `docs/output/qa/workdays-progressive.md`        |
+| backup-configs    | ZIP de configs     | `scripts/backups/config-backup-{timestamp}.zip` |
 
 > Tanto `scripts/logs/` como `scripts/backups/` están en `.gitignore`.

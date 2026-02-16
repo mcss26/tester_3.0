@@ -1,5 +1,5 @@
 ﻿# Contexto: workdays
-Generado: 2026-02-16 07:22 | Topic: `workdays`
+Generado: 2026-02-16 08:02 | Topic: `workdays`
 
 > Este archivo contiene todo el contexto relevante sobre **workdays**.
 > Pegalo al inicio de una conversacion para que el agente arranque informado.
@@ -45,7 +45,7 @@ Reference implementation for `.grid-sidebar-main` with complex state management.
 **Funciones:** `getStatusDisplay``, ``init``, ``bindEvents``, ``changeDateByOffset``, ``switchTab``, ``updateTabVisibility``, ``bindFileHandler``, ``loadInitialData``, ``handleDateChange``, ``loadDayDetails``, ``renderBasicPanels``, ``renderEventsDropdown``, ``renderStaffList``, ``renderStaffSlots``, ``uRole``, ``renderCostsList``, ``calculateTotals``, ``handleConfirmOrUpdate``, ``handleCreate``, ``handleConfirmPlan``, ``handleOpen``, ``showPreFlightModal``, ``runPreFlightChecks``, ``handlePreFlightConfirm``, ``handleRevert``, ``updateFooterButtons``, ``handleUpdate``, ``openEventModal``, ``closeEventModal``, ``openCostModal``, ``closeCostModal``, ``handleSaveCost``, ``handleCreateEvent``, ``handleCloseWorkday``, ``applyDiffClass``, ``loadCierreData``, ``renderCierreTable``, ``diff``, ``renderCierreTotals``, ``loadQrStats``, ``src``, ``updateQrDiffs``, ``loadBreakdown``, ``renderBreakdown``, ``el``, ``openCloseNightModal``, ``fmtPnl``, ``performCloseNight``, ``handleSaveNotes``, ``startPolling``, ``stopPolling``, ``pollKPIs``, ``checkAnomalies``, ``loadAccruals``, ``renderAccruals``, ``total``, ``generateAccruals``, ``adjustAccrual``, ``handleGbolSync``, ``loadFiscalSummary``, ``loadStockAuditData``, ``getEfficiencyRating``, ``renderSessionsTable``, ``renderVarianceTable``, ``renderConsumoTeorico``, ``renderHistoryTable``, ``fmt``, ``diffCell``, ``loadReportDashboard``, ``accruals``, ``loadReportHeader``, ``loadReportKpis``, ``avg``, ``setDelta``, ``pct``, ``initReportChart``, ``renderReportFiscal``, ``renderReportAnomalies``, ``renderReportOps`
 **Tablas Supabase:** `bar_sessions``, ``cash_closings``, ``closing_terminals``, ``cost_definitions``, ``events``, ``finance_payments``, ``master_staff_roles``, ``pos_terminals``, ``profiles``, ``qr_batches``, ``qr_codes``, ``staff_accruals``, ``staff_convocations``, ``vw_bar_audit_variance``, ``vw_bar_efficiency``, ``vw_consumo_teorico``, ``vw_daily_sales``, ``vw_fiscal_summary``, ``vw_night_snapshot``, ``vw_workday_pnl``, ``work_day_staff_planning``, ``work_days`
 
-## 3. Documentacion (25 archivos)
+## 3. Documentacion (26 archivos)
 
 - `docs\estado-presente.md`
 - `docs\INDEX.md`
@@ -72,6 +72,7 @@ Reference implementation for `.grid-sidebar-main` with complex state management.
 - `docs\output\frontend\2026-02-16_research_workdays-deep-research.md`
 - `docs\output\frontend\2026-02-16_spec_workdays-screen-map.md`
 - `docs\output\qa\2026-02-16_audit_flow-trace.md`
+- `docs\output\qa\context-workdays.md`
 
 ## 4. Schema
 
@@ -85,6 +86,7 @@ No se encontraron tablas sobre 'workdays' en scheme.md.
 - 81c1bf9 Update admin-workdays.js
 
 ### Commits que tocan archivos *workdays*
+- c00b9e8 feat: add flow-tracer + context-loader scripts, update README and watchdog
 - f3fdf8b chore: major cleanup + security hardening + UX updates
 - aaaf6aa agent
 - bef8c6f css
@@ -94,15 +96,15 @@ No se encontraron tablas sobre 'workdays' en scheme.md.
 - 8760191 sprint
 - 657e591 sprint
 - 2ed7cc0 pre prod
-- e8678a7 assus
 
-## 6. Reportes previos (15 encontrados)
+## 6. Reportes previos (16 encontrados)
 
 - `docs\output\README.md`
 - `docs\output\frontend\2026-02-16_plan_workdays-unified.md`
 - `docs\output\frontend\2026-02-16_research_workdays-deep-research.md`
 - `docs\output\frontend\2026-02-16_spec_workdays-screen-map.md`
 - `docs\output\qa\2026-02-16_audit_flow-trace.md`
+- `docs\output\qa\context-workdays.md`
 - `docs\migration\README.md`
 - `docs\migration\artifacts\erp-diagnostic-workdays.md`
 - `docs\migration\artifacts\kpi-audit.md`

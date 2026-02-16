@@ -52,6 +52,8 @@ $fileHashes    = @{}
 $initialCounts = @{}
 $alertLog      = @()
 $warnLog       = @()
+$sessionAlertLog = @()
+$sessionWarnLog  = @()
 $checkCount    = 0
 $startTime     = Get-Date
 $watchers      = @()
@@ -286,6 +288,8 @@ function Test-GodMode {
 function Test-Processes {
     Log "HDR" "7. MONITOREO DE PROCESOS"
     Log "INFO" "Busco procesos sospechosos y verifico cantidad de procesos Node.js"
+
+    # Check 7a: Herramientas de hacking conocidas
     foreach ($proc in $SuspiciousProcs) {
         $running = Get-Process -Name "*$proc*" -EA SilentlyContinue
         if ($running) {
@@ -297,14 +301,73 @@ function Test-Processes {
         }
     }
 
+    # Check 7b: Desglose de procesos Node por servicio
     $nodeProcs = @(Get-Process -Name "node" -EA SilentlyContinue)
-    $expectedMax = 15  # Incluye MCP servers + Claude CLI
+    $expectedMax = 15
+
+    if ($nodeProcs.Count -eq 0) {
+        Log "OK" "No hay procesos Node.js corriendo"
+        return
+    }
+
+    # Resolver nombre descriptivo de cada proceso Node
+    $serviceMap = @()
+    foreach ($np in $nodeProcs) {
+        $cim = Get-CimInstance Win32_Process -Filter "ProcessId = $($np.Id)" -EA SilentlyContinue
+        $cmd = if ($cim) { $cim.CommandLine } else { "" }
+        $startTime = if ($np.StartTime) { $np.StartTime.ToString("HH:mm:ss") } else { "?" }
+
+        # Identificar servicio por command line
+        $svcName = switch -Regex ($cmd) {
+            'server-gdrive.*credentials-personal'    { "MCP: drive-personal"; break }
+            'server-gdrive.*credentials-business-1'  { "MCP: drive-business-1"; break }
+            'server-gdrive.*credentials-business-2'  { "MCP: drive-business-2"; break }
+            'server-gdrive|google-drive-mcp'         { "MCP: drive (cuenta?)"; break }
+            'notebooklm-mcp'                         { "MCP: notebooklm"; break }
+            'supabase.*mcp-server|mcp-server-supaba' { "MCP: supabase"; break }
+            'figma.*mcp|figma-developer'             { "MCP: figma"; break }
+            'stitch'                                 { "MCP: stitch"; break }
+            'memory-server'                          { "MCP: memory"; break }
+            'gemini-cli'                             { "Gemini CLI"; break }
+            'ms-playwright'                          { "Playwright (browser)"; break }
+            'npx-cli\.js.*-y\s'                      { "npx launcher"; break }
+            default                                  { "node (desconocido)" }
+        }
+
+        $serviceMap += [PSCustomObject]@{
+            PID       = $np.Id
+            Service   = $svcName
+            StartTime = $startTime
+        }
+    }
+
+    # Mostrar resumen agrupado
+    $groups = $serviceMap | Group-Object Service | Sort-Object Count -Descending
+    Log "INFO" "Desglose de $($nodeProcs.Count) procesos Node.js:"
+
+    foreach ($g in $groups) {
+        $pids = ($g.Group | ForEach-Object { $_.PID }) -join ", "
+        $times = ($g.Group | ForEach-Object { $_.StartTime } | Sort-Object -Unique) -join ", "
+        if ($g.Count -gt 1) {
+            Log "WARN" "$($g.Name) x$($g.Count) (PIDs: $pids | Inicio: $times)"
+        } else {
+            Log "OK" "$($g.Name) (PID: $pids | Inicio: $times)"
+        }
+    }
+
+    # Detectar servicios duplicados (mismo servicio corriendo mas de 1 vez)
+    $duplicates = $groups | Where-Object { $_.Count -gt 1 -and $_.Name -match '^MCP:' }
+    if ($duplicates) {
+        Log "WARN" "Hay servicios MCP duplicados (posible sesion zombie)"
+        Log "TIP"  "Esto pasa cuando se abre otra instancia de Antigravity/Gemini CLI sin cerrar la anterior."
+        Log "TIP"  "Para limpiar zombies: matar los PIDs mas viejos de cada grupo duplicado."
+    }
+
+    # Alerta global si hay demasiados
     if ($nodeProcs.Count -gt $expectedMax) {
-        Log "WARN" "Hay $($nodeProcs.Count) procesos Node.js (lo normal es max $expectedMax)"
-        Log "TIP"  "Muchos procesos Node pueden indicar MCP servers extra o procesos zombie."
-        Log "TIP"  "Revisa cuales son: Get-Process node | Select Id, StartTime, Path"
+        Log "WARN" "Total $($nodeProcs.Count) procesos Node.js excede el maximo esperado ($expectedMax)"
     } else {
-        Log "OK" "Procesos Node.js: $($nodeProcs.Count) (normal)"
+        Log "OK" "Total procesos Node.js: $($nodeProcs.Count) (normal, max $expectedMax)"
     }
 }
 
@@ -431,6 +494,11 @@ Start-Watchers
 try {
     while ($true) {
         $checkCount++
+        # Reset per-round counters (session totals preserved separately)
+        $script:sessionAlertLog += $alertLog
+        $script:sessionWarnLog  += $warnLog
+        $alertLog = @()
+        $warnLog  = @()
         $ts = Get-Date -Format "HH:mm:ss"
         $elapsed = [math]::Round(((Get-Date) - $startTime).TotalMinutes, 0)
         Write-Host "=== Check #$checkCount @ $ts (sesion activa: $elapsed min) ===" -ForegroundColor White
@@ -462,6 +530,9 @@ finally {
     $watchers | ForEach-Object { $_.EnableRaisingEvents = $false; $_.Dispose() }
     Get-EventSubscriber | Unregister-Event -Force -EA SilentlyContinue
 
+    # Merge final round into session totals
+    $sessionAlertLog += $alertLog
+    $sessionWarnLog  += $warnLog
     $elapsed = [math]::Round(((Get-Date) - $startTime).TotalMinutes, 1)
 
     Write-Host ""
@@ -470,23 +541,23 @@ finally {
     Write-Host "  ========================================" -ForegroundColor Cyan
     Write-Host "  Duracion  : $elapsed minutos"
     Write-Host "  Checks    : $checkCount"
-    Write-Host "  Alertas   : $($alertLog.Count)" -ForegroundColor $(if ($alertLog.Count) { 'Red' } else { 'Green' })
-    Write-Host "  Avisos    : $($warnLog.Count)" -ForegroundColor $(if ($warnLog.Count) { 'Yellow' } else { 'Green' })
+    Write-Host "  Alertas   : $($sessionAlertLog.Count)" -ForegroundColor $(if ($sessionAlertLog.Count) { 'Red' } else { 'Green' })
+    Write-Host "  Avisos    : $($sessionWarnLog.Count)" -ForegroundColor $(if ($sessionWarnLog.Count) { 'Yellow' } else { 'Green' })
 
-    if ($alertLog.Count -gt 0) {
+    if ($sessionAlertLog.Count -gt 0) {
         Write-Host ""
         Write-Host "  ALERTAS DURANTE LA SESION:" -ForegroundColor Red
-        $alertLog | ForEach-Object { Write-Host "    $_" -ForegroundColor Yellow }
+        $sessionAlertLog | ForEach-Object { Write-Host "    $_" -ForegroundColor Yellow }
     }
-    if ($warnLog.Count -gt 0) {
+    if ($sessionWarnLog.Count -gt 0) {
         Write-Host ""
         Write-Host "  AVISOS DURANTE LA SESION:" -ForegroundColor Yellow
-        $warnLog | ForEach-Object { Write-Host "    $_" -ForegroundColor DarkYellow }
+        $sessionWarnLog | ForEach-Object { Write-Host "    $_" -ForegroundColor DarkYellow }
     }
 
     if ($LogToFile -and (Test-Path $LogFile)) {
         "=== Sesion finalizada @ $(Get-Date -f 'yyyy-MM-dd HH:mm:ss') ===" | Out-File -Append $LogFile
-        "Duracion: $elapsed min | Checks: $checkCount | Alertas: $($alertLog.Count) | Avisos: $($warnLog.Count)" | Out-File -Append $LogFile
+        "Duracion: $elapsed min | Checks: $checkCount | Alertas: $($sessionAlertLog.Count) | Avisos: $($sessionWarnLog.Count)" | Out-File -Append $LogFile
         Write-Host ""
         Write-Host "  Log guardado en: $LogFile" -ForegroundColor DarkGray
     }
