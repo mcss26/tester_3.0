@@ -76,6 +76,7 @@ Debug solo en `/dev/` o bajo flag `?mock=true` (si existe), sin contaminar produ
 - Supabase schema/RPC/vistas/RLS/migraciones → `data`
 - Auditoría/coherencia/limpieza → `qa`
 - UX/brand/prioridad/flows → `product`
+- Seguridad/watchdogs/backups/permisos/hardening → `security-ops`
 
 ## Contención documental
 

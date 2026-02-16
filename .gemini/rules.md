@@ -32,14 +32,15 @@ trigger: always_on
 
 Este proyecto tiene **6 agentes definidos** en `.agent/agents/`. Cada agente tiene su `AGENT.md` con rol, responsabilidades y restricciones:
 
-| Agente         | Carpeta                       | Responsabilidad                          |
-| :------------- | :---------------------------- | :--------------------------------------- |
-| `orchestrator` | `.agent/agents/orchestrator/` | Routing, delegación, plans cross-cutting |
-| `frontend`     | `.agent/agents/frontend/`     | UI, CSS, componentes visuales            |
-| `logic`        | `.agent/agents/logic/`        | JS, auth, módulos de negocio             |
-| `data`         | `.agent/agents/data/`         | Supabase, schema, migraciones SQL        |
-| `qa`           | `.agent/agents/qa/`           | Auditorías, coherencia, higiene          |
-| `product`      | `.agent/agents/product/`      | UX, research, specs de producto          |
+| Agente         | Carpeta                       | Responsabilidad                                  |
+| :------------- | :---------------------------- | :----------------------------------------------- |
+| `orchestrator` | `.agent/agents/orchestrator/` | Routing, delegación, plans cross-cutting         |
+| `frontend`     | `.agent/agents/frontend/`     | UI, CSS, componentes visuales                    |
+| `logic`        | `.agent/agents/logic/`        | JS, auth, módulos de negocio                     |
+| `data`         | `.agent/agents/data/`         | Supabase, schema, migraciones SQL                |
+| `qa`           | `.agent/agents/qa/`           | Auditorías, coherencia, higiene                  |
+| `product`      | `.agent/agents/product/`      | UX, research, specs de producto                  |
+| `security-ops` | `.agent/agents/security-ops/` | Seguridad, control operativo, watchdogs, backups |
 
 **Regla**: Si tu tarea encaja en un agente, leer su `AGENT.md` antes de ejecutar.
 
@@ -420,21 +421,22 @@ Qué queda pendiente (si aplica).
 
 ## 12. Skills Disponibles (Referencia Rápida)
 
-| Skill                        | Responsabilidad                               |
-| :--------------------------- | :-------------------------------------------- |
-| `project-orchestrator`       | Mapa de mando, coexistencia Legacy ↔ Agent    |
-| `css-architect`              | Gobernanza CSS, anti-patrones, stack de capas |
-| `frontend-developer`         | Estructura HTML, componentes visuales, tokens |
-| `logic-engineer`             | Lógica JS, validaciones de negocio, seguridad |
-| `db-architect`               | Supabase, SQL, vistas, integridad de datos    |
-| `web-designer`               | UX conceptual, prototipado                    |
-| `creative-director`          | Marca Midnight Club, diseño gráfico           |
-| `auditing-workspace`         | Higiene, duplicados, fuente de verdad         |
-| `module-coherence-auditor`   | Integridad HTML↔JS↔CSS↔Doc                    |
-| `ui-migrator`                | Migración legacy → prototipos demo/           |
-| `erp-architect`              | Procesos enterprise, requerimientos           |
-| `customer-lifecycle-manager` | CRM/ERP chat → datos Supabase                 |
-| `methodology-generator`      | Roadmaps, sprints, planificación              |
+| Skill                        | Responsabilidad                                        |
+| :--------------------------- | :----------------------------------------------------- |
+| `project-orchestrator`       | Mapa de mando, coexistencia Legacy ↔ Agent             |
+| `css-architect`              | Gobernanza CSS, anti-patrones, stack de capas          |
+| `frontend-developer`         | Estructura HTML, componentes visuales, tokens          |
+| `logic-engineer`             | Lógica JS, validaciones de negocio, seguridad          |
+| `db-architect`               | Supabase, SQL, vistas, integridad de datos             |
+| `web-designer`               | UX conceptual, prototipado                             |
+| `creative-director`          | Marca Midnight Club, diseño gráfico                    |
+| `auditing-workspace`         | Higiene, duplicados, fuente de verdad                  |
+| `module-coherence-auditor`   | Integridad HTML↔JS↔CSS↔Doc                             |
+| `ui-migrator`                | Migración legacy → prototipos demo/                    |
+| `erp-architect`              | Procesos enterprise, requerimientos                    |
+| `customer-lifecycle-manager` | CRM/ERP chat → datos Supabase                          |
+| `methodology-generator`      | Roadmaps, sprints, planificación                       |
+| `security-ops`               | Seguridad del workspace, watchdogs, backups, hardening |
 
 ---
 
