@@ -211,6 +211,6 @@ R: No, este es un módulo de solo consulta. Las modificaciones de stock se reali
 ## 11. Referencias y Links
 
 - [Operativo Solicitudes](operativo-solicitudes.md) - Generación de pedidos de reposición basados en alertas
-- [Admin Stock](../admin/admin-stock.md) - Vista administrativa completa de inventario
+- [Admin Central Stock](../admin/admin-central-stock.md) - Vista administrativa completa de inventario
 - [Master SKU](operativo-master-sku.md) - Gestión del catálogo de productos
 - [Screen Map](../../screen-map.md#operativo-stock) - Ubicación en arquitectura de pantallas

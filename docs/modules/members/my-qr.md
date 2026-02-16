@@ -96,5 +96,5 @@ Al usar una Edge Function:
 
 ## 6. Referencias
 
-- [Módulo de Login](login.md)
-- [Monitor de Accesos (QR Admin)](../admin/qr-monitor.md)
+- [Módulo de Login](../misc/login.md)
+- [Portal Admin](../admin/admin-index.md)

@@ -159,6 +159,34 @@
         saFilterClasif: document.getElementById('sa-filter-clasif'),
         saConsumoGbolBody: document.getElementById('sa-consumo-gbol-body'),
 
+        // ── Report Dashboard ──
+        rptDate: document.getElementById('rpt-date'),
+        rptEvent: document.getElementById('rpt-event'),
+        rptHealthBadge: document.getElementById('rpt-health-badge'),
+        rptKpiRevenue: document.getElementById('rpt-kpi-revenue'),
+        rptKpiNet: document.getElementById('rpt-kpi-net'),
+        rptKpiMargin: document.getElementById('rpt-kpi-margin'),
+        rptKpiPercapita: document.getElementById('rpt-kpi-percapita'),
+        rptKpiScore: document.getElementById('rpt-kpi-score'),
+        rptKpiRevenueDelta: document.getElementById('rpt-kpi-revenue-delta'),
+        rptKpiNetDelta: document.getElementById('rpt-kpi-net-delta'),
+        rptKpiMarginDelta: document.getElementById('rpt-kpi-margin-delta'),
+        rptKpiPercapitaDelta: document.getElementById('rpt-kpi-percapita-delta'),
+        rptKpiScoreDelta: document.getElementById('rpt-kpi-score-delta'),
+        rptChartCanvas: document.getElementById('rpt-chart'),
+        rptChartMode: document.getElementById('rpt-chart-mode'),
+        rptChartMargin: document.getElementById('rpt-chart-margin'),
+        rptChartBreakeven: document.getElementById('rpt-chart-breakeven'),
+        rptFiscalBody: document.getElementById('rpt-fiscal-body'),
+        rptAnomaliesList: document.getElementById('rpt-anomalies-list'),
+        rptOpsStockPrecision: document.getElementById('rpt-ops-stock-precision'),
+        rptOpsStockLoss: document.getElementById('rpt-ops-stock-loss'),
+        rptOpsStockSkus: document.getElementById('rpt-ops-stock-skus'),
+        rptOpsCajaDiff: document.getElementById('rpt-ops-caja-diff'),
+        rptOpsCajaTerminals: document.getElementById('rpt-ops-caja-terminals'),
+        rptOpsNominaCount: document.getElementById('rpt-ops-nomina-count'),
+        rptOpsNominaCost: document.getElementById('rpt-ops-nomina-cost'),
+
         // ── Pre-flight Modal (Sprint 3) ──
         preFlightModal: document.getElementById('preFlightModal'),
         preFlightChecks: document.getElementById('preflight-checks'),
@@ -201,6 +229,10 @@
         barEfficiency: [],  // vw_bar_efficiency rows
         barVariance: [],    // vw_bar_audit_variance rows
         consumoTeorico: [], // vw_consumo_teorico rows
+
+        // Report Dashboard state
+        reportDashboardLoaded: false,
+        reportChartInstance: null,
     };
 
     // 4. Utils
@@ -427,9 +459,12 @@
         if (tabId === 'panelNightChief' && state.activeWorkDay && !state.stockAuditLoaded) {
             loadStockAuditData();
         }
-        // Lazy-load history (Report tab)
+        // Lazy-load history + Report dashboard
         if (tabId === 'panelReport' && !state.historyLoaded) {
             renderHistoryTable();
+        }
+        if (tabId === 'panelReport' && !state.reportDashboardLoaded) {
+            loadReportDashboard();
         }
 
         // Polling lifecycle
@@ -2124,6 +2159,315 @@
         } catch (err) {
             console.error('[history]', err);
             ui.historyTableBody.innerHTML = '<tr><td colspan="13" class="p-4 text-center text-danger">Error cargando historial</td></tr>';
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // REPORT DASHBOARD (Phase 2 — Dual-Panel Diagnostic)
+    // ═══════════════════════════════════════════════════════════
+
+    async function loadReportDashboard() {
+        if (!state.activeWorkDay) return;
+        state.reportDashboardLoaded = true;
+
+        const wdId = state.activeWorkDay.id;
+        const dateStr = state.activeWorkDay.work_date;
+
+        try {
+            // Parallel fetch all data sources
+            const [pnlRes, hsRes, effRes, closingRes, accRes, fiscalRes, histRes] = await Promise.all([
+                window.sb.from('vw_workday_pnl').select('*').eq('work_day_id', wdId).maybeSingle(),
+                window.sb.rpc('calculate_health_score', { p_work_day_id: wdId }),
+                window.sb.from('vw_bar_efficiency').select('*').eq('work_day_id', wdId),
+                window.sb.from('cash_closings').select('total_system, total_declared, total_difference').eq('work_day_id', wdId).maybeSingle(),
+                window.sb.from('staff_accruals').select('id, status, base_amount, adjustments').eq('work_day_id', wdId),
+                window.sb.from('vw_fiscal_summary').select('*').eq('noche', dateStr).maybeSingle(),
+                window.sb.from('vw_night_snapshot').select('total_income, net_result, health_score').order('work_date', { ascending: false }).limit(10),
+            ]);
+
+            const pnl = pnlRes.data;
+            const healthScore = hsRes.data;
+            const efficiency = effRes.data || [];
+            const closing = closingRes.data;
+            const accruals = (accRes.data || []).filter(a => a.status !== 'cancelled');
+            const fiscal = fiscalRes.data;
+            const history = histRes.data || [];
+
+            // ── Header ──
+            loadReportHeader(dateStr, healthScore);
+
+            // ── KPI Strip ──
+            loadReportKpis(pnl, healthScore, history);
+
+            // ── Chart ──
+            initReportChart(history);
+
+            // ── Fiscal Table ──
+            renderReportFiscal(fiscal);
+
+            // ── Anomalies ──
+            renderReportAnomalies(closing, efficiency);
+
+            // ── Ops Summary ──
+            renderReportOps(efficiency, closing, accruals);
+
+        } catch (err) {
+            console.error('[report-dashboard]', err);
+            window.Toast.error('Error cargando dashboard del reporte.');
+            state.reportDashboardLoaded = false; // Allow retry
+        }
+    }
+
+    function loadReportHeader(dateStr, healthScore) {
+        if (ui.rptDate) ui.rptDate.textContent = dateStr || '—';
+        if (ui.rptEvent) ui.rptEvent.textContent = state.activeWorkDay?.event_name || state.activeWorkDay?.events?.name || '—';
+
+        if (ui.rptHealthBadge && healthScore != null) {
+            const score = Number(healthScore);
+            ui.rptHealthBadge.textContent = `${score}/100`;
+            ui.rptHealthBadge.className = 'status-pill ' +
+                (score >= 75 ? 'staff-status-active' :
+                 score >= 50 ? 'staff-status-pending' : 'staff-status-absent');
+        }
+    }
+
+    function loadReportKpis(pnl, healthScore, history) {
+        const fmt = window.Utils.formatARS;
+
+        if (!pnl) return;
+
+        const totalIncome = pnl.total_income || 0;
+        const netResult = pnl.net_result || 0;
+        const margin = pnl.margin_pct != null ? Number(pnl.margin_pct) : null;
+        const totalExpense = pnl.total_expense || 0;
+
+        // Per Capita: income / QR count (approximate)
+        const perCapita = pnl.qr_count ? Math.round(totalIncome / pnl.qr_count) : null;
+
+        if (ui.rptKpiRevenue) ui.rptKpiRevenue.textContent = fmt(totalIncome);
+        if (ui.rptKpiNet) {
+            ui.rptKpiNet.textContent = fmt(netResult);
+            ui.rptKpiNet.classList.toggle('text-success', netResult > 0);
+            ui.rptKpiNet.classList.toggle('text-danger', netResult < 0);
+        }
+        if (ui.rptKpiMargin) ui.rptKpiMargin.textContent = margin != null ? `${margin.toFixed(1)}%` : '—';
+        if (ui.rptKpiPercapita) ui.rptKpiPercapita.textContent = perCapita ? fmt(perCapita) : '—';
+        if (ui.rptKpiScore) {
+            const score = Number(healthScore) || 0;
+            ui.rptKpiScore.textContent = `${score}/100`;
+        }
+
+        // Deltas vs average of last 10 nights
+        if (history.length > 1) {
+            const avg = (arr, key) => {
+                const vals = arr.slice(1).map(r => Number(r[key] || 0)).filter(v => v > 0);
+                return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
+            };
+
+            const setDelta = (el, current, average) => {
+                if (!el || !average) return;
+                const pct = ((current - average) / average * 100).toFixed(0);
+                const arrow = Number(pct) >= 0 ? '↑' : '↓';
+                el.textContent = `${arrow} ${Math.abs(pct)}% vs prom.`;
+                el.className = `stat-delta ${Number(pct) >= 0 ? 'is-positive' : 'is-negative'}`;
+            };
+
+            setDelta(ui.rptKpiRevenueDelta, totalIncome, avg(history, 'total_income'));
+            setDelta(ui.rptKpiNetDelta, netResult, avg(history, 'net_result'));
+        }
+    }
+
+    function initReportChart(history) {
+        if (!ui.rptChartCanvas || !window.Chart) return;
+
+        // Destroy previous instance
+        if (state.reportChartInstance) {
+            state.reportChartInstance.destroy();
+            state.reportChartInstance = null;
+        }
+
+        const labels = history.map(r => r.work_date || '').reverse();
+        const incomes = history.map(r => Number(r.total_income || 0)).reverse();
+        const nets = history.map(r => Number(r.net_result || 0)).reverse();
+
+        const ctx = ui.rptChartCanvas.getContext('2d');
+        const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+        gradient.addColorStop(0, 'rgba(59, 130, 246, 0.3)');
+        gradient.addColorStop(1, 'rgba(59, 130, 246, 0.02)');
+
+        state.reportChartInstance = new window.Chart(ctx, {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [
+                    {
+                        label: 'Ingresos',
+                        data: incomes,
+                        borderColor: 'rgba(59, 130, 246, 1)',
+                        backgroundColor: gradient,
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 3,
+                    },
+                    {
+                        label: 'Neto',
+                        data: nets,
+                        borderColor: 'rgba(34, 197, 94, 0.8)',
+                        backgroundColor: 'transparent',
+                        borderDash: [4, 4],
+                        tension: 0.3,
+                        pointRadius: 2,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: true, position: 'bottom', labels: { boxWidth: 12, padding: 16, color: '#9ca3af' } },
+                },
+                scales: {
+                    x: { ticks: { color: '#6b7280', font: { size: 10 } }, grid: { display: false } },
+                    y: { ticks: { color: '#6b7280', font: { size: 10 }, callback: v => window.Utils.formatARS(v) }, grid: { color: 'rgba(255,255,255,0.05)' } }
+                }
+            }
+        });
+
+        // Chart KPIs below chart
+        if (ui.rptChartMargin) {
+            const pnlMargin = ui.rptKpiMargin?.textContent || '—';
+            ui.rptChartMargin.textContent = pnlMargin;
+        }
+        if (ui.rptChartBreakeven) {
+            const lastIncome = incomes[incomes.length - 1] || 0;
+            const lastNet = nets[nets.length - 1] || 0;
+            const expense = lastIncome - lastNet;
+            const bePct = expense > 0 ? Math.round((lastIncome / expense) * 100) : 0;
+            ui.rptChartBreakeven.textContent = `${bePct}%`;
+        }
+    }
+
+    function renderReportFiscal(fiscal) {
+        if (!ui.rptFiscalBody) return;
+
+        if (!fiscal) {
+            ui.rptFiscalBody.innerHTML = '<tr><td colspan="4" class="p-4 text-center muted italic">Sin datos fiscales para esta noche</td></tr>';
+            return;
+        }
+
+        const bruto = Number(fiscal.total_bruto || 0);
+        const pct = Number(fiscal.pct_blanqueado || 0);
+        const iva = Number(fiscal.total_iva || 0);
+        const tickets = Number(fiscal.total_tickets || 0);
+        const negro = bruto > 0 ? bruto * (1 - pct / 100) : 0;
+
+        const fmt = window.Utils.formatARS;
+        ui.rptFiscalBody.innerHTML = `
+            <tr class="table-row">
+                <td class="table-cell cell-pad">🧾 Facturado (Blanco)</td>
+                <td class="table-cell text-right font-mono">${fmt(bruto * pct / 100)}</td>
+                <td class="table-cell text-right font-mono">${pct.toFixed(0)}%</td>
+                <td class="table-cell text-right font-mono">${tickets}</td>
+            </tr>
+            <tr class="table-row">
+                <td class="table-cell cell-pad">💵 Efectivo (Negro)</td>
+                <td class="table-cell text-right font-mono">${fmt(negro)}</td>
+                <td class="table-cell text-right font-mono">${(100 - pct).toFixed(0)}%</td>
+                <td class="table-cell text-right font-mono muted">—</td>
+            </tr>
+            <tr class="table-row table-row-border">
+                <td class="table-cell cell-pad font-bold">Total Bruto</td>
+                <td class="table-cell text-right font-mono font-bold">${fmt(bruto)}</td>
+                <td class="table-cell text-right font-mono">100%</td>
+                <td class="table-cell text-right font-mono">${tickets}</td>
+            </tr>
+            <tr class="table-row">
+                <td class="table-cell cell-pad muted">IVA</td>
+                <td class="table-cell text-right font-mono muted">${fmt(iva)}</td>
+                <td class="table-cell"></td>
+                <td class="table-cell"></td>
+            </tr>
+        `;
+    }
+
+    function renderReportAnomalies(closing, efficiency) {
+        if (!ui.rptAnomaliesList) return;
+
+        const anomalies = [];
+
+        // 1. Cash difference
+        if (closing) {
+            const diff = Number(closing.total_difference || 0);
+            if (Math.abs(diff) > 5000) {
+                anomalies.push({
+                    severity: Math.abs(diff) > 20000 ? 'high' : 'medium',
+                    icon: '💰',
+                    text: `Diferencia de caja: ${window.Utils.formatARS(diff)}`,
+                    cta: 'Revisar Caja',
+                });
+            }
+        }
+
+        // 2. Stock variance
+        if (efficiency.length) {
+            const totalLoss = efficiency.reduce((s, r) => s + Number(r.loss_amount || 0), 0);
+            const avgEff = efficiency.reduce((s, r) => s + Number(r.efficiency_pct || 100), 0) / efficiency.length;
+
+            if (avgEff < 85) {
+                anomalies.push({
+                    severity: avgEff < 70 ? 'high' : 'medium',
+                    icon: '📦',
+                    text: `Eficiencia de stock: ${avgEff.toFixed(0)}% — Merma: ${window.Utils.formatARS(totalLoss)}`,
+                    cta: 'Revisar Stock',
+                });
+            }
+        }
+
+        // 3. No anomalies
+        if (anomalies.length === 0) {
+            ui.rptAnomaliesList.innerHTML = '<div class="rpt-anomaly-empty muted italic">Sin anomalías detectadas ✅</div>';
+            return;
+        }
+
+        ui.rptAnomaliesList.innerHTML = anomalies.map(a => `
+            <div class="rpt-anomaly-card severity-${a.severity}">
+                <span class="rpt-anomaly-icon">${a.icon}</span>
+                <span class="rpt-anomaly-text">${a.text}</span>
+                <button class="rpt-anomaly-cta">${a.cta}</button>
+            </div>
+        `).join('');
+    }
+
+    function renderReportOps(efficiency, closing, accruals) {
+        const fmt = window.Utils.formatARS;
+
+        // Stock Audit
+        if (efficiency.length) {
+            const avgEff = efficiency.reduce((s, r) => s + Number(r.efficiency_pct || 100), 0) / efficiency.length;
+            const totalLoss = efficiency.reduce((s, r) => s + Number(r.loss_amount || 0), 0);
+            const skusDiff = efficiency.filter(r => Math.abs(Number(r.loss_amount || 0)) > 0).length;
+
+            if (ui.rptOpsStockPrecision) ui.rptOpsStockPrecision.textContent = `${avgEff.toFixed(0)}%`;
+            if (ui.rptOpsStockLoss) ui.rptOpsStockLoss.textContent = fmt(totalLoss);
+            if (ui.rptOpsStockSkus) ui.rptOpsStockSkus.textContent = String(skusDiff);
+        }
+
+        // Caja
+        if (closing) {
+            const diff = Number(closing.total_difference || 0);
+            if (ui.rptOpsCajaDiff) {
+                ui.rptOpsCajaDiff.textContent = fmt(diff);
+                ui.rptOpsCajaDiff.classList.toggle('text-success', diff === 0);
+                ui.rptOpsCajaDiff.classList.toggle('text-danger', diff < 0);
+            }
+            if (ui.rptOpsCajaTerminals) ui.rptOpsCajaTerminals.textContent = '—'; // Simplified
+        }
+
+        // Nómina
+        if (accruals.length) {
+            const totalCost = accruals.reduce((s, a) => s + Number(a.base_amount || 0) + Number(a.adjustments || 0), 0);
+            if (ui.rptOpsNominaCount) ui.rptOpsNominaCount.textContent = String(accruals.length);
+            if (ui.rptOpsNominaCost) ui.rptOpsNominaCost.textContent = fmt(totalCost);
         }
     }
 

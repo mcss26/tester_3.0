@@ -225,6 +225,6 @@ R: No hay límite técnico, pero se recomienda mantener entre 5-15 categorías p
 
 ## 11. Referencias y Links
 
-- [Admin Master SKU](admin-master-sku.md) - Utiliza categorías para clasificar productos
-- [Admin Stock](admin-stock.md) - Filtros por categoría en visualización de inventario
+- [Admin Central Stock](admin-central-stock.md) - Utiliza categorías para clasificar productos y stock
+- [Admin Central Stock](admin-central-stock.md) - Filtros por categoría en visualización de inventario
 - [Screen Map](../../screen-map.md#admin-master-categorias) - Ubicación en arquitectura de pantallas

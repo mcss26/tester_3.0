@@ -2,7 +2,7 @@
 
 ## Admin Layout — Pattern Library
 
-**Last Updated**: 2026-02-07 (Phase 6 — CSS Consolidation)
+**Last Updated**: 2026-02-16 (Phase 6 — CSS Consolidation)
 **Reference Files**: `pages/admin/admin-central-stock.html`, `pages/admin/admin-solicitudes.html`
 **Status**: ✅ Zero Inline CSS | ✅ UI/UX Consistency | ✅ CSS Architecture | ✅ Accessibility | ✅ Consolidated Topbar
 
@@ -20,43 +20,27 @@ This document defines the golden standard UI/UX patterns established in `admin-c
 
 ```css
 /* Backgrounds */
---bg-body: #000000           /* Pure black */
---bg-surface: #000000        /* Pure black */
---bg-elevated: #18181b       /* Elevated surfaces */
-
-/* Text */
---text-primary: #ffffff      /* Primary text */
---text-secondary: #d4d4d8    /* Secondary text */
---text-tertiary: #a1a1aa     /* Tertiary/muted text */
-
-/* Borders */
---border-subtle: rgba(255, 255, 255, 0.10)
---border-active: rgba(255, 255, 255, 0.20)
-
-/* Accents */
---brand-primary: #ffffff     /* White for primary actions */
---success: #4ade80
---warning: #fbbf24
---danger: #f87171
+--bg-body: #000000 /* Pure black */ --bg-surface: #000000 /* Pure black */
+  --bg-elevated: #18181b /* Elevated surfaces */ /* Text */
+  --text-primary: #ffffff /* Primary text */ --text-secondary: #d4d4d8
+  /* Secondary text */ --text-tertiary: #a1a1aa /* Tertiary/muted text */
+  /* Borders */ --border-subtle: rgba(255, 255, 255, 0.1)
+  --border-active: rgba(255, 255, 255, 0.2) /* Accents */
+  --brand-primary: #ffffff /* White for primary actions */ --success: #4ade80
+  --warning: #fbbf24 --danger: #f87171;
 ```
 
 ### Spacing System
 
 ```css
---space-xs: 4px
---space-sm: 8px
---space-md: 16px
---space-lg: 24px
---space-xl: 32px
+--space-xs: 4px --space-sm: 8px --space-md: 16px --space-lg: 24px
+  --space-xl: 32px;
 ```
 
 ### Border Radius
 
 ```css
---radius-sm: 4px
---radius-md: 6px
---radius-lg: 10px
---radius-xl: 12px
+--radius-sm: 4px --radius-md: 6px --radius-lg: 10px --radius-xl: 12px;
 ```
 
 ---
@@ -101,9 +85,9 @@ These styles live in `components.css` as the **single source of truth**. Page-sp
 
 > ⚠️ **Anti-Pattern**: Do NOT redefine `.topbar`, `.page-shell`, `.breadcrumb`, `.icon-btn`, `.avatar`, or `.dropdown-container` in page-specific CSS files. Only add page-specific overrides with higher specificity (e.g., `.cms-members .topbar .breadcrumb { gap: 6px }`).
 
- ---
+---
 
- ## Component Patterns
+## Component Patterns
 
 ### 1. Dashboard Header with Tabs
 
@@ -113,7 +97,9 @@ These styles live in `components.css` as the **single source of truth**. Page-sp
 <div class="dashboard-header align-start">
   <div>
     <h2 class="dashboard-title dashboard-title-soft">Gestión de Inventario</h2>
-    <p class="dashboard-subtitle dashboard-subtitle-soft">Control de stock, SKUs y análisis de consumo</p>
+    <p class="dashboard-subtitle dashboard-subtitle-soft">
+      Control de stock, SKUs y análisis de consumo
+    </p>
   </div>
   <div class="actions-bar">
     <div class="tab-bar" id="main-tabs">
@@ -121,7 +107,13 @@ These styles live in `components.css` as the **single source of truth**. Page-sp
       <button class="tab-chip" data-tab="recetas">Recetas</button>
       <button class="tab-chip" data-tab="rentabilidad">Rentabilidad</button>
     </div>
-    <button class="btn-icon btn-icon-flat btn-icon-plus" id="btn-new" aria-label="Nuevo">+</button>
+    <button
+      class="btn-icon btn-icon-flat btn-icon-plus"
+      id="btn-new"
+      aria-label="Nuevo"
+    >
+      +
+    </button>
   </div>
 </div>
 ```
@@ -148,7 +140,9 @@ These styles live in `components.css` as the **single source of truth**. Page-sp
   <div class="summary-metrics-grid">
     <div class="summary-metric-card">
       <div class="summary-metric-label">Total Valorizado</div>
-      <div class="summary-metric-value summary-metric-primary">$1.208.829,01</div>
+      <div class="summary-metric-value summary-metric-primary">
+        $1.208.829,01
+      </div>
     </div>
     <div class="summary-metric-card">
       <div class="summary-metric-label">Stock Activo</div>
@@ -156,7 +150,9 @@ These styles live in `components.css` as the **single source of truth**. Page-sp
     </div>
     <div class="summary-metric-card">
       <div class="summary-metric-label">Stock Inactivo</div>
-      <div class="summary-metric-value summary-metric-tertiary">$424.485,00</div>
+      <div class="summary-metric-value summary-metric-tertiary">
+        $424.485,00
+      </div>
     </div>
   </div>
 </div>
@@ -185,14 +181,14 @@ These styles live in `components.css` as the **single source of truth**. Page-sp
 
   <!-- Date Range -->
   <div class="date-range-inline">
-    <input type="date" id="filter-date-start" class="input">
+    <input type="date" id="filter-date-start" class="input" />
     <span class="date-separator">-</span>
-    <input type="date" id="filter-date-end" class="input">
+    <input type="date" id="filter-date-end" class="input" />
   </div>
 
   <!-- Aforo -->
   <div class="aforo-row">
-    <input type="number" id="people-count" class="input" value="500">
+    <input type="number" id="people-count" class="input" value="500" />
     <span class="aforo-label">personas</span>
     <span class="tooltip-trigger" data-tooltip="Descripción">?</span>
   </div>
@@ -296,13 +292,11 @@ These styles live in `components.css` as the **single source of truth**. Page-sp
       <circle cx="11" cy="11" r="8"></circle>
       <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
     </svg>
-    <input type="text" class="input search-input" placeholder="Buscar...">
+    <input type="text" class="input search-input" placeholder="Buscar..." />
   </div>
 
   <!-- Counter -->
-  <span class="filter-counter">
-    <span id="filter-count">34</span> SKUs
-  </span>
+  <span class="filter-counter"> <span id="filter-count">34</span> SKUs </span>
 </div>
 ```
 
@@ -330,15 +324,21 @@ These styles live in `components.css` as the **single source of truth**. Page-sp
     <table class="table table-sticky table-compact sku-table">
       <thead>
         <tr class="table-head">
-          <th class="table-cell is-header cell-pad sortable" data-sort="nombre" tabindex="0">
+          <th
+            class="table-cell is-header cell-pad sortable"
+            data-sort="nombre"
+            tabindex="0"
+          >
             Nombre <span class="sort-icon"></span>
           </th>
-          <th class="table-cell is-header cell-pad text-right sortable" data-sort="stock" tabindex="0">
+          <th
+            class="table-cell is-header cell-pad text-right sortable"
+            data-sort="stock"
+            tabindex="0"
+          >
             Stock <span class="sort-icon"></span>
           </th>
-          <th class="table-cell is-header cell-pad text-center">
-            Acciones
-          </th>
+          <th class="table-cell is-header cell-pad text-center">Acciones</th>
         </tr>
       </thead>
       <tbody id="table-body">
@@ -392,13 +392,17 @@ These styles live in `components.css` as the **single source of truth**. Page-sp
   <div class="modal-content modal-content-md">
     <div class="modal-header">
       <h3 class="modal-title">Modal Title</h3>
-      <button class="modal-close" onclick="this.closest('dialog').close()">×</button>
+      <button class="modal-close" onclick="this.closest('dialog').close()">
+        ×
+      </button>
     </div>
     <div class="modal-body">
       <!-- Modal content -->
     </div>
     <div class="modal-footer">
-      <button class="btn-secondary" onclick="this.closest('dialog').close()">Cancelar</button>
+      <button class="btn-secondary" onclick="this.closest('dialog').close()">
+        Cancelar
+      </button>
       <button class="btn-primary" id="btn-confirm">Confirmar</button>
     </div>
   </div>
@@ -499,7 +503,12 @@ These styles live in `components.css` as the **single source of truth**. Page-sp
   <h4 class="sidebar-section-title">Importar</h4>
   <div class="dropbox-grid-2">
     <div class="dropbox-zone" id="dropbox-consumption">
-      <input type="file" id="file-consumption" class="hidden" accept=".xlsx, .xls">
+      <input
+        type="file"
+        id="file-consumption"
+        class="hidden"
+        accept=".xlsx, .xls"
+      />
       <svg class="dropbox-icon" viewBox="0 0 24 24">
         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
         <polyline points="17 8 12 3 7 8"></polyline>
@@ -509,7 +518,12 @@ These styles live in `components.css` as the **single source of truth**. Page-sp
       <span class="dropbox-subtitle">Excel/CSV</span>
     </div>
     <div class="dropbox-zone" id="dropbox-revenue">
-      <input type="file" id="file-revenue" class="hidden" accept=".xlsx, .xls">
+      <input
+        type="file"
+        id="file-revenue"
+        class="hidden"
+        accept=".xlsx, .xls"
+      />
       <svg class="dropbox-icon" viewBox="0 0 24 24">
         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
         <polyline points="17 8 12 3 7 8"></polyline>
@@ -582,12 +596,34 @@ These styles live in `components.css` as the **single source of truth**. Page-sp
     <div class="main-content-area">
       <div class="table-viewport table-shell">
         <div class="table-scroll">
-          <table class="table table-sticky table-compact" role="table" aria-label="Tabla de recetas">
+          <table
+            class="table table-sticky table-compact"
+            role="table"
+            aria-label="Tabla de recetas"
+          >
             <thead>
               <tr role="row">
-                <th class="table-cell is-header cell-pad" role="columnheader" scope="col">Nombre</th>
-                <th class="table-cell is-header cell-pad text-right" role="columnheader" scope="col">Ingredientes</th>
-                <th class="table-cell is-header cell-pad text-center" role="columnheader" scope="col">Acciones</th>
+                <th
+                  class="table-cell is-header cell-pad"
+                  role="columnheader"
+                  scope="col"
+                >
+                  Nombre
+                </th>
+                <th
+                  class="table-cell is-header cell-pad text-right"
+                  role="columnheader"
+                  scope="col"
+                >
+                  Ingredientes
+                </th>
+                <th
+                  class="table-cell is-header cell-pad text-center"
+                  role="columnheader"
+                  scope="col"
+                >
+                  Acciones
+                </th>
               </tr>
             </thead>
             <tbody id="recipes-table-body">
@@ -627,7 +663,9 @@ These styles live in `components.css` as the **single source of truth**. Page-sp
     <div class="summary-metrics-grid">
       <div class="summary-metric-card">
         <div class="summary-metric-label">Recaudación Total</div>
-        <div class="summary-metric-value summary-metric-success">$2.450.320</div>
+        <div class="summary-metric-value summary-metric-success">
+          $2.450.320
+        </div>
       </div>
       <div class="summary-metric-card">
         <div class="summary-metric-label">Costo Total</div>
@@ -647,7 +685,11 @@ These styles live in `components.css` as the **single source of truth**. Page-sp
         <circle cx="11" cy="11" r="8"></circle>
         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
       </svg>
-      <input type="text" class="input search-input" placeholder="Buscar receta...">
+      <input
+        type="text"
+        class="input search-input"
+        placeholder="Buscar receta..."
+      />
     </div>
 
     <select class="rentability-select" id="filter-recipe-category">
@@ -666,13 +708,41 @@ These styles live in `components.css` as the **single source of truth**. Page-sp
   <!-- Data Table -->
   <div class="table-viewport table-shell">
     <div class="table-scroll">
-      <table class="table table-sticky table-compact" role="table" aria-label="Tabla de rentabilidad">
+      <table
+        class="table table-sticky table-compact"
+        role="table"
+        aria-label="Tabla de rentabilidad"
+      >
         <thead>
           <tr role="row">
-            <th class="table-cell is-header cell-pad" role="columnheader" scope="col">Receta</th>
-            <th class="table-cell is-header cell-pad text-right" role="columnheader" scope="col">Precio Venta</th>
-            <th class="table-cell is-header cell-pad text-right" role="columnheader" scope="col">Costo</th>
-            <th class="table-cell is-header cell-pad text-right" role="columnheader" scope="col">Margen %</th>
+            <th
+              class="table-cell is-header cell-pad"
+              role="columnheader"
+              scope="col"
+            >
+              Receta
+            </th>
+            <th
+              class="table-cell is-header cell-pad text-right"
+              role="columnheader"
+              scope="col"
+            >
+              Precio Venta
+            </th>
+            <th
+              class="table-cell is-header cell-pad text-right"
+              role="columnheader"
+              scope="col"
+            >
+              Costo
+            </th>
+            <th
+              class="table-cell is-header cell-pad text-right"
+              role="columnheader"
+              scope="col"
+            >
+              Margen %
+            </th>
           </tr>
         </thead>
         <tbody id="profitability-table-body">
@@ -740,16 +810,19 @@ These styles live in `components.css` as the **single source of truth**. Page-sp
 ## Architectural Patterns by Role
 
 ### 1. Managers (Encargados)
+
 - **Pattern**: Master-Detail + Real-time Status Pills
 - **Goal**: "Eyes on venue, hands on app" (High visibility)
 - **Modules**: `barra-personal`, `caja-noche`, `recepcion`
 
 ### 2. Operations (Operativo ERP)
+
 - **Pattern**: View-based Architecture (`vw_stock_global`)
 - **Goal**: Decouple UI from inventory calculations
 - **Modules**: `stock`, `solicitudes`, `análisis`
 
 ### 3. Staff
+
 - **Pattern**: Wizard Step-by-Step
 - **Goal**: Reduce human error with clear milestones
 - **Modules**: `caja-index`, `barra-index`
@@ -867,24 +940,24 @@ assets/css/
 
 ### Consolidation Rules
 
-| Component | Location | Rationale |
-|:--|:--|:--|
-| Topbar `.topbar` | `components.css` | Shared across all admin pages |
-| Page Shell `.page-shell` | `components.css` | Shared layout (max-width 1440px) |
-| Dropdowns | `components.css` | Shared notification/user menus |
-| Chart Section | Page-specific CSS | Unique layout requirements |
+| Component                | Location          | Rationale                        |
+| :----------------------- | :---------------- | :------------------------------- |
+| Topbar `.topbar`         | `components.css`  | Shared across all admin pages    |
+| Page Shell `.page-shell` | `components.css`  | Shared layout (max-width 1440px) |
+| Dropdowns                | `components.css`  | Shared notification/user menus   |
+| Chart Section            | Page-specific CSS | Unique layout requirements       |
 
 ### Consolidation Rules
 
-| Component | Location | Rationale |
-|:--|:--|:--|
-| Topbar `.topbar` | `components.css` | Shared across all admin pages |
-| Breadcrumb `.breadcrumb-*` | `components.css` | Shared across all admin pages |
-| Page Shell `.page-shell` | `components.css` | Shared across all admin pages |
-| Dropdowns `.dropdown-*` | `components.css` | Shared across all admin pages |
-| Avatar `.avatar` | `components.css` | Shared across all admin pages |
-| Chart Section `.chart-*` | Page-specific CSS | Only used in stock/solicitudes |
-| Sidebar `.sidebar-filters` | Page-specific CSS | Layout varies per page |
+| Component                  | Location          | Rationale                      |
+| :------------------------- | :---------------- | :----------------------------- |
+| Topbar `.topbar`           | `components.css`  | Shared across all admin pages  |
+| Breadcrumb `.breadcrumb-*` | `components.css`  | Shared across all admin pages  |
+| Page Shell `.page-shell`   | `components.css`  | Shared across all admin pages  |
+| Dropdowns `.dropdown-*`    | `components.css`  | Shared across all admin pages  |
+| Avatar `.avatar`           | `components.css`  | Shared across all admin pages  |
+| Chart Section `.chart-*`   | Page-specific CSS | Only used in stock/solicitudes |
+| Sidebar `.sidebar-filters` | Page-specific CSS | Layout varies per page         |
 
 ### Naming Convention
 
@@ -931,8 +1004,10 @@ assets/css/
 ```html
 <template id="tpl-ingredient-row">
   <div class="ingredient-row">
-    <select class="select input-sku">...</select>
-    <input type="number" class="input input-amount" placeholder="0.00">
+    <select class="select input-sku">
+      ...
+    </select>
+    <input type="number" class="input input-amount" placeholder="0.00" />
     <button class="btn-icon-flat text-error btn-remove-ing">×</button>
   </div>
 </template>
@@ -960,13 +1035,14 @@ Reference patterns for core module structure.
     <link rel="stylesheet" href="../../assets/css/admin-page-specific.css" />
   </head>
   <body class="admin-shell admin-scroll" data-allowed-roles="admin,contable">
-
     <!-- Topbar — 3-column grid from components.css -->
     <header class="topbar">
       <div class="topbar-start">
         <nav class="breadcrumb">
           <span class="breadcrumb-item">
-            <a class="breadcrumb-link" href="admin-index.html">Administración</a>
+            <a class="breadcrumb-link" href="admin-index.html"
+              >Administración</a
+            >
           </span>
           <span class="breadcrumb-sep">/</span>
           <span class="breadcrumb-item current">Módulo</span>
@@ -978,7 +1054,7 @@ Reference patterns for core module structure.
             <circle cx="11" cy="11" r="8"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
-          <input type="text" class="input" placeholder="Buscar...">
+          <input type="text" class="input" placeholder="Buscar..." />
           <span class="header-shortcut">⌘K</span>
         </div>
       </div>
@@ -1046,7 +1122,7 @@ All modules MUST use this IIFE async skeleton with defensive DOM grouping.
     searchInput: document.getElementById("search-input"),
     pageCardLoading: document.getElementById("page-card-loading"),
     pageCardEmpty: document.getElementById("page-card-empty"),
-    contentWrap: document.getElementById("module-content")
+    contentWrap: document.getElementById("module-content"),
   };
 
   // Validation
@@ -1056,7 +1132,7 @@ All modules MUST use this IIFE async skeleton with defensive DOM grouping.
   const savedState = window.NavState ? window.NavState.restore(PAGE_KEY) : {};
   let state = {
     dataList: [],
-    searchTerm: savedState.searchTerm || ""
+    searchTerm: savedState.searchTerm || "",
   };
 
   // 4. Render
@@ -1078,10 +1154,9 @@ All modules MUST use this IIFE async skeleton with defensive DOM grouping.
       const { data, error } = await window.sb.from("table").select("*");
       if (error) throw error;
       state.dataList = data || [];
-      
+
       if (state.dataList.length === 0) setPageState({ empty: true });
       else renderList(state.dataList);
-      
     } catch (e) {
       console.error(e);
       window.Toast.error("Error cargando datos");
@@ -1224,12 +1299,12 @@ The CSS in `admin-central-stock.css` (formerly `admin-herramientas.css`) is orga
 
 These components are specific to `admin-herramientas` and extend the global Golden Standard:
 
-| Component                 | Classes                                                                                                                                   | FASE |
-| :------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------- | :--- |
-| **Tab System**      | `.tab-bar`, `.tab-chip`, `.tab-chip.active`                                                                                         | 7    |
-| **Custom Dropdown** | `.custom-dropdown`, `.custom-dropdown-trigger`, `.custom-dropdown-menu`, `.custom-dropdown-option`                                | 1    |
+| Component           | Classes                                                                                                                         | FASE |
+| :------------------ | :------------------------------------------------------------------------------------------------------------------------------ | :--- |
+| **Tab System**      | `.tab-bar`, `.tab-chip`, `.tab-chip.active`                                                                                     | 7    |
+| **Custom Dropdown** | `.custom-dropdown`, `.custom-dropdown-trigger`, `.custom-dropdown-menu`, `.custom-dropdown-option`                              | 1    |
 | **Summary Metrics** | `.summary-metrics-container`, `.summary-metrics-grid`, `.summary-metric-card`, `.summary-metric-label`, `.summary-metric-value` | 1    |
-| **Status Toggle**   | `.status-toggle-btn`, `.status-toggle-label`, `.status-indicator`                                                                   | 4    |
+| **Status Toggle**   | `.status-toggle-btn`, `.status-toggle-label`, `.status-indicator`                                                               | 4    |
 | **Dropbox Zones**   | `.dropbox-zone`, `.dropbox-grid-2`, `.dropbox-icon`, `.dropbox-title`, `.dropbox-subtitle`                                      | 10+  |
 
 ---
@@ -1240,23 +1315,23 @@ These components are specific to `admin-herramientas` and extend the global Gold
 
 ### Accessibility Fixes Applied
 
-| Fix                          | Status | Details                                                              |
-| :--------------------------- | :----: | :------------------------------------------------------------------- |
+| Fix                    | Status | Details                                                           |
+| :--------------------- | :----: | :---------------------------------------------------------------- |
 | **Heading Hierarchy**  |   ✅   | H4→H3 for Filtros, Importar, Estadísticas (proper H2→H3 sequence) |
-| **Date Inputs ARIA**   |   ✅   | `aria-label="Fecha de inicio"` / `aria-label="Fecha de fin"`     |
+| **Date Inputs ARIA**   |   ✅   | `aria-label="Fecha de inicio"` / `aria-label="Fecha de fin"`      |
 | **Aforo Input ARIA**   |   ✅   | `aria-label="Número de personas (aforo)"`                         |
-| **Semantic Landmarks** |   ✅   | Proper use of `<main>`, `<nav>`, `<aside>`                     |
-| **Table Semantics**    |   ✅   | All tables use `<thead>`, `<th>`, `role="columnheader"`        |
-| **Focus Indicators**   |   ✅   | Visible focus states on all interactive elements                     |
+| **Semantic Landmarks** |   ✅   | Proper use of `<main>`, `<nav>`, `<aside>`                        |
+| **Table Semantics**    |   ✅   | All tables use `<thead>`, `<th>`, `role="columnheader"`           |
+| **Focus Indicators**   |   ✅   | Visible focus states on all interactive elements                  |
 
 ### Responsive Breakpoints Verified
 
-| Breakpoint        | Resolution | Status | Layout Behavior                 |
-| :---------------- | :--------- | :----: | :------------------------------ |
-| **Desktop** | 1920×1080 |   ✅   | Full sidebar + main content     |
-| **Laptop**  | 1366×768  |   ✅   | Layout adapts proportionally    |
-| **Tablet**  | 1024×768  |   ✅   | Grid collapses to single column |
-| **Mobile**  | 768×1024  |   ✅   | Sidebar stacks, pills wrap      |
+| Breakpoint  | Resolution | Status | Layout Behavior                 |
+| :---------- | :--------- | :----: | :------------------------------ |
+| **Desktop** | 1920×1080  |   ✅   | Full sidebar + main content     |
+| **Laptop**  | 1366×768   |   ✅   | Layout adapts proportionally    |
+| **Tablet**  | 1024×768   |   ✅   | Grid collapses to single column |
+| **Mobile**  | 768×1024   |   ✅   | Sidebar stacks, pills wrap      |
 
 ---
 

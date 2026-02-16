@@ -280,6 +280,6 @@ R: Es estimado, basado en los costos actuales del Master SKU multiplicados por l
 ## 11. Referencias y Links
 
 - [Admin Pagos](admin-pagos.md) - Importa órdenes aprobadas para gestionar pagos
-- [Master SKU](admin-master-sku.md) - Fuente de costos unitarios y por pack
+- [Admin Central Stock](admin-central-stock.md) - Fuente de costos unitarios y por pack
 - [Master Proveedores](admin-master-proveedores.md) - Datos de contacto y bancarios
 - [Screen Map](../../screen-map.md#admin-solicitudes) - Ubicación en arquitectura de pantallas

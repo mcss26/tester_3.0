@@ -1,7 +1,7 @@
 # 🗺️ Mapa de Pantallas - FormulaMid 4
 
-> **Última Actualización**: 2026-02-10  
-> **Total Pantallas**: 45  
+> **Última Actualización**: 2026-02-16  
+> **Total Pantallas**: 45 producción + 3 prototipos  
 > **Documento**: Arquitectura de navegación y contextos de usuario
 
 ---
@@ -24,7 +24,7 @@ graph TD
     %% PORTAL CENTRAL
     %% ═══════════════════════════════════════════════════════════════
     Portal[🏠 Portal Central<br/><small><i>index.html</i></small>]
-    
+
     Portal --> A_IDX
     Portal --> O_IDX
     Portal --> L_IDX
@@ -40,7 +40,7 @@ graph TD
     subgraph FM4_ADM [🔵 ADMINISTRACIÓN · 17 pantallas]
         direction TB
         A_IDX[📊 Dashboard<br/><small><i>admin-index</i></small>]
-        
+
         subgraph ADM_OPS [⚙️ Operaciones Diarias]
             A_WD[📅 Work Days<br/><small><i>admin-workdays</i></small>]
             A_SOL[📬 Solicitudes<br/><small><i>admin-solicitudes</i></small>]
@@ -48,11 +48,11 @@ graph TD
             A_WKL[📊 Semanal<br/><small><i>admin-semanal</i></small>]
             A_CFG[⚙️ Config<br/><small><i>admin-config</i></small>]
         end
-        
+
         subgraph ADM_STK [📦 Control de Inventario]
             A_CEN[🔍 Central Stock<br/><small><i>admin-central-stock</i></small>]
         end
-        
+
         subgraph ADM_MST [🗃️ Maestros de Datos]
             A_PRV[🏢 Proveedores<br/><small><i>admin-master-proveedores</i></small>]
             A_CAT[📁 Categorías<br/><small><i>admin-master-categorias</i></small>]
@@ -81,7 +81,7 @@ graph TD
     subgraph FM4_OPE [🟢 OPERATIVO · 9 pantallas]
         direction TB
         O_IDX[📊 Dashboard<br/><small><i>operativo-index</i></small>]
-        
+
         subgraph OPE_ERP [📋 ERP Operativo]
             O_STK[📦 Stock Real<br/><small><i>operativo-stock</i></small>]
             O_WD[📅 Work Day<br/><small><i>operativo-workday</i></small>]
@@ -89,11 +89,11 @@ graph TD
             O_ANA[📊 Análisis<br/><small><i>operativo-analisis</i></small>]
             O_SCN[📷 Scanner<br/><small><i>scanner</i></small>]
         end
-        
+
         subgraph OPE_CMS [👥 Comunidad]
             O_MEM[👤 Miembros<br/><small><i>cms-members</i></small>]
         end
-        
+
         subgraph OPE_MST [🗃️ Maestros Op.]
             O_SKU[🏷️ SKUs<br/><small><i>operativo-master-sku</i></small>]
             O_PRV[🏢 Proveedores<br/><small><i>operativo-master-proveedores</i></small>]
@@ -117,19 +117,19 @@ graph TD
     %% ═══════════════════════════════════════════════════════════════
     subgraph FM4_ENC [🟠 ENCARGADOS · 7 pantallas]
         direction TB
-        
+
         subgraph ENC_BAR [🍸 Encargado Barra]
             E_BAR[📊 Dashboard<br/><small><i>encargado-barra-index</i></small>]
             E_BNO[🌙 Cierre Noche<br/><small><i>encargado-barra-noche</i></small>]
             E_BPE[👥 Personal<br/><small><i>encargado-barra-personal</i></small>]
         end
-        
+
         subgraph ENC_CAJ [💰 Encargado Caja]
             E_CAJ[📊 Dashboard<br/><small><i>encargado-caja-index</i></small>]
             E_CNO[🌙 Cierre Noche<br/><small><i>encargado-caja-noche</i></small>]
             E_CPE[👥 Personal<br/><small><i>encargado-caja-personal</i></small>]
         end
-        
+
         E_REP[📥 Recepción<br/><small><i>encargado-recepcion</i></small>]
     end
 
@@ -166,14 +166,14 @@ graph TD
     A_IDX --> ADM_MST
     A_IDX --> ADM_BAR
     A_IDX --> ADM_QR
-    
+
     O_IDX --> OPE_ERP
     O_IDX --> OPE_MST
-    
+
     L_IDX --> L_STK
     L_IDX --> L_DIS
     L_IDX --> L_REC
-    
+
     E_BAR --> E_BNO
     E_BAR --> E_BPE
     E_CAJ --> E_CNO
@@ -206,104 +206,111 @@ graph TD
 
 ## 📋 Resumen por Contexto
 
-| Contexto | Páginas | Directorio | Roles Permitidos |
-|:---------|:-------:|:-----------|:-----------------|
-| 🔵 **Admin** | 17 | `pages/admin/*` (incl. `qr/`) | `admin`, `contable` |
-| 🟢 **Operativo** | 9 | `pages/operativo/*` | `operativo`, `staff_operativo` |
-| 📦 **Logística** | 5 | `pages/logistica/*` | `logistico`, `admin` |
-| 🟠 **Encargados** | 7 | `pages/encargados/*` | `encargado_barra`, `encargado_caja` |
-| 🟡 **Staff** | 2 | `pages/staff/*` | `staff_barra`, `staff_caja` |
-| 🟣 **Gerencia** | 1 | `pages/gerencia/*` | `gerencia`, `admin` |
-| 🔴 **Members** | 1 | `pages/members/*` | `member` |
-| 🛠️ **Dev Utilities** | 3 | `pages/*.html` | — |
-| **TOTAL** | **45** | — | — |
+| Contexto             | Páginas | Directorio                    | Roles Permitidos                    |
+| :------------------- | :-----: | :---------------------------- | :---------------------------------- |
+| 🔵 **Admin**         |   17    | `pages/admin/*` (incl. `qr/`) | `admin`, `contable`                 |
+| 🟢 **Operativo**     |    9    | `pages/operativo/*`           | `operativo`, `staff_operativo`      |
+| 📦 **Logística**     |    5    | `pages/logistica/*`           | `logistico`, `admin`                |
+| 🟠 **Encargados**    |    7    | `pages/encargados/*`          | `encargado_barra`, `encargado_caja` |
+| 🟡 **Staff**         |    2    | `pages/staff/*`               | `staff_barra`, `staff_caja`         |
+| 🟣 **Gerencia**      |    1    | `pages/gerencia/*`            | `gerencia`, `admin`                 |
+| 🔴 **Members**       |    1    | `pages/members/*`             | `member`                            |
+| 🛠️ **Dev Utilities** |    3    | `pages/*.html`                | —                                   |
+| **TOTAL**            | **45**  | —                             | —                                   |
 
 ---
 
 ## 📂 Inventario Completo por Carpeta
 
 ### 🔵 Admin (17)
-| # | Archivo | Propósito |
-|:-:|:--------|:----------|
-| 1 | `admin-index.html` | Dashboard principal de administración |
-| 2 | `admin-workdays.html` | Gestión de jornadas laborales (+ Night Chief + Cierre) |
-| 3 | `admin-solicitudes.html` | Centro de solicitudes de insumos |
-| 4 | `admin-reportes.html` | Generación de reportes |
-| 5 | `admin-semanal.html` | Cierre semanal y balance |
-| 6 | `admin-central-stock.html` | Gestión centralizada: Stock, Recetas, Rentabilidad |
-| 7 | `admin-master-proveedores.html` | Maestro de proveedores |
-| 8 | `admin-master-categorias.html` | Maestro de categorías |
-| 9 | `admin-master-tarifario.html` | Tarifario de precios |
-| 10 | `admin-master-nomina.html` | Gestión de personal |
-| 11 | `admin-pagos.html` | Control de pagos |
-| 12 | `admin-master-pos.html` | Terminales punto de venta |
-| 13 | `admin-config.html` | Configuración del sitio |
-| 14 | `test-devenciones.html` | Testing de devengados de nómina |
-| 15 | `qr/index.html` | Hub del sistema QR |
-| 16 | `qr/generator.html` | Generador de códigos QR |
-| 17 | `qr/monitor.html` | Monitor de escaneos QR |
+
+|  #  | Archivo                         | Propósito                                              |
+| :-: | :------------------------------ | :----------------------------------------------------- |
+|  1  | `admin-index.html`              | Dashboard principal de administración                  |
+|  2  | `admin-workdays.html`           | Gestión de jornadas laborales (+ Night Chief + Cierre) |
+|  3  | `admin-solicitudes.html`        | Centro de solicitudes de insumos                       |
+|  4  | `admin-reportes.html`           | Generación de reportes                                 |
+|  5  | `admin-semanal.html`            | Cierre semanal y balance                               |
+|  6  | `admin-central-stock.html`      | Gestión centralizada: Stock, Recetas, Rentabilidad     |
+|  7  | `admin-master-proveedores.html` | Maestro de proveedores                                 |
+|  8  | `admin-master-categorias.html`  | Maestro de categorías                                  |
+|  9  | `admin-master-tarifario.html`   | Tarifario de precios                                   |
+| 10  | `admin-master-nomina.html`      | Gestión de personal                                    |
+| 11  | `admin-pagos.html`              | Control de pagos                                       |
+| 12  | `admin-master-pos.html`         | Terminales punto de venta                              |
+| 13  | `admin-config.html`             | Configuración del sitio                                |
+| 14  | `test-devenciones.html`         | Testing de devengados de nómina                        |
+| 15  | `qr/index.html`                 | Hub del sistema QR                                     |
+| 16  | `qr/generator.html`             | Generador de códigos QR                                |
+| 17  | `qr/monitor.html`               | Monitor de escaneos QR                                 |
 
 ### 🟢 Operativo (9)
-| # | Archivo | Propósito |
-|:-:|:--------|:----------|
-| 1 | `operativo-index.html` | Dashboard operativo |
-| 2 | `operativo-stock.html` | Control de stock en tiempo real |
-| 3 | `operativo-workday.html` | Jornada del día |
-| 4 | `operativo-solicitudes.html` | Solicitudes operativas |
-| 5 | `operativo-analisis.html` | Análisis de datos |
-| 6 | `scanner.html` | Scanner de códigos |
-| 7 | `cms-members.html` | Gestión de miembros |
-| 8 | `operativo-master-sku.html` | SKUs (vista operativa) |
-| 9 | `operativo-master-proveedores.html` | Proveedores (vista operativa) |
+
+|  #  | Archivo                             | Propósito                       |
+| :-: | :---------------------------------- | :------------------------------ |
+|  1  | `operativo-index.html`              | Dashboard operativo             |
+|  2  | `operativo-stock.html`              | Control de stock en tiempo real |
+|  3  | `operativo-workday.html`            | Jornada del día                 |
+|  4  | `operativo-solicitudes.html`        | Solicitudes operativas          |
+|  5  | `operativo-analisis.html`           | Análisis de datos               |
+|  6  | `scanner.html`                      | Scanner de códigos              |
+|  7  | `cms-members.html`                  | Gestión de miembros             |
+|  8  | `operativo-master-sku.html`         | SKUs (vista operativa)          |
+|  9  | `operativo-master-proveedores.html` | Proveedores (vista operativa)   |
 
 ### 📦 Logística (5)
-| # | Archivo | Propósito |
-|:-:|:--------|:----------|
-| 1 | `logistica-index.html` | Dashboard de logística |
-| 2 | `logistica-stock.html` | Stock en depósito |
-| 3 | `logistica-distribucion.html` | Órdenes de distribución |
-| 4 | `logistica-recepcion.html` | Recepción de mercadería |
-| 5 | `logistica-seguimiento.html` | Seguimiento de órdenes |
+
+|  #  | Archivo                       | Propósito               |
+| :-: | :---------------------------- | :---------------------- |
+|  1  | `logistica-index.html`        | Dashboard de logística  |
+|  2  | `logistica-stock.html`        | Stock en depósito       |
+|  3  | `logistica-distribucion.html` | Órdenes de distribución |
+|  4  | `logistica-recepcion.html`    | Recepción de mercadería |
+|  5  | `logistica-seguimiento.html`  | Seguimiento de órdenes  |
 
 ### 🟠 Encargados (7)
-| # | Archivo | Propósito |
-|:-:|:--------|:----------|
-| 1 | `encargado-barra-index.html` | Dashboard encargado barra |
-| 2 | `encargado-barra-noche.html` | Cierre nocturno barra |
-| 3 | `encargado-barra-personal.html` | Personal de barra |
-| 4 | `encargado-caja-index.html` | Dashboard encargado caja |
-| 5 | `encargado-caja-noche.html` | Cierre nocturno caja |
-| 6 | `encargado-caja-personal.html` | Personal de caja |
-| 7 | `encargado-recepcion.html` | Recepción de insumos |
+
+|  #  | Archivo                         | Propósito                 |
+| :-: | :------------------------------ | :------------------------ |
+|  1  | `encargado-barra-index.html`    | Dashboard encargado barra |
+|  2  | `encargado-barra-noche.html`    | Cierre nocturno barra     |
+|  3  | `encargado-barra-personal.html` | Personal de barra         |
+|  4  | `encargado-caja-index.html`     | Dashboard encargado caja  |
+|  5  | `encargado-caja-noche.html`     | Cierre nocturno caja      |
+|  6  | `encargado-caja-personal.html`  | Personal de caja          |
+|  7  | `encargado-recepcion.html`      | Recepción de insumos      |
 
 ### 🟡 Staff (2)
-| # | Archivo | Propósito |
-|:-:|:--------|:----------|
-| 1 | `staff-barra-index.html` | Interfaz staff barra |
-| 2 | `staff-caja-index.html` | Interfaz staff caja |
+
+|  #  | Archivo                  | Propósito            |
+| :-: | :----------------------- | :------------------- |
+|  1  | `staff-barra-index.html` | Interfaz staff barra |
+|  2  | `staff-caja-index.html`  | Interfaz staff caja  |
 
 ### 🟣 Gerencia (1)
-| # | Archivo | Propósito |
-|:-:|:--------|:----------|
-| 1 | `balance-semanal.html` | Balance consolidado semanal |
+
+|  #  | Archivo                | Propósito                   |
+| :-: | :--------------------- | :-------------------------- |
+|  1  | `balance-semanal.html` | Balance consolidado semanal |
 
 ### 🔴 Members (1)
-| # | Archivo | Propósito |
-|:-:|:-------|
-| 1 | `my-qr.html` | Visualización QR personal del miembro |
+
+|  #  | Archivo      | Propósito                             |
+| :-: | :----------- | ------------------------------------- |
+|  1  | `my-qr.html` | Visualización QR personal del miembro |
 
 ---
 
-##  Conclusión Operativa
+## Conclusión Operativa
 
 La arquitectura FM4 implementa una **separación clara por rol y contexto**:
 
-| Patrón | Descripción |
-|:-------|:------------|
-| **Jerarquía de Dashboards** | Cada contexto tiene un `*-index.html` como punto de entrada |
-| **Módulos Anidados** | Admin agrupa Barras y QR como sub-sistemas |
-| **Roles Exclusivos** | Staff tiene interfaces simplificadas sin acceso a maestros |
-| **Duplicación Controlada** | Operativo replica algunos maestros con vista de solo-lectura |
+| Patrón                      | Descripción                                                  |
+| :-------------------------- | :----------------------------------------------------------- |
+| **Jerarquía de Dashboards** | Cada contexto tiene un `*-index.html` como punto de entrada  |
+| **Módulos Anidados**        | Admin agrupa Barras y QR como sub-sistemas                   |
+| **Roles Exclusivos**        | Staff tiene interfaces simplificadas sin acceso a maestros   |
+| **Duplicación Controlada**  | Operativo replica algunos maestros con vista de solo-lectura |
 
 ### 🔗 Flujos Críticos
 
@@ -322,13 +329,13 @@ cms-members → operativo-cms → admin-master-nomina
 
 ## 🛠️ Notas Técnicas
 
-| Aspecto | Implementación |
-|:--------|:---------------|
-| **Auth** | `data-allowed-roles` + `Auth.guardOrRedirect()` |
-| **Navegación** | `data-go` con `admin-navigation.js` |
-| **Estado** | `window.Utils.setPageState()` para loading/empty/ready |
-| **Realtime** | Supabase Channels en módulos de encargados |
-| **CSS** | `tokens.css` + `components.css` + módulo-específicos (0 imports de `main.css`) |
+| Aspecto        | Implementación                                                                 |
+| :------------- | :----------------------------------------------------------------------------- |
+| **Auth**       | `data-allowed-roles` + `Auth.guardOrRedirect()`                                |
+| **Navegación** | `data-go` con `admin-navigation.js`                                            |
+| **Estado**     | `window.Utils.setPageState()` para loading/empty/ready                         |
+| **Realtime**   | Supabase Channels en módulos de encargados                                     |
+| **CSS**        | `tokens.css` + `components.css` + módulo-específicos (0 imports de `main.css`) |
 
 ### 📊 Distribución por Tipo
 

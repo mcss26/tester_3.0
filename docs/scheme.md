@@ -1,12 +1,12 @@
 # Esquema de Base de Datos - FormulaMid 4
 
-Listado actualizado automáticamente al 10/02/2026.
+Listado actualizado automáticamente al 16/02/2026.
 
 > **Actualización Fase 4** (Updated: 2026-02-07 12:15): Se agregaron tablas de auditoría, configuración de costos y reportes financieros semanales.
+>
 > - `auth_audit_log` - Auditoría de accesos.
 > - `finance_weekly_closings` - Cierres semanales.
 > - `import_logs` - Trazabilidad de importaciones.
-
 
 ## Tablas Publicas
 
@@ -54,7 +54,6 @@ _Ventas importadas sistema externo (Gbol) para conciliación._
 - **total_amount** (numeric)
 - **payment_method** (text) - Payment method: 'cash', 'card', 'transfer', 'other' (Fase 4)
 - **imported_at** (timestamp without time zone)
-
 
 ### bar_sessions
 
@@ -116,7 +115,6 @@ _Movimientos de caja (ingresos/egresos)._
 - **external_id** (text) - Unique ID from external CSV import (deduplication)
 - **created_at** (timestamp with time zone)
 - **confirmed_at** (timestamp with time zone)
-
 
 ### closing_terminals
 
@@ -1088,13 +1086,13 @@ _Plantillas reutilizables para jornadas: configuración de staff, costos asociad
 
 ## RPCs de Workday
 
-| RPC | Retorna | Descripción |
-|-----|---------|-------------|
-| `rpc_create_work_day(date, event_id?, event_name?, notes?)` | void | Crea jornada en DRAFT |
-| `rpc_confirm_work_day(id)` | void | DRAFT → PLANNED |
-| `rpc_revert_work_day(id)` | void | PLANNED → DRAFT |
-| `rpc_open_work_day(id)` | jsonb | PLANNED → ACTIVE + pre-flight checks |
-| `rpc_close_work_day(id)` | void | ACTIVE → CLOSED |
-| `calculate_health_score(id)` | integer | Score 0-100 (staff 40, bar 20, requests 20, stock 20) |
-| `admin_generate_workday_accruals(id)` | jsonb | Genera devenciones (guard: ACTIVE/CLOSED) |
-| `admin_export_accruals_to_payments(id)` | jsonb | Exporta devenciones a finance_payments |
+| RPC                                                         | Retorna | Descripción                                           |
+| ----------------------------------------------------------- | ------- | ----------------------------------------------------- |
+| `rpc_create_work_day(date, event_id?, event_name?, notes?)` | void    | Crea jornada en DRAFT                                 |
+| `rpc_confirm_work_day(id)`                                  | void    | DRAFT → PLANNED                                       |
+| `rpc_revert_work_day(id)`                                   | void    | PLANNED → DRAFT                                       |
+| `rpc_open_work_day(id)`                                     | jsonb   | PLANNED → ACTIVE + pre-flight checks                  |
+| `rpc_close_work_day(id)`                                    | void    | ACTIVE → CLOSED                                       |
+| `calculate_health_score(id)`                                | integer | Score 0-100 (staff 40, bar 20, requests 20, stock 20) |
+| `admin_generate_workday_accruals(id)`                       | jsonb   | Genera devenciones (guard: ACTIVE/CLOSED)             |
+| `admin_export_accruals_to_payments(id)`                     | jsonb   | Exporta devenciones a finance_payments                |

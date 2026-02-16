@@ -7,9 +7,9 @@ Documentos generados en sesiones anteriores. Divididos en **fundacionales** (vig
 | Archivo                      | Contenido                                                                                  | Última revisión |
 | :--------------------------- | :----------------------------------------------------------------------------------------- | :-------------- |
 | `roadmap_production.md`      | 8 sprints: lifecycle states, RPCs, vistas P&L, templates, benchmarks, supply chain, deploy | 12/02/2026      |
-| `operational_flows.md`       | 6 dominios operativos, cadena de suministro, 6 blind spots, matriz de interacciones        | 12/02/2026      |
 | `ux_research_workdays.md`    | Nielsen 10, journey map, cognitive walkthrough, task flow (score 0.97)                     | 12/02/2026      |
 | `erp-diagnostic-workdays.md` | 6 gaps (status, RPC bypass, FKs), propuestas de normalización, MoSCoW                      | 12/02/2026      |
+| `kpi-audit.md`               | Auditoría de KPIs operativos y financieros                                                 | 12/02/2026      |
 
 ## Históricos (sprints completados)
 

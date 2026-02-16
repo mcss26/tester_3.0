@@ -249,8 +249,8 @@ R: Sí, hay un campo de notas opcional donde puedes registrar observaciones sobr
 
 ## 11. Referencias y Links
 
-- [Admin Reposición](../admin/admin-replenishment.md) - Aprobación de órdenes de compra
-- [Admin Stock](../admin/admin-stock.md) - Visualización de inventario actualizado
-- [Master SKU](../admin/admin-master-sku.md) - Catálogo de productos
+- [Admin Solicitudes](../admin/admin-solicitudes.md) - Aprobación de órdenes de compra
+- [Admin Central Stock](../admin/admin-central-stock.md) - Visualización de inventario actualizado
+- [Admin Central Stock](../admin/admin-central-stock.md) - Catálogo de productos
 - [Master Proveedores](../admin/admin-master-proveedores.md) - Gestión de proveedores
 - [Screen Map](../../screen-map.md#encargado-recepcion) - Ubicación en arquitectura de pantallas

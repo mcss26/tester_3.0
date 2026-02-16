@@ -29,12 +29,12 @@
       // Check Expiry
       if (payload.exp * 1000 < Date.now()) {
         localStorage.removeItem('member_token');
-        window.location.href = '/pages/members/login.html';
+        showUnavailable('Sesión expirada', 'Tu token expiró. Reingresá desde el flujo de membresía.');
         return;
       }
     } catch (e) {
       console.error(e);
-      window.location.href = '/pages/members/login.html';
+      showUnavailable('No autenticado', 'Token inválido. Reingresá desde el flujo de membresía.');
       return;
     }
   

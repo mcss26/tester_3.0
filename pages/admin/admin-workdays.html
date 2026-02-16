@@ -744,16 +744,182 @@
                         </section>
 
                         <!-- ═══════════════════════════════════════════ -->
-                        <!-- TAB 3: REPORT (Histórico)                  -->
+                        <!-- TAB 3: REPORT (Dashboard Diagnóstico)     -->
                         <!-- ═══════════════════════════════════════════ -->
                         <section id="panelReport" class="tab-content hidden" role="tabpanel">
-                            <div class="staff-dashboard">
+
+                            <!-- ── REPORT HEADER ── -->
+                            <div class="rpt-header">
+                                <div class="rpt-header-left">
+                                    <h2 class="dashboard-title dashboard-title-soft" id="rpt-title">Reporte de Noche
+                                    </h2>
+                                    <p class="dashboard-subtitle dashboard-subtitle-soft">
+                                        <span id="rpt-date" class="font-mono">—</span>
+                                        <span class="muted">·</span>
+                                        <span id="rpt-event">—</span>
+                                        <span class="muted">·</span>
+                                        <span id="rpt-health-badge" class="status-pill">—</span>
+                                    </p>
+                                </div>
+                                <div class="rpt-header-right">
+                                    <button id="rpt-btn-pdf" class="btn-outline btn-sm" title="Exportar PDF">
+                                        📄 Exportar PDF
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- ── KPI STRIP (5 metrics) ── -->
+                            <div class="summary-metrics-container">
+                                <div class="summary-metrics-grid rpt-kpi-strip">
+                                    <div class="summary-metric-card">
+                                        <div class="summary-metric-label">Revenue</div>
+                                        <div class="summary-metric-value" id="rpt-kpi-revenue">—</div>
+                                        <div class="stat-delta" id="rpt-kpi-revenue-delta"></div>
+                                    </div>
+                                    <div class="summary-metric-card">
+                                        <div class="summary-metric-label">Neto</div>
+                                        <div class="summary-metric-value" id="rpt-kpi-net">—</div>
+                                        <div class="stat-delta" id="rpt-kpi-net-delta"></div>
+                                    </div>
+                                    <div class="summary-metric-card">
+                                        <div class="summary-metric-label">Margen</div>
+                                        <div class="summary-metric-value" id="rpt-kpi-margin">—</div>
+                                        <div class="stat-delta" id="rpt-kpi-margin-delta"></div>
+                                    </div>
+                                    <div class="summary-metric-card">
+                                        <div class="summary-metric-label">Per Cápita</div>
+                                        <div class="summary-metric-value" id="rpt-kpi-percapita">—</div>
+                                        <div class="stat-delta" id="rpt-kpi-percapita-delta"></div>
+                                    </div>
+                                    <div class="summary-metric-card">
+                                        <div class="summary-metric-label">Score</div>
+                                        <div class="summary-metric-value" id="rpt-kpi-score">—</div>
+                                        <div class="stat-delta" id="rpt-kpi-score-delta"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ── DUAL-PANEL GRID (55 / 45) ── -->
+                            <div class="rpt-dual-panel">
+
+                                <!-- LEFT PANEL (55%) -->
+                                <div class="rpt-panel-left">
+
+                                    <!-- Chart Area -->
+                                    <div class="rpt-chart-section">
+                                        <div class="rpt-chart-header">
+                                            <h3 class="rpt-section-title">P&amp;L Visual</h3>
+                                            <select id="rpt-chart-mode" class="input input-sm rpt-chart-select">
+                                                <option value="area">Área</option>
+                                                <option value="waterfall">Waterfall</option>
+                                                <option value="doughnut">Doughnut</option>
+                                            </select>
+                                        </div>
+                                        <div class="rpt-chart-container">
+                                            <canvas id="rpt-chart" height="200"></canvas>
+                                        </div>
+                                        <div class="rpt-chart-kpis">
+                                            <span class="rpt-chart-kpi">
+                                                <span class="muted">Margen Op.</span>
+                                                <strong id="rpt-chart-margin">—</strong>
+                                            </span>
+                                            <span class="rpt-chart-kpi">
+                                                <span class="muted">Break-even</span>
+                                                <strong id="rpt-chart-breakeven">—</strong>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Facturación Fiscal Table -->
+                                    <div class="rpt-fiscal-section">
+                                        <div class="rpt-chart-header">
+                                            <h3 class="rpt-section-title">Facturación Fiscal</h3>
+                                        </div>
+                                        <div class="table-viewport table-shell">
+                                            <table class="table table-compact">
+                                                <thead>
+                                                    <tr class="table-head">
+                                                        <th class="table-cell is-header">Tipo</th>
+                                                        <th class="table-cell is-header text-right">Monto</th>
+                                                        <th class="table-cell is-header text-right">%</th>
+                                                        <th class="table-cell is-header text-right">Tickets</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="rpt-fiscal-body">
+                                                    <tr>
+                                                        <td colspan="4" class="p-4 text-center muted italic">Cargando
+                                                            fiscal...</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- RIGHT PANEL (45%) -->
+                                <div class="rpt-panel-right">
+
+                                    <!-- Anomalías Accionables -->
+                                    <div class="rpt-anomalies-section">
+                                        <h3 class="rpt-section-title">Anomalías</h3>
+                                        <div id="rpt-anomalies-list" class="rpt-anomalies-list">
+                                            <div class="rpt-anomaly-empty muted italic">Sin anomalías detectadas ✅</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Resumen Operativo (3 rows) -->
+                                    <div class="rpt-ops-section">
+                                        <h3 class="rpt-section-title">Resumen Operativo</h3>
+
+                                        <!-- Stock Audit -->
+                                        <div class="rpt-ops-card">
+                                            <div class="rpt-ops-icon">📦</div>
+                                            <div class="rpt-ops-content">
+                                                <div class="rpt-ops-label">Stock Audit</div>
+                                                <div class="rpt-ops-metrics">
+                                                    <span>Precisión: <strong
+                                                            id="rpt-ops-stock-precision">—</strong></span>
+                                                    <span>Merma: <strong id="rpt-ops-stock-loss">—</strong></span>
+                                                    <span>SKUs c/diff: <strong id="rpt-ops-stock-skus">—</strong></span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Caja -->
+                                        <div class="rpt-ops-card">
+                                            <div class="rpt-ops-icon">💰</div>
+                                            <div class="rpt-ops-content">
+                                                <div class="rpt-ops-label">Caja</div>
+                                                <div class="rpt-ops-metrics">
+                                                    <span>Diff: <strong id="rpt-ops-caja-diff">—</strong></span>
+                                                    <span>Terminales OK: <strong
+                                                            id="rpt-ops-caja-terminals">—</strong></span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Nómina -->
+                                        <div class="rpt-ops-card">
+                                            <div class="rpt-ops-icon">👥</div>
+                                            <div class="rpt-ops-content">
+                                                <div class="rpt-ops-label">Nómina</div>
+                                                <div class="rpt-ops-metrics">
+                                                    <span>Staff: <strong id="rpt-ops-nomina-count">—</strong></span>
+                                                    <span>Costo: <strong id="rpt-ops-nomina-cost">—</strong></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ── BOTTOM: HISTORIAL (Enhanced) ── -->
+                            <div class="staff-dashboard" style="margin-top: 24px;">
                                 <div class="dashboard-header align-start">
                                     <div>
                                         <h2 class="dashboard-title dashboard-title-soft">Historial de Jornadas</h2>
                                         <p class="dashboard-subtitle dashboard-subtitle-soft">Conciliación nocturna —
-                                            click
-                                            para cargar una fecha</p>
+                                            click para cargar una fecha</p>
                                     </div>
                                 </div>
                                 <div class="table-viewport table-shell">
@@ -913,7 +1079,7 @@
                     </div>
                     <!-- Break-even progress -->
                     <div class="pnl-breakeven-bar">
-                        <div class="pnl-breakeven-fill" id="pnl-breakeven-fill" style="width: 0%"></div>
+                        <div class="pnl-breakeven-fill" id="pnl-breakeven-fill"></div>
                     </div>
                     <p class="text-xs muted text-center mt-1" id="pnl-breakeven-label">Break-even: —</p>
                 </div>

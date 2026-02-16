@@ -293,9 +293,9 @@ R: Sí, la pestaña Cumpleaños filtra automáticamente miembros cuyo día y mes
 
 ## 11. Referencias y Links
 
-- [Formulario Público de Registro](../../public/register-form.md) - Fuente de solicitudes (si existe)
-- [Config EmailJS](../../config/emailjs-setup.md) - Configuración de templates y keys (si existe)
-- [Sistema de Autenticación MCO](../../auth/member-login.md) - Login de miembros con credenciales generadas (si existe)
+- Formulario Público de Registro: pendiente de documentar en `docs/`
+- Config EmailJS: pendiente de documentar en `docs/`
+- Sistema de Autenticación MCO: pendiente de documentar en `docs/`
 - [Screen Map](../../screen-map.md#cms-members) - Ubicación en arquitectura de pantallas
 
 ---

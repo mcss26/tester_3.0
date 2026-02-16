@@ -284,3 +284,216 @@
 .mb-input-group {
     margin-bottom: 16px;
 }
+
+/* =========================================================================
+   REPORT TAB — Dual-Panel Dashboard (.rpt-* prefix)
+   ========================================================================= */
+
+/* Header */
+.rpt-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    gap: 16px;
+}
+
+.rpt-header-left { flex: 1; }
+
+.rpt-header-right {
+    flex-shrink: 0;
+    padding-top: 4px;
+}
+
+/* KPI Strip (5 columns) */
+.rpt-kpi-strip {
+    grid-template-columns: repeat(5, 1fr);
+}
+
+@media (max-width: 1024px) {
+    .rpt-kpi-strip {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .rpt-kpi-strip {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Dual-Panel Grid */
+.rpt-dual-panel {
+    display: grid;
+    grid-template-columns: 55fr 45fr;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+@media (max-width: 900px) {
+    .rpt-dual-panel {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Sections */
+.rpt-section-title {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.rpt-chart-section,
+.rpt-fiscal-section,
+.rpt-anomalies-section,
+.rpt-ops-section {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+/* Chart */
+.rpt-chart-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.rpt-chart-select {
+    max-width: 140px;
+    font-size: 12px;
+}
+
+.rpt-chart-container {
+    max-height: 200px;
+    position: relative;
+}
+
+.rpt-chart-kpis {
+    display: flex;
+    gap: 24px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-subtle);
+}
+
+.rpt-chart-kpi {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--fs-sm);
+}
+
+/* Anomalies */
+.rpt-anomalies-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.rpt-anomaly-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: var(--radius-md);
+    border-left: 3px solid transparent;
+    background: var(--bg-tertiary);
+    font-size: var(--fs-sm);
+}
+
+.rpt-anomaly-card.severity-high {
+    border-left-color: var(--red-500);
+    background: rgba(239, 68, 68, 0.08);
+}
+
+.rpt-anomaly-card.severity-medium {
+    border-left-color: var(--orange-500);
+    background: rgba(245, 158, 11, 0.08);
+}
+
+.rpt-anomaly-card.severity-low {
+    border-left-color: var(--green-500);
+    background: rgba(34, 197, 94, 0.08);
+}
+
+.rpt-anomaly-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.rpt-anomaly-text {
+    flex: 1;
+    line-height: 1.4;
+}
+
+.rpt-anomaly-cta {
+    flex-shrink: 0;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-1);
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.rpt-anomaly-cta:hover {
+    background: var(--bg-surface-hover);
+    color: var(--text-primary);
+}
+
+.rpt-anomaly-empty {
+    padding: 16px;
+    text-align: center;
+    font-size: var(--fs-sm);
+}
+
+/* Ops Summary Cards */
+.rpt-ops-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.rpt-ops-card:last-child {
+    border-bottom: none;
+}
+
+.rpt-ops-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.rpt-ops-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.rpt-ops-label {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.rpt-ops-metrics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.rpt-ops-metrics strong {
+    font-family: var(--font-mono);
+    color: var(--text-primary);
+}

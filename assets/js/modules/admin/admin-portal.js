@@ -13,7 +13,7 @@
    'use strict';
 
    // ===== CONSTANTS =====
-   const ROLE_GUARD = ['admin'];
+   const ROLE_GUARD = ['admin', 'contable', 'manager'];
 
    // ===== DOM REFERENCES =====
    const domRefs = {
@@ -33,7 +33,7 @@
    }
 
    // ===== AUTHENTICATION =====
-   const session = await window.Auth.guard(ROLE_GUARD);
+   const session = await window.Auth.guardOrRedirect(ROLE_GUARD);
    if (!session) return;
 
    // ===== USER PROFILE =====
@@ -51,7 +51,7 @@
 
       domRefs.avatar.textContent = initials;
       domRefs.userNameDisplay.textContent = fullName;
-      domRefs.avatar.setAttribute('aria-label', `Menú de usuario - ${fullName}`);
+      domRefs.avatar.setAttribute('aria-label', `Menu de usuario - ${fullName}`);
    }
 
    // ===== WORKDAY STATUS =====
@@ -125,12 +125,22 @@
       if (!domRefs.logoutBtn) return;
       domRefs.logoutBtn.addEventListener('click', async (event) => {
          event.preventDefault();
-         if (confirm('¿Cerrar sesión?')) {
-            try {
-               await window.Auth.logout();
-            } catch (error) {
-               console.error('Logout error:', error);
-               alert('Error al cerrar sesión. Por favor intente nuevamente.');
+         const confirmed = window.Utils?.confirmModal
+            ? await window.Utils.confirmModal('Cerrar sesion?')
+            : window.confirm('Cerrar sesion?');
+         if (!confirmed) return;
+
+         try {
+            await window.Auth.logout();
+         } catch (error) {
+            console.error('Logout error:', error);
+            const message = 'Error al cerrar sesion. Por favor intenta nuevamente.';
+            if (window.Toast?.error) {
+               window.Toast.error(message);
+               return;
+            }
+            if (window.Utils?.alertModal) {
+               await window.Utils.alertModal(message, 'Error');
             }
          }
       });
@@ -160,3 +170,4 @@
 
    initialize();
 })();
+

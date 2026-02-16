@@ -1,6 +1,6 @@
 # Índice de Documentación
 
-> **Última Actualización**: 2026-02-12
+> **Última Actualización**: 2026-02-16
 
 ---
 
@@ -34,11 +34,16 @@
 
 ---
 
-## Personas (`/personas`)
+## Datos de Referencia (`/important-data-reference`)
 
-| Documento                         | Contenido                                 |
-| :-------------------------------- | :---------------------------------------- |
-| [README.md](./personas/README.md) | Personas UX (Admin, Operativo, Logístico) |
+| Documento                         | Contenido                           |
+| :-------------------------------- | :---------------------------------- |
+| `Gbol Comandas.xlsx`              | Datos de comandas externas (Gbol)   |
+| `Gbol Factura Electronica.xlsx`   | Facturación electrónica AFIP        |
+| `Passline.csv`                    | Datos de ticketing Passline         |
+| `reporte_Zoco_todos_2025-10.xlsx` | Reporte Zoco completo Oct 2025      |
+| `feature-spec-drinks-by-web.md`   | Spec de funcionalidad Drinks-by-Web |
+| `user-flows-by-role.md`           | Flujos de usuario por rol           |
 
 ---
 
@@ -61,10 +66,47 @@ Documentación técnica y operativa por módulo:
 
 ---
 
-## Skills (Fuente de Verdad Técnica)
+## Output por Agente (`/output`)
 
-Ver `.gemini/antigravity/skills/` para reglas técnicas por dominio:
+Cada agente documenta exclusivamente en su carpeta. Ver [README](./output/README.md) para convención.
 
+| Carpeta                | Agente       | Contenido                            |
+| :--------------------- | :----------- | :----------------------------------- |
+| `output/frontend/`     | frontend     | Auditorías CSS, specs de componentes |
+| `output/logic/`        | logic        | Specs de módulos JS, flujos de auth  |
+| `output/data/`         | data         | Migraciones schema, specs de RPCs    |
+| `output/qa/`           | qa           | Auditorías de coherencia, reportes   |
+| `output/product/`      | product      | Investigación UX, journey maps       |
+| `output/orchestrator/` | orchestrator | Planes cross-cutting, delegaciones   |
+
+---
+
+## Infraestructura de Agentes
+
+| Archivo                                         | Propósito                                             |
+| :---------------------------------------------- | :---------------------------------------------------- |
+| [`AGENT.md`](../AGENT.md)                       | Reglas globales (semáforo de riesgo, gobernanza, DoD) |
+| [`.agent/README.md`](../.agent/README.md)       | Estructura del sistema agents-of-agents               |
+| [`.agent/REGISTRY.yml`](../.agent/REGISTRY.yml) | Routing canónico por intents + tiers de riesgo        |
+
+### Sub-Agentes (`.agent/agents/`)
+
+| Agente     | Dominio                              | Skills                                                         |
+| :--------- | :----------------------------------- | :------------------------------------------------------------- |
+| `frontend` | UI/CSS/layout/componentes            | css-architect, web-designer, ui-migrator                       |
+| `logic`    | JS modules, state, auth, integración | logic-engineer, prototyper                                     |
+| `data`     | Schema Supabase, RPCs, migraciones   | db-architect, erp-architect                                    |
+| `qa`       | Auditorías, coherencia, higiene      | auditing-workspace, module-coherence-auditor                   |
+| `product`  | UX, journeys, documentación          | ux-researcher-designer, brand-developer, methodology-generator |
+
+### Skills Atómicos (`.agent/skills/`)
+
+13 skills técnicos reutilizables. Skills destacados:
+
+- `leader/` — Orquestación de agentes (orchestrator)
 - `css-architect/` — Reglas de UI/CSS
 - `logic-engineer/` — Reglas de JS/lógica
 - `db-architect/` — Reglas de datos
+- `erp-architect/` — Arquitectura ERP
+- `ux-researcher-designer/` — Investigación UX
+- `auditing-workspace/` — Auditoría de workspace

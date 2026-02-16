@@ -1,4 +1,14 @@
 {
+  "name": "tester_3.0",
+  "private": true,
+  "scripts": {
+    "audit:modules": "node scripts/audit.mjs",
+    "audit:css": "node scripts/audit-css.js",
+    "audit:pages": "node scripts/audit-modules.js",
+    "audit:links": "node scripts/audit-links.js",
+    "audit": "npm run audit:modules && npm run audit:css && npm run audit:pages && npm run audit:links",
+    "extract:recipes": "node scripts/extract-recipes.js"
+  },
   "dependencies": {
     "xlsx": "^0.18.5"
   }

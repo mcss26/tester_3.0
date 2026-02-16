@@ -193,4 +193,4 @@ R: [Respuesta]
 - [Link a diseño en Figma]
 - [Link a ticket/issue relacionado]
 - [Link a documentación de API externa]
-- [Link a módulos relacionados](../[categoria]/[archivo].md)
+- Link a módulos relacionados: `../[categoria]/[archivo].md`

@@ -1,7 +1,7 @@
 # Estado Presente del Proyecto - FormulaMid 4
 
-> **Fecha**: 12/02/2026 15:26
-> **Versión**: 4.0.3 (Audit Sync)
+> **Fecha**: 16/02/2026 00:10
+> **Versión**: 4.0.5 (Docs Sync)
 > **Estado General**: 🟡 En Desarrollo / Consolidación
 > **Fuente de Verdad**: Este documento
 
@@ -14,13 +14,13 @@
 | **Pantallas Operativas**     | **47**        | −1 (recount: 45 pages/ + 2 root)            |
 | **Tablas en Base de Datos**  | **60**        | Corrección: eran 60 (no 48)                 |
 | **Vistas SQL (public)**      | **18**        | Verificado ✅                               |
-| **Módulos JS**               | **43**        | +1 (recount ajustado)                       |
+| **Módulos JS**               | **42**        | −1 (recount verificado)                     |
 | **Core JS**                  | **20**        | +2 (navigation-debug, navigation-analytics) |
 | **Importers JS**             | **6**         | Sin cambio                                  |
 | **Archivos CSS**             | **18**        | −1 (recount verificado)                     |
 | **Roles Configurados**       | **12**        | Sin cambio                                  |
-| **Skills Activos**           | **16**        | +1 (ux-researcher-designer)                 |
-| **Documentación de Módulos** | **39**        | +5 (recount verificado)                     |
+| **Skills Activos**           | **13**        | −3 (cleanup previo)                         |
+| **Documentación de Módulos** | **38**        | +4 (excl. template, verificado)             |
 | **Recetas Master**           | **93**        | Verificado ✅                               |
 | **Members Registrados**      | **2,245**     | +2 (live query)                             |
 | **Proveedores Activos**      | **47**        | Verificado ✅                               |
@@ -61,10 +61,10 @@
 | Staff                |    1     | `assets/js/modules/staff/`                     |
 | Members              |    1     | `assets/js/members/`                           |
 | Root                 |    1     | `assets/js/modules/login.js`                   |
-| **Subtotal Módulos** |  **43**  | —                                              |
+| **Subtotal Módulos** |  **42**  | —                                              |
 | Core                 |    20    | `assets/js/core/`                              |
 | Importers            |    6     | `assets/js/importers/`                         |
-| **TOTAL JS**         |  **69**  | —                                              |
+| **TOTAL JS**         |  **68**  | —                                              |
 
 ### Archivos CSS (18 archivos)
 
@@ -93,36 +93,25 @@
 
 | Área       |  Docs  | Directorio                 |
 | :--------- | :----: | :------------------------- |
-| Admin      |   11   | `docs/modules/admin/`      |
+| Admin      |   12   | `docs/modules/admin/`      |
 | Operativo  |   9    | `docs/modules/operativo/`  |
 | Encargados |   7    | `docs/modules/encargados/` |
-| Logística  |   4    | `docs/modules/logistica/`  |
+| Logística  |   5    | `docs/modules/logistica/`  |
+| Gerencia   |   1    | `docs/modules/gerencia/`   |
+| Members    |   1    | `docs/modules/members/`    |
 | Staff      |   2    | `docs/modules/staff/`      |
 | Misc       |   1    | `docs/modules/misc/`       |
-| **TOTAL**  | **34** | —                          |
+| **TOTAL**  | **38** | —                          |
 
-### Scripts de Utilidad (18 archivos en `scripts/`)
+### Scripts de Utilidad (5 archivos en `scripts/`)
 
-| Script                           | Propósito                       |
-| :------------------------------- | :------------------------------ |
-| `audit-css.js`                   | Auditoría CSS                   |
-| `audit-modules.js`               | Auditoría automática de módulos |
-| `audit.mjs`                      | Auditoría general               |
-| `capture_screenshots.ps1`        | Automatización de capturas      |
-| `extract-recipes.js`             | Extracción de recetas           |
-| `find-mcp-artifacts.ps1`         | Búsqueda de artefactos MCP      |
-| `fix-aria-accent.ps1`            | Batch fix acentos ARIA          |
-| `fix-aria-search.ps1`            | Batch fix ARIA search           |
-| `fix-encoding.ps1`               | Batch fix encoding              |
-| `fix-logout-final.ps1`           | Batch fix logout final          |
-| `fix-logout-text.ps1`            | Batch fix logout text           |
-| `insert-recipes.sql`             | Inserción de recetas en DB      |
-| `mcp-drive-reset.ps1`            | Reset de credenciales Drive MCP |
-| `migration-gbol-integration.sql` | Migración GBOL                  |
-| `migration.sql`                  | Script de migración SQL         |
-| `migration_script.js`            | Script de migración JS          |
-| `patch-logout-dropdown.ps1`      | Batch fix logout dropdown       |
-| `patch-ui-minimums.ps1`          | Parche batch de mínimos UI      |
+| Script               | Propósito                       |
+| :------------------- | :------------------------------ |
+| `audit-css.js`       | Auditoría CSS                   |
+| `audit-links.js`     | Auditoría de links internos     |
+| `audit-modules.js`   | Auditoría automática de módulos |
+| `audit.mjs`          | Auditoría general               |
+| `extract-recipes.js` | Extracción de recetas           |
 
 ---
 
@@ -183,7 +172,7 @@
 - **Arqueo de Recaudación**: Comparación consumo real vs esperado
 - **CSS Architecture**: 100% páginas migradas a `tokens.css` + `components.css`
 - **Blocking UX**: 0 `alert()` / `confirm()` nativos en módulos auditados
-- **Workspace Hygiene**: Score 10/10 post-audit (08/02/2026)
+- **Workspace Hygiene**: Score 11/10 post-audit (15/02/2026)
 
 ### 🟡 En Progreso / Calidad Beta
 
@@ -204,15 +193,17 @@
 
 ## 🛠️ Deuda Técnica Identificada
 
-|  #  | Issue                   | Status       | Detalle                                                                                                                         |
-| :-: | :---------------------- | :----------- | :------------------------------------------------------------------------------------------------------------------------------ |
-|  1  | CSS Legacy (`main.css`) | ✅ ELIMINADO | Archivo borrado, 0 imports restantes                                                                                            |
-|  2  | Blocking UX             | ✅ RESUELTO  | 0 ocurrencias de `alert()`/`confirm()`                                                                                          |
-|  3  | CSS Duplicates          | ✅ RESUELTO  | Selectores consolidados en `components.css`                                                                                     |
-|  4  | Inline Styles           | ⏳ PENDIENTE | ~25 páginas con estilos inline                                                                                                  |
-|  5  | Orphan JS               | ⏳ PENDIENTE | `operativo-erp.js` sin HTML directo (posible módulo auxiliar)                                                                   |
-|  6  | Hardcoded Colors        | ⏳ PENDIENTE | 18 HEX en chart.js configs                                                                                                      |
-|  7  | Docs gaps               | ⏳ PENDIENTE | Faltan: `logistica-seguimiento.md`, `admin-config.md`, `test-devenciones.md`, `gerencia/balance-semanal.md`, `members/my-qr.md` |
+|  #  | Issue                   | Status       | Detalle                                                       |
+| :-: | :---------------------- | :----------- | :------------------------------------------------------------ |
+|  1  | CSS Legacy (`main.css`) | ✅ ELIMINADO | Archivo borrado, 0 imports restantes                          |
+|  2  | Blocking UX             | ✅ RESUELTO  | 0 ocurrencias de `alert()`/`confirm()`                        |
+|  3  | CSS Duplicates          | ✅ RESUELTO  | Selectores consolidados en `components.css`                   |
+|  4  | Inline Styles           | ⏳ PENDIENTE | ~25 páginas con estilos inline                                |
+|  5  | Orphan JS               | ⏳ PENDIENTE | `operativo-erp.js` sin HTML directo (posible módulo auxiliar) |
+|  6  | Hardcoded Colors        | ⏳ PENDIENTE | 18 HEX en chart.js configs                                    |
+|  7  | Docs gaps               | ✅ RESUELTO  | Los 5 docs faltantes ahora existen                            |
+|  8  | Legacy Logs in .agent   | ✅ RESUELTO  | Logs consolidados en `docs/logs/`                             |
+|  9  | Duplicate Specs         | ✅ RESUELTO  | `feature-spec-drinks-by-web copy.md` eliminados               |
 
 ---
 
@@ -221,32 +212,36 @@
 ```
 tester_3.0/
 ├── .agent/                    # Agent tooling (gitignored)
-│   ├── migrations/            # 3 SQL migration scripts
-│   ├── rules/                 # 3 rule files
-│   └── workflows/             # 1 workflow
-├── .gemini/antigravity/       # Skills + Knowledge (fuente de verdad)
-│   ├── skills/                # 15 skills activos
+│   ├── agents/                # 5 sub-agentes (frontend, logic, data, qa, product)
+│   ├── skills/                # 13 skills atómicos
+│   ├── workflows/             # 1 workflow (track-module)
+│   ├── README.md              # Gobernanza del sistema de agentes
+│   └── REGISTRY.yml           # Routing canónico + tiers de riesgo
+├── .gemini/antigravity/       # Knowledge (fuente de verdad)
 │   ├── knowledge/             # KIs persistentes
 │   └── brain/                 # Artifacts por conversación
 ├── assets/
-│   ├── css/                   # 13 archivos CSS
+│   ├── css/                   # 18 archivos CSS
 │   │   ├── tokens.css         # Design tokens (INMUTABLE)
 │   │   ├── components.css     # Componentes globales (140KB)
 │   │   └── pages/             # CSS específico (admin-index.css)
 │   └── js/
-│       ├── core/              # 18 utilidades compartidas
-│       ├── modules/           # 43 módulos de negocio
+│       ├── core/              # 20 utilidades compartidas
+│       ├── modules/           # 42 módulos de negocio
 │       ├── importers/         # 6 importadores
 │       └── members/           # 1 módulo members
 ├── docs/
-│   ├── architecture/          # Navegación y componentes
 │   ├── guides/                # 3 guías técnicas
-│   ├── modules/               # 34 fichas de módulo
+│   ├── important-data-reference/ # Datos de referencia (xlsx, csv, specs)
+│   ├── migration/             # Migración WorkDays + Balance
+│   ├── modules/               # 38 fichas de módulo
+│   ├── output/                # Output por agente (6 subdirs)
 │   └── 5 docs canónicos
-├── pages/                     # 45 pantallas + 2 root
-├── scripts/                   # 18 scripts de utilidad
+├── pages/                     # 45 pantallas + 3 prototipos + 2 root
+├── scripts/                   # 5 scripts de utilidad
 ├── supabase/                  # Edge functions
 ├── test-data/                 # Datos de prueba sintéticos
+├── AGENT.md                   # Reglas globales de agentes
 ├── index.html                 # Redirect
 └── login.html                 # Entry point
 ```
@@ -255,13 +250,13 @@ tester_3.0/
 
 ## 📝 Última Actualización
 
-**Fecha**: 12/02/2026 15:26
+**Fecha**: 16/02/2026 00:10
 **Cambios**:
 
-- **Workspace Audit**: Score 8/10 (higiene fuerte, métricas corregidas)
-- **Eliminado**: `screenshots/` (58 archivos de regresión visual)
-- **Métricas corregidas**: Pantallas 48→47, CSS 19→18, Skills 14→15, Module docs 34→39
-- **Governance**: Eliminado requerimiento de `roadmap.md`
+- **Docs Sync**: Métricas corregidas contra filesystem real (scripts 18→5, modules docs 34→38, JS 43→42, skills 16→13)
+- **Agent Infra**: Indexados agents/ (5 sub-agentes), REGISTRY.yml, AGENT.md
+- **Deuda #7**: Marcada como RESUELTO (los 5 docs faltantes ya existen)
+- **Workspace Tree**: Corregido (eliminado `docs/architecture/` fantasma, conteos actualizados)
 - **Supabase Project ID**: `iyknbgmcnbpvalvsjxjz` (región us-west-2)
 
 ---
@@ -269,6 +264,6 @@ tester_3.0/
 > [!IMPORTANT]
 > **Este documento debe actualizarse inmediatamente después de cada cambio significativo**.
 >
-> Ver reglas completas en: [auditing-workspace/SKILL.md](../../.gemini/antigravity/skills/auditing-workspace/SKILL.md)
+> Ver reglas completas en: [AGENT.md](../AGENT.md)
 
 ---

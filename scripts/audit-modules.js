@@ -1,122 +1,173 @@
-const http = require('http');
-const fs = require('fs');
+#!/usr/bin/env node
+/**
+ * Audits HTML modules/pages for structural health:
+ * - Missing local asset references (script/link/img)
+ * - Inline style usage
+ * - Basic metadata (title, role attributes, css/js counts)
+ *
+ * Usage:
+ *   node scripts/audit-modules.js
+ *   node scripts/audit-modules.js --json reports/module-audit.json
+ */
 
-const modules = [
-  ['Admin', [
-    ['admin/admin-index.html', 'Admin Index', 'Dashboard principal'],
-    ['admin/admin-workdays.html', 'Admin Workdays', 'Jornadas, ZBB, devenciones'],
-    ['admin/admin-pagos.html', 'Admin Pagos', 'Tesorería, pagos, nómina'],
-    ['admin/admin-central-stock.html', 'Central Stock', 'Stock global'],
-    ['admin/admin-solicitudes.html', 'Admin Solicitudes', 'Pedidos a proveedores'],
-    ['admin/admin-config.html', 'Admin Config', 'Configuración sitio'],
-    ['admin/admin-reportes.html', 'Admin Reportes', 'Reportes financieros'],
-    ['admin/admin-semanal.html', 'Admin Semanal', 'Cierre semanal'],
-    ['admin/admin-master-nomina.html', 'Master Nómina', 'Roles/staff'],
-    ['admin/admin-master-pos.html', 'Master POS', 'Terminales'],
-    ['admin/admin-master-proveedores.html', 'Master Proveedores', 'Proveedores'],
-    ['admin/admin-master-tarifario.html', 'Master Tarifario', 'Tarifas entrada'],
-    ['admin/admin-master-categorias.html', 'Master Categorías', 'Categorías'],
-  ]],
-  ['QR', [
-    ['admin/qr/index.html', 'QR Index', 'Dashboard QR'],
-    ['admin/qr/generator.html', 'QR Generator', 'Generador lotes'],
-    ['admin/qr/monitor.html', 'QR Monitor', 'Monitor RT'],
-  ]],
-  ['Encargados', [
-    ['encargados/encargado-caja-index.html', 'Enc Caja Index', 'Hub caja'],
-    ['encargados/encargado-caja-noche.html', 'Enc Caja Noche', 'Cierre nocturno'],
-    ['encargados/encargado-caja-personal.html', 'Enc Caja Personal', 'Staff caja'],
-    ['encargados/encargado-barra-index.html', 'Enc Barra Index', 'Hub barra'],
-    ['encargados/encargado-barra-noche.html', 'Enc Barra Noche', 'Conteo nocturno'],
-    ['encargados/encargado-barra-personal.html', 'Enc Barra Personal', 'Staff barra'],
-    ['encargados/encargado-recepcion.html', 'Enc Recepción', 'Control puerta'],
-  ]],
-  ['Gerencia', [
-    ['gerencia/balance-semanal.html', 'Balance Semanal', 'Reporte gerencial'],
-  ]],
-  ['Logística', [
-    ['logistica/logistica-index.html', 'Logística Index', 'Hub logístico'],
-    ['logistica/logistica-distribucion.html', 'Distribución', 'Distribución'],
-    ['logistica/logistica-recepcion.html', 'Recepción', 'Recepción merc.'],
-    ['logistica/logistica-seguimiento.html', 'Seguimiento', 'Tracking pedidos'],
-    ['logistica/logistica-stock.html', 'Log Stock', 'Stock logístico'],
-  ]],
-  ['Operativo', [
-    ['operativo/operativo-index.html', 'Op Index', 'Hub operativo'],
-    ['operativo/operativo-workday.html', 'Op Workday', 'Jornada operativa'],
-    ['operativo/operativo-stock.html', 'Op Stock', 'Stock operativo'],
-    ['operativo/operativo-solicitudes.html', 'Op Solicitudes', 'Pedidos op.'],
-    ['operativo/operativo-analisis.html', 'Op Análisis', 'Análisis op.'],
-    ['operativo/operativo-erp.html', 'Op ERP', 'Panel ERP'],
-    ['operativo/operativo-cms.html', 'Op CMS', 'CMS contenido'],
-    ['operativo/cms-members.html', 'CMS Members', 'Gestión miembros'],
-    ['operativo/operativo-master-sku.html', 'Master SKU', 'Catálogo prod.'],
-    ['operativo/operativo-master-proveedores.html', 'Op Proveedores', 'Proveedores op.'],
-    ['operativo/scanner.html', 'Scanner', 'Escáner QR'],
-  ]],
-  ['Staff', [
-    ['staff/staff-caja-index.html', 'Staff Caja', 'Dashboard caja'],
-    ['staff/staff-barra-index.html', 'Staff Barra', 'Dashboard barra'],
-  ]],
-  ['Members', [
-    ['members/my-qr.html', 'My QR', 'QR personal'],
-  ]],
-];
+const fs = require("fs");
+const path = require("path");
 
-function fetchPage(path) {
-  return new Promise((resolve) => {
-    const t0 = Date.now();
-    http.get('http://localhost:8080/pages/' + path, (res) => {
-      let body = '';
-      res.on('data', (c) => { body += c; });
-      res.on('end', () => { resolve({ code: res.statusCode, body: body, ms: Date.now() - t0 }); });
-    }).on('error', (e) => { resolve({ code: 0, body: '', ms: Date.now() - t0, err: e.message }); });
-  });
+const ROOT = process.cwd();
+const PAGES_DIR = path.join(ROOT, "pages");
+const ROOT_HTML = ["index.html", "login.html"];
+
+function walkHtml(dir) {
+  if (!fs.existsSync(dir)) return [];
+  const out = [];
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      out.push(...walkHtml(full));
+      continue;
+    }
+    if (entry.isFile() && entry.name.toLowerCase().endsWith(".html")) {
+      out.push(full);
+    }
+  }
+  return out;
 }
 
-function analyze(html) {
-  const r = {};
-  const tm = html.match(/<title>(.*?)<\/title>/i);
-  r.title = tm ? tm[1].trim() : '(sin titulo)';
-  r.sizeKB = (html.length / 1024).toFixed(1);
-  r.cssCount = (html.match(/<link[^>]+stylesheet/gi) || []).length;
-  r.jsCount = (html.match(/<script[^>]*src=/gi) || []).length;
-  r.supabase = html.includes('supabase') ? 'Y' : 'N';
-  const rm = html.match(/data-allowed-roles="([^"]+)"/);
-  r.roles = rm ? rm[1] : '(none)';
-  r.goldenStd = html.includes('tokens.css') && html.includes('components.css') ? 'Y' : 'N';
-  r.inlineStyles = (html.match(/style="/gi) || []).length;
-  r.inlineOnclick = (html.match(/onclick="/gi) || []).length;
-  r.tables = (html.match(/<table/gi) || []).length;
-  r.forms = (html.match(/<form/gi) || []).length;
-  r.hasTabs = (html.match(/tab-bar|data-tab/gi) || []).length > 0;
-  r.hasTopbar = html.includes('class="topbar"');
-  r.hasSlidePanel = html.includes('slide-panel') || html.includes('initSlidePanel');
-  return r;
+function rel(filePath) {
+  return path.relative(ROOT, filePath).replace(/\\/g, "/");
 }
 
-(async () => {
-  const results = [];
-  for (const [section, mods] of modules) {
-    for (const [path, name, desc] of mods) {
-      const res = await fetchPage(path);
-      if (res.code === 200) {
-        const a = analyze(res.body);
-        results.push({ section, name, desc, path, code: res.code, ms: res.ms, ...a });
-      } else {
-        results.push({ section, name, desc, path, code: res.code, ms: res.ms, err: res.err || 'HTTP ' + res.code });
-      }
+function isExternalRef(ref) {
+  return /^(?:https?:|mailto:|tel:|data:|javascript:|#|\/\/)/i.test(ref);
+}
+
+function normalizeRef(rawRef) {
+  if (!rawRef) return "";
+  return rawRef.trim().split("#")[0].split("?")[0];
+}
+
+function resolveRef(fromFile, href) {
+  if (href.startsWith("/")) {
+    return path.join(ROOT, href.slice(1));
+  }
+  return path.resolve(path.dirname(fromFile), href);
+}
+
+function collectRefs(html, fromFile) {
+  const refs = [];
+  const rx = /<(script|link|img)\b[^>]*?\b(?:src|href)=["']([^"']+)["'][^>]*>/gi;
+  for (const m of html.matchAll(rx)) {
+    const tag = m[1].toLowerCase();
+    const raw = m[2];
+    const ref = normalizeRef(raw);
+    if (!ref || isExternalRef(ref)) continue;
+    refs.push({
+      tag,
+      raw,
+      target: resolveRef(fromFile, ref),
+    });
+  }
+  return refs;
+}
+
+function auditFile(filePath) {
+  const html = fs.readFileSync(filePath, "utf8");
+  const references = collectRefs(html, filePath);
+  const missingRefs = references
+    .filter((r) => !fs.existsSync(r.target))
+    .map((r) => ({
+      tag: r.tag,
+      ref: r.raw,
+      target: rel(r.target),
+    }));
+
+  const title = html.match(/<title>(.*?)<\/title>/i)?.[1]?.trim() || "(sin título)";
+  const roles = html.match(/data-allowed-roles=["']([^"']+)["']/i)?.[1] || "";
+
+  return {
+    file: rel(filePath),
+    title,
+    roles,
+    sizeKB: +(html.length / 1024).toFixed(1),
+    cssCount: (html.match(/<link[^>]+stylesheet/gi) || []).length,
+    jsCount: (html.match(/<script[^>]*src=/gi) || []).length,
+    inlineStyles: (html.match(/\sstyle=["'][^"']+["']/gi) || []).length,
+    inlineOnclick: (html.match(/\sonclick=["'][^"']+["']/gi) || []).length,
+    hasTopbar: /class=["'][^"']*\btopbar\b/i.test(html),
+    hasSlidePanel: /\bslide-panel\b|initSlidePanel/i.test(html),
+    missingRefs,
+  };
+}
+
+function parseArgs(argv) {
+  const args = { json: null };
+  for (let i = 0; i < argv.length; i += 1) {
+    if (argv[i] === "--json" && argv[i + 1]) {
+      args.json = argv[i + 1];
+      i += 1;
+    }
+  }
+  return args;
+}
+
+function writeJsonReport(outPath, results) {
+  const absolute = path.isAbsolute(outPath) ? outPath : path.join(ROOT, outPath);
+  fs.mkdirSync(path.dirname(absolute), { recursive: true });
+  fs.writeFileSync(
+    absolute,
+    JSON.stringify(
+      {
+        generatedAt: new Date().toISOString(),
+        pages: results,
+      },
+      null,
+      2
+    ),
+    "utf8"
+  );
+  return rel(absolute);
+}
+
+function main() {
+  const args = parseArgs(process.argv.slice(2));
+  const pageFiles = walkHtml(PAGES_DIR);
+  const rootFiles = ROOT_HTML.map((f) => path.join(ROOT, f)).filter((f) => fs.existsSync(f));
+  const htmlFiles = [...pageFiles, ...rootFiles];
+  const results = htmlFiles.map(auditFile);
+
+  const missing = [];
+  for (const page of results) {
+    for (const ref of page.missingRefs) {
+      missing.push({
+        file: page.file,
+        tag: ref.tag,
+        ref: ref.ref,
+        target: ref.target,
+      });
     }
   }
 
-  // Write JSON
-  const outPath = 'C:/Users/siste/.gemini/antigravity/brain/d4d4195e-cb36-4569-b79e-59b97e6bfb8e/audit_results.json';
-  fs.writeFileSync(outPath, JSON.stringify(results, null, 2), 'utf8');
-  console.log('Audit complete: ' + results.length + ' modules scanned');
-  console.log('Results saved to: ' + outPath);
+  const withInlineStyles = results.filter((r) => r.inlineStyles > 0).length;
+  const withInlineOnclick = results.filter((r) => r.inlineOnclick > 0).length;
 
-  // Quick summary
-  const ok = results.filter(r => r.code === 200).length;
-  const fail = results.filter(r => r.code !== 200).length;
-  console.log('OK: ' + ok + ' | Error: ' + fail);
-})();
+  console.log(`Pages audited: ${results.length}`);
+  console.log(`Missing local references: ${missing.length}`);
+  console.log(`Pages with inline style: ${withInlineStyles}`);
+  console.log(`Pages with inline onclick: ${withInlineOnclick}`);
+
+  if (missing.length > 0) {
+    console.log("\nMissing refs:");
+    for (const issue of missing) {
+      console.log(`- ${issue.file} -> ${issue.tag}:${issue.ref} [${issue.target}]`);
+    }
+  }
+
+  if (args.json) {
+    const reportPath = writeJsonReport(args.json, results);
+    console.log(`\nJSON report: ${reportPath}`);
+  }
+
+  process.exitCode = missing.length > 0 ? 1 : 0;
+}
+
+main();

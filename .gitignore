@@ -19,8 +19,19 @@ nul
 .agent/
 mcp.json
 
+# Security — Credentials & Secrets
+credentials*.json
+**/credentials*.json
+*.pem
+*.key
+*secret*
+token*.json
+**/token*.json
+
 # Logs
 *.log
+scripts/logs/
+scripts/backups/
 
 # Sandbox Dev Tools (local only)
 assets/sandbox.html

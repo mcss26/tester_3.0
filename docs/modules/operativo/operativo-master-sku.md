@@ -147,7 +147,7 @@ Operaciones Supabase:
 ### 5.3 Dependencias entre Módulos
 - **Consume**: Datos de `master_sku`, `master_categories` y `master_proveedores` (para consultas y selects)
 - **Es consumido por**: Módulo admin que procesa las solicitudes creadas aquí
-- **Complementa**: `admin-master-sku.md` (versión con permisos de aprobación)
+- **Complementa**: `admin-central-stock.md` (versión con permisos de aprobación)
 - **Relacionado con**: Sistema de notificaciones para alertar a admin de nuevas solicitudes
 
 ---
@@ -245,7 +245,7 @@ R: No, por seguridad y privacidad, cada usuario solo ve sus propias solicitudes.
 
 ## 11. Referencias y Links
 
-- [Admin Master SKU](../admin/admin-master-sku.md) - Módulo de aprobación de solicitudes creadas aquí
+- [Admin Central Stock](../admin/admin-central-stock.md) - Módulo de aprobación de solicitudes creadas aquí
 - [Operativo Master Proveedores](operativo-master-proveedores.md) - Gestión de proveedores referenciados en solicitudes
 - [Master Categorías](../admin/admin-master-categorias.md) - Categorías de productos
 - [Screen Map](../../screen-map.md#operativo-master-sku) - Ubicación en arquitectura de pantallas

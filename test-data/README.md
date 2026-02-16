@@ -7,6 +7,7 @@
 **Contenido**: 15 productos de ventas de barra
 
 **Payment Methods Esperados**:
+
 - **Cash** (7 productos): Cerveza Corona, Fernet Branca, Gin Tonic, Vodka Naranja, Cerveza Quilmes, Ron Cola, Whisky On The Rocks, Cerveza Stella, Cerveza Heineken, Ron Miel
 - **Card** (5 productos): Fernet Zoco, Tarjeta Gin Tonic, QR Mesa 5 Fernet, Vodka Energizante Zoco, Tarjeta Digital Whisky
 
@@ -21,6 +22,7 @@
 **Contenido**: 10 tickets QR con diferentes status
 
 **Status Distribution**:
+
 - **ACREDITADO**: 6 tickets ($30,000 total)
 - **PENDIENTE**: 2 tickets
 - **ANULADO**: 2 tickets
@@ -34,6 +36,7 @@
 **Contenido**: 5 retiros de tesorería
 
 **Terminales**:
+
 - CAJA 1: 2 retiros ($10,000 + $3,500 = $13,500)
 - CAJA 2: 2 retiros ($5,000 + $4,500 = $9,500)
 - CAJA 3: 1 retiro ($8,000)
@@ -48,7 +51,7 @@
 
 ### Setup Requerido
 
-Antes de importar, ejecutar SQL setup del testing_plan.md:
+Antes de importar, ejecutar el SQL de setup:
 
 ```sql
 -- 1. Crear work_day de prueba
@@ -57,18 +60,18 @@ VALUES ('2026-02-01', 'open', NOW())
 RETURNING id;
 
 -- 2. Crear cash_closing, bar_session, closing_terminals
--- (Ver testing_plan.md Test 1 Setup)
+-- asociados al work_day creado arriba
 ```
 
 ### Orden de Importación
 
 1. **Gbol** (gbol_ventas_test.csv) → Test payment methods + trigger
-2. **Passline** (passline_tickets_test.csv) → Test status dinámico  
+2. **Passline** (passline_tickets_test.csv) → Test status dinámico
 3. **Extracciones** (extracciones_test.csv) → Test external_id + UPSERT
 
 ### Validaciones SQL
 
-Después de cada importación, ejecutar queries de validación del testing_plan.md.
+Después de cada importación, ejecutar las queries de la sección "Valores Esperados finales" de abajo.
 
 ---
 
@@ -78,7 +81,7 @@ Después de importar los 3 archivos:
 
 ```sql
 -- vw_daily_sales debería mostrar:
-SELECT 
+SELECT
     bar_sales_cash,      -- $45,600
     bar_sales_card,      -- $40,500
     bar_sales_system,    -- $86,100
@@ -91,7 +94,7 @@ WHERE work_day_id = '[TEST_WORK_DAY_ID]';
 
 ```sql
 -- closing_terminals debería mostrar (trigger):
-SELECT 
+SELECT
     system_cash,  -- $45,600 (auto-updated)
     system_zoco   -- $40,500 (auto-updated)
 FROM closing_terminals

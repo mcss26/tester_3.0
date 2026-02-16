@@ -2,7 +2,8 @@ const fs = require('fs');
 const path = require('path');
 
 const PAGES_DIR = path.join(__dirname, '../pages');
-const IGNORE_FILES = ['test-devenciones.html']; // Internal tools might use inline styles
+const IGNORE_FILES = ['test-devenciones.html', 'components_catalog.html', 'layout_patterns.html', 'module-audit.html'];
+const IGNORE_PATH_SEGMENTS = ['/prototypes/'];
 
 function getHtmlFiles(dir) {
     let results = [];
@@ -25,6 +26,7 @@ function auditFile(filePath) {
     const fileName = path.basename(filePath);
     
     if (IGNORE_FILES.includes(fileName)) return [];
+    if (IGNORE_PATH_SEGMENTS.some(seg => relativePath.includes(seg))) return [];
 
     const issues = [];
     const lines = content.split('\n');

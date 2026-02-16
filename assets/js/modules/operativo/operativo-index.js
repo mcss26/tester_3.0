@@ -83,8 +83,15 @@
   // 6. Logout
   logoutBtn?.addEventListener("click", async (e) => {
     e.preventDefault();
-    if (confirm("¿Cerrar sesión?")) {
+    const confirmed = window.Utils?.confirmModal
+      ? await window.Utils.confirmModal("Cerrar sesion?")
+      : window.confirm("Cerrar sesion?");
+    if (!confirmed) return;
+    try {
       await window.Auth.logout();
+    } catch (err) {
+      console.error("Logout error:", err);
+      window.Toast?.error("Error al cerrar sesion. Por favor intenta nuevamente.");
     }
   });
 
@@ -94,6 +101,12 @@
     const elValidated = document.getElementById("mco-qr-validated");
 
     if (!widget) return;
+    if (window.Utils?.assertSbOrShowBlockingError) {
+      if (!window.Utils.assertSbOrShowBlockingError(widget)) return;
+    } else if (!window.sb) {
+      console.warn("Supabase client unavailable for MCO widget");
+      return;
+    }
 
     const MCO_BATCH_ID = "141e44d9-42bc-4c2b-a3bb-4d9721e03802";
 
@@ -118,3 +131,4 @@
 
   initMcoQrWidget();
 })();
+

@@ -131,7 +131,7 @@ Operaciones Supabase:
 - **Es consumido por**:
   - `operativo-master-sku.md` (selección de proveedor default)
   - `operativo-solicitudes.md` (asignación de proveedores a órdenes)
-  - `admin-master-sku.md` (selección de proveedor en admin)
+  - `admin-central-stock.md` (selección de proveedor en admin)
 - **Versión alternativa**: Existe versión admin con más campos de auditoría
 
 ---
