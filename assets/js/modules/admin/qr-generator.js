@@ -2,7 +2,7 @@
   'use strict';
 
   // ── Wait for all dependencies to load ──
-  const REQUIRED = ['sb', 'Utils', 'Toast', 'QRCode'];
+  const REQUIRED = ['sb', 'Utils', 'Toast', 'QRCode', 'Auth'];
   const MAX_WAIT = 10000;
 
   function ready() {
@@ -26,13 +26,12 @@
   waitForDeps().then(async () => {
     const sb = window.sb;
 
-    // Auth: try real session, fallback gracefully
-    if (!window.Utils.assertSbOrShowBlockingError()) return;
-    let user = null;
-    try {
-      const { data: { session } } = await sb.auth.getSession();
-      user = session?.user || null;
-    } catch (e) { console.warn('Auth session check failed:', e); }
+    // ── Auth guard: enforce login + role check ──
+    const allowedRoles = (document.body.dataset.allowedRoles || '').split(',').map(r => r.trim()).filter(Boolean);
+    const authResult = await window.Auth.guardOrRedirect(allowedRoles);
+    if (!authResult) return; // redirected to login or role landing
+
+    const user = authResult.user;
 
     // Elements
     const el = (id) => document.getElementById(id);
