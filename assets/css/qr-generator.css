@@ -22,6 +22,12 @@
   gap: var(--space-md);
 }
 
+/* Fix: .field has margin-bottom: 1rem in components.css,
+   but inside flex+gap it creates double spacing */
+.qr-gen-config .field {
+  margin-bottom: 0;
+}
+
 .qr-gen-config .section-label {
   font-size: var(--fs-sm);
   font-weight: var(--fw-semibold);
@@ -82,8 +88,10 @@
   color: var(--text-tertiary);
 }
 
-/* FASE 4 — QR Cards (Preview) */
-.preview-card {
+/* FASE 4 — QR Cards (Preview)
+   Scoped to .qr-gen-preview-grid to win specificity
+   over generic .preview-card in components.css */
+.qr-gen-preview-grid .preview-card {
   background: var(--white-alpha-08);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
@@ -95,23 +103,26 @@
   transition: var(--transition);
 }
 
-.preview-card:hover {
+.qr-gen-preview-grid .preview-card:hover {
   border-color: var(--border-active);
   transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.06);
 }
 
-.preview-card-qr {
+.qr-gen-preview-grid .preview-card-qr {
   display: flex;
   align-items: center;
   justify-content: center;
+  background: #ffffff;
+  padding: var(--space-xs);
+  border-radius: var(--radius-sm);
 }
 
-.preview-card-qr img {
+.qr-gen-preview-grid .preview-card-qr img {
   border-radius: 2px;
 }
 
-.preview-card-caption {
+.qr-gen-preview-grid .preview-card-caption {
   font-size: var(--fs-xs);
   color: var(--text-tertiary);
   font-family: var(--font-mono);
@@ -138,10 +149,16 @@
   height: 48px;
   opacity: 0.3;
   stroke: currentColor;
+  animation: qr-pulse 3s ease-in-out infinite;
 }
 
 .qr-gen-empty-text {
   font-size: var(--fs-base);
+}
+
+@keyframes qr-pulse {
+  0%, 100% { opacity: 0.3; }
+  50%      { opacity: 0.5; }
 }
 
 /* FASE 6 — Responsive */
@@ -207,4 +224,27 @@
     font-family: var(--font-mono);
     color: #333;
   }
+}
+
+/* FASE 10 — Micro-interactions & Polish */
+
+/* Focus-visible states for form controls */
+.qr-gen-config input:focus-visible,
+.qr-gen-config select:focus-visible {
+  outline: 2px solid var(--accent-focus);
+  outline-offset: 2px;
+  border-color: var(--border-active);
+}
+
+/* Btn reinforcement: ensure .btn-secondary inside sidebar
+   works even without the .btn base class in HTML */
+.qr-gen-config .btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--control-h);
+  font-weight: var(--fw-semibold);
+  border-radius: var(--btn-radius);
+  cursor: pointer;
+  transition: var(--transition);
 }

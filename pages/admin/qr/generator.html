@@ -57,29 +57,30 @@
 
     <main class="page-shell">
         <div class="page-card-wrap">
-            <div class="page-card">
 
-                <!-- Dashboard Header -->
-                <div class="dashboard-header align-start">
-                    <div>
-                        <h1 class="dashboard-title dashboard-title-soft">Generador QR</h1>
-                        <p class="dashboard-subtitle dashboard-subtitle-soft">
-                            Crear lotes de códigos QR para entradas y accesos
-                        </p>
-                    </div>
-                    <div class="actions-bar">
-                        <button id="btnPrint" class="btn-primary" aria-label="Guardar e imprimir lote">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="6 9 6 2 18 2 18 9"></polyline>
-                                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2">
-                                </path>
-                                <rect width="12" height="8" x="6" y="14"></rect>
-                            </svg>
-                            Guardar e Imprimir
-                        </button>
-                    </div>
+            <!-- Dashboard Header (OUTSIDE card per Golden Standard) -->
+            <div class="dashboard-header align-start">
+                <div>
+                    <h1 class="dashboard-title dashboard-title-soft">Generador QR</h1>
+                    <p class="dashboard-subtitle dashboard-subtitle-soft">
+                        Crear lotes de códigos QR para entradas y accesos
+                    </p>
                 </div>
+                <div class="actions-bar">
+                    <button id="btnPrint" class="btn btn-primary" aria-label="Guardar e imprimir lote">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2">
+                            </path>
+                            <rect width="12" height="8" x="6" y="14"></rect>
+                        </svg>
+                        Guardar e Imprimir
+                    </button>
+                </div>
+            </div>
+
+            <div class="page-card">
 
                 <!-- 2-Column Layout: Config + Preview -->
                 <div class="qr-gen-layout">
@@ -160,7 +161,7 @@
                         </div>
 
                         <!-- Preview Button -->
-                        <button id="btnPreview" class="btn-secondary w-full" aria-label="Previsualizar QR">
+                        <button id="btnPreview" class="btn btn-secondary w-full" aria-label="Previsualizar QR">
                             Previsualizar
                         </button>
                     </aside>
@@ -169,7 +170,7 @@
                     <div class="qr-gen-preview">
                         <div class="qr-gen-preview-header">
                             <span class="qr-gen-preview-title">Vista Previa</span>
-                            <button id="btnClear" class="btn-ghost btn-sm" aria-label="Limpiar vista previa">
+                            <button id="btnClear" class="btn btn-ghost btn-sm" aria-label="Limpiar vista previa">
                                 Limpiar
                             </button>
                         </div>

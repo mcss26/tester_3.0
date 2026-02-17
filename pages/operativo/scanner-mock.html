@@ -2,304 +2,453 @@
 <html lang="es">
 
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
- <meta name="theme-color" content="#0a0a0f">
- <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
- <title>Scanner QR — Cuenta</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0a0a0f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
+  <title>Scanner QR — Cuenta</title>
 
- <link rel="stylesheet" href="../../assets/css/tokens.css">
- <link rel="stylesheet" href="../../assets/css/components.css">
- <link rel="stylesheet" href="../../assets/css/scanner.css">
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/scanner.css">
 
- <!-- html5-qrcode -->
- <script src="https://unpkg.com/html5-qrcode" defer></script>
+  <!-- html5-qrcode -->
+  <script src="https://unpkg.com/html5-qrcode" defer></script>
 
- <style>
-  /* Mock-specific overrides */
-  body {
-   background: var(--neutral-0);
-   min-height: 100dvh;
-   display: flex;
-   flex-direction: column;
-  }
+  <style>
+    /* ── Base ── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  .mock-header {
-   display: flex;
-   align-items: center;
-   justify-content: space-between;
-   padding: 12px 16px;
-   background: rgba(255, 255, 255, 0.03);
-   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  }
+    body {
+      background: var(--neutral-0);
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      /* No scroll on main body */
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      /* Prevent double-tap zoom */
+    }
 
-  .mock-header h1 {
-   font-size: 16px;
-   font-weight: 700;
-   color: var(--neutral-1000);
-   letter-spacing: 0.05em;
-  }
+    /* ── Header ── */
+    .mock-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      flex-shrink: 0;
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
 
-  .mock-badge {
-   font-size: 10px;
-   padding: 4px 8px;
-   border-radius: 4px;
-   background: var(--brand-gold);
-   color: #000;
-   font-weight: 700;
-   text-transform: uppercase;
-  }
+    .mock-header h1 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--neutral-1000);
+      letter-spacing: 0.05em;
+    }
 
-  /* Big Counter */
-  .big-counter {
-   text-align: center;
-   padding: 20px 16px;
-  }
+    .mock-badge {
+      font-size: 10px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      background: var(--brand-gold);
+      color: #000;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
 
-  .big-counter-number {
-   font-size: 72px;
-   font-weight: 800;
-   font-family: var(--font-mono);
-   color: var(--neutral-1000);
-   line-height: 1;
-   text-shadow: 0 0 40px rgba(255, 255, 255, 0.15);
-  }
+    /* ── Big Counter ── */
+    .big-counter {
+      text-align: center;
+      padding: 8px 16px;
+      flex-shrink: 0;
+    }
 
-  .big-counter-label {
-   font-size: 11px;
-   text-transform: uppercase;
-   letter-spacing: 0.15em;
-   color: rgba(255, 255, 255, 0.4);
-   margin-top: 4px;
-  }
+    .big-counter-number {
+      font-size: clamp(48px, 15vw, 80px);
+      font-weight: 800;
+      font-family: var(--font-mono);
+      color: var(--neutral-1000);
+      line-height: 1;
+      text-shadow: 0 0 40px rgba(255, 255, 255, 0.15);
+      transition: transform 0.15s ease;
+    }
 
-  /* Stats row */
-  .mock-stats {
-   display: flex;
-   gap: 8px;
-   justify-content: center;
-   padding: 0 16px 12px;
-  }
+    .big-counter-number.bump {
+      transform: scale(1.08);
+    }
 
-  .mock-stat {
-   display: flex;
-   align-items: center;
-   gap: 6px;
-   background: rgba(255, 255, 255, 0.05);
-   border: 1px solid rgba(255, 255, 255, 0.08);
-   padding: 6px 12px;
-   border-radius: 8px;
-   font-size: 12px;
-  }
+    .big-counter-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: rgba(255, 255, 255, 0.4);
+      margin-top: 2px;
+    }
 
-  .mock-stat-val {
-   font-family: var(--font-mono);
-   font-weight: 700;
-   color: var(--neutral-1000);
-  }
+    /* ── Stats ── */
+    .mock-stats {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      padding: 0 16px 8px;
+      flex-shrink: 0;
+    }
 
-  .mock-stat-lbl {
-   color: rgba(255, 255, 255, 0.4);
-   font-weight: 600;
-   text-transform: uppercase;
-   font-size: 10px;
-  }
+    .mock-stat {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+    }
 
-  .mock-stat.rejected {
-   border-color: rgba(239, 68, 68, 0.3);
-  }
+    .mock-stat-val {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--neutral-1000);
+      font-size: 13px;
+    }
 
-  .mock-stat.rejected .mock-stat-val {
-   color: var(--red-500);
-  }
+    .mock-stat-lbl {
+      color: rgba(255, 255, 255, 0.4);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 9px;
+    }
 
-  .mock-stat.duplicate {
-   border-color: rgba(234, 179, 8, 0.3);
-  }
+    .mock-stat.rejected {
+      border-color: rgba(239, 68, 68, 0.3);
+    }
 
-  .mock-stat.duplicate .mock-stat-val {
-   color: var(--brand-gold);
-  }
+    .mock-stat.rejected .mock-stat-val {
+      color: var(--red-500);
+    }
 
-  /* Camera */
-  .scanner-wrap {
-   flex: 1;
-   display: flex;
-   flex-direction: column;
-   align-items: center;
-   justify-content: center;
-   padding: 0 16px 12px;
-   position: relative;
-   max-height: 350px;
-  }
+    .mock-stat.duplicate {
+      border-color: rgba(234, 179, 8, 0.3);
+    }
 
-  #reader {
-   width: 100%;
-   max-width: 400px;
-   border-radius: 12px;
-   overflow: hidden;
-  }
+    .mock-stat.duplicate .mock-stat-val {
+      color: var(--brand-gold);
+    }
 
-  #reader video {
-   border-radius: 12px;
-  }
+    /* ── Camera (flex-fills remaining space) ── */
+    .scanner-wrap {
+      flex: 1;
+      min-height: 0;
+      /* critical for flex shrink */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 16px;
+      position: relative;
+      overflow: hidden;
+    }
 
-  /* Last scan */
-  .last-scan {
-   padding: 12px 16px;
-   text-align: center;
-   font-size: 13px;
-   color: rgba(255, 255, 255, 0.5);
-   min-height: 44px;
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   gap: 8px;
-  }
+    #reader {
+      width: 100%;
+      max-width: 400px;
+      border-radius: 12px;
+      overflow: hidden;
+    }
 
-  .last-scan.ok {
-   color: var(--green-500);
-  }
+    #reader video {
+      border-radius: 12px;
+    }
 
-  .last-scan.fail {
-   color: var(--red-500);
-  }
+    /* ── Last Scan ── */
+    .last-scan {
+      padding: 8px 16px;
+      text-align: center;
+      flex-shrink: 0;
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.5);
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-  .last-scan.dup {
-   color: var(--brand-gold);
-  }
+    .last-scan.ok {
+      color: var(--green-500);
+    }
 
-  /* Manual fallback */
-  .manual-row {
-   display: flex;
-   gap: 8px;
-   padding: 8px 16px 16px;
-  }
+    .last-scan.fail {
+      color: var(--red-500);
+    }
 
-  .manual-row input {
-   flex: 1;
-   background: rgba(255, 255, 255, 0.05);
-   border: 1px solid rgba(255, 255, 255, 0.1);
-   color: #fff;
-   padding: 10px 12px;
-   border-radius: 8px;
-   font-size: 14px;
-   font-family: var(--font-mono);
-  }
+    .last-scan.dup {
+      color: var(--brand-gold);
+    }
 
-  .manual-row button {
-   padding: 10px 20px;
-   border-radius: 8px;
-   background: var(--brand-gold);
-   color: #000;
-   font-weight: 700;
-   border: none;
-   cursor: pointer;
-   font-size: 14px;
-  }
+    /* ── Manual Input ── */
+    .manual-row {
+      display: flex;
+      gap: 8px;
+      padding: 4px 16px 8px;
+      flex-shrink: 0;
+    }
 
-  /* History */
-  .mock-history {
-   padding: 0 16px 16px;
-   max-height: 200px;
-   overflow-y: auto;
-  }
+    .manual-row input {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: var(--font-mono);
+      min-height: 44px;
+      /* Touch target */
+    }
 
-  .mock-history-item {
-   display: flex;
-   justify-content: space-between;
-   align-items: center;
-   padding: 8px 0;
-   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-   font-size: 12px;
-  }
+    .manual-row button {
+      padding: 10px 20px;
+      border-radius: 8px;
+      background: var(--brand-gold);
+      color: #000;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      min-height: 44px;
+      min-width: 56px;
+      /* Touch target */
+    }
 
-  .mock-history-item .code {
-   font-family: var(--font-mono);
-   color: rgba(255, 255, 255, 0.6);
-  }
+    .manual-row button:active {
+      transform: scale(0.95);
+    }
 
-  .mock-history-item .result {
-   font-weight: 700;
-  }
+    /* ── History (collapsible) ── */
+    .history-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 6px 16px;
+      flex-shrink: 0;
+      cursor: pointer;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.3);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      border: none;
+      background: none;
+      width: 100%;
+      min-height: 32px;
+    }
 
-  .mock-history-item .result.ok {
-   color: var(--green-500);
-  }
+    .history-toggle .arrow {
+      transition: transform 0.2s;
+    }
 
-  .mock-history-item .result.no {
-   color: var(--red-500);
-  }
+    .history-toggle.open .arrow {
+      transform: rotate(180deg);
+    }
 
-  .mock-history-item .result.dup {
-   color: var(--brand-gold);
-  }
+    .mock-history {
+      padding: 0 16px;
+      max-height: 0;
+      overflow-y: auto;
+      transition: max-height 0.3s ease;
+      flex-shrink: 0;
+    }
 
-  .mock-history-item .time {
-   color: rgba(255, 255, 255, 0.3);
-  }
- </style>
+    .mock-history.open {
+      max-height: 150px;
+      padding-bottom: 12px;
+    }
+
+    .mock-history-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 11px;
+    }
+
+    .mock-history-item .code {
+      font-family: var(--font-mono);
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .mock-history-item .result {
+      font-weight: 700;
+    }
+
+    .mock-history-item .result.ok {
+      color: var(--green-500);
+    }
+
+    .mock-history-item .result.fail {
+      color: var(--red-500);
+    }
+
+    .mock-history-item .result.dup {
+      color: var(--brand-gold);
+    }
+
+    .mock-history-item .time {
+      color: rgba(255, 255, 255, 0.25);
+    }
+
+    /* ── Overlay (same as scanner.css but ensure coverage) ── */
+    .scan-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.3s;
+    }
+
+    .scan-overlay.hidden {
+      display: none;
+    }
+
+    .scan-overlay.success {
+      background: rgba(34, 197, 94, 0.95);
+    }
+
+    .scan-overlay.error {
+      background: rgba(239, 68, 68, 0.95);
+    }
+
+    .scan-overlay.warning {
+      background: rgba(234, 179, 8, 0.95);
+    }
+
+    .overlay-content {
+      text-align: center;
+      color: #fff;
+      animation: pulse-in 0.25s ease-out;
+    }
+
+    .overlay-icon {
+      font-size: 64px;
+      margin-bottom: 12px;
+    }
+
+    .overlay-content h2 {
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .overlay-content p {
+      font-size: 16px;
+      opacity: 0.9;
+    }
+
+    @keyframes pulse-in {
+      0% {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+
+      50% {
+        transform: scale(1.05);
+      }
+
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    /* ── Safe area (iPhone notch) ── */
+    @supports (padding: env(safe-area-inset-top)) {
+      .mock-header {
+        padding-top: calc(10px + env(safe-area-inset-top));
+      }
+
+      .mock-history {
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+    }
+  </style>
 </head>
 
 <body>
 
- <!-- Header -->
- <div class="mock-header">
-  <h1>SCANNER</h1>
-  <span class="mock-badge">CUENTA</span>
- </div>
-
- <!-- Big Counter -->
- <div class="big-counter">
-  <div id="bigCount" class="big-counter-number">0</div>
-  <div class="big-counter-label">Personas verificadas</div>
- </div>
-
- <!-- Stats -->
- <div class="mock-stats">
-  <div class="mock-stat"><span class="mock-stat-lbl">Válidos</span><span id="statValid" class="mock-stat-val">0</span>
+  <!-- Header -->
+  <div class="mock-header">
+    <h1>SCANNER</h1>
+    <span class="mock-badge">CUENTA</span>
   </div>
-  <div class="mock-stat duplicate"><span class="mock-stat-lbl">Repetidos</span><span id="statDup"
-    class="mock-stat-val">0</span></div>
-  <div class="mock-stat rejected"><span class="mock-stat-lbl">Inválidos</span><span id="statInvalid"
-    class="mock-stat-val">0</span></div>
- </div>
 
- <!-- Camera -->
- <div class="scanner-wrap">
-  <div id="reader"></div>
- </div>
-
- <!-- Last scan status -->
- <div id="lastScan" class="last-scan">📷 Escaneá un QR</div>
-
- <!-- Manual input -->
- <div class="manual-row">
-  <input type="text" id="manualCode" placeholder="Código manual...">
-  <button id="btnManual">OK</button>
- </div>
-
- <!-- History -->
- <div class="mock-history" id="historyList"></div>
-
- <!-- Overlay -->
- <div id="scanOverlay" class="scan-overlay hidden">
-  <div class="overlay-content">
-   <div id="overlayIcon" class="overlay-icon">✓</div>
-   <h2 id="overlayTitle">ACCESO OK</h2>
-   <p id="overlayMsg">Bienvenido</p>
+  <!-- Big Counter -->
+  <div class="big-counter">
+    <div id="bigCount" class="big-counter-number">0</div>
+    <div class="big-counter-label">Personas verificadas</div>
   </div>
- </div>
 
- <!-- Audio -->
- <audio id="soundOk" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"></audio>
- <audio id="soundNo" src="https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3"></audio>
+  <!-- Stats -->
+  <div class="mock-stats">
+    <div class="mock-stat"><span class="mock-stat-lbl">OK</span><span id="statValid" class="mock-stat-val">0</span>
+    </div>
+    <div class="mock-stat duplicate"><span class="mock-stat-lbl">REP</span><span id="statDup"
+        class="mock-stat-val">0</span></div>
+    <div class="mock-stat rejected"><span class="mock-stat-lbl">INV</span><span id="statInvalid"
+        class="mock-stat-val">0</span></div>
+  </div>
 
- <!-- Scripts (NO auth) -->
- <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
- <script defer src="../../assets/js/core/config.js"></script>
- <script defer src="../../assets/js/core/supabase-client.js"></script>
- <script defer src="../../assets/js/modules/operativo/scanner-mock.js"></script>
+  <!-- Camera -->
+  <div class="scanner-wrap">
+    <div id="reader"></div>
+  </div>
+
+  <!-- Last scan status -->
+  <div id="lastScan" class="last-scan">📷 Escaneá un QR</div>
+
+  <!-- Manual input -->
+  <div class="manual-row">
+    <input type="text" id="manualCode" placeholder="Código manual..." autocomplete="off" inputmode="text">
+    <button id="btnManual">OK</button>
+  </div>
+
+  <!-- History (collapsed by default) -->
+  <button class="history-toggle" id="historyToggle">
+    Historial <span class="arrow">▼</span>
+  </button>
+  <div class="mock-history" id="historyList"></div>
+
+  <!-- Overlay -->
+  <div id="scanOverlay" class="scan-overlay hidden">
+    <div class="overlay-content">
+      <div id="overlayIcon" class="overlay-icon">✓</div>
+      <h2 id="overlayTitle">ACCESO OK</h2>
+      <p id="overlayMsg">Bienvenido</p>
+    </div>
+  </div>
+
+  <!-- Audio (preload for instant playback) -->
+  <audio id="soundOk" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"></audio>
+  <audio id="soundNo" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3"></audio>
+
+  <!-- Scripts (NO auth) -->
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script defer src="../../assets/js/core/config.js"></script>
+  <script defer src="../../assets/js/core/supabase-client.js"></script>
+  <script defer src="../../assets/js/modules/operativo/scanner-mock.js"></script>
 </body>
 
 </html>
