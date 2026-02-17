@@ -69,60 +69,75 @@
     // ══════════════════════════════════════════
     await preloadCodes();
 
-    async function preloadCodes() {
+    let lastPreloadAt = 0;
+    const PRELOAD_THROTTLE = 30_000; // min 30s between preloads
+
+    async function preloadCodes(retries = 3) {
+      // Throttle: don't re-preload too frequently
+      if (Date.now() - lastPreloadAt < PRELOAD_THROTTLE && codesMap.size > 0) return;
+
       if (preloadStatus) preloadStatus.textContent = 'Cargando códigos...';
       if (connStatus) connStatus.className = 'conn load';
 
-      try {
-        // Load all qr_codes with batch info
-        let allCodes = [];
-        let from = 0;
-        const pageSize = 1000;
-        let hasMore = true;
+      for (let attempt = 1; attempt <= retries; attempt++) {
+        try {
+          let allCodes = [];
+          let from = 0;
+          const pageSize = 1000;
+          let hasMore = true;
 
-        while (hasMore) {
-          const { data, error } = await sb
-            .from('qr_codes')
-            .select('id, code, status, batch_id, qr_batches(name, financial_type)')
-            .range(from, from + pageSize - 1);
+          while (hasMore) {
+            const { data, error } = await sb
+              .from('qr_codes')
+              .select('id, code, status, batch_id, qr_batches(name, financial_type)')
+              .range(from, from + pageSize - 1);
 
-          if (error) throw error;
-          if (!data || data.length === 0) { hasMore = false; break; }
+            if (error) throw error;
+            if (!data || data.length === 0) { hasMore = false; break; }
 
-          allCodes = allCodes.concat(data);
-          from += pageSize;
-          if (data.length < pageSize) hasMore = false;
-        }
+            allCodes = allCodes.concat(data);
+            from += pageSize;
+            if (data.length < pageSize) hasMore = false;
+          }
 
-        // Index by code
-        allCodes.forEach(qr => {
-          codesMap.set(qr.code, {
-            id: qr.id,
-            status: qr.status,
-            batch_id: qr.batch_id,
-            batch_name: qr.qr_batches?.name || 'Lote',
-            financial_type: qr.qr_batches?.financial_type || ''
+          // Index by code
+          codesMap.clear();
+          allCodes.forEach(qr => {
+            codesMap.set(qr.code, {
+              id: qr.id,
+              status: qr.status,
+              batch_id: qr.batch_id,
+              batch_name: qr.qr_batches?.name || 'Lote',
+              financial_type: qr.qr_batches?.financial_type || ''
+            });
+
+            // Also index by UUID portion if code contains a URL
+            try {
+              const url = new URL(qr.code);
+              const parts = url.pathname.split('/').filter(Boolean);
+              if (parts.length > 0) {
+                const uuid = parts[parts.length - 1];
+                if (uuid !== qr.code) codesMap.set(uuid, codesMap.get(qr.code));
+              }
+            } catch { /* not a URL */ }
           });
 
-          // Also index by UUID portion if code contains a URL
-          try {
-            const url = new URL(qr.code);
-            const parts = url.pathname.split('/').filter(Boolean);
-            if (parts.length > 0) {
-              const uuid = parts[parts.length - 1];
-              if (uuid !== qr.code) codesMap.set(uuid, codesMap.get(qr.code));
-            }
-          } catch { /* not a URL */ }
-        });
+          lastPreloadAt = Date.now();
+          if (preloadStatus) preloadStatus.textContent = `${codesMap.size} códigos`;
+          if (connStatus) connStatus.className = 'conn on';
+          console.log(`✅ Preloaded ${allCodes.length} QR codes into memory`);
+          return; // success — exit retry loop
 
-        if (preloadStatus) preloadStatus.textContent = `${codesMap.size} códigos cargados`;
-        if (connStatus) connStatus.className = 'conn on';
-        console.log(`✅ Preloaded ${allCodes.length} QR codes into memory`);
-
-      } catch (err) {
-        console.error('Preload failed:', err);
-        if (preloadStatus) preloadStatus.textContent = 'Sin conexión — modo manual';
-        if (connStatus) connStatus.className = 'conn off';
+        } catch (err) {
+          console.warn(`Preload attempt ${attempt}/${retries} failed:`, err);
+          if (attempt < retries) {
+            if (preloadStatus) preloadStatus.textContent = `Reintento ${attempt + 1}/${retries}...`;
+            await new Promise(r => setTimeout(r, 1000 * Math.pow(2, attempt - 1)));
+          } else {
+            if (preloadStatus) preloadStatus.textContent = codesMap.size > 0 ? `${codesMap.size} (offline)` : 'Sin conexión';
+            if (connStatus) connStatus.className = 'conn off';
+          }
+        }
       }
     }
 
@@ -491,6 +506,42 @@
         }
       });
     }
+
+    // ══════════════════════════════════════════
+    // 14. EXPORT CSV
+    // ══════════════════════════════════════════
+    const btnExport = document.getElementById('btnExport');
+    if (btnExport) {
+      btnExport.addEventListener('click', () => {
+        const rows = getHistoryData();
+        if (rows.length === 0) { alert('No hay datos para exportar.'); return; }
+
+        const header = 'Hora,Código,Resultado\n';
+        const csv = header + rows.map(r =>
+          `"${r.time}","${r.code}","${r.title}"`
+        ).join('\n');
+
+        const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `scanner_${new Date().toISOString().slice(0,10)}_${Date.now()}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+    }
+
+    // ══════════════════════════════════════════
+    // 15. NETWORK RESILIENCE
+    // ══════════════════════════════════════════
+    window.addEventListener('online', () => {
+      if (connStatus) connStatus.className = 'conn on';
+      preloadCodes(); // try to refresh codes when connectivity returns
+    });
+    window.addEventListener('offline', () => {
+      if (connStatus) connStatus.className = 'conn off';
+      if (preloadStatus) preloadStatus.textContent = codesMap.size > 0 ? `${codesMap.size} (offline)` : 'Sin conexión';
+    });
 
   });
 })();

@@ -482,6 +482,45 @@
         padding-bottom: env(safe-area-inset-bottom);
       }
     }
+
+    /* ── Landscape optimization ── */
+    @media (orientation: landscape) and (max-height: 500px) {
+      .counter {
+        padding: 2px 16px;
+      }
+
+      .counter-num {
+        font-size: clamp(32px, 10vw, 48px);
+      }
+
+      .stats {
+        padding: 0 16px 2px;
+      }
+
+      .cam-wrap {
+        padding: 2px 12px;
+      }
+    }
+
+    /* ── Export button ── */
+    .btn-export {
+      background: none;
+      border: 1px solid var(--card-border);
+      color: var(--text-dim);
+      border-radius: 5px;
+      padding: 4px 8px;
+      font-size: 10px;
+      cursor: pointer;
+      min-height: 28px;
+    }
+
+    .hist-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
   </style>
 </head>
 
@@ -529,7 +568,10 @@
   </div>
 
   <!-- History -->
-  <button class="hist-toggle" id="historyToggle">Historial <span class="arr">▼</span></button>
+  <div class="hist-bar">
+    <button class="hist-toggle" id="historyToggle">Historial <span class="arr">▼</span></button>
+    <button id="btnExport" class="btn-export" title="Exportar CSV">📥 CSV</button>
+  </div>
   <div class="hist-list" id="historyList"></div>
 
   <!-- Overlay -->
