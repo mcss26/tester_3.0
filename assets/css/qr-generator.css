@@ -177,8 +177,14 @@
   }
 }
 
-/* FASE 7 — Print Styles */
+/* FASE 7 — Print Styles (Thermal / Roll Printer) */
+@page {
+  margin: 0;
+  padding: 0;
+}
+
 @media print {
+  /* Hide everything except print area */
   body * {
     visibility: hidden !important;
   }
@@ -191,14 +197,28 @@
     top: 0;
     left: 0;
     width: 100%;
+    margin: 0;
+    padding: 0;
   }
+
+  /* Each ticket = one cut on the roll */
   .ticket {
-    page-break-inside: avoid;
-    display: inline-block;
-    width: var(--paper-mm);
+    display: block;
+    width: var(--paper-mm, 58mm);
+    margin: 0 auto;
+    padding: var(--pad-mm, 3mm) 0;
     text-align: center;
-    padding: var(--pad-mm);
+    page-break-inside: avoid;
+    page-break-after: always;
+    border-bottom: 1px dashed #999;
   }
+
+  /* Last ticket doesn't need cut after */
+  .ticket:last-child {
+    page-break-after: auto;
+    border-bottom: none;
+  }
+
   .ticket-inner {
     display: flex;
     flex-direction: column;
@@ -206,14 +226,14 @@
     gap: 2mm;
   }
   .t-title {
-    font-size: var(--font-mm);
+    font-size: var(--font-mm, 3mm);
     font-weight: bold;
     letter-spacing: 0.15em;
     text-transform: uppercase;
   }
   .t-qr {
-    width: var(--qr-mm);
-    height: var(--qr-mm);
+    width: var(--qr-mm, 30mm);
+    height: var(--qr-mm, 30mm);
   }
   .t-qr img {
     width: 100% !important;
@@ -221,7 +241,7 @@
   }
   .t-code {
     font-size: 2.5mm;
-    font-family: var(--font-mono);
+    font-family: var(--font-mono, monospace);
     color: #333;
   }
 }
