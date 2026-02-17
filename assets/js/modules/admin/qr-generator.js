@@ -1,11 +1,11 @@
 (async function() {
   'use strict';
-    // 1. Auth
-    const session = await window.Auth.guardOrRedirect(['admin', 'contable']);
-    if (!session) return;
+    // 1. Auth — DISABLED FOR TESTING
+    // const session = await window.Auth.guardOrRedirect(['admin', 'contable']);
+    // if (!session) return;
     if (!window.Utils.assertSbOrShowBlockingError()) return;
     const sb = window.sb;
-    const user = session.user;
+    const user = { id: 'mock-user' }; // Mock user for testing
 
     // Elements
     const el = (id) => document.getElementById(id);

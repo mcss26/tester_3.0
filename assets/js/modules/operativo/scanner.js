@@ -4,24 +4,21 @@
  */
 (async function() {
   'use strict';
-    // 1. Auth Guard
-    const session = await window.Auth.guardOrRedirect(['admin', 'operativo', 'staff_guardia']);
-    if (!session) return;
+    // 1. Auth Guard — DISABLED FOR TESTING
+    // const session = await window.Auth.guardOrRedirect(['admin', 'operativo', 'staff_guardia']);
+    // if (!session) return;
     
     if (!window.Utils.assertSbOrShowBlockingError()) return;
     const sb = window.sb;
-    const user = session.user;
+    const user = { id: 'mock-user' }; // Mock user for testing
     const MCO_BATCH_ID = '141e44d9-42bc-4c2b-a3bb-4d9721e03802';
 
-    // Load Profile Info
-    const { data: profile } = await sb.from('profiles').select('*').eq('id', user.id).single();
-    if (profile) {
-        document.getElementById('userName').textContent = profile.full_name;
-        document.getElementById('userRole').textContent = profile.role;
-        document.getElementById('userAvatar').textContent = (profile.full_name||'U')[0];
-    }
+    // Load Profile Info — skip in mock mode
+    document.getElementById('userName').textContent = 'Operador';
+    document.getElementById('userRole').textContent = 'TEST';
+    document.getElementById('userAvatar').textContent = 'O';
 
-    document.getElementById('btnLogout').addEventListener('click', () => window.Auth.logout());
+    document.getElementById('btnLogout').addEventListener('click', () => location.reload());
 
     // 2. Elements
     const statusCard = document.getElementById('statusCard');
@@ -163,10 +160,8 @@
 
     // 8. Validation Logic
     async function validateCode(code) {
-        if (!currentWorkDay) {
-            window.Toast?.error('No hay jornada abierta.');
-            return;
-        }
+        // WorkDay not required for mock/testing mode
+        // if (!currentWorkDay) { ... }
 
         isProcessing = true;
         showStatus('idle', 'Validando...', 'Consultando base de datos');
