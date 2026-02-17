@@ -1,11 +1,10 @@
 (async function() {
   'use strict';
-    // 1. Auth — DISABLED FOR TESTING
-    // const session = await window.Auth.guardOrRedirect(['admin', 'contable']);
-    // if (!session) return;
+    // Auth: try real session, fallback gracefully
     if (!window.Utils.assertSbOrShowBlockingError()) return;
     const sb = window.sb;
-    const user = { id: '00000000-0000-4000-8000-000000000000' }; // Mock user (valid UUID for DB)
+    const { data: { session } } = await sb.auth.getSession();
+    const user = session?.user || null;
 
     // Elements
     const el = (id) => document.getElementById(id);
@@ -224,15 +223,17 @@
 
     async function saveBatch(payloads) {
         // 1. Insert Batch
+        const batchData = {
+            name: inputs.batchName.value,
+            financial_type: inputs.financialType.value,
+            market_source: inputs.marketSource.value || null,
+            unit_price: inputs.financialType.value === 'VENTA' ? parseFloat(inputs.unitPrice.value || 0) : 0
+        };
+        if (user?.id) batchData.created_by = user.id;
+
         const { data: batch, error } = await sb
             .from('qr_batches')
-            .insert({
-                name: inputs.batchName.value,
-                financial_type: inputs.financialType.value,
-                market_source: inputs.marketSource.value || null,
-                unit_price: inputs.financialType.value === 'VENTA' ? parseFloat(inputs.unitPrice.value || 0) : 0,
-                created_by: user.id
-            })
+            .insert(batchData)
             .select()
             .single();
 

@@ -141,7 +141,11 @@
     }
 
     document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible') requestWakeLock();
+      if (document.visibilityState === 'visible') {
+        requestWakeLock();
+        // Auto-refresh preload when returning to app (catches new codes)
+        preloadCodes();
+      }
     });
     await requestWakeLock();
 
@@ -167,13 +171,13 @@
     // ══════════════════════════════════════════
     document.getElementById('btnManual').addEventListener('click', () => {
       const val = manualInput.value.trim();
-      if (val) { processCode(val); manualInput.value = ''; }
+      if (val) { processCode(val); manualInput.value = ''; manualInput.blur(); }
     });
     manualInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
         e.preventDefault();
         const val = manualInput.value.trim();
-        if (val) { processCode(val); manualInput.value = ''; }
+        if (val) { processCode(val); manualInput.value = ''; manualInput.blur(); }
       }
     });
 
@@ -264,22 +268,31 @@
     }
 
     // ══════════════════════════════════════════
-    // 10. PROCESS SCANNED CODE (INSTANT via preloaded map)
+    // 10. PROCESS SCANNED CODE
+    // Instant via preloaded map → fallback DB query
     // ══════════════════════════════════════════
-    function processCode(rawCode) {
+    const recentScans = new Map(); // code → timestamp (debounce)
+
+    async function processCode(rawCode) {
       isProcessing = true;
 
-      // Normalize: trim whitespace
+      // Normalize
       let code = rawCode.trim();
-
-      // Extract UUID from URL if needed
       try {
         const url = new URL(code);
         const parts = url.pathname.split('/').filter(Boolean);
         if (parts.length > 0) code = parts[parts.length - 1];
       } catch { /* not a URL */ }
 
-      // ── Duplicate check ──
+      // ── Rapid-scan debounce (ignore same code within 2s) ──
+      const now = Date.now();
+      if (recentScans.has(code) && (now - recentScans.get(code)) < 2000) {
+        isProcessing = false;
+        return; // silently ignore rapid re-scan
+      }
+      recentScans.set(code, now);
+
+      // ── Duplicate check (already counted) ──
       if (scannedSet.has(code)) {
         stats.duplicate++;
         updateUI();
@@ -288,8 +301,35 @@
         return;
       }
 
-      // ── Validate against preloaded map (INSTANT, no network) ──
-      const qr = codesMap.get(code) || codesMap.get(rawCode);
+      // ── Try preloaded map first (instant) ──
+      let qr = codesMap.get(code) || codesMap.get(rawCode);
+
+      // ── Fallback: DB query if not in map (code may have been generated after preload) ──
+      if (!qr) {
+        try {
+          const { data, error } = await sb
+            .from('qr_codes')
+            .select('id, code, status, batch_id, qr_batches(name, financial_type)')
+            .or('code.eq.' + rawCode + ',code.eq.' + code)
+            .limit(1)
+            .maybeSingle();
+
+          if (!error && data) {
+            // Cache it for next time
+            qr = {
+              id: data.id,
+              status: data.status,
+              batch_id: data.batch_id,
+              batch_name: data.qr_batches?.name || 'Lote',
+              financial_type: data.qr_batches?.financial_type || ''
+            };
+            codesMap.set(code, qr);
+            codesMap.set(data.code, qr);
+          }
+        } catch (err) {
+          console.warn('DB fallback failed:', err);
+        }
+      }
 
       if (!qr) {
         stats.invalid++;
@@ -310,7 +350,7 @@
       const label = `${qr.batch_name}${qr.financial_type ? ' · ' + qr.financial_type : ''}${statusLabel}`;
 
       showResult('ok', '✓ VÁLIDO', label, code);
-      setTimeout(() => { isProcessing = false; }, 600); // Short cooldown for speed
+      setTimeout(() => { isProcessing = false; }, 600);
     }
 
     // ══════════════════════════════════════════
