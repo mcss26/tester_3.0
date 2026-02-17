@@ -677,6 +677,10 @@
             }
 
             // Cálculo de totales
+            // NOTA: Los retiros (cash_movements) NO se restan aquí.
+            // El operador declara el efectivo físico NETO (ya descontados retiros).
+            // La conciliación completa (incluyendo retiros) se realiza en
+            // vw_workday_cash_balance.net_cash_flow a nivel de base de datos.
             const submitted = state.terminals.filter(t =>
                 t.closing && (t.closing.status === 'submitted' || t.closing.status === 'verified')
             );
