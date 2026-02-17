@@ -27,7 +27,6 @@
     };
 
     const buttons = {
-        back: el('btnBack'),
         preview: el('btnPreview'),
         print: el('btnPrint'),
         clear: el('btnClear')
@@ -50,8 +49,6 @@
             }
         }
     });
-
-    buttons.back.addEventListener('click', () => history.back());
     buttons.clear.addEventListener('click', clearAll);
     
     buttons.preview.addEventListener('click', () => {
@@ -95,7 +92,16 @@
     // --- Logic ---
 
     function clearAll() {
-        inputs.previewArea.innerHTML = '';
+        inputs.previewArea.innerHTML = `
+            <div class="qr-gen-empty" id="previewEmpty">
+                <svg class="qr-gen-empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                </svg>
+                <span class="qr-gen-empty-text">Configurá y hacé clic en Previsualizar</span>
+            </div>`;
         inputs.printArea.innerHTML = '';
         inputs.previewMeta.textContent = 'Listo para generar';
     }
@@ -142,7 +148,7 @@
 
     function renderPreview(payloads) {
         const area = inputs.previewArea;
-        area.innerHTML = '';
+        area.innerHTML = '';  // Clears empty state too
         
         if (payloads.length > 50) {
             inputs.previewMeta.textContent = `Generando ${payloads.length} códigos (Vista previa limitada a 50)`;

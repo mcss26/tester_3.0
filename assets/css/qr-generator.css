@@ -1,0 +1,210 @@
+/* =========================================================================
+   QR Generator — Page-Specific CSS
+   Reference: Golden Standard (admin-central-stock.css)
+   ========================================================================= */
+
+/* FASE 1 — Layout */
+.qr-gen-layout {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: var(--space-lg);
+  align-items: start;
+}
+
+/* FASE 2 — Config Card (Sidebar) */
+.qr-gen-config {
+  background: var(--white-alpha-05);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.qr-gen-config .section-label {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0;
+}
+
+.qr-gen-divider {
+  border: none;
+  border-top: 1px solid var(--border-subtle);
+  margin: var(--space-xs) 0;
+}
+
+/* Print Options Row */
+.qr-gen-print-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--space-sm);
+}
+
+/* FASE 3 — Preview Panel */
+.qr-gen-preview {
+  background: var(--white-alpha-05);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+.qr-gen-preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-md);
+}
+
+.qr-gen-preview-title {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+}
+
+.qr-gen-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: var(--space-md);
+  flex: 1;
+}
+
+.qr-gen-preview-meta {
+  margin-top: var(--space-md);
+  text-align: center;
+  font-size: var(--fs-sm);
+  color: var(--text-tertiary);
+}
+
+/* FASE 4 — QR Cards (Preview) */
+.preview-card {
+  background: var(--white-alpha-08);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+  transition: var(--transition);
+}
+
+.preview-card:hover {
+  border-color: var(--border-active);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.preview-card-qr {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preview-card-qr img {
+  border-radius: 2px;
+}
+
+.preview-card-caption {
+  font-size: var(--fs-xs);
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* FASE 5 — Empty State */
+.qr-gen-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: var(--space-sm);
+  color: var(--text-tertiary);
+  padding: var(--space-xl);
+}
+
+.qr-gen-empty-icon {
+  width: 48px;
+  height: 48px;
+  opacity: 0.3;
+  stroke: currentColor;
+}
+
+.qr-gen-empty-text {
+  font-size: var(--fs-base);
+}
+
+/* FASE 6 — Responsive */
+@media (max-width: 1024px) {
+  .qr-gen-layout {
+    grid-template-columns: 1fr;
+  }
+  .qr-gen-preview {
+    min-height: 300px;
+  }
+}
+
+@media (max-width: 600px) {
+  .qr-gen-print-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* FASE 7 — Print Styles */
+@media print {
+  body * {
+    visibility: hidden !important;
+  }
+  #printArea,
+  #printArea * {
+    visibility: visible !important;
+  }
+  #printArea {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+  .ticket {
+    page-break-inside: avoid;
+    display: inline-block;
+    width: var(--paper-mm);
+    text-align: center;
+    padding: var(--pad-mm);
+  }
+  .ticket-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2mm;
+  }
+  .t-title {
+    font-size: var(--font-mm);
+    font-weight: bold;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+  .t-qr {
+    width: var(--qr-mm);
+    height: var(--qr-mm);
+  }
+  .t-qr img {
+    width: 100% !important;
+    height: 100% !important;
+  }
+  .t-code {
+    font-size: 2.5mm;
+    font-family: var(--font-mono);
+    color: #333;
+  }
+}

@@ -9,136 +9,190 @@
     <title>QR Generador — Midnight</title>
     <link rel="stylesheet" href="../../../assets/css/tokens.css">
     <link rel="stylesheet" href="../../../assets/css/components.css">
-    <!-- QR Admin specific styles (Printing, etc) -->
+    <link rel="stylesheet" href="../../../assets/css/qr-generator.css">
 
     <!-- Dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js" defer></script>
 </head>
 
-<body class="app-shell admin-shell" data-allowed-roles="admin">
+<body class="app-shell admin-shell admin-scroll" data-allowed-roles="admin,contable">
 
+    <!-- TOPBAR (Golden Standard) -->
     <header class="topbar">
-        <div class="topbar-start">
-            <button id="btnBack" type="button" class="btn-icon" aria-label="Volver a Admin">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <path d="m15 18-6-6 6-6" />
-                </svg>
-                Volver
-            </button>
-            <nav class="breadcrumb" aria-label="Navegación">
-                <span class="breadcrumb-item"><a class="breadcrumb-link" href="../admin-index.html">ADMIN</a></span>
-                <span class="breadcrumb-sep">/</span>
-                <span class="breadcrumb-item current">QR GENERADOR</span>
-            </nav>
-        </div>
-        <nav class="topbar-center"></nav>
+        <!-- Left: Breadcrumb -->
+        <nav class="breadcrumb topbar-start">
+            <span class="breadcrumb-item">
+                <a class="breadcrumb-link" href="../admin-index.html">Admin</a>
+            </span>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-item">
+                <a class="breadcrumb-link" href="./index.html">QR</a>
+            </span>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-item current">Generador</span>
+        </nav>
+
+        <!-- Center: empty -->
+        <div class="topbar-center"></div>
+
+        <!-- Right: Avatar + Dropdown -->
         <div class="topbar-end">
-            <button id="btnPreview" class="btn btn-secondary" aria-label="Previsualizar QR">Previsualizar</button>
-            <button id="btnPrint" class="btn btn-primary" aria-label="Guardar e imprimir lote">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="6 9 6 2 18 2 18 9" />
-                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
-                    <rect width="12" height="8" x="6" y="14" />
-                </svg>
-                Guardar e Imprimir
-            </button>
+            <div class="dropdown-container">
+                <button class="avatar avatar-sm" id="user-avatar" aria-label="Menú de usuario">...</button>
+                <div class="dropdown-menu dropdown-user hidden" id="user-menu">
+                    <div class="dropdown-header" id="user-name-display">Usuario</div>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" id="btn-logout" class="dropdown-item dropdown-item-danger">
+                        <svg class="dropdown-icon" viewBox="0 0 24 24">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        Cerrar Sesión
+                    </a>
+                </div>
+            </div>
         </div>
     </header>
 
-    <main class="page-shell admin-container">
-        <div class="qr-grid">
-            <!-- Config Column -->
-            <div>
-                <div class="qr-card">
-                    <h2 class="form-label">Información del Lote</h2>
+    <main class="page-shell">
+        <div class="page-card-wrap">
+            <div class="page-card">
 
-                    <div class="field">
-                        <label>Nombre del Lote</label>
-                        <input id="batchName" type="text" placeholder="Ej: VIP Viernes 26/01" class="w-full"
-                            aria-label="Nombre del lote">
+                <!-- Dashboard Header -->
+                <div class="dashboard-header align-start">
+                    <div>
+                        <h1 class="dashboard-title dashboard-title-soft">Generador QR</h1>
+                        <p class="dashboard-subtitle dashboard-subtitle-soft">
+                            Crear lotes de códigos QR para entradas y accesos
+                        </p>
                     </div>
-
-                    <div class="field">
-                        <label>Tipo Financiero</label>
-                        <select id="financialType" class="w-full" aria-label="Tipo financiero">
-                            <option value="INVITACION">Invitación (Gratis)</option>
-                            <option value="VENTA">Venta (Entrada Paga)</option>
-                            <option value="CORTESIA">Cortesía (RRPP)</option>
-                        </select>
+                    <div class="actions-bar">
+                        <button id="btnPrint" class="btn-primary" aria-label="Guardar e imprimir lote">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2">
+                                </path>
+                                <rect width="12" height="8" x="6" y="14"></rect>
+                            </svg>
+                            Guardar e Imprimir
+                        </button>
                     </div>
+                </div>
 
-                    <div class="field hidden" id="marketSourceField">
-                        <label>Origen (Market Source)</label>
-                        <select id="marketSource" class="w-full" aria-label="Origen de mercado">
-                            <option value="" disabled selected>Seleccionar Origen</option>
-                            <option value="PASSLINE">Passline</option>
-                            <option value="BOLETERIA">Boletería Física</option>
-                            <option value="RRPP">Promotores / RRPP</option>
-                        </select>
-                        <p class="hint">Usado para la conciliación de caja.</p>
-                    </div>
+                <!-- 2-Column Layout: Config + Preview -->
+                <div class="qr-gen-layout">
 
-                    <div class="field hidden" id="priceField">
-                        <label>Precio Unitario ($)</label>
-                        <input id="unitPrice" type="number" min="0" value="0" placeholder="0.00">
-                    </div>
+                    <!-- LEFT: Config Sidebar -->
+                    <aside class="qr-gen-config">
+                        <h2 class="section-label">Información del Lote</h2>
 
-                    <hr class="hr-divider">
+                        <div class="field">
+                            <label for="batchName">Nombre del Lote</label>
+                            <input id="batchName" type="text" placeholder="Ej: VIP Viernes 26/01" class="w-full"
+                                aria-label="Nombre del lote">
+                        </div>
 
-                    <h2 class="form-label">Generación</h2>
-                    <div class="field">
-                        <label>Cantidad</label>
-                        <input id="qty" type="number" min="1" max="500" value="20">
-                    </div>
+                        <div class="field">
+                            <label for="financialType">Tipo Financiero</label>
+                            <select id="financialType" class="w-full" aria-label="Tipo financiero">
+                                <option value="INVITACION">Invitación (Gratis)</option>
+                                <option value="VENTA">Venta (Entrada Paga)</option>
+                                <option value="CORTESIA">Cortesía (RRPP)</option>
+                            </select>
+                        </div>
 
-                    <div class="field">
-                        <label>URL / Prefijo (Opcional)</label>
-                        <div class="list-stack">
+                        <div class="field hidden" id="marketSourceField">
+                            <label for="marketSource">Origen (Market Source)</label>
+                            <select id="marketSource" class="w-full" aria-label="Origen de mercado">
+                                <option value="" disabled selected>Seleccionar Origen</option>
+                                <option value="PASSLINE">Passline</option>
+                                <option value="BOLETERIA">Boletería Física</option>
+                                <option value="RRPP">Promotores / RRPP</option>
+                            </select>
+                            <p class="hint">Usado para la conciliación de caja.</p>
+                        </div>
+
+                        <div class="field hidden" id="priceField">
+                            <label for="unitPrice">Precio Unitario ($)</label>
+                            <input id="unitPrice" type="number" min="0" value="0" placeholder="0.00">
+                        </div>
+
+                        <hr class="qr-gen-divider">
+
+                        <h2 class="section-label">Generación</h2>
+                        <div class="field">
+                            <label for="qty">Cantidad</label>
+                            <input id="qty" type="number" min="1" max="500" value="20">
+                        </div>
+
+                        <div class="field">
+                            <label for="baseText">URL / Prefijo (Opcional)</label>
                             <input id="baseText" type="text" placeholder="https://..."
                                 value="https://midnightclub.com.ar/checkin">
-                            <p class="hint text-xs">Se anexa el UUID único al final.</p>
+                            <p class="hint">Se anexa el UUID único al final.</p>
+                        </div>
+
+                        <hr class="qr-gen-divider">
+
+                        <h2 class="section-label">Impresión</h2>
+                        <div class="qr-gen-print-row">
+                            <div class="field">
+                                <label for="paper">Papel</label>
+                                <select id="paper">
+                                    <option value="80">80mm</option>
+                                    <option value="58">58mm</option>
+                                </select>
+                            </div>
+                            <div class="field">
+                                <label for="qrSize">QR Size</label>
+                                <select id="qrSize">
+                                    <option value="28">28mm</option>
+                                    <option value="35" selected>35mm</option>
+                                    <option value="40">40mm</option>
+                                </select>
+                            </div>
+                            <div class="field">
+                                <label for="titleText">Título</label>
+                                <input id="titleText" type="text" value="MIDNIGHT">
+                            </div>
+                        </div>
+
+                        <!-- Preview Button -->
+                        <button id="btnPreview" class="btn-secondary w-full" aria-label="Previsualizar QR">
+                            Previsualizar
+                        </button>
+                    </aside>
+
+                    <!-- RIGHT: Preview Panel -->
+                    <div class="qr-gen-preview">
+                        <div class="qr-gen-preview-header">
+                            <span class="qr-gen-preview-title">Vista Previa</span>
+                            <button id="btnClear" class="btn-ghost btn-sm" aria-label="Limpiar vista previa">
+                                Limpiar
+                            </button>
+                        </div>
+
+                        <div id="previewArea" class="qr-gen-preview-grid">
+                            <!-- Empty State -->
+                            <div class="qr-gen-empty" id="previewEmpty">
+                                <svg class="qr-gen-empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="3" width="7" height="7"></rect>
+                                    <rect x="14" y="3" width="7" height="7"></rect>
+                                    <rect x="3" y="14" width="7" height="7"></rect>
+                                    <rect x="14" y="14" width="7" height="7"></rect>
+                                </svg>
+                                <span class="qr-gen-empty-text">Configurá y hacé clic en Previsualizar</span>
+                            </div>
+                        </div>
+
+                        <div class="qr-gen-preview-meta" id="previewMeta">
+                            Listo para generar
                         </div>
                     </div>
 
-                    <hr class="hr-divider">
-                    <h2 class="form-label">Impresión</h2>
-
-                    <div class="form-row">
-                        <div class="field">
-                            <label>Papel</label>
-                            <select id="paper">
-                                <option value="80">80mm</option>
-                                <option value="58">58mm</option>
-                            </select>
-                        </div>
-                        <div class="field">
-                            <label>QR Size</label>
-                            <select id="qrSize">
-                                <option value="28">28mm</option>
-                                <option value="35" selected>35mm</option>
-                                <option value="40">40mm</option>
-                            </select>
-                        </div>
-                        <div class="field">
-                            <label>Title</label>
-                            <input id="titleText" type="text" value="MIDNIGHT">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Preview Column -->
-            <div class="qr-card h-full">
-                <div class="preview-header">
-                    <span class="preview-title">Vista Previa</span>
-                    <button id="btnClear" class="btn-ghost btn-sm muted"
-                        aria-label="Limpiar vista previa">Limpiar</button>
-                </div>
-                <div id="previewArea" class="preview-area">
-                </div>
-                <div class="muted text-center text-xs" id="previewMeta">
-                    Listo para generar
                 </div>
             </div>
         </div>
@@ -147,11 +201,14 @@
     <!-- Hidden Print Area -->
     <div id="printArea"></div>
 
+    <!-- Core Scripts -->
     <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script defer src="../../../assets/js/core/config.js"></script>
     <script defer src="../../../assets/js/core/supabase-client.js"></script>
     <script defer src="../../../assets/js/core/utils.js"></script>
     <script defer src="../../../assets/js/core/auth.js"></script>
+    <script defer src="../../../assets/js/core/toast.js"></script>
+    <script src="../../../assets/js/core/navigation.js"></script>
     <script defer src="../../../assets/js/modules/admin/qr-generator.js"></script>
 </body>
 
