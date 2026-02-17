@@ -11,14 +11,11 @@
   <title>Scanner QR — Cuenta</title>
 
   <link rel="stylesheet" href="../../assets/css/tokens.css">
-  <link rel="stylesheet" href="../../assets/css/components.css">
-  <link rel="stylesheet" href="../../assets/css/scanner.css">
 
   <!-- html5-qrcode -->
   <script src="https://unpkg.com/html5-qrcode" defer></script>
 
   <style>
-    /* ── Base ── */
     *,
     *::before,
     *::after {
@@ -27,134 +24,206 @@
       padding: 0;
     }
 
+    :root {
+      --bg: #0a0a0f;
+      --text: #f5f5f5;
+      --text-dim: rgba(255, 255, 255, 0.4);
+      --accent: #3b82f6;
+      --green: #22c55e;
+      --red: #ef4444;
+      --yellow: #eab308;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --card-border: rgba(255, 255, 255, 0.08);
+    }
+
     body {
-      background: var(--neutral-0);
+      background: var(--bg);
+      color: var(--text);
       height: 100dvh;
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      /* No scroll on main body */
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
-      /* Prevent double-tap zoom */
     }
 
-    /* ── Header ── */
-    .mock-header {
+    /* ── HEADER: compact ── */
+    .hdr {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 10px 16px;
+      padding: 8px 12px;
       flex-shrink: 0;
-      background: rgba(255, 255, 255, 0.03);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      border-bottom: 1px solid var(--card-border);
     }
 
-    .mock-header h1 {
-      font-size: 15px;
+    .hdr-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hdr h1 {
+      font-size: 14px;
       font-weight: 700;
-      color: var(--neutral-1000);
       letter-spacing: 0.05em;
     }
 
-    .mock-badge {
-      font-size: 10px;
-      padding: 4px 10px;
-      border-radius: 4px;
-      background: var(--brand-gold);
-      color: #000;
+    .badge {
+      font-size: 8px;
+      padding: 2px 6px;
+      border-radius: 3px;
+      background: var(--accent);
+      color: #fff;
       font-weight: 700;
       text-transform: uppercase;
     }
 
-    /* ── Big Counter ── */
-    .big-counter {
-      text-align: center;
-      padding: 8px 16px;
+    .hdr-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .conn {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--text-dim);
       flex-shrink: 0;
     }
 
-    .big-counter-number {
-      font-size: clamp(48px, 15vw, 80px);
+    .conn.on {
+      background: var(--green);
+      box-shadow: 0 0 5px var(--green);
+    }
+
+    .conn.off {
+      background: var(--red);
+      box-shadow: 0 0 5px var(--red);
+    }
+
+    .conn.load {
+      background: var(--yellow);
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      50% {
+        opacity: 0.3;
+      }
+    }
+
+    .preload-txt {
+      font-size: 8px;
+      color: var(--text-dim);
+      max-width: 80px;
+      text-align: right;
+      line-height: 1.1;
+    }
+
+    .btn-sm {
+      background: none;
+      border: 1px solid var(--card-border);
+      color: var(--text-dim);
+      border-radius: 5px;
+      padding: 4px 8px;
+      font-size: 13px;
+      cursor: pointer;
+      min-height: 32px;
+      min-width: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-sm:active {
+      opacity: 0.6;
+    }
+
+    /* ── COUNTER ── */
+    .counter {
+      text-align: center;
+      padding: 6px 16px;
+      flex-shrink: 0;
+    }
+
+    .counter-num {
+      font-size: clamp(44px, 14vw, 72px);
       font-weight: 800;
-      font-family: var(--font-mono);
-      color: var(--neutral-1000);
+      font-variant-numeric: tabular-nums;
       line-height: 1;
-      text-shadow: 0 0 40px rgba(255, 255, 255, 0.15);
+      text-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
       transition: transform 0.15s ease;
     }
 
-    .big-counter-number.bump {
+    .counter-num.bump {
       transform: scale(1.08);
     }
 
-    .big-counter-label {
-      font-size: 10px;
+    .counter-lbl {
+      font-size: 9px;
       text-transform: uppercase;
       letter-spacing: 0.15em;
-      color: rgba(255, 255, 255, 0.4);
-      margin-top: 2px;
+      color: var(--text-dim);
     }
 
-    /* ── Stats ── */
-    .mock-stats {
+    /* ── STATS ── */
+    .stats {
       display: flex;
       gap: 6px;
       justify-content: center;
-      padding: 0 16px 8px;
+      padding: 0 16px 6px;
       flex-shrink: 0;
     }
 
-    .mock-stat {
+    .st {
       display: flex;
       align-items: center;
-      gap: 5px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 5px 10px;
-      border-radius: 6px;
-      font-size: 11px;
+      gap: 4px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 4px 10px;
+      border-radius: 5px;
     }
 
-    .mock-stat-val {
-      font-family: var(--font-mono);
-      font-weight: 700;
-      color: var(--neutral-1000);
+    .st b {
       font-size: 13px;
+      font-variant-numeric: tabular-nums;
     }
 
-    .mock-stat-lbl {
-      color: rgba(255, 255, 255, 0.4);
+    .st small {
+      font-size: 8px;
+      color: var(--text-dim);
       font-weight: 600;
       text-transform: uppercase;
-      font-size: 9px;
     }
 
-    .mock-stat.rejected {
-      border-color: rgba(239, 68, 68, 0.3);
-    }
-
-    .mock-stat.rejected .mock-stat-val {
-      color: var(--red-500);
-    }
-
-    .mock-stat.duplicate {
+    .st.dup {
       border-color: rgba(234, 179, 8, 0.3);
     }
 
-    .mock-stat.duplicate .mock-stat-val {
-      color: var(--brand-gold);
+    .st.dup b {
+      color: var(--yellow);
     }
 
-    /* ── Camera (flex-fills remaining space) ── */
-    .scanner-wrap {
+    .st.inv {
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+
+    .st.inv b {
+      color: var(--red);
+    }
+
+    /* ── CAMERA ── */
+    .cam-wrap {
       flex: 1;
       min-height: 0;
-      /* critical for flex shrink */
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 0 16px;
+      padding: 4px 12px;
       position: relative;
       overflow: hidden;
     }
@@ -162,210 +231,239 @@
     #reader {
       width: 100%;
       max-width: 400px;
-      border-radius: 12px;
+      border-radius: 10px;
       overflow: hidden;
     }
 
     #reader video {
-      border-radius: 12px;
+      border-radius: 10px;
     }
 
-    /* ── Last Scan ── */
-    .last-scan {
-      padding: 8px 16px;
+    /* html5-qrcode inserts extra elements - tame them */
+    #reader img[alt="Info icon"] {
+      display: none !important;
+    }
+
+    #reader>div:last-child {
+      display: none !important;
+    }
+
+    /* hides "Powered by" text */
+
+    /* ── LAST SCAN ── */
+    .last {
+      padding: 6px 12px;
       text-align: center;
       flex-shrink: 0;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
-      color: rgba(255, 255, 255, 0.5);
-      min-height: 40px;
+      color: var(--text-dim);
+      min-height: 32px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    .last-scan.ok {
-      color: var(--green-500);
+    .last.ok {
+      color: var(--green);
     }
 
-    .last-scan.fail {
-      color: var(--red-500);
+    .last.fail {
+      color: var(--red);
     }
 
-    .last-scan.dup {
-      color: var(--brand-gold);
+    .last.dup {
+      color: var(--yellow);
     }
 
-    /* ── Manual Input ── */
-    .manual-row {
+    /* ── BOTTOM BAR: input + torch ── */
+    .bottom-bar {
       display: flex;
-      gap: 8px;
-      padding: 4px 16px 8px;
+      gap: 6px;
+      padding: 6px 12px 8px;
       flex-shrink: 0;
+      align-items: center;
     }
 
-    .manual-row input {
+    .bottom-bar input {
       flex: 1;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
       color: #fff;
       padding: 10px 12px;
       border-radius: 8px;
       font-size: 14px;
-      font-family: var(--font-mono);
       min-height: 44px;
-      /* Touch target */
     }
 
-    .manual-row button {
-      padding: 10px 20px;
+    .bottom-bar .btn-ok {
+      padding: 10px 16px;
       border-radius: 8px;
-      background: var(--brand-gold);
-      color: #000;
+      background: var(--accent);
+      color: #fff;
       font-weight: 700;
       border: none;
       cursor: pointer;
       font-size: 14px;
       min-height: 44px;
-      min-width: 56px;
-      /* Touch target */
+      min-width: 48px;
     }
 
-    .manual-row button:active {
+    .bottom-bar .btn-ok:active {
       transform: scale(0.95);
     }
 
-    /* ── History (collapsible) ── */
-    .history-toggle {
+    .btn-torch {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-dim);
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      min-height: 44px;
+      min-width: 44px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      padding: 6px 16px;
+    }
+
+    .btn-torch.active {
+      background: rgba(234, 179, 8, 0.15);
+      border-color: var(--yellow);
+      color: var(--yellow);
+    }
+
+    /* ── HISTORY ── */
+    .hist-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 4px;
       flex-shrink: 0;
       cursor: pointer;
-      font-size: 11px;
-      color: rgba(255, 255, 255, 0.3);
+      font-size: 10px;
+      color: var(--text-dim);
       text-transform: uppercase;
       letter-spacing: 0.1em;
       border: none;
       background: none;
       width: 100%;
-      min-height: 32px;
+      min-height: 28px;
     }
 
-    .history-toggle .arrow {
+    .hist-toggle .arr {
       transition: transform 0.2s;
+      display: inline-block;
     }
 
-    .history-toggle.open .arrow {
+    .hist-toggle.open .arr {
       transform: rotate(180deg);
     }
 
-    .mock-history {
-      padding: 0 16px;
+    .hist-list {
+      padding: 0 12px;
       max-height: 0;
       overflow-y: auto;
       transition: max-height 0.3s ease;
       flex-shrink: 0;
     }
 
-    .mock-history.open {
-      max-height: 150px;
-      padding-bottom: 12px;
+    .hist-list.open {
+      max-height: 140px;
+      padding-bottom: 8px;
     }
 
-    .mock-history-item {
+    .hist-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 6px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      font-size: 11px;
+      padding: 5px 0;
+      border-bottom: 1px solid var(--card-border);
+      font-size: 10px;
     }
 
-    .mock-history-item .code {
-      font-family: var(--font-mono);
-      color: rgba(255, 255, 255, 0.5);
+    .hist-item .code {
+      color: var(--text-dim);
+      font-variant-numeric: tabular-nums;
     }
 
-    .mock-history-item .result {
+    .hist-item .result {
       font-weight: 700;
     }
 
-    .mock-history-item .result.ok {
-      color: var(--green-500);
+    .hist-item .result.ok {
+      color: var(--green);
     }
 
-    .mock-history-item .result.fail {
-      color: var(--red-500);
+    .hist-item .result.fail {
+      color: var(--red);
     }
 
-    .mock-history-item .result.dup {
-      color: var(--brand-gold);
+    .hist-item .result.dup {
+      color: var(--yellow);
     }
 
-    .mock-history-item .time {
-      color: rgba(255, 255, 255, 0.25);
+    .hist-item .time {
+      color: rgba(255, 255, 255, 0.2);
     }
 
-    /* ── Overlay (same as scanner.css but ensure coverage) ── */
-    .scan-overlay {
+    /* ── OVERLAY ── */
+    .ov {
       position: fixed;
       inset: 0;
       z-index: 1000;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: opacity 0.3s;
     }
 
-    .scan-overlay.hidden {
+    .ov.hidden {
       display: none;
     }
 
-    .scan-overlay.success {
+    .ov.success {
       background: rgba(34, 197, 94, 0.95);
     }
 
-    .scan-overlay.error {
+    .ov.error {
       background: rgba(239, 68, 68, 0.95);
     }
 
-    .scan-overlay.warning {
+    .ov.warning {
       background: rgba(234, 179, 8, 0.95);
     }
 
-    .overlay-content {
+    .ov-c {
       text-align: center;
       color: #fff;
-      animation: pulse-in 0.25s ease-out;
+      animation: pop 0.2s ease-out;
     }
 
-    .overlay-icon {
-      font-size: 64px;
-      margin-bottom: 12px;
+    .ov-c .icon {
+      font-size: 52px;
+      margin-bottom: 6px;
     }
 
-    .overlay-content h2 {
-      font-size: 28px;
+    .ov-c h2 {
+      font-size: 24px;
       font-weight: 800;
-      margin-bottom: 4px;
     }
 
-    .overlay-content p {
-      font-size: 16px;
+    .ov-c p {
+      font-size: 14px;
       opacity: 0.9;
     }
 
-    @keyframes pulse-in {
+    @keyframes pop {
       0% {
-        transform: scale(0.8);
+        transform: scale(0.85);
         opacity: 0;
       }
 
-      50% {
-        transform: scale(1.05);
+      60% {
+        transform: scale(1.03);
       }
 
       100% {
@@ -374,13 +472,13 @@
       }
     }
 
-    /* ── Safe area (iPhone notch) ── */
+    /* ── Safe area ── */
     @supports (padding: env(safe-area-inset-top)) {
-      .mock-header {
-        padding-top: calc(10px + env(safe-area-inset-top));
+      .hdr {
+        padding-top: calc(8px + env(safe-area-inset-top));
       }
 
-      .mock-history {
+      .hist-list {
         padding-bottom: env(safe-area-inset-bottom);
       }
     }
@@ -390,61 +488,64 @@
 <body>
 
   <!-- Header -->
-  <div class="mock-header">
-    <h1>SCANNER</h1>
-    <span class="mock-badge">CUENTA</span>
+  <div class="hdr">
+    <div class="hdr-left">
+      <h1>SCANNER</h1>
+      <span class="badge">CUENTA</span>
+    </div>
+    <div class="hdr-right">
+      <span id="preloadStatus" class="preload-txt"></span>
+      <div id="connStatus" class="conn"></div>
+      <button id="btnReset" class="btn-sm" title="Reiniciar">↺</button>
+    </div>
   </div>
 
-  <!-- Big Counter -->
-  <div class="big-counter">
-    <div id="bigCount" class="big-counter-number">0</div>
-    <div class="big-counter-label">Personas verificadas</div>
+  <!-- Counter -->
+  <div class="counter">
+    <div id="bigCount" class="counter-num">0</div>
+    <div class="counter-lbl">Personas verificadas</div>
   </div>
 
   <!-- Stats -->
-  <div class="mock-stats">
-    <div class="mock-stat"><span class="mock-stat-lbl">OK</span><span id="statValid" class="mock-stat-val">0</span>
-    </div>
-    <div class="mock-stat duplicate"><span class="mock-stat-lbl">REP</span><span id="statDup"
-        class="mock-stat-val">0</span></div>
-    <div class="mock-stat rejected"><span class="mock-stat-lbl">INV</span><span id="statInvalid"
-        class="mock-stat-val">0</span></div>
+  <div class="stats">
+    <div class="st"><small>OK</small><b id="statValid">0</b></div>
+    <div class="st dup"><small>REP</small><b id="statDup">0</b></div>
+    <div class="st inv"><small>INV</small><b id="statInvalid">0</b></div>
   </div>
 
   <!-- Camera -->
-  <div class="scanner-wrap">
+  <div class="cam-wrap">
     <div id="reader"></div>
   </div>
 
-  <!-- Last scan status -->
-  <div id="lastScan" class="last-scan">📷 Escaneá un QR</div>
+  <!-- Last scan -->
+  <div id="lastScan" class="last">📷 Escaneá un QR</div>
 
-  <!-- Manual input -->
-  <div class="manual-row">
+  <!-- Bottom bar: input + torch -->
+  <div class="bottom-bar">
     <input type="text" id="manualCode" placeholder="Código manual..." autocomplete="off" inputmode="text">
-    <button id="btnManual">OK</button>
+    <button id="btnManual" class="btn-ok">OK</button>
+    <button id="btnTorch" class="btn-torch" title="Linterna">🔦</button>
   </div>
 
-  <!-- History (collapsed by default) -->
-  <button class="history-toggle" id="historyToggle">
-    Historial <span class="arrow">▼</span>
-  </button>
-  <div class="mock-history" id="historyList"></div>
+  <!-- History -->
+  <button class="hist-toggle" id="historyToggle">Historial <span class="arr">▼</span></button>
+  <div class="hist-list" id="historyList"></div>
 
   <!-- Overlay -->
-  <div id="scanOverlay" class="scan-overlay hidden">
-    <div class="overlay-content">
-      <div id="overlayIcon" class="overlay-icon">✓</div>
-      <h2 id="overlayTitle">ACCESO OK</h2>
-      <p id="overlayMsg">Bienvenido</p>
+  <div id="scanOverlay" class="ov hidden">
+    <div class="ov-c">
+      <div id="overlayIcon" class="icon">✓</div>
+      <h2 id="overlayTitle">OK</h2>
+      <p id="overlayMsg"></p>
     </div>
   </div>
 
-  <!-- Audio (preload for instant playback) -->
+  <!-- Audio -->
   <audio id="soundOk" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"></audio>
   <audio id="soundNo" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3"></audio>
 
-  <!-- Scripts (NO auth) -->
+  <!-- Scripts -->
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script defer src="../../assets/js/core/config.js"></script>
   <script defer src="../../assets/js/core/supabase-client.js"></script>
