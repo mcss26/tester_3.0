@@ -263,10 +263,30 @@
           const size = Math.floor(minDim * 0.85);
           return { width: size, height: size };
         },
-        rememberLastUsedCamera: !isIOS, // iOS has issues with persisted camera IDs
-        // BarcodeDetector API NOT available on iOS Safari — disable to avoid silent failures
+        rememberLastUsedCamera: !isIOS,
         experimentalFeatures: { useBarCodeDetectorIfSupported: !isIOS }
       };
+
+      // iOS fix: intercept video element BEFORE play() via MutationObserver
+      if (isIOS) {
+        const readerEl = document.getElementById('reader');
+        if (readerEl) {
+          const obs = new MutationObserver((mutations) => {
+            for (const m of mutations) {
+              for (const node of m.addedNodes) {
+                const v = node.tagName === 'VIDEO' ? node : node.querySelector?.('video');
+                if (v) {
+                  v.setAttribute('playsinline', '');
+                  v.setAttribute('webkit-playsinline', '');
+                  v.playsInline = true;
+                  v.muted = true;
+                }
+              }
+            }
+          });
+          obs.observe(readerEl, { childList: true, subtree: true });
+        }
+      }
 
       // Try environment camera first, fallback to user-facing
       try {
