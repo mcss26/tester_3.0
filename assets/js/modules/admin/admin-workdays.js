@@ -64,6 +64,7 @@
 
         // Actions
         btnConfirm: document.getElementById('btn-confirm-jornada'),
+        btnSavePlanning: document.getElementById('btn-save-planning'),
 
         // Slide Panel (History)
         panelInstance: null,
@@ -296,11 +297,14 @@
              handleDateChange();
         });
 
+        // Empty state — Quick-Create
+        const btnNewEmpty = document.getElementById('btn-new-empty');
+        btnNewEmpty?.addEventListener('click', () => {
+            ui.inputDate.value = new Date().toISOString().split('T')[0];
+            handleDateChange();
+        });
+
         function changeDateByOffset(offset) {
-            const current = ui.inputDate.value ? new Date(ui.inputDate.value) : new Date();
-            current.setDate(current.getDate() + offset + 1); // +1 because inputs are YYYY-MM-DD
-            // Wait, Date input value is string.
-            // Let's use WorkDayHelper or specific logic
             const base = ui.inputDate.value ? new Date(ui.inputDate.value + 'T12:00:00') : new Date();
             base.setDate(base.getDate() + offset);
             ui.inputDate.value = base.toISOString().split('T')[0];
@@ -693,9 +697,7 @@
 
         // 3. Metadata
         if (state.activeWorkDay.notes) ui.inputNotes.value = state.activeWorkDay.notes;
-        // Event binding needed? Events table doesn't have work_day_id usually, work_days might link?
-        // Current schema: work_days table doesn't have event_id column usually, it's loose coupling by date.
-        // But we have 'events' table. We can auto-select if date matches.
+        // Auto-select event if date matches (work_days HAS event_id & event_name columns)
         const matchingEvent = state.events.find(ev => ev.date === state.activeWorkDay.work_date);
         if (matchingEvent) ui.selectEvent.value = matchingEvent.id;
 
@@ -884,8 +886,12 @@
         
         try {
             // A. Create Day in DRAFT
+            const eventId = ui.selectEvent?.value || null;
+            const eventName = eventId
+                ? ui.selectEvent.options[ui.selectEvent.selectedIndex]?.text || null
+                : null;
             const { data: day, error: errDay } = await window.sb.from('work_days')
-                .insert({ work_date: dateVal, notes: ui.inputNotes.value, status: STATUS.DRAFT })
+                .insert({ work_date: dateVal, notes: ui.inputNotes.value, status: STATUS.DRAFT, event_id: eventId, event_name: eventName })
                 .select().single();
             if (errDay) throw errDay;
 
@@ -1004,10 +1010,10 @@
         const checks = [];
 
         // 1. Staff convocado (critical)
-        const staffCards = ui.staffContainer?.querySelectorAll('.staff-role-card') || [];
+        const staffCards = ui.staffContainer?.querySelectorAll('.planner-item') || [];
         const assignedStaff = Array.from(staffCards).filter(card => {
-            const select = card.querySelector('select');
-            return select && select.value;
+            const selects = card.querySelectorAll('[data-action="assign-user"]');
+            return Array.from(selects).some(s => s.value);
         }).length;
         checks.push({
             label: 'Staff convocado',
@@ -1065,7 +1071,7 @@
 
     // ── Dynamic footer buttons ──
     function updateFooterButtons(status) {
-        const btnSave = document.getElementById('btn-save-planning');
+        const btnSave = ui.btnSavePlanning || document.getElementById('btn-save-planning');
         if (!ui.btnConfirm) return;
 
         if (!status) {
@@ -1116,8 +1122,12 @@
         try {
             const dayId = state.activeWorkDay.id;
 
-            // 1. Update Notes
-            await window.sb.from('work_days').update({ notes: ui.inputNotes.value }).eq('id', dayId);
+            // 1. Update Notes + Event
+            const eventId = ui.selectEvent?.value || null;
+            const eventName = eventId
+                ? ui.selectEvent.options[ui.selectEvent.selectedIndex]?.text || null
+                : null;
+            await window.sb.from('work_days').update({ notes: ui.inputNotes.value, event_id: eventId, event_name: eventName }).eq('id', dayId);
 
             // 2. Staff Plan (Sync: Delete & Re-insert is easiest for bulk plan, but dangerous if IDs needed? 
             // Better: Upsert by (work_day_id, role_id)
@@ -1346,7 +1356,7 @@
             if (!closing) {
                 const { data: newC, error: createErr } = await window.sb
                     .from('cash_closings')
-                    .insert({ work_day_id: wdId, status: STATUS.ACTIVE, total_system: 0, total_declared: 0, total_difference: 0 })
+                    .insert({ work_day_id: wdId, status: 'open', total_system: 0, total_declared: 0, total_difference: 0 })
                     .select().single();
                 if (createErr) { window.Toast.error('No se pudo crear cierre de caja.'); return; }
                 closing = newC;
@@ -1681,7 +1691,10 @@
     }
 
     async function handleSaveNotes() {
-        if (!state.closingId) return;
+        if (!state.closingId) {
+            window.Toast.warning('Carga el tab Night Chief primero.');
+            return;
+        }
         try {
             await window.sb.from('cash_closings').update({ notes: ui.closingNotes.value.trim() }).eq('id', state.closingId);
             window.Toast.success('Notas guardadas.');
@@ -1827,7 +1840,7 @@
         try {
             const { data, error } = await window.sb
                 .from('staff_accruals')
-                .select('id, work_day_id, user_id, role_id, amount, adjustment, status, created_at, profiles(full_name), master_staff_roles(name)')
+                .select('id, work_day_id, user_id, role_id, base_amount, adjustments, status, created_at, profiles(full_name), master_staff_roles(name)')
                 .eq('work_day_id', state.activeWorkDay.id)
                 .order('created_at');
 

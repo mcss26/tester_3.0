@@ -7,7 +7,7 @@ const WorkDayHelper = {
       const { data, error } = await window.sb
         .from("work_days")
         .select("*")
-        .eq("status", "open")
+        .eq("status", "ACTIVE")
         .maybeSingle();
 
       if (error) throw error;

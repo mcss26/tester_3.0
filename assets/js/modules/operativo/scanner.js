@@ -63,7 +63,7 @@
         const { data: wd } = await sb
             .from('work_days')
             .select('id, status')
-            .eq('status', 'open')
+            .eq('status', 'ACTIVE')
             .order('created_at', { ascending: false })
             .limit(1)
             .maybeSingle();

@@ -66,7 +66,7 @@
             domRefs.workdayText.textContent = `${dayName} ${dayNum}`;
 
             domRefs.workdayStatus.classList.remove('status-closed', 'status-planning');
-            const statusClass = workday.status === 'open' ? 'status-open' : 'status-planning';
+            const statusClass = workday.status === 'ACTIVE' ? 'status-open' : 'status-planning';
             domRefs.workdayStatus.classList.add(statusClass);
          } else {
             domRefs.workdayText.textContent = 'Sin jornada activa';

@@ -174,7 +174,7 @@
             const { data, error } = await window.sb
                 .from('work_days')
                 .select('id, work_date, status')
-                .eq('status', 'open')
+                .eq('status', 'ACTIVE')
                 .single();
 
             if (error && error.code !== 'PGRST116') throw error;

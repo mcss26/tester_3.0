@@ -19,13 +19,14 @@
       PENDING: 'pending',
       APPROVED: 'approved',
       REJECTED: 'rejected',
-      DRAFT: 'draft',
+      DRAFT: 'DRAFT',
       READY_FOR_APPROVAL: 'ready_for_approval',
       ENVIADO: 'enviado',
       RECIBIDO: 'recibido',
+      ACTIVE: 'ACTIVE',
       OPEN: 'open',
-      CLOSED: 'closed',
-      PLANNING: 'planning'
+      CLOSED: 'CLOSED',
+      PLANNED: 'PLANNED'
     },
 
     MESSAGES: {
@@ -44,10 +45,11 @@
         aprobado: "status-success",
         recibido: "status-success",
         ready_for_approval: "status-warning",
-        draft: "status-info",
+        DRAFT: "status-info",
+        ACTIVE: "status-success",
         open: "status-success",
-        closed: "status-neutral",
-        planning: "status-info"
+        CLOSED: "status-neutral",
+        PLANNED: "status-info"
       }
     }
   };

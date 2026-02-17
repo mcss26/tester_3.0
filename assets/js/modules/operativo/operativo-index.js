@@ -53,7 +53,7 @@
       if (workdayStatus) {
         workdayStatus.classList.remove("status-closed", "status-planning");
         workdayStatus.classList.add(
-          workday.status === "open" ? "status-open" : "status-planning"
+          workday.status === "ACTIVE" ? "status-open" : "status-planning"
         );
       }
     } else {

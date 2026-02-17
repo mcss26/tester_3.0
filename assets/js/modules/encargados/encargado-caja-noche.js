@@ -175,7 +175,7 @@
         const { data: wd, error: wdError } = await window.sb
             .from('work_days')
             .select('id, status')
-            .eq('status', 'open')
+            .eq('status', 'ACTIVE')
             .maybeSingle();
 
         if (wdError) {

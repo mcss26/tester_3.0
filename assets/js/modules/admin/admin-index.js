@@ -58,7 +58,7 @@
             const { data: wd, error } = await window.sb
                 .from('work_days')
                 .select('id, work_date, status')
-                .in('status', ['open', 'planning', 'planned'])
+                .in('status', ['ACTIVE', 'PLANNED', 'DRAFT'])
                 .order('work_date', { ascending: true })
                 .limit(1)
                 .maybeSingle();
@@ -75,7 +75,7 @@
                 window.Utils.show(refs.systemStatus);
                 
                 // Visual Pulse for Open Days
-                if (wd.status === 'open') {
+                if (wd.status === 'ACTIVE') {
                     refs.systemStatus.classList.add('live');
                     const dot = refs.systemStatus.querySelector('.kpi-dot');
                     if (dot) dot.classList.add('kpi-dot-success');

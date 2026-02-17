@@ -62,7 +62,7 @@
             const { data: wd, error } = await window.sb
                 .from('work_days')
                 .select('work_date, status')
-                .eq('status', 'open')
+                .eq('status', 'ACTIVE')
                 .maybeSingle();
 
             if (error) throw error;

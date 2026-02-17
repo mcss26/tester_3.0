@@ -129,7 +129,7 @@
                 const dayNum = date.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' });
                 ui.workdayText.textContent = `${dayName} ${dayNum}`;
                 ui.workdayStatus.classList.remove('status-closed', 'status-planning');
-                ui.workdayStatus.classList.add(openDay.status === 'open' ? 'status-open' : 'status-planning');
+                ui.workdayStatus.classList.add(openDay.status === 'ACTIVE' ? 'status-open' : 'status-planning');
 
                 // Enable navigation links
                 enableLink(ui.linkPersonal);

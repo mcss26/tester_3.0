@@ -110,7 +110,7 @@
             const { data, error } = await window.sb
                 .from('work_days')
                 .select('id, work_date, status, notes')
-                .in('status', ['planning', 'open'])
+                .in('status', ['PLANNED', 'ACTIVE'])
                 .order('work_date', { ascending: true });
 
             if (error) throw error;
@@ -119,7 +119,7 @@
             (data || []).forEach(wd => {
                 const opt = document.createElement('option');
                 opt.value = wd.id;
-                opt.textContent = `${wd.work_date} (${wd.status === 'open' ? 'En Curso' : 'Planificación'})`;
+                opt.textContent = `${wd.work_date} (${wd.status === 'ACTIVE' ? 'En Curso' : 'Planificación'})`;
                 ui.selectWorkDay.appendChild(opt);
             });
         } catch (e) {
@@ -171,7 +171,7 @@
             
             if (ui.statusLabel) {
                 ui.statusLabel.textContent = wd.status.toUpperCase();
-                ui.statusLabel.className = `status-pill ${wd.status === 'open' ? 'status-success' : 'status-info'}`;
+                ui.statusLabel.className = `status-pill ${wd.status === 'ACTIVE' ? 'status-success' : 'status-info'}`;
             }
 
             ui.planningSummary?.classList.remove('hidden');
