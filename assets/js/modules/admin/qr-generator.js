@@ -60,30 +60,23 @@
     };
 
     // UI Logic
-    inputs.financialType.addEventListener('change', (e) => {
+    if (inputs.financialType) {
+      inputs.financialType.addEventListener('change', (e) => {
         const val = e.target.value;
-        if (val === 'VENTA') {
-            inputs.priceField.style.display = 'flex';
-            inputs.marketSourceField.style.display = 'flex';
-        } else {
-            inputs.priceField.style.display = 'none';
-            // Para RRPP podria servir marketSource, para INVITACION quizas no tanto
-            // Dejamos flexible:
-            if (val === 'CORTESIA') {
-                 inputs.marketSourceField.style.display = 'flex'; // RRPP
-            } else {
-                 inputs.marketSourceField.style.display = 'none';
-            }
-        }
-    });
-    buttons.clear.addEventListener('click', clearAll);
+        const showPrice = val === 'VENTA';
+        const showSource = val === 'VENTA' || val === 'CORTESIA';
+        if (inputs.priceField) inputs.priceField.style.display = showPrice ? 'flex' : 'none';
+        if (inputs.marketSourceField) inputs.marketSourceField.style.display = showSource ? 'flex' : 'none';
+      });
+    }
+    if (buttons.clear) buttons.clear.addEventListener('click', clearAll);
     
-    buttons.preview.addEventListener('click', () => {
+    if (buttons.preview) buttons.preview.addEventListener('click', () => {
         const payloads = generatePayloads();
         renderPreview(payloads);
     });
 
-    buttons.print.addEventListener('click', async () => {
+    if (buttons.print) buttons.print.addEventListener('click', async () => {
         const payloads = generatePayloads();
         if(!validateForm(payloads)) return;
         
@@ -135,28 +128,13 @@
 
     function generatePayloads() {
         const qty = Math.max(1, Math.min(500, parseInt(inputs.qty.value || 1)));
-        const base = (inputs.baseText.value || "").trim();
-        // Always UUID for security in this system
-        
+        const base = (inputs.baseText.value || '').trim();
+        const sep = base && !base.endsWith('/') ? '/' : '';
+
         const out = [];
         for (let i = 0; i < qty; i++) {
             const uid = window.Utils.generateUUID();
-            // Prefix + UUID
-            // If base ends in /, no separator needed depending on user input. But safer to just append if not empty.
-            // If base looks like url, append /uuid? No, standard is usually just the value string.
-            // Let's assume the QR contains just the token (UUID) or a URL+Token.
-            // Requirement says "base + sep + uuid" or just uuid.
-            // Let's use Base + '/' + UUID if Base is URL, or just UUID if Base is empty.
-            // User requested: "URL o Texto Base... En modo secuencial o UUID se añadirá al final."
-            // Original code: `out.push(base ? base + sep + uid : uid);` where sep was from input.
-            // Simplification: Append with '/' if base exists and doesn't end in /, else just append.
-            
-            let val = uid;
-            if (base) {
-                // simple concat logic
-                 val = base + (base.endsWith('/') ? '' : '/') + uid;
-            }
-            out.push(val);
+            out.push(base ? base + sep + uid : uid);
         }
         return out;
     }
