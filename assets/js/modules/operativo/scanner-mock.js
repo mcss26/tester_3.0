@@ -244,7 +244,7 @@
     // ══════════════════════════════════════════
     startCamera();
 
-    function startCamera() {
+    async function startCamera() {
       if (typeof Html5Qrcode === 'undefined') {
         lastScan.textContent = '⚠️ Librería QR no cargó. Usá input manual.';
         lastScan.className = 'last fail';
@@ -253,33 +253,57 @@
 
       html5QrCode = new Html5Qrcode('reader');
 
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
       const config = {
-        fps: 15,
-        // Generous qrbox: 80% of viewport, large enough to be forgiving
+        fps: isIOS ? 10 : 15,
         qrbox: function(viewfinderWidth, viewfinderHeight) {
           const minDim = Math.min(viewfinderWidth, viewfinderHeight);
-          const size = Math.floor(minDim * 0.85); // 85% of the smallest dimension
+          const size = Math.floor(minDim * 0.85);
           return { width: size, height: size };
         },
-        experimentalFeatures: {
-          useBarCodeDetectorIfSupported: true
-        },
-        rememberLastUsedCamera: true
+        rememberLastUsedCamera: !isIOS, // iOS has issues with persisted camera IDs
+        // BarcodeDetector API NOT available on iOS Safari — disable to avoid silent failures
+        experimentalFeatures: { useBarCodeDetectorIfSupported: !isIOS }
       };
 
-      html5QrCode.start(
-        { facingMode: 'environment' },
-        config,
-        (decodedText) => {
-          if (!isProcessing) processCode(decodedText);
-        },
-        () => { }
-      ).catch(err => {
-        console.error('Camera error:', err);
-        lastScan.textContent = '⚠️ Sin cámara. Usá input manual.';
-        lastScan.className = 'last fail';
-        if (btnTorch) btnTorch.style.display = 'none';
-      });
+      // Try environment camera first, fallback to user-facing
+      try {
+        await html5QrCode.start(
+          { facingMode: 'environment' },
+          config,
+          (decodedText) => { if (!isProcessing) processCode(decodedText); },
+          () => { }
+        );
+      } catch (envErr) {
+        console.warn('Environment camera failed, trying user camera:', envErr);
+        try {
+          await html5QrCode.start(
+            { facingMode: 'user' },
+            config,
+            (decodedText) => { if (!isProcessing) processCode(decodedText); },
+            () => { }
+          );
+        } catch (userErr) {
+          console.error('All cameras failed:', userErr);
+          lastScan.textContent = '⚠️ Sin cámara. Usá input manual.';
+          lastScan.className = 'last fail';
+          if (btnTorch) btnTorch.style.display = 'none';
+          return;
+        }
+      }
+
+      // iOS fix: ensure playsinline attributes on injected video
+      setTimeout(() => {
+        const video = document.querySelector('#reader video');
+        if (video) {
+          video.setAttribute('playsinline', '');
+          video.setAttribute('webkit-playsinline', '');
+          video.setAttribute('muted', '');
+          video.playsInline = true;
+        }
+      }, 300);
     }
 
     // ══════════════════════════════════════════
