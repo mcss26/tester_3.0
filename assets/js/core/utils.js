@@ -64,6 +64,19 @@
     return "enviado";
   };
 
+  const generateUUID = () => {
+    if (typeof crypto !== "undefined" && crypto.randomUUID) {
+      return crypto.randomUUID();
+    }
+    // Fallback RFC 4122 v4
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+      const r =
+        (crypto.getRandomValues(new Uint8Array(1))[0] & 15) >>
+        (c === "x" ? 0 : 3);
+      return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
+    });
+  };
+
   const formatARS = (n) => {
     if (n === null || n === undefined) return "-";
     // Using explicit 'es-AR' locale for consistent formatting
@@ -74,9 +87,23 @@
   };
 
 
+
   /* DOM Helpers */
   const hide = (el) => { if (el) el.classList.add('hidden'); };
   const show = (el) => { if (el) el.classList.remove('hidden'); };
+
+  /**
+   * Safe modal opener — works with <dialog> AND <div> modals
+   * @param {HTMLElement} modal - The modal element to open
+   */
+  const openModal = (modal) => {
+    if (!modal) return;
+    if (typeof modal.showModal === 'function') {
+      modal.showModal();
+    } else {
+      modal.classList.remove('hidden');
+    }
+  };
   const isHidden = (el) => el ? el.classList.contains('hidden') : true;
 
   /**
@@ -101,9 +128,12 @@
       
       // Try to use existing modal first
       let modal = document.getElementById('confirmModal');
-      let msgEl = document.getElementById('confirm-message');
-      let btnConfirm = document.getElementById('btn-confirm-action');
-      let btnCancel = document.querySelector('#confirmModal .btn-ghost');
+
+      // Ensure it's a <dialog> — if not, remove and recreate
+      if (modal && modal.tagName !== "DIALOG") {
+        modal.remove();
+        modal = null;
+      }
 
       // Create modal if not exists
       if (!modal) {
@@ -120,10 +150,10 @@
           </div>
         `;
         document.body.appendChild(modal);
-        msgEl = modal.querySelector('#confirm-message');
-        btnConfirm = modal.querySelector('#btn-confirm-action');
-        btnCancel = modal.querySelector('#btn-cancel-confirm');
       }
+      let msgEl = modal.querySelector('#confirm-message');
+      let btnConfirm = modal.querySelector('#btn-confirm-action');
+      let btnCancel = modal.querySelector('#btn-cancel-confirm');
 
       // Update content
       if (msgEl) msgEl.textContent = message;
@@ -355,6 +385,7 @@
     calcReplenishment,
     mapSolicitudEstadoUI,
     formatARS,
+    generateUUID,
     hide,
     show,
     isHidden,
@@ -365,6 +396,7 @@
     promptModal,                   // Text input dialog
     renderStatusBadge,
     setPageState,
+    openModal,
     getThemeColor,
     CHART_COLORS,
     getChartColors,

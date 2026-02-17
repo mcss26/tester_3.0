@@ -1,7 +1,7 @@
-﻿# Flow Trace Report v2 - 2026-02-16 13:11
+﻿# Flow Trace Report v2 - 2026-02-16 16:46
 
 > Analisis estatico del flujo de datos y navegacion de FormulaMid 4.
-> Generado por low-tracer.ps1 v2 en 1 segundos.
+> Generado por low-tracer.ps1 v2 en 0 segundos.
 
 ---
 
@@ -16,7 +16,7 @@ Ninguno. Todos los links apuntan a paginas existentes.
 |---|---|
 | `admin-central-stock.html` | admin-index.html, admin-config.html |
 | `admin-config.html` | admin-index.html |
-| `admin-index.html` | admin-config.html, admin-workdays.html, admin-central-stock.html, admin-pagos.html, operativo-index.html |
+| `admin-index.html` | admin-config.html, admin-workdays.html, admin-central-stock.html, admin-pagos.html, admin-solicitudes.html, admin-reportes.html, admin-semanal.html, operativo-index.html |
 | `admin-master-categorias.html` | admin-index.html, admin-central-stock.html, admin-master-proveedores.html, admin-master-categorias.html, admin-master-nomina.html, admin-pagos.html, admin-master-tarifario.html, admin-master-pos.html |
 | `admin-master-nomina.html` | admin-index.html, admin-central-stock.html, admin-master-proveedores.html, admin-master-categorias.html, admin-master-nomina.html, admin-pagos.html, admin-master-tarifario.html, admin-master-pos.html |
 | `admin-master-pos.html` | admin-index.html, admin-config.html, admin-central-stock.html, admin-master-proveedores.html, admin-master-categorias.html, admin-master-nomina.html, admin-pagos.html, admin-master-tarifario.html, admin-master-pos.html |
@@ -55,9 +55,6 @@ Ninguno. Todos los links apuntan a paginas existentes.
 
 ### Paginas huerfanas (sin links entrantes)
 
-- `pages/admin/admin-reportes.html`
-- `pages/admin/admin-semanal.html`
-- `pages/admin/admin-solicitudes.html`
 - `pages/gerencia/balance-semanal.html`
 - `pages/members/my-qr.html`
 - `pages/operativo/operativo-analisis.html`
@@ -72,13 +69,10 @@ Ninguno. Todos los links apuntan a paginas existentes.
 
 | Tabla | Usada en |
 |---|---|
-| `audit_config` | gbol-service.js |
 | `error_log` | error-logger.js |
-| `gbol_sync_log` | gbol-service.js |
-| `import_gbol_comandas` | gbol-service.js |
-| `import_gbol_facturacion` | gbol-service.js |
-| `import_gbol_withdrawals` | gbol-service.js |
-| `vw_consumo_teorico` | admin-workdays.js |
+| `vw_finance_weekly` | balance-semanal.js |
+| `vw_financial_week_live` | admin-semanal.js |
+| `vw_pnl_monthly_v2` | admin-reportes.js |
 
 ### Uso de tablas por archivo (clasificado)
 
@@ -277,6 +271,7 @@ Ninguno. Todos los links apuntan a paginas existentes.
 - `stg_extracciones`
 - `stg_gbol_items`
 - `stg_passline_tickets`
+- `tabla`
 - `vistas`
 - `v_admin_stock`
 - `vw_reconcile_afip_gbol`
@@ -284,7 +279,7 @@ Ninguno. Todos los links apuntan a paginas existentes.
 - `vw_supplier_orders_admin`
 - `vw_staff_accruals_summary`
 - `vw_per_capita_revenue`
-- `tabla`
+- `vw_stock_audit_nightly`
 - `rpcs`
 
 ---

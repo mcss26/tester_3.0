@@ -18,9 +18,11 @@
   <!-- TOPBAR (Golden Standard) -->
   <header class="topbar">
     <!-- Left: Breadcrumb -->
-    <nav class="breadcrumb topbar-start">
-      <span class="breadcrumb-item current">STAFF BARRA</span>
-    </nav>
+    <div class="topbar-start">
+      <nav class="breadcrumb" aria-label="Navegación de migas">
+        <span class="breadcrumb-item current">STAFF BARRA</span>
+      </nav>
+    </div>
 
     <!-- Center: Workday Status -->
     <div class="topbar-center">
@@ -50,11 +52,15 @@
     </div>
   </header>
 
-  <!-- CENTER CONTENT -->
-  <main class="launcher-center">
-    <h1 class="launcher-title">MIDNIGHT CLUB</h1>
+  <main class="page-shell launcher-center">
+    <div class="dashboard-header">
+      <div>
+        <h2 class="dashboard-title dashboard-title-soft">MIDNIGHT CLUB</h2>
+        <p class="dashboard-subtitle dashboard-subtitle-soft">Panel Staff Barra</p>
+      </div>
+    </div>
 
-    <nav class="main-nav">
+    <nav class="main-nav" aria-label="Funciones de staff barra">
       <span class="nav-link is-disabled">Próximamente</span>
     </nav>
   </main>

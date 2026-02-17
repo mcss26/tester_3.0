@@ -224,80 +224,80 @@ graph TD
 
 ### 🔵 Admin (17)
 
-|  #  | Archivo                         | Propósito                                              |
-| :-: | :------------------------------ | :----------------------------------------------------- |
-|  1  | `admin-index.html`              | Dashboard principal de administración                  |
-|  2  | `admin-workdays.html`           | Gestión de jornadas laborales (+ Night Chief + Cierre) |
-|  3  | `admin-solicitudes.html`        | Centro de solicitudes de insumos                       |
-|  4  | `admin-reportes.html`           | Generación de reportes                                 |
-|  5  | `admin-semanal.html`            | Cierre semanal y balance                               |
-|  6  | `admin-central-stock.html`      | Gestión centralizada: Stock, Recetas, Rentabilidad     |
-|  7  | `admin-master-proveedores.html` | Maestro de proveedores                                 |
-|  8  | `admin-master-categorias.html`  | Maestro de categorías                                  |
-|  9  | `admin-master-tarifario.html`   | Tarifario de precios                                   |
-| 10  | `admin-master-nomina.html`      | Gestión de personal                                    |
-| 11  | `admin-pagos.html`              | Control de pagos                                       |
-| 12  | `admin-master-pos.html`         | Terminales punto de venta                              |
-| 13  | `admin-config.html`             | Configuración del sitio                                |
-| 14  | `test-devenciones.html`         | Testing de devengados de nómina                        |
-| 15  | `qr/index.html`                 | Hub del sistema QR                                     |
-| 16  | `qr/generator.html`             | Generador de códigos QR                                |
-| 17  | `qr/monitor.html`               | Monitor de escaneos QR                                 |
+|  #  | Archivo                         | Propósito                                              | Tablas Principales                                      |
+| :-: | :------------------------------ | :----------------------------------------------------- | :------------------------------------------------------ |
+|  1  | `admin-index.html`              | Dashboard principal de administración                  | `work_days`, `profiles`, `qr_codes`                     |
+|  2  | `admin-workdays.html`           | Gestión de jornadas laborales (+ Night Chief + Cierre) | `work_days`, `staff_convocations`, `cash_closings` + 8V |
+|  3  | `admin-solicitudes.html`        | Centro de solicitudes de insumos                       | `replenishment_*`, `master_sku`, `vw_stock_global`      |
+|  4  | `admin-reportes.html`           | Generación de reportes                                 | 5 vistas: `vw_bar_efficiency`, `vw_daily_sales_v2`…     |
+|  5  | `admin-semanal.html`            | Cierre semanal y balance                               | `finance_weekly_closings`, `vw_financial_week_live`     |
+|  6  | `admin-central-stock.html`      | Gestión centralizada: Stock, Recetas, Rentabilidad     | `master_sku`, `master_recipes`, `inventory_stock` + 2V  |
+|  7  | `admin-master-proveedores.html` | Maestro de proveedores                                 | `master_proveedores`, `master_categories`               |
+|  8  | `admin-master-categorias.html`  | Maestro de categorías                                  | `master_categories`                                     |
+|  9  | `admin-master-tarifario.html`   | Tarifario de precios                                   | `master_staff_roles`                                    |
+| 10  | `admin-master-nomina.html`      | Gestión de personal                                    | `profiles`, `master_staff_roles`                        |
+| 11  | `admin-pagos.html`              | Control de pagos                                       | `finance_payments`, `cost_definitions`, `payment_*`     |
+| 12  | `admin-master-pos.html`         | Terminales punto de venta                              | `pos_terminals`                                         |
+| 13  | `admin-config.html`             | Configuración del sitio                                | `cost_config`, `master_sku`                             |
+| 14  | `test-devenciones.html`         | Testing de devengados de nómina                        | `staff_accruals`                                        |
+| 15  | `qr/index.html`                 | Hub del sistema QR                                     | `qr_batches`, `qr_checkins`, `qr_codes`                 |
+| 16  | `qr/generator.html`             | Generador de códigos QR                                | `qr_batches`, `qr_codes`                                |
+| 17  | `qr/monitor.html`               | Monitor de escaneos QR                                 | `qr_batches`, `qr_codes`                                |
 
 ### 🟢 Operativo (9)
 
-|  #  | Archivo                             | Propósito                       |
-| :-: | :---------------------------------- | :------------------------------ |
-|  1  | `operativo-index.html`              | Dashboard operativo             |
-|  2  | `operativo-stock.html`              | Control de stock en tiempo real |
-|  3  | `operativo-workday.html`            | Jornada del día                 |
-|  4  | `operativo-solicitudes.html`        | Solicitudes operativas          |
-|  5  | `operativo-analisis.html`           | Análisis de datos               |
-|  6  | `scanner.html`                      | Scanner de códigos              |
-|  7  | `cms-members.html`                  | Gestión de miembros             |
-|  8  | `operativo-master-sku.html`         | SKUs (vista operativa)          |
-|  9  | `operativo-master-proveedores.html` | Proveedores (vista operativa)   |
+|  #  | Archivo                             | Propósito                       | Tablas Principales                               |
+| :-: | :---------------------------------- | :------------------------------ | :----------------------------------------------- |
+|  1  | `operativo-index.html`              | Dashboard operativo             | `qr_codes`                                       |
+|  2  | `operativo-stock.html`              | Control de stock en tiempo real | `vw_stock_global`                                |
+|  3  | `operativo-workday.html`            | Jornada del día                 | `work_days`, `staff_convocations`, `site_config` |
+|  4  | `operativo-solicitudes.html`        | Solicitudes operativas          | `replenishment_*`, `vw_stock_global`             |
+|  5  | `operativo-analisis.html`           | Análisis de datos               | `consumption_reports`, `consumption_details`     |
+|  6  | `scanner.html`                      | Scanner de códigos              | `qr_codes`, `members`, `qr_checkins`             |
+|  7  | `cms-members.html`                  | Gestión de miembros             | `members`                                        |
+|  8  | `operativo-master-sku.html`         | SKUs (vista operativa)          | `master_sku`, `sku_change_requests`              |
+|  9  | `operativo-master-proveedores.html` | Proveedores (vista operativa)   | `master_proveedores`                             |
 
 ### 📦 Logística (5)
 
-|  #  | Archivo                       | Propósito               |
-| :-: | :---------------------------- | :---------------------- |
-|  1  | `logistica-index.html`        | Dashboard de logística  |
-|  2  | `logistica-stock.html`        | Stock en depósito       |
-|  3  | `logistica-distribucion.html` | Órdenes de distribución |
-|  4  | `logistica-recepcion.html`    | Recepción de mercadería |
-|  5  | `logistica-seguimiento.html`  | Seguimiento de órdenes  |
+|  #  | Archivo                       | Propósito               | Tablas Principales                                        |
+| :-: | :---------------------------- | :---------------------- | :-------------------------------------------------------- |
+|  1  | `logistica-index.html`        | Dashboard de logística  | `profiles`, `work_days`                                   |
+|  2  | `logistica-stock.html`        | Stock en depósito       | `inventory_stock`, `vw_stock_global`                      |
+|  3  | `logistica-distribucion.html` | Órdenes de distribución | `replenishment_*`, `inventory_stock`, `vw_stock_global`   |
+|  4  | `logistica-recepcion.html`    | Recepción de mercadería | `replenishment_receipts`, `inventory_stock`               |
+|  5  | `logistica-seguimiento.html`  | Seguimiento de órdenes  | `replenishment_supplier_orders`, `replenishment_tracking` |
 
 ### 🟠 Encargados (7)
 
-|  #  | Archivo                         | Propósito                 |
-| :-: | :------------------------------ | :------------------------ |
-|  1  | `encargado-barra-index.html`    | Dashboard encargado barra |
-|  2  | `encargado-barra-noche.html`    | Cierre nocturno barra     |
-|  3  | `encargado-barra-personal.html` | Personal de barra         |
-|  4  | `encargado-caja-index.html`     | Dashboard encargado caja  |
-|  5  | `encargado-caja-noche.html`     | Cierre nocturno caja      |
-|  6  | `encargado-caja-personal.html`  | Personal de caja          |
-|  7  | `encargado-recepcion.html`      | Recepción de insumos      |
+|  #  | Archivo                         | Propósito                 | Tablas Principales                                     |
+| :-: | :------------------------------ | :------------------------ | :----------------------------------------------------- |
+|  1  | `encargado-barra-index.html`    | Dashboard encargado barra | `profiles`, `vw_supplier_orders_encargado`             |
+|  2  | `encargado-barra-noche.html`    | Cierre nocturno barra     | `bar_sessions`, `bar_stock_snapshots`, `master_sku`    |
+|  3  | `encargado-barra-personal.html` | Personal de barra         | `staff_convocations`, `work_day_staff_planning`        |
+|  4  | `encargado-caja-index.html`     | Dashboard encargado caja  | `profiles`, `work_days`                                |
+|  5  | `encargado-caja-noche.html`     | Cierre nocturno caja      | `cash_closings`, `closing_terminals`, `cash_movements` |
+|  6  | `encargado-caja-personal.html`  | Personal de caja          | `staff_convocations`, `work_day_staff_planning`        |
+|  7  | `encargado-recepcion.html`      | Recepción de insumos      | `replenishment_items`, `vw_supplier_orders_encargado`  |
 
 ### 🟡 Staff (2)
 
-|  #  | Archivo                  | Propósito            |
-| :-: | :----------------------- | :------------------- |
-|  1  | `staff-barra-index.html` | Interfaz staff barra |
-|  2  | `staff-caja-index.html`  | Interfaz staff caja  |
+|  #  | Archivo                  | Propósito            | Tablas Principales                                |
+| :-: | :----------------------- | :------------------- | :------------------------------------------------ |
+|  1  | `staff-barra-index.html` | Interfaz staff barra | `bar_sessions`, `bar_stock_snapshots`             |
+|  2  | `staff-caja-index.html`  | Interfaz staff caja  | `cash_closings`, `closing_terminals`, `work_days` |
 
 ### 🟣 Gerencia (1)
 
-|  #  | Archivo                | Propósito                   |
-| :-: | :--------------------- | :-------------------------- |
-|  1  | `balance-semanal.html` | Balance consolidado semanal |
+|  #  | Archivo                | Propósito                   | Tablas Principales  |
+| :-: | :--------------------- | :-------------------------- | :------------------ |
+|  1  | `balance-semanal.html` | Balance consolidado semanal | `vw_finance_weekly` |
 
 ### 🔴 Members (1)
 
-|  #  | Archivo      | Propósito                             |
-| :-: | :----------- | ------------------------------------- |
-|  1  | `my-qr.html` | Visualización QR personal del miembro |
+|  #  | Archivo      | Propósito                             | Tablas Principales    |
+| :-: | :----------- | ------------------------------------- | :-------------------- |
+|  1  | `my-qr.html` | Visualización QR personal del miembro | `qr_codes`, `members` |
 
 ---
 

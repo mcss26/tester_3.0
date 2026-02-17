@@ -13,16 +13,21 @@
 
 <body class="app-shell" data-allowed-roles="encargado_barra,admin,contable">
 
-    <!-- Topbar (Golden Standard: 3-div layout) -->
     <header class="topbar">
-        <div class="topbar-left">
-            <button class="btn-icon btn-icon-flat" data-go="pages/encargados/encargado-barra-index.html">←</button>
-            <span class="topbar-back">INICIO</span>
+        <div class="topbar-start">
+            <button class="btn-icon btn-icon-flat" data-go="pages/encargados/encargado-barra-index.html"
+                aria-label="Volver a Inicio">←</button>
+            <nav class="breadcrumb" aria-label="Navegación">
+                <span class="breadcrumb-item"><a class="breadcrumb-link"
+                        href="encargado-barra-index.html">BARRA</a></span>
+                <span class="breadcrumb-sep">/</span>
+                <span class="breadcrumb-item current">RECEPCIÓN</span>
+            </nav>
         </div>
         <div class="topbar-center">
             <span class="topbar-title">RECEPCIÓN</span>
         </div>
-        <div class="topbar-right">
+        <div class="topbar-end">
             <button id="btn-refresh" class="btn-icon btn-icon-flat" aria-label="Refrescar">↻</button>
         </div>
     </header>
@@ -72,7 +77,7 @@
         <div class="modal-content modal-content-lg">
             <div class="modal-header">
                 <h3 class="modal-title" id="modal-title">Recibir Pedido</h3>
-                <button class="modal-close" id="modal-close">×</button>
+                <button class="modal-close" id="modal-close" aria-label="Cerrar modal">×</button>
             </div>
             <div class="modal-body" id="modal-body">
                 <!-- Items table injected by JS -->

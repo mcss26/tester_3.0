@@ -1,4 +1,4 @@
-4<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -13,16 +13,21 @@
 
 <body class="app-shell admin-shell admin-scroll" data-allowed-roles="encargado_barra,admin">
 
-    <!-- Topbar -->
     <header class="topbar">
-        <div class="topbar-left">
-            <button class="btn-icon btn-icon-flat" data-go="pages/encargados/encargado-barra-index.html">←</button>
-            <span class="topbar-back">INICIO</span>
+        <div class="topbar-start">
+            <button class="btn-icon btn-icon-flat" data-go="pages/encargados/encargado-barra-index.html"
+                aria-label="Volver a Inicio">←</button>
+            <nav class="breadcrumb" aria-label="Navegación">
+                <span class="breadcrumb-item"><a class="breadcrumb-link"
+                        href="encargado-barra-index.html">BARRA</a></span>
+                <span class="breadcrumb-sep">/</span>
+                <span class="breadcrumb-item current">PERSONAL</span>
+            </nav>
         </div>
         <div class="topbar-center">
             <span class="topbar-title">GESTIÓN PERSONAL</span>
         </div>
-        <div class="topbar-right">
+        <div class="topbar-end">
             <button id="btn-refresh" class="btn-icon btn-icon-flat" aria-label="Refrescar">↻</button>
         </div>
     </header>
@@ -53,7 +58,7 @@
                     </div>
                     <div class="filter-actions">
                         <input type="search" class="input input-compact filter-input" placeholder="Buscar staff..."
-                            id="searchStaff">
+                            id="searchStaff" aria-label="Buscar en nómina de staff">
                     </div>
                 </div>
 
@@ -138,7 +143,7 @@
     <aside class="slide-panel" id="staffPanel">
         <div class="panel-header">
             <h3 class="panel-title">Nuevo Staff</h3>
-            <button class="panel-close" id="btnCloseStaffPanel">×</button>
+            <button class="panel-close" id="btnCloseStaffPanel" aria-label="Cerrar panel">×</button>
         </div>
         <div class="panel-body">
             <form id="staffForm">
@@ -167,7 +172,8 @@
         <div class="modal-content modal-content-sm">
             <div class="modal-header">
                 <h2>Seleccionar Rol</h2>
-                <button class="modal-close" onclick="this.closest('dialog').close()">×</button>
+                <button class="modal-close" onclick="this.closest('dialog').close()"
+                    aria-label="Cerrar modal">×</button>
             </div>
             <div class="modal-body">
                 <p class="muted mb-sm">Elige el rol para esta convocatoria:</p>
@@ -186,7 +192,8 @@
         <div class="modal-content modal-content-sm">
             <div class="modal-header">
                 <h2 id="confirmTitle">Confirmar Acción</h2>
-                <button class="modal-close" onclick="this.closest('dialog').close()">×</button>
+                <button class="modal-close" onclick="this.closest('dialog').close()"
+                    aria-label="Cerrar modal">×</button>
             </div>
             <div class="modal-body">
                 <p id="confirmMessage">¿Estás seguro de continuar?</p>

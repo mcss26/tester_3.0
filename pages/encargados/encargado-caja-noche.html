@@ -14,18 +14,20 @@
 <body class="app-shell admin-shell"
     data-allowed-roles="encargado_barra,encargado_caja,encargado_limpieza,encargado_seguridad,admin">
 
-    <!-- Standard Topbar -->
     <header class="topbar">
-        <div class="topbar-left">
-            <button class="topbar-link" data-go="pages/encargados/encargado-caja-index.html">← Volver</button>
+        <div class="topbar-start">
+            <button class="topbar-link" data-go="pages/encargados/encargado-caja-index.html"
+                aria-label="Volver a Cajas">← Volver</button>
         </div>
         <nav class="topbar-center">
-            <button class="topbar-link" data-go="pages/encargados/encargado-caja-personal.html">Personal</button>
-            <button class="topbar-link active">Noche</button>
+            <button class="topbar-link" data-go="pages/encargados/encargado-caja-personal.html"
+                aria-label="Vista Personal">Personal</button>
+            <button class="topbar-link active" aria-label="Vista Noche">Noche</button>
         </nav>
-        <div class="topbar-right">
+        <div class="topbar-end">
             <span class="label-xs">CAJAS</span>
-            <button id="btn-close-night-init" class="btn-danger-text">Cerrar Noche</button>
+            <button id="btn-close-night-init" class="btn-danger-text" aria-label="Cerrar jornada nocturna">Cerrar
+                Noche</button>
         </div>
     </header>
 
@@ -87,8 +89,10 @@
                                 </div>
                             </div>
                             <div class="filter-actions">
-                                <button id="btn-open-terminal-modal" class="btn-outline">+ Abrir</button>
-                                <button id="btn-request-withdrawal-modal" class="btn-action">$ Retiro</button>
+                                <button id="btn-open-terminal-modal" class="btn-outline"
+                                    aria-label="Abrir nueva terminal">+ Abrir</button>
+                                <button id="btn-request-withdrawal-modal" class="btn-action"
+                                    aria-label="Solicitar retiro de efectivo">$ Retiro</button>
                             </div>
                         </div>
 
@@ -120,14 +124,14 @@
             <form id="form-open-terminal" class="modal-body">
                 <div class="form-group">
                     <label class="text-label-sm">Terminal</label>
-                    <select id="open-select-terminal" class="input" required>
+                    <select id="open-select-terminal" class="input" required aria-label="Seleccionar terminal">
                         <!-- Options loaded via JS -->
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label class="text-label-sm">Responsable (Staff)</label>
-                    <select id="open-select-staff" class="input" required>
+                    <select id="open-select-staff" class="input" required aria-label="Seleccionar responsable">
                         <option value="">Cargando staff...</option>
                     </select>
                 </div>
@@ -160,7 +164,7 @@
             <form id="form-withdrawal" class="modal-body">
                 <div class="form-group">
                     <label class="text-label-sm">Terminal Origen</label>
-                    <select id="select-terminal" class="input" required>
+                    <select id="select-terminal" class="input" required aria-label="Seleccionar terminal origen">
                         <!-- Options loaded via JS -->
                     </select>
                 </div>

@@ -121,6 +121,41 @@ powershell -ExecutionPolicy Bypass -File scripts/security-shutdown.ps1
 
 ---
 
+## 🤖 UI Batch Remediation
+
+Orquesta Gemini CLI en paralelo para generar planes de remediación UI desde prompts del scanner. Workers configurables.
+
+```powershell
+# Ejecución (3 workers por defecto)
+powershell -ExecutionPolicy Bypass -File scripts/batch-remediation.ps1
+
+# Solo preview sin ejecutar
+powershell -ExecutionPolicy Bypass -File scripts/batch-remediation.ps1 -DryRun
+
+# Más workers
+powershell -ExecutionPolicy Bypass -File scripts/batch-remediation.ps1 -Workers 5
+```
+
+Output: `docs/output/ui-scan/{page}/remediation-plan.md`
+
+---
+
+## 🗃️ DB Batch Remediation
+
+Orquesta Gemini CLI en paralelo para generar migraciones SQL desde prompts de remediación DB. Limpia markdown residual.
+
+```powershell
+# Ejecución (3 workers por defecto)
+powershell -ExecutionPolicy Bypass -File scripts/db-batch-remediation.ps1
+
+# Solo preview
+powershell -ExecutionPolicy Bypass -File scripts/db-batch-remediation.ps1 -DryRun
+```
+
+Output: `supabase/migrations/{timestamp}_{prompt-name}.sql`
+
+---
+
 ## Flujo de trabajo recomendado
 
 ```

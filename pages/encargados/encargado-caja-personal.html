@@ -29,17 +29,22 @@
     </div>
   </div>
 
-  <!-- Standard Topbar -->
   <header class="topbar">
-    <div class="topbar-left">
-      <button class="btn-icon btn-icon-flat" data-go="pages/encargados/encargado-caja-index.html">←</button>
-      <span class="topbar-back">CAJAS</span>
+    <div class="topbar-start">
+      <button class="btn-icon btn-icon-flat" data-go="pages/encargados/encargado-caja-index.html"
+        aria-label="Volver a Cajas">←</button>
+      <nav class="breadcrumb" aria-label="Navegación">
+        <span class="breadcrumb-item"><a class="breadcrumb-link" href="encargado-caja-index.html">CAJAS</a></span>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-item current">PERSONAL</span>
+      </nav>
     </div>
     <nav class="topbar-center">
-      <button class="topbar-link active">Personal</button>
-      <button class="topbar-link" data-go="pages/encargados/encargado-caja-noche.html">Noche</button>
+      <button class="topbar-link active" aria-label="Vista Personal">Personal</button>
+      <button class="topbar-link" data-go="pages/encargados/encargado-caja-noche.html"
+        aria-label="Vista Noche">Noche</button>
     </nav>
-    <div class="topbar-right">
+    <div class="topbar-end">
       <span class="topbar-pill topbar-pill-quiet">CAJAS</span>
     </div>
   </header>
@@ -64,7 +69,7 @@
               <div class="filter-group">
                 <div class="form-group">
                   <label class="muted">Jornada Activa</label>
-                  <select id="select-workday" class="input input-compact">
+                  <select id="select-workday" class="input input-compact" aria-label="Seleccionar jornada activa">
                     <option value="">Cargando fechas...</option>
                   </select>
                 </div>
@@ -99,10 +104,10 @@
             <div class="filter-bar filter-bar-compact">
               <div class="filter-group">
                 <input type="search" id="search-staff" class="input input-compact filter-input"
-                  placeholder="Buscar staff...">
+                  placeholder="Buscar staff..." aria-label="Buscar en nómina de staff">
               </div>
               <div class="filter-actions">
-                <button class="btn-primary btn-sm" id="btn-add-staff">+ Nuevo</button>
+                <button class="btn-primary btn-sm" id="btn-add-staff" aria-label="Agregar nuevo staff">+ Nuevo</button>
               </div>
             </div>
 
@@ -137,7 +142,7 @@
   <aside class="slide-panel" id="staff-panel">
     <div class="panel-header">
       <h3 class="panel-title">Nuevo Staff</h3>
-      <button class="panel-close" id="btn-close-staff-panel">×</button>
+      <button class="panel-close" id="btn-close-staff-panel" aria-label="Cerrar panel">×</button>
     </div>
     <div class="panel-body">
       <form id="staff-form">
@@ -159,10 +164,11 @@
   </aside>
 
   <!-- Confirm Modal -->
-  <div class="modal-overlay hidden" id="confirmModal">
-    <div class="modal-card">
+  <dialog class="modal" id="confirmModal">
+    <div class="modal-content modal-content-sm">
       <div class="modal-header">
         <h2 id="confirm-title">Confirmar</h2>
+        <button class="modal-close" onclick="this.closest('dialog').close()" aria-label="Cerrar modal">×</button>
       </div>
       <div class="modal-body">
         <p id="confirm-message">¿Confirmas esta acción?</p>
@@ -172,7 +178,7 @@
         <button class="btn-primary" id="btn-confirm-action">Confirmar</button>
       </div>
     </div>
-  </div>
+  </dialog>
 
   <!-- Scripts -->
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>

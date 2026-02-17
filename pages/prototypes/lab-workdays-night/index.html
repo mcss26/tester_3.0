@@ -21,41 +21,38 @@
      <a href="#main-content" class="skip-link">Ir al contenido principal</a>
 
      <!-- ===== TOPBAR ===== -->
-     <header class="lab-topbar" role="banner">
-          <nav class="lab-topbar__breadcrumb" aria-label="Navegación de ruta">
-               <ol class="breadcrumb__list">
-                    <li class="breadcrumb__item">
-                         <a href="#" class="breadcrumb__link">Administración</a>
-                    </li>
-                    <li class="breadcrumb__item">
-                         <a href="../lab-workdays/index.html" class="breadcrumb__link">Workdays</a>
-                    </li>
-                    <li class="breadcrumb__item" aria-current="page">
-                         <span class="breadcrumb__current">Night Chief</span>
-                    </li>
-               </ol>
-          </nav>
-          <div class="lab-topbar__center"></div>
-          <div class="lab-topbar__actions">
-               <button class="topbar-icon" type="button" aria-label="Notificaciones">
+     <header class="topbar" role="banner">
+          <div class="topbar-start">
+               <nav class="breadcrumb" aria-label="Navegación de ruta">
+                    <span class="breadcrumb-item"><a class="breadcrumb-link" href="#">Administración</a></span>
+                    <span class="breadcrumb-sep">/</span>
+                    <span class="breadcrumb-item"><a class="breadcrumb-link"
+                              href="../lab-workdays/index.html">Workdays</a></span>
+                    <span class="breadcrumb-sep">/</span>
+                    <span class="breadcrumb-item current">Night Chief</span>
+               </nav>
+          </div>
+          <div class="topbar-center"></div>
+          <div class="topbar-end">
+               <button class="btn-icon btn-icon-flat" type="button" aria-label="Notificaciones">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
                          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
                          <path d="M13.73 21a2 2 0 0 1-3.46 0" />
                     </svg>
                </button>
-               <button class="topbar-avatar" type="button" aria-label="Menú de usuario">MC</button>
+               <button class="avatar avatar-sm" type="button" aria-label="Menú de usuario">MC</button>
           </div>
      </header>
 
      <!-- ===== MAIN CONTENT ===== -->
-     <main class="lab-shell" id="main-content">
+     <main class="page-shell lab-shell" id="main-content">
 
           <!-- ── Night Chief Header ── -->
           <div class="nc-header">
                <div class="nc-header__info">
                     <div>
-                         <h1 class="nc-header__title" id="nc-title">Sáb 15 Feb · Noche Electrónica</h1>
+                         <h2 class="nc-header__title" id="nc-title">Sáb 15 Feb · Noche Electrónica</h2>
                          <p class="nc-header__event" id="nc-event-meta">Apertura: 23:30 · Stock contado a las 03:45 por
                               Enc. Barra — Martín
                          </p>

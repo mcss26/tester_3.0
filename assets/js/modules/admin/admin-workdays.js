@@ -558,7 +558,7 @@
         window.Utils.setPageState(ui, { loading: true });
         try {
             const [rolesRes, costsRes, eventsRes, usersRes] = await Promise.all([
-                window.sb.from('master_staff_roles').select('id, name').eq('active', true).order('name'),
+                window.sb.from('master_staff_roles').select('id, name, area, base_rate').eq('active', true).order('name'),
                 window.sb.from('cost_definitions').select('id, title, base_amount').eq('frequency', 'per_event').eq('is_active', true).order('title'),
                 window.sb.from('events').select('id, name, date').gte('date', new Date().toISOString().split('T')[0]).order('date').limit(20),
                 window.sb.from('profiles').select('id, full_name, role').order('full_name') // Fetch users
@@ -727,7 +727,7 @@
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     <div class="item-info">
                         <span class="item-name">${window.Utils.escapeHtml(role.name)}</span>
-                        <span class="item-meta">Budget: ${window.Utils.formatARS(role.base_salary || role.base_rate)}</span>
+                        <span class="item-meta">Budget: ${window.Utils.formatARS(role.base_rate)}</span>
                     </div>
                     <div class="item-controls">
                         <span class="text-xs mr-2 text-muted">Cupo:</span>
@@ -736,7 +736,7 @@
                             data-action="qty-change"
                             data-role-id="${role.id}">
                         <span class="badge badge-quiet text-xs" style="min-width: 80px; text-align: right;">
-                            ${window.Utils.formatARS(0)}
+                            ${window.Utils.formatARS(qty * (role.base_rate || 0))}
                         </span>
                     </div>
                 </div>
@@ -762,12 +762,9 @@
         // Filter users for this role (loose match or catch-all)
         // Heuristic: Match user.role string with role.name (normalized)
         // Or assume 'staff' user role covers most.
-        const roleName = state.roles.find(r => r.id === roleId)?.name.toLowerCase() || '';
-        const eligibleUsers = state.users.filter(u => {
-            const uRole = (u.role || '').toLowerCase();
-            // Allow if roles match roughly OR if user is generic staff
-            return uRole.includes(roleName) || uRole.includes('staff') || uRole === 'admin'; 
-        });
+        const eligibleUsers = state.users.filter((u) =>
+            ["staff", "encargado", "admin"].includes(u.role?.toLowerCase()),
+        );
 
         const userOptions = eligibleUsers.map(u => `<option value="${u.id}">${window.Utils.escapeHtml(u.full_name)}</option>`).join('');
 
@@ -826,7 +823,7 @@
 
         state.roles.forEach(role => {
             const qty = state.staffPlan[role.id] || 0;
-            const rate = role.base_salary || role.base_rate || 0;
+            const rate = role.base_rate || 0;
             const sub = qty * rate;
             staffTotal += sub;
 
@@ -899,7 +896,7 @@
                     work_day_id: day.id,
                     role_id: role.id,
                     quantity: state.staffPlan[role.id],
-                    approved_budget: state.staffPlan[role.id] * (role.base_salary || 0)
+                    approved_budget: state.staffPlan[role.id] * (role.base_rate || 0)
                 }));
             
             if (staffPayload.length > 0) await window.sb.from('work_day_staff_planning').insert(staffPayload);
@@ -1128,7 +1125,7 @@
                 work_day_id: dayId,
                 role_id: role.id,
                 quantity: state.staffPlan[role.id] || 0,
-                approved_budget: (state.staffPlan[role.id] || 0) * (role.base_salary || 0)
+                approved_budget: (state.staffPlan[role.id] || 0) * (role.base_rate || 0)
             }));
             await window.sb.from('work_day_staff_planning').upsert(staffPayload, { onConflict: 'work_day_id, role_id' });
 
@@ -1292,7 +1289,7 @@
 
                 const rows = Array.from({ length: qrQty }, () => ({
                     batch_id: batch.id,
-                    code: crypto.randomUUID(),
+                    code: window.Utils.generateUUID(),
                     status: 'PENDIENTE'
                 }));
                 await window.sb.from('qr_codes').insert(rows);
@@ -1491,14 +1488,110 @@
         if (el('breakdown-total-global')) el('breakdown-total-global').textContent = fmt(globalTotal);
     }
 
-    // ── Close Night (Sprint 3 — P&L enriched) ──
+    // ── Close Night (Hardened — Pre-flight + Server-side validation) ──
+    // Preflight data cache for the current modal session
+    let _preflightData = null;
+
     async function openCloseNightModal() {
-        if (!state.closingId || !state.activeWorkDay) return;
+        if (!state.activeWorkDay) return;
 
-        // Copy cash diff (original behavior)
-        ui.confirmDiffDisplay.textContent = ui.totalDiff.textContent;
+        // ── Step 1: Run pre-flight checklist via RPC ──
+        // All validation + financial calculation happens server-side
+        try {
+            const { data: preflight, error: pfErr } = await window.sb.rpc('rpc_preflight_close_workday', {
+                p_work_day_id: state.activeWorkDay.id
+            });
+            if (pfErr) { window.Toast.error(pfErr.message); return; }
 
-        // Fetch P&L + Health Score in parallel
+            _preflightData = preflight;
+
+            // Cache the cash_closing_id from preflight if we don't have it yet
+            if (preflight.cash_closing_id && !state.closingId) {
+                state.closingId = preflight.cash_closing_id;
+            }
+
+            // ── Step 2: Render pre-flight checks (visual only) ──
+            renderPreflightChecks(preflight.checks);
+
+            // ── Step 3: Render financial summary from server ──
+            renderFinancialSummary(preflight.financial_summary);
+
+            // ── Step 4: Fetch P&L + Health Score for the modal cards ──
+            await _populatePnlModal();
+
+            // ── Step 5: Enable/disable close button based on can_close ──
+            if (ui.btnConfirmCloseNight) {
+                ui.btnConfirmCloseNight.disabled = !preflight.can_close;
+            }
+
+        } catch (err) {
+            console.error('[preflight] Error:', err);
+            window.Toast.error('Error al ejecutar pre-flight: ' + (err.message || err));
+            return;
+        }
+
+        ui.closeNightModal?.classList.remove('hidden');
+    }
+
+    /**
+     * Renders the pre-flight check results in the confirmation modal.
+     * Each check is displayed as a row with ✅/❌/⚠️ icons.
+     */
+    function renderPreflightChecks(checks) {
+        // Use confirmDiffDisplay area to show structured checks
+        if (!ui.confirmDiffDisplay) return;
+
+        if (!checks || checks.length === 0) {
+            ui.confirmDiffDisplay.innerHTML = '<span class="muted">Sin datos de validación</span>';
+            return;
+        }
+
+        const rows = checks.map(c => {
+            const icon = c.pass ? '✅' : (c.blocking ? '❌' : '⚠️');
+            const cls = c.pass ? 'text-success' : (c.blocking ? 'text-error' : 'text-warning');
+            return `<div class="preflight-row" style="display:flex;align-items:center;gap:8px;padding:4px 0;">
+                <span style="font-size:1.1em;">${icon}</span>
+                <span class="font-bold" style="min-width:180px;">${window.Utils.escapeHtml(c.label)}</span>
+                <span class="${cls} text-sm">${window.Utils.escapeHtml(c.detail)}</span>
+            </div>`;
+        }).join('');
+
+        ui.confirmDiffDisplay.innerHTML = rows;
+    }
+
+    /**
+     * Renders the financial summary from the pre-flight RPC response.
+     * Maps directly to existing UI element IDs to preserve modal layout.
+     */
+    function renderFinancialSummary(summary) {
+        if (!summary) return;
+        const fmt = window.Utils.formatARS;
+
+        // Cash/Zoco KPIs (Night Chief tab)
+        if (ui.evtKpiSystem) ui.evtKpiSystem.textContent = fmt(summary.total_system || 0);
+        if (ui.evtKpiDeclared) ui.evtKpiDeclared.textContent = fmt(summary.total_declared || 0);
+        if (ui.evtKpiDiff) {
+            const diff = summary.total_difference || 0;
+            ui.evtKpiDiff.textContent = fmt(diff);
+            applyDiffClass(ui.evtKpiDiff, diff);
+        }
+
+        // Totals row in cierre table
+        if (ui.totalCashSys) ui.totalCashSys.textContent = fmt(summary.cash_system || 0);
+        if (ui.totalZocoSys) ui.totalZocoSys.textContent = fmt(summary.zoco_system || 0);
+        if (ui.totalCashDecl) ui.totalCashDecl.textContent = fmt(summary.cash_declared || 0);
+        if (ui.totalZocoDecl) ui.totalZocoDecl.textContent = fmt(summary.zoco_declared || 0);
+        if (ui.totalDiff) {
+            ui.totalDiff.textContent = fmt(summary.total_difference || 0);
+            applyDiffClass(ui.totalDiff, summary.total_difference || 0);
+        }
+    }
+
+    /**
+     * Populates the P&L and Health Score cards inside the close-night modal.
+     * Fetches from vw_workday_pnl + calculate_health_score.
+     */
+    async function _populatePnlModal() {
         const fmtPnl = (v) => v != null ? window.Utils.formatARS(v) : '—';
         try {
             const [pnlRes, hsRes] = await Promise.all([
@@ -1557,8 +1650,6 @@
             console.warn('[pnl-modal] Could not load P&L data:', err);
             // Modal still opens — P&L fields just show '—'
         }
-
-        ui.closeNightModal?.classList.remove('hidden');
     }
 
     async function performCloseNight() {
@@ -1567,42 +1658,9 @@
         ui.btnCloseNight.textContent = 'Cerrando...';
 
         try {
-            // Checkpoints: bar sessions + terminal closings
-            const [barRes, termRes] = await Promise.all([
-                window.sb.from('bar_sessions').select('id, location, profiles(full_name)')
-                    .eq('work_day_id', state.activeWorkDay.id).neq('status', STATUS.CLOSED),
-                window.sb.from('closing_terminals').select('id, pos_terminals(friendly_name)')
-                    .eq('cash_closing_id', state.closingId).not('status', 'in', '(submitted,verified)')
-            ]);
-
-            if (barRes.error) throw barRes.error;
-            if (barRes.data?.length > 0) {
-                throw new Error(`Hay ${barRes.data.length} barra(s) sin cerrar: ${barRes.data.map(b => b.profiles?.full_name || b.location).join(', ')}`);
-            }
-            if (termRes.error) throw termRes.error;
-            if (termRes.data?.length > 0) {
-                throw new Error(`Cajas sin cerrar: ${termRes.data.map(t => t.pos_terminals?.friendly_name).join(', ')}`);
-            }
-
-            // ── CRITICAL FIX: Persist totals into cash_closings ──
-            const totalSys = parseFloat(ui.evtKpiSystem?.textContent?.replace(/[^0-9.,-]/g, '').replace(',', '.')) || 0;
-            const totalDecl = parseFloat(ui.evtKpiDeclared?.textContent?.replace(/[^0-9.,-]/g, '').replace(',', '.')) || 0;
-            const totalDiff = totalDecl - totalSys;
-
-            const closedAt = new Date().toISOString();
-            const userId = session.user.id;
-
-            // Update cash_closing totals first (separate operation)
-            if (state.closingId) {
-                const { error: closingErr } = await window.sb.from('cash_closings').update({
-                    total_system: totalSys,
-                    total_declared: totalDecl,
-                    total_difference: totalDiff
-                }).eq('id', state.closingId);
-                if (closingErr) throw closingErr;
-            }
-
-            // Close via RPC (handles work_days + cash_closings status + health_score + net_result)
+            // ── ONE call. The RPC validates AND closes. ──
+            // Guards (bars, terminals, status) are enforced server-side.
+            // Financial totals are calculated from closing_terminals in SQL.
             const { data: closeResult, error: closeErr } = await window.sb.rpc('rpc_close_work_day', {
                 p_work_day_id: state.activeWorkDay.id,
                 p_cash_closing_id: state.closingId || null

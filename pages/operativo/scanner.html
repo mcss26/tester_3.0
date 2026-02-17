@@ -19,19 +19,30 @@
 
 <body class="qr-scanner" data-allowed-roles="admin,operativo,staff_guardia">
 
-    <header
-        class="row-flex flex-between align-center px-4 border-b border-white/10 bg-black/20 backdrop-blur-md sticky top-0 z-50 h-60px">
-        <div class="user-info row-flex align-center gap-sm">
-            <div class="w-8 h-8 rounded-full bg-blue-600 flex-center text-xs font-bold" id="userAvatar">U</div>
-            <div class="col-flex">
-                <span id="userName" class="text-sm font-bold leading-tight">...</span>
-                <span id="userRole" class="text-[10px] uppercase text-white/50 leading-tight">...</span>
-            </div>
+    <header class="topbar">
+        <div class="topbar-start">
+            <nav class="breadcrumb" aria-label="Navegación">
+                <span class="breadcrumb-item">
+                    <a class="breadcrumb-link" href="operativo-index.html">OPERACIONES</a>
+                </span>
+                <span class="breadcrumb-sep">/</span>
+                <span class="breadcrumb-item current">SCANNER</span>
+            </nav>
         </div>
-        <button id="btnLogout" class="text-xs text-red-400 hover:text-red-300 uppercase font-bold">Salir</button>
+        <div class="topbar-center"></div>
+        <div class="topbar-end">
+            <div class="user-info row-flex align-center gap-sm">
+                <div class="avatar avatar-sm" id="userAvatar">U</div>
+                <div class="col-flex">
+                    <span id="userName" class="text-sm font-bold leading-tight">...</span>
+                    <span id="userRole" class="text-[10px] uppercase text-white/50 leading-tight">...</span>
+                </div>
+            </div>
+            <button id="btnLogout" class="btn-danger btn-sm" aria-label="Cerrar sesión">Salir</button>
+        </div>
     </header>
 
-    <main class="flex-1 p-4 col-flex gap-md overflow-hidden">
+    <main class="page-shell flex-1 p-4 col-flex gap-md overflow-hidden">
 
         <!-- Stats Bar -->
         <div class="scanner-stats row-flex gap-sm text-xs">
@@ -76,12 +87,12 @@
 
         <!-- Manual Input Toggle -->
         <div class="col-flex gap-sm">
-            <button id="btnManualInput" class="w-full bg-white/10 text-white p-3 rounded-xl text-sm font-bold">Ingreso
+            <button id="btnManualInput" class="btn-secondary w-full" aria-label="Alternar ingreso manual">Ingreso
                 Manual</button>
             <div id="manualInputBox" class="hidden row-flex gap-sm">
-                <input type="text" id="manualCode" placeholder="Código..."
-                    class="bg-white/5 border border-white/10 rounded-xl p-3 flex-1 text-white outline-none focus:border-blue-500">
-                <button id="btnCheckManual" class="bg-blue-600 text-white px-4 rounded-xl font-bold">OK</button>
+                <input type="text" id="manualCode" placeholder="Código..." aria-label="Código manual"
+                    class="input flex-1">
+                <button id="btnCheckManual" class="btn-primary" aria-label="Verificar código">OK</button>
             </div>
         </div>
 

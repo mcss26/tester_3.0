@@ -18,9 +18,11 @@
   <!-- TOPBAR (Golden Standard) -->
   <header class="topbar">
     <!-- Left: Breadcrumb -->
-    <nav class="breadcrumb topbar-start">
-      <span class="breadcrumb-item current">ENCARGADO CAJA</span>
-    </nav>
+    <div class="topbar-start">
+      <nav class="breadcrumb" aria-label="Navegación de migas">
+        <span class="breadcrumb-item current">ENCARGADO CAJA</span>
+      </nav>
+    </div>
 
     <!-- Center: Workday Status -->
     <div class="topbar-center">
@@ -50,13 +52,19 @@
     </div>
   </header>
 
-  <!-- CENTER CONTENT -->
-  <main class="launcher-center">
-    <h1 class="launcher-title">MIDNIGHT CLUB</h1>
+  <main class="page-shell launcher-center">
+    <div class="dashboard-header">
+      <div>
+        <h2 class="dashboard-title dashboard-title-soft">MIDNIGHT CLUB</h2>
+        <p class="dashboard-subtitle dashboard-subtitle-soft">Panel Encargado de Caja</p>
+      </div>
+    </div>
 
-    <nav class="main-nav">
-      <a href="encargado-caja-personal.html" class="nav-link is-disabled" id="link-personal">Personal</a>
-      <a href="encargado-caja-noche.html" class="nav-link is-disabled" id="link-noche">Noche</a>
+    <nav class="main-nav" aria-label="Módulos de encargado caja">
+      <a href="encargado-caja-personal.html" class="nav-link is-disabled" id="link-personal"
+        aria-label="Gestión de Personal">Personal</a>
+      <a href="encargado-caja-noche.html" class="nav-link is-disabled" id="link-noche"
+        aria-label="Cierre de Noche">Noche</a>
     </nav>
   </main>
 

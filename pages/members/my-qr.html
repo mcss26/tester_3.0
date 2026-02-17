@@ -15,7 +15,7 @@
 
 <body class="member-panel">
 
-  <main class="member-qr-container">
+  <main class="page-shell member-qr-container">
     <div id="qr-loading" class="state-block loading">
       <div class="state-spinner qr-loading-spinner">
       </div>
@@ -24,8 +24,8 @@
 
     <div id="qr-content" class="hidden qr-content-layout">
       <header class="qr-header">
-        <h1>Tu Acceso Gratuito</h1>
-        <p id="member-name"></p>
+        <h2 class="dashboard-title-soft">Tu Acceso Gratuito</h2>
+        <p id="member-name" class="dashboard-subtitle-soft"></p>
       </header>
 
       <div id="qr-display" class="qr-box">
@@ -45,7 +45,7 @@
     </div>
 
     <div id="qr-action" class="hidden">
-      <button id="btn-generate" class="btn btn-primary btn-lg">
+      <button id="btn-generate" class="btn btn-primary btn-lg" aria-label="Generar código QR de acceso">
         Generar Mi QR
       </button>
     </div>

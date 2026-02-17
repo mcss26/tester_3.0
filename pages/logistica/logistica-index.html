@@ -17,13 +17,15 @@
   <!-- Topbar: Golden Standard -->
   <header class="topbar">
     <!-- Left: Breadcrumb -->
-    <nav class="breadcrumb topbar-start">
-      <span class="breadcrumb-item">
-        <a class="breadcrumb-link" href="logistica-index.html">Logística</a>
-      </span>
-      <span class="breadcrumb-sep">/</span>
-      <span class="breadcrumb-item current">Inicio</span>
-    </nav>
+    <div class="topbar-start">
+      <nav class="breadcrumb" aria-label="Navegación de migas">
+        <span class="breadcrumb-item">
+          <a class="breadcrumb-link" href="logistica-index.html">Logística</a>
+        </span>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-item current">Inicio</span>
+      </nav>
+    </div>
 
     <!-- Center: Search -->
     <div class="topbar-center header-search">
@@ -61,18 +63,18 @@
       <div class="page-card">
 
         <!-- Master Navigation -->
-        <nav class="master-nav">
-          <a href="logistica-stock.html" class="master-nav-link">Stock</a>
-          <a href="logistica-distribucion.html" class="master-nav-link">Distribución</a>
-          <a href="logistica-recepcion.html" class="master-nav-link">Recepción</a>
-          <a href="logistica-seguimiento.html" class="master-nav-link">Seguimiento</a>
+        <nav class="master-nav" aria-label="Módulos de logística">
+          <a href="logistica-stock.html" class="master-nav-link" aria-label="Ir a Stock">Stock</a>
+          <a href="logistica-distribucion.html" class="master-nav-link" aria-label="Ir a Distribución">Distribución</a>
+          <a href="logistica-recepcion.html" class="master-nav-link" aria-label="Ir a Recepción">Recepción</a>
+          <a href="logistica-seguimiento.html" class="master-nav-link" aria-label="Ir a Seguimiento">Seguimiento</a>
         </nav>
 
         <div id="module-content">
           <div class="staff-dashboard">
             <div class="dashboard-header align-start">
               <div>
-                <h1 class="dashboard-title">Bienvenido a Logística</h1>
+                <h2 class="dashboard-title dashboard-title-soft">Bienvenido a Logística</h2>
                 <p class="dashboard-subtitle">Gestión de stock, distribución y recepción de materiales.</p>
               </div>
             </div>

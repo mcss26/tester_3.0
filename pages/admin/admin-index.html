@@ -18,9 +18,11 @@
    <!-- TOPBAR (Same as admin-central-stock) -->
    <header class="topbar">
       <!-- Left: Breadcrumb -->
-      <nav class="breadcrumb topbar-start">
-         <span class="breadcrumb-item current">ADMINISTRACIÓN</span>
-      </nav>
+      <div class="topbar-start">
+         <nav class="breadcrumb" aria-label="Navegación de migas">
+            <span class="breadcrumb-item current">ADMINISTRACIÓN</span>
+         </nav>
+      </div>
 
       <!-- Center: Workday Status -->
       <div class="topbar-center">
@@ -62,8 +64,13 @@
    </header>
 
    <!-- CENTER CONTENT -->
-   <main class="launcher-center">
-      <h1 class="launcher-title">MIDNIGHT CLUB</h1>
+   <main class="page-shell launcher-center">
+      <div class="dashboard-header">
+         <div>
+            <h2 class="dashboard-title dashboard-title-soft">MIDNIGHT CLUB</h2>
+            <p class="dashboard-subtitle dashboard-subtitle-soft">Panel de Administración</p>
+         </div>
+      </div>
 
       <!-- Search Bar -->
       <div class="search-wrapper">
@@ -75,14 +82,14 @@
          </svg>
       </div>
 
-      <nav class="main-nav">
-         <a href="admin-workdays.html" class="nav-link">Workdays</a>
-         <a href="admin-central-stock.html" class="nav-link">Stock Central</a>
-         <a href="admin-pagos.html" class="nav-link">Payments</a>
-         <a href="admin-solicitudes.html" class="nav-link">Solicitudes</a>
-         <a href="admin-reportes.html" class="nav-link">Reportes</a>
-         <a href="admin-semanal.html" class="nav-link">Semanal</a>
-         <a href="../operativo/operativo-index.html" class="nav-link">Operativo</a>
+      <nav class="main-nav" aria-label="Módulos de administración">
+         <a href="admin-workdays.html" class="nav-link" aria-label="Gestión de Jornadas">Workdays</a>
+         <a href="admin-central-stock.html" class="nav-link" aria-label="Stock Central e Inventario">Stock Central</a>
+         <a href="admin-pagos.html" class="nav-link" aria-label="Gestión de Pagos">Payments</a>
+         <a href="admin-solicitudes.html" class="nav-link" aria-label="Solicitudes de Compra">Solicitudes</a>
+         <a href="admin-reportes.html" class="nav-link" aria-label="Reportes y Análisis">Reportes</a>
+         <a href="admin-semanal.html" class="nav-link" aria-label="Balance Semanal">Semanal</a>
+         <a href="../operativo/operativo-index.html" class="nav-link" aria-label="Módulo Operativo">Operativo</a>
       </nav>
    </main>
 

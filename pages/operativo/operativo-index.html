@@ -19,9 +19,11 @@
     <!-- TOPBAR -->
     <header class="topbar">
         <!-- Left: Breadcrumb -->
-        <nav class="breadcrumb topbar-start">
-            <span class="breadcrumb-item current">OPERACIONES</span>
-        </nav>
+        <div class="topbar-start">
+            <nav class="breadcrumb" aria-label="Navegación de migas">
+                <span class="breadcrumb-item current">OPERACIONES</span>
+            </nav>
+        </div>
 
         <!-- Center: Workday Status -->
         <div class="topbar-center">
@@ -57,9 +59,13 @@
         </div>
     </header>
 
-    <!-- CENTER CONTENT -->
-    <main class="launcher-center">
-        <h1 class="launcher-title">OPERACIONES</h1>
+    <main class="page-shell launcher-center">
+        <div class="dashboard-header">
+            <div>
+                <h2 class="dashboard-title dashboard-title-soft">OPERACIONES</h2>
+                <p class="dashboard-subtitle dashboard-subtitle-soft">Panel Operativo</p>
+            </div>
+        </div>
 
         <!-- Search Bar -->
         <div class="search-wrapper">
@@ -71,12 +77,12 @@
             </svg>
         </div>
 
-        <nav class="main-nav">
-            <a href="operativo-workday.html" class="nav-link">Work Day</a>
-            <a href="operativo-stock.html" class="nav-link">Stock</a>
-            <a href="operativo-solicitudes.html" class="nav-link">Solicitudes</a>
-            <a href="cms-members.html" class="nav-link">CMS Members</a>
-            <a href="operativo-master-sku.html" class="nav-link">Configuración</a>
+        <nav class="main-nav" aria-label="Módulos operativos">
+            <a href="operativo-workday.html" class="nav-link" aria-label="Gestión de Jornada">Work Day</a>
+            <a href="operativo-stock.html" class="nav-link" aria-label="Control de Stock">Stock</a>
+            <a href="operativo-solicitudes.html" class="nav-link" aria-label="Solicitudes de Compra">Solicitudes</a>
+            <a href="cms-members.html" class="nav-link" aria-label="CMS de Miembros">CMS Members</a>
+            <a href="operativo-master-sku.html" class="nav-link" aria-label="Configuración de SKUs">Configuración</a>
         </nav>
     </main>
 

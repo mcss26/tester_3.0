@@ -1,0 +1,336 @@
+﻿{
+    "meta":  {
+                 "page":  "encargado-caja-index.html",
+                 "path":  "pages/encargados/encargado-caja-index.html",
+                 "scannedAt":  "2026-02-16 15:26:53",
+                 "totalLines":  81,
+                 "module":  "encargados"
+             },
+    "linkedAssets":  {
+                         "css":  [
+                                     "../../assets/css/tokens.css",
+                                     "../../assets/css/components.css",
+                                     "../../assets/css/admin-central-stock.css",
+                                     "../../assets/css/launcher.css"
+                                 ],
+                         "js":  [
+                                    "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js",
+                                    "../../assets/js/core/config.js",
+                                    "../../assets/js/core/supabase-client.js",
+                                    "../../assets/js/core/utils.js",
+                                    "../../assets/js/core/auth.js",
+                                    "../../assets/js/core/toast.js",
+                                    "../../assets/js/core/work-day-helper.js",
+                                    "../../assets/js/core/navigation.js",
+                                    "../../assets/js/modules/encargados/encargado-caja-index.js"
+                                ]
+                     },
+    "classInventory":  {
+                           "totalUnique":  30,
+                           "goldenStandard":  [
+                                                  "topbar",
+                                                  "topbar-start",
+                                                  "topbar-center",
+                                                  "topbar-end",
+                                                  "breadcrumb",
+                                                  "breadcrumb-item",
+                                                  "hidden"
+                                              ],
+                           "unclassified":  [
+                                                "admin-shell",
+                                                "app-shell",
+                                                "avatar",
+                                                "avatar-sm",
+                                                "current",
+                                                "dropdown-container",
+                                                "dropdown-divider",
+                                                "dropdown-header",
+                                                "dropdown-icon",
+                                                "dropdown-item",
+                                                "dropdown-item-danger",
+                                                "dropdown-menu",
+                                                "dropdown-user",
+                                                "is-disabled",
+                                                "launcher-center",
+                                                "launcher-footer",
+                                                "launcher-page",
+                                                "launcher-title",
+                                                "main-nav",
+                                                "nav-link",
+                                                "status-closed",
+                                                "workday-dot",
+                                                "workday-status"
+                                            ]
+                       },
+    "elements":  {
+                     "headings":  {
+                                      "h1":  1
+                                  },
+                     "nativeSelect":  0,
+                     "input":  0,
+                     "textarea":  0,
+                     "button":  1,
+                     "dialog":  0,
+                     "table":  0,
+                     "form":  0,
+                     "canvas":  0,
+                     "aside":  0
+                 },
+    "aria":  {
+                 "coverage":  {
+                                  "ariaLabel":  1,
+                                  "ariaLabelBy":  0,
+                                  "role":  0,
+                                  "scope":  0,
+                                  "tabindex":  0
+                              },
+                 "total":  1
+             },
+    "dataAttributes":  [
+                           "data-allowed-roles"
+                       ],
+    "antiPatterns":  {
+                         "inlineStyles":  [
+
+                                          ],
+                         "inlineStyleCount":  0,
+                         "nativeSelectCount":  0,
+                         "hasCustomDropdown":  false
+                     },
+    "goldenCompliance":  {
+                             "overallScore":  42,
+                             "totalPoints":  18,
+                             "maxPoints":  43,
+                             "categories":  {
+                                                "Layout":  {
+                                                               "relevant":  true,
+                                                               "present":  [
+
+                                                                           ],
+                                                               "missing":  [
+                                                                               "page-shell",
+                                                                               "page-card-wrap",
+                                                                               "page-card"
+                                                                           ],
+                                                               "score":  0,
+                                                               "maxScore":  9,
+                                                               "pct":  0
+                                                           },
+                                                "Navigation":  {
+                                                                   "relevant":  true,
+                                                                   "present":  [
+                                                                                   "topbar",
+                                                                                   "topbar-start",
+                                                                                   "topbar-center",
+                                                                                   "topbar-end",
+                                                                                   "breadcrumb",
+                                                                                   "breadcrumb-item"
+                                                                               ],
+                                                                   "missing":  [
+                                                                                   "breadcrumb-link",
+                                                                                   "breadcrumb-sep"
+                                                                               ],
+                                                                   "score":  18,
+                                                                   "maxScore":  24,
+                                                                   "pct":  75
+                                                               },
+                                                "Header":  {
+                                                               "relevant":  true,
+                                                               "present":  [
+
+                                                                           ],
+                                                               "missing":  [
+                                                                               "dashboard-header",
+                                                                               "dashboard-title",
+                                                                               "dashboard-title-soft",
+                                                                               "dashboard-subtitle-soft",
+                                                                               "actions-bar"
+                                                                           ],
+                                                               "score":  0,
+                                                               "maxScore":  10,
+                                                               "pct":  0
+                                                           },
+                                                "Metrics":  {
+                                                                "relevant":  false,
+                                                                "present":  [
+
+                                                                            ],
+                                                                "missing":  {
+
+                                                                            },
+                                                                "score":  0,
+                                                                "maxScore":  0,
+                                                                "pct":  0
+                                                            },
+                                                "Sidebar":  {
+                                                                "relevant":  false,
+                                                                "present":  [
+
+                                                                            ],
+                                                                "missing":  {
+
+                                                                            },
+                                                                "score":  0,
+                                                                "maxScore":  0,
+                                                                "pct":  0
+                                                            },
+                                                "TabSystem":  {
+                                                                  "relevant":  false,
+                                                                  "present":  [
+
+                                                                              ],
+                                                                  "missing":  {
+
+                                                                              },
+                                                                  "score":  0,
+                                                                  "maxScore":  0,
+                                                                  "pct":  0
+                                                              },
+                                                "FilterBar":  {
+                                                                  "relevant":  false,
+                                                                  "present":  [
+
+                                                                              ],
+                                                                  "missing":  {
+
+                                                                              },
+                                                                  "score":  0,
+                                                                  "maxScore":  0,
+                                                                  "pct":  0
+                                                              },
+                                                "Tables":  {
+                                                               "relevant":  false,
+                                                               "present":  [
+
+                                                                           ],
+                                                               "missing":  {
+
+                                                                           },
+                                                               "score":  0,
+                                                               "maxScore":  0,
+                                                               "pct":  0
+                                                           },
+                                                "Buttons":  {
+                                                                "relevant":  false,
+                                                                "present":  [
+
+                                                                            ],
+                                                                "missing":  {
+
+                                                                            },
+                                                                "score":  0,
+                                                                "maxScore":  0,
+                                                                "pct":  0
+                                                            },
+                                                "Modals":  {
+                                                               "relevant":  false,
+                                                               "present":  [
+
+                                                                           ],
+                                                               "missing":  {
+
+                                                                           },
+                                                               "score":  0,
+                                                               "maxScore":  0,
+                                                               "pct":  0
+                                                           },
+                                                "Panels":  {
+                                                               "relevant":  false,
+                                                               "present":  [
+
+                                                                           ],
+                                                               "missing":  {
+
+                                                                           },
+                                                               "score":  0,
+                                                               "maxScore":  0,
+                                                               "pct":  0
+                                                           },
+                                                "CustomDropdowns":  {
+                                                                        "relevant":  false,
+                                                                        "present":  [
+
+                                                                                    ],
+                                                                        "missing":  {
+
+                                                                                    },
+                                                                        "score":  0,
+                                                                        "maxScore":  0,
+                                                                        "pct":  0
+                                                                    },
+                                                "Charts":  {
+                                                               "relevant":  false,
+                                                               "present":  [
+
+                                                                           ],
+                                                               "missing":  {
+
+                                                                           },
+                                                               "score":  0,
+                                                               "maxScore":  0,
+                                                               "pct":  0
+                                                           },
+                                                "Dropbox":  {
+                                                                "relevant":  false,
+                                                                "present":  [
+
+                                                                            ],
+                                                                "missing":  {
+
+                                                                            },
+                                                                "score":  0,
+                                                                "maxScore":  0,
+                                                                "pct":  0
+                                                            },
+                                                "Forms":  {
+                                                              "relevant":  false,
+                                                              "present":  [
+
+                                                                          ],
+                                                              "missing":  {
+
+                                                                          },
+                                                              "score":  0,
+                                                              "maxScore":  0,
+                                                              "pct":  0
+                                                          },
+                                                "Stats":  {
+                                                              "relevant":  false,
+                                                              "present":  [
+
+                                                                          ],
+                                                              "missing":  {
+
+                                                                          },
+                                                              "score":  0,
+                                                              "maxScore":  0,
+                                                              "pct":  0
+                                                          },
+                                                "Utilities":  {
+                                                                  "relevant":  true,
+                                                                  "present":  [
+                                                                                  "hidden"
+                                                                              ],
+                                                                  "missing":  [
+                                                                                  "u-hidden",
+                                                                                  "u-visible",
+                                                                                  "text-center",
+                                                                                  "text-right",
+                                                                                  "text-xs",
+                                                                                  "text-muted",
+                                                                                  "badge",
+                                                                                  "badge-quiet"
+                                                                              ],
+                                                                  "score":  0,
+                                                                  "maxScore":  0,
+                                                                  "pct":  0
+                                                              }
+                                            }
+                         },
+    "remediationHints":  [
+                             "HIGH: [Layout] Agregar: page-shell, page-card-wrap, page-card",
+                             "HIGH: [Navigation] Agregar: breadcrumb-link, breadcrumb-sep",
+                             "MED: [Header] Agregar: dashboard-header, dashboard-title, dashboard-title-soft, dashboard-subtitle-soft, actions-bar",
+                             "LOW: [Utilities] Agregar: u-hidden, u-visible, text-center, text-right, text-xs, text-muted, badge, badge-quiet"
+                         ]
+}

@@ -6,12 +6,13 @@
 
 ## Documentos Core
 
-| Documento                                        | Propósito                      |
-| :----------------------------------------------- | :----------------------------- |
-| [estado-presente.md](./estado-presente.md)       | Métricas actuales del proyecto |
-| [screen-map.md](./screen-map.md)                 | Mapa de pantallas por rol      |
-| [scheme.md](./scheme.md)                         | Esquema de BD (Supabase)       |
-| [ui-golden-standard.md](./ui-golden-standard.md) | Estándares UI/UX y componentes |
+| Documento                                                    | Propósito                      |
+| :----------------------------------------------------------- | :----------------------------- |
+| [estado-presente.md](./estado-presente.md)                   | Métricas actuales del proyecto |
+| [screen-map.md](./screen-map.md)                             | Mapa de pantallas por rol      |
+| [scheme.md](./scheme.md)                                     | Esquema de BD (Supabase)       |
+| [ui-golden-standard.md](./ui-golden-standard.md)             | Estándares UI/UX y componentes |
+| [backend-architecture-map.md](./backend-architecture-map.md) | Mapa de arquitectura backend   |
 
 ---
 
@@ -22,6 +23,26 @@
 | [navigation.md](./guides/navigation.md)                         | Navegación por rol, componentes de menú |
 | [state-management-guide.md](./guides/state-management-guide.md) | Patrones de estado JS por módulo        |
 | [drive-troubleshooting.md](./guides/drive-troubleshooting.md)   | Solución de problemas Google Drive MCP  |
+
+---
+
+## Lógica de Negocio (`/business-logic`)
+
+| Documento                                                   | Contenido                               |
+| :---------------------------------------------------------- | :-------------------------------------- |
+| [synthesis-report.md](./business-logic/synthesis-report.md) | Síntesis de reglas de negocio           |
+| `flows/`                                                    | Flujos operativos (workdays, cash, bar) |
+
+---
+
+## Testing (`/testing`)
+
+| Documento                        | Contenido                                 |
+| :------------------------------- | :---------------------------------------- |
+| [README.md](./testing/README.md) | Pipeline de testing interactivo           |
+| `observations/`                  | Hallazgos crudos por pantalla             |
+| `tickets/`                       | Tickets accionables (5 activos)           |
+| `plans/`                         | Planes de ejecución generados por agentes |
 
 ---
 
@@ -91,17 +112,19 @@ Cada agente documenta exclusivamente en su carpeta. Ver [README](./output/README
 
 ### Sub-Agentes (`.agent/agents/`)
 
-| Agente     | Dominio                              | Skills                                                         |
-| :--------- | :----------------------------------- | :------------------------------------------------------------- |
-| `frontend` | UI/CSS/layout/componentes            | css-architect, web-designer, ui-migrator                       |
-| `logic`    | JS modules, state, auth, integración | logic-engineer, prototyper                                     |
-| `data`     | Schema Supabase, RPCs, migraciones   | db-architect, erp-architect                                    |
-| `qa`       | Auditorías, coherencia, higiene      | auditing-workspace, module-coherence-auditor                   |
-| `product`  | UX, journeys, documentación          | ux-researcher-designer, brand-developer, methodology-generator |
+| Agente         | Dominio                              | Skills                                                         |
+| :------------- | :----------------------------------- | :------------------------------------------------------------- |
+| `frontend`     | UI/CSS/layout/componentes            | css-architect, web-designer, ui-migrator                       |
+| `logic`        | JS modules, state, auth, integración | logic-engineer, prototyper                                     |
+| `data`         | Schema Supabase, RPCs, migraciones   | db-architect, erp-architect                                    |
+| `qa`           | Auditorías, coherencia, higiene      | auditing-workspace, module-coherence-auditor, testing-pipeline |
+| `product`      | UX, journeys, documentación          | ux-researcher-designer, brand-developer, methodology-generator |
+| `orchestrator` | Routing, delegación, validación      | leader                                                         |
+| `security-ops` | Seguridad, watchdogs, backups        | security-ops                                                   |
 
 ### Skills Atómicos (`.agent/skills/`)
 
-13 skills técnicos reutilizables. Skills destacados:
+15 skills técnicos reutilizables. Skills destacados:
 
 - `leader/` — Orquestación de agentes (orchestrator)
 - `css-architect/` — Reglas de UI/CSS

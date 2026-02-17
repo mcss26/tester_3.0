@@ -18,20 +18,24 @@
 <body class="app-shell admin-shell" data-allowed-roles="admin">
 
     <header class="topbar">
-        <div class="topbar-left">
-            <button id="btnBack" type="button" class="btn-icon">
+        <div class="topbar-start">
+            <button id="btnBack" type="button" class="btn-icon" aria-label="Volver a Admin">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round">
                     <path d="m15 18-6-6 6-6" />
                 </svg>
                 Volver
             </button>
-            <h1 class="topbar-brand">Nuevo Lote de Accesos</h1>
+            <nav class="breadcrumb" aria-label="Navegación">
+                <span class="breadcrumb-item"><a class="breadcrumb-link" href="../admin-index.html">ADMIN</a></span>
+                <span class="breadcrumb-sep">/</span>
+                <span class="breadcrumb-item current">QR GENERADOR</span>
+            </nav>
         </div>
         <nav class="topbar-center"></nav>
-        <div class="topbar-right">
-            <button id="btnPreview" class="btn btn-secondary">Previsualizar</button>
-            <button id="btnPrint" class="btn btn-primary">
+        <div class="topbar-end">
+            <button id="btnPreview" class="btn btn-secondary" aria-label="Previsualizar QR">Previsualizar</button>
+            <button id="btnPrint" class="btn btn-primary" aria-label="Guardar e imprimir lote">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="6 9 6 2 18 2 18 9" />
                     <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
@@ -42,7 +46,7 @@
         </div>
     </header>
 
-    <main class="admin-container">
+    <main class="page-shell admin-container">
         <div class="qr-grid">
             <!-- Config Column -->
             <div>
@@ -51,12 +55,13 @@
 
                     <div class="field">
                         <label>Nombre del Lote</label>
-                        <input id="batchName" type="text" placeholder="Ej: VIP Viernes 26/01" class="w-full">
+                        <input id="batchName" type="text" placeholder="Ej: VIP Viernes 26/01" class="w-full"
+                            aria-label="Nombre del lote">
                     </div>
 
                     <div class="field">
                         <label>Tipo Financiero</label>
-                        <select id="financialType" class="w-full">
+                        <select id="financialType" class="w-full" aria-label="Tipo financiero">
                             <option value="INVITACION">Invitación (Gratis)</option>
                             <option value="VENTA">Venta (Entrada Paga)</option>
                             <option value="CORTESIA">Cortesía (RRPP)</option>
@@ -65,7 +70,7 @@
 
                     <div class="field hidden" id="marketSourceField">
                         <label>Origen (Market Source)</label>
-                        <select id="marketSource" class="w-full">
+                        <select id="marketSource" class="w-full" aria-label="Origen de mercado">
                             <option value="" disabled selected>Seleccionar Origen</option>
                             <option value="PASSLINE">Passline</option>
                             <option value="BOLETERIA">Boletería Física</option>
@@ -127,7 +132,8 @@
             <div class="qr-card h-full">
                 <div class="preview-header">
                     <span class="preview-title">Vista Previa</span>
-                    <button id="btnClear" class="btn-ghost btn-sm muted">Limpiar</button>
+                    <button id="btnClear" class="btn-ghost btn-sm muted"
+                        aria-label="Limpiar vista previa">Limpiar</button>
                 </div>
                 <div id="previewArea" class="preview-area">
                 </div>
@@ -144,6 +150,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script defer src="../../../assets/js/core/config.js"></script>
     <script defer src="../../../assets/js/core/supabase-client.js"></script>
+    <script defer src="../../../assets/js/core/utils.js"></script>
     <script defer src="../../../assets/js/core/auth.js"></script>
     <script defer src="../../../assets/js/modules/admin/qr-generator.js"></script>
 </body>

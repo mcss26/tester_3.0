@@ -2,11 +2,11 @@
 
 Listado actualizado automáticamente al 16/02/2026.
 
-> **Actualización Fase 4** (Updated: 2026-02-07 12:15): Se agregaron tablas de auditoría, configuración de costos y reportes financieros semanales.
+> **Actualización Fase 4.1** (Updated: 2026-02-16 16:30): Sincronización completa contra Supabase real.
 >
-> - `auth_audit_log` - Auditoría de accesos.
-> - `finance_weekly_closings` - Cierres semanales.
-> - `import_logs` - Trazabilidad de importaciones.
+> - Agregadas 4 tablas GBOL API: `import_gbol_facturacion`, `import_gbol_comandas`, `import_gbol_withdrawals`, `gbol_sync_log`.
+> - Corregidas columnas en ~25 tablas (renombramientos, columnas nuevas, checks actualizados).
+> - Conteos de filas actualizados.
 
 ## Tablas Publicas
 
@@ -16,10 +16,10 @@ _Tabla de cuentas por pagar (gastos)._
 
 - **id** (uuid) - PK
 - **event_id** (uuid) - FK -> events.id
-- **amount** (numeric)
+- **amount** (numeric) - DEFAULT 0
 - **concept** (text)
 - **due_date** (date)
-- **status** (text)
+- **status** (text) - DEFAULT 'pending'
 - **created_at** (timestamp with time zone)
 - **updated_at** (timestamp with time zone)
 - **work_day_id** (uuid) - FK -> work_days.id
@@ -29,31 +29,31 @@ _Tabla de cuentas por pagar (gastos)._
 
 ### audit_config
 
-_Configuración de credenciales y parámetros de auditoría por dominio (e.g. GBOL). Key-value store con JSONB._
+_Configuración de umbrales y reglas de clasificación para auditorías de cierre de noche._
 
 - **id** (uuid) - PK
 - **domain** (text) - Dominio de configuración (e.g. 'gbol')
-- **key** (text) - Nombre del parámetro (e.g. 'email', 'password')
+- **key** (text) - Nombre del parámetro
 - **value** (jsonb) - Valor del parámetro
-- **is_active** (boolean) - Flag de activación
+- **description** (text) - Descripción del parámetro
+- **is_active** (boolean) - DEFAULT true
 - **created_at** (timestamp with time zone)
-
-> ⚠️ Estructura inferida de `gbol-service.js` — verificar columnas contra Supabase.
+- **updated_at** (timestamp with time zone)
 
 ### auth_audit_log
 
-_Audit trail de eventos de autenticación._
+_Audit trail de eventos de autenticación para detección de abusos. (~6627 rows)_
 
 - **id** (uuid) - PK
 - **created_at** (timestamp with time zone)
-- **action** (text)
+- **action** (text) - CHECK: 'login','login_failed','recovery','password_change','session_validate'
 - **member_id** (text)
 - **member_uuid** (uuid) - FK -> members.id
 - **ip_address** (text)
 - **user_agent** (text)
-- **success** (boolean)
+- **success** (boolean) - DEFAULT true
 - **error_message** (text)
-- **metadata** (jsonb)
+- **metadata** (jsonb) - DEFAULT '{}'
 
 ### bar_session_sales
 
@@ -63,10 +63,10 @@ _Ventas importadas sistema externo (Gbol) para conciliación._
 - **session_id** (uuid) - FK -> bar_sessions.id
 - **external_id** (text)
 - **product_name** (text)
-- **quantity** (numeric)
-- **total_amount** (numeric)
-- **payment_method** (text) - Payment method: 'cash', 'card', 'transfer', 'other' (Fase 4)
-- **imported_at** (timestamp without time zone)
+- **quantity** (numeric) - DEFAULT 0
+- **total_amount** (numeric) - DEFAULT 0
+- **imported_at** (timestamp with time zone)
+- **payment_method** (text) - DEFAULT 'cash', CHECK: 'cash','card','transfer','other'
 
 ### bar_sessions
 
@@ -74,15 +74,15 @@ _Sesiones de apertura/cierre de barra._
 
 - **id** (uuid) - PK
 - **work_day_id** (uuid) - FK -> work_days.id
-- **location** (text)
 - **opened_by** (uuid) - FK -> profiles.id
-- **opened_at** (timestamp with time zone)
-- **status** (text)
-- **closing_notes** (text)
-- **closed_at** (timestamp with time zone)
 - **closed_by** (uuid) - FK -> profiles.id
-- **created_at** (timestamp with time zone)
+- **location** (text) - DEFAULT 'General'
+- **opened_at** (timestamp with time zone)
+- **closed_at** (timestamp with time zone)
+- **status** (text) - DEFAULT 'active'
 - **opening_notes** (text)
+- **closing_notes** (text)
+- **created_at** (timestamp with time zone)
 
 ### bar_stock_snapshots
 
@@ -101,16 +101,16 @@ _Capturas de stock (apertura/cierre) por sesión de barra._
 _Cierres de caja (arqueos)._
 
 - **id** (uuid) - PK
-- **work_day_id** (uuid) - FK -> work_days.id
-- **closed_by** (uuid)
-- **event_date** (date)
-- **status** (text)
-- **total_system** (numeric)
-- **total_declared** (numeric)
-- **total_difference** (numeric)
+- **event_date** (date) - UNIQUE
+- **status** (text) - DEFAULT 'open', CHECK: 'open','closed'
+- **closed_at** (timestamp with time zone)
+- **closed_by** (uuid) - FK -> auth.users.id
 - **notes** (text)
 - **created_at** (timestamp with time zone)
-- **closed_at** (timestamp with time zone)
+- **work_day_id** (uuid) - FK -> work_days.id
+- **total_system** (numeric) - DEFAULT 0
+- **total_declared** (numeric) - DEFAULT 0
+- **total_difference** (numeric) - DEFAULT 0
 
 ### cash_movements
 
@@ -119,15 +119,15 @@ _Movimientos de caja (ingresos/egresos)._
 - **id** (uuid) - PK
 - **cash_closing_id** (uuid) - FK -> cash_closings.id
 - **terminal_id** (uuid) - FK -> pos_terminals.id
-- **requested_by** (uuid)
-- **confirmed_by** (uuid)
-- **type** (text)
 - **amount** (numeric)
+- **type** (text) - DEFAULT 'withdrawal', CHECK: 'withdrawal','deposit'
 - **reason** (text)
-- **status** (text)
-- **external_id** (text) - Unique ID from external CSV import (deduplication)
+- **requested_by** (uuid) - FK -> auth.users.id
+- **confirmed_by** (uuid) - FK -> auth.users.id
+- **status** (text) - DEFAULT 'pending', CHECK: 'pending','confirmed','rejected'
 - **created_at** (timestamp with time zone)
 - **confirmed_at** (timestamp with time zone)
+- **external_id** (text) - ID único desde CSV para deduplicación. Formato: EXT-{terminal}-{timestamp}-{amount}
 
 ### closing_terminals
 
@@ -136,18 +136,19 @@ _Detalle de cierre por terminal._
 - **id** (uuid) - PK
 - **cash_closing_id** (uuid) - FK -> cash_closings.id
 - **terminal_id** (uuid) - FK -> pos_terminals.id
-- **staff_id** (uuid)
-- **system_cash** (numeric)
-- **system_zoco** (numeric)
-- **declared_cash** (numeric)
-- **declared_zoco** (numeric)
-- **status** (text)
-- **created_at** (timestamp with time zone)
+- **staff_id** (uuid) - FK -> auth.users.id
+- **declared_cash** (numeric) - DEFAULT 0
+- **declared_zoco** (numeric) - DEFAULT 0
+- **system_cash** (numeric) - DEFAULT 0
+- **system_zoco** (numeric) - DEFAULT 0
+- **status** (text) - DEFAULT 'pending', CHECK: 'pending','submitted','verified'
 - **submitted_at** (timestamp with time zone)
+- **created_at** (timestamp with time zone)
+- **signature_data** (text)
 
 ### consumption_details
 
-_Desglose de consumo por SKU por reporte._
+_Desglose de consumo por SKU por reporte. (~90 rows)_
 
 - **id** (uuid) - PK
 - **report_id** (uuid) - FK -> consumption_reports.id
@@ -157,62 +158,64 @@ _Desglose de consumo por SKU por reporte._
 
 ### consumption_reports
 
-_Reportes de consumo importados (Excel)._
+_Reportes de consumo importados (Excel). (~5 rows)_
 
 - **id** (uuid) - PK
 - **operational_date** (date)
 - **file_name** (text)
 - **created_at** (timestamp with time zone)
+- **report_type** (text) - DEFAULT 'consumption', CHECK: 'consumption','revenue'
 
 ### cost_config
 
-_Configuración de tasas fiscales y comisiones._
+_Configuración de tasas fiscales y comisiones por canal de pago. (~21 rows)_
 
 - **id** (uuid) - PK
-- **category** (text)
+- **category** (text) - CHECK: 'tax','channel'
 - **channel_name** (text)
 - **fee_type** (text)
 - **name** (text)
-- **rate** (numeric)
-- **rate_type** (text)
-- **applies_to** (text)
+- **rate** (numeric) - DEFAULT 0 — Tasa como decimal (0.21 = 21%)
+- **rate_type** (text) - DEFAULT 'percentage', CHECK: 'percentage','fixed'
+- **applies_to** (text) - DEFAULT 'base', CHECK: 'base','final','profit'
 - **notes** (text)
-- **active** (boolean)
+- **active** (boolean) - DEFAULT true
 - **created_at** (timestamp with time zone)
 - **updated_at** (timestamp with time zone)
 
 ### cost_definitions
 
-_Definiciones de costos recurrentes y fijos._
+_Definiciones de costos recurrentes y por noche. Alimenta la cola de pagos. (~14 rows)_
 
 - **id** (uuid) - PK
 - **title** (text)
-- **category** (text)
-- **frequency** (text)
-- **base_amount** (numeric)
-- **amount_mode** (text)
-- **tax_rate** (numeric)
-- **total_with_tax** (numeric)
+- **category** (text) - CHECK: 'RECURRENTE','FIJO'
+- **frequency** (text) - CHECK: 'per_event','weekly','monthly','quarterly','semestral','annual'
+- **base_amount** (numeric) - DEFAULT 0
+- **amount_mode** (text) - DEFAULT 'FIXED', CHECK: 'FIXED','VARIABLE'
+- **tax_rate** (numeric) - DEFAULT 0
+- **total_with_tax** (numeric) - DEFAULT 0
 - **supplier_id** (uuid) - FK -> master_proveedores.id
 - **payment_method** (text)
 - **due_day** (integer)
-- **holiday_rule** (text)
+- **holiday_rule** (text) - DEFAULT 'IGNORE', CHECK: 'IGNORE','PREV','NEXT'
 - **voucher_type** (text)
-- **is_active** (boolean)
+- **is_active** (boolean) - DEFAULT true
 - **notes** (text)
 - **created_at** (timestamp with time zone)
 - **updated_at** (timestamp with time zone)
 
 ### events
 
-_Eventos especiales._
+_Eventos especiales. (~9 rows)_
 
 - **id** (uuid) - PK
 - **name** (text)
 - **date** (date)
-- **status** (text)
+- **status** (text) - DEFAULT 'open'
 - **created_at** (timestamp with time zone)
 - **updated_at** (timestamp with time zone)
+- **event_time** (time without time zone) - DEFAULT '23:59:00' — Hora del evento para countdown
 
 ### finance_opening_cost_defs
 
@@ -222,11 +225,11 @@ _Definiciones de costos de apertura._
 - **created_at** (timestamp with time zone)
 - **title** (text)
 - **supplier_id** (uuid) - FK -> master_proveedores.id
-- **amount_mode** (text)
-- **default_amount** (numeric)
-- **due_days_before** (integer)
-- **sort_order** (integer)
-- **is_active** (boolean)
+- **amount_mode** (text) - DEFAULT 'FIXED'
+- **default_amount** (numeric) - DEFAULT 0
+- **due_days_before** (integer) - DEFAULT 0
+- **sort_order** (integer) - DEFAULT 100
+- **is_active** (boolean) - DEFAULT true
 
 ### finance_payment_rules
 
@@ -235,18 +238,18 @@ _Reglas de pago a proveedores._
 - **id** (uuid) - PK
 - **created_at** (timestamp with time zone)
 - **title** (text)
-- **supplier_id** (uuid) - FK -> master_proveedores.id
 - **rule_type** (text)
-- **amount_mode** (text)
-- **fixed_amount** (numeric)
-- **day_of_month** (integer)
+- **supplier_id** (uuid) - FK -> master_proveedores.id
+- **amount_mode** (text) - DEFAULT 'FIXED'
+- **fixed_amount** (numeric) - DEFAULT 0
+- **is_active** (boolean) - DEFAULT true
 - **weekday** (integer)
-- **on_holiday_action** (text)
-- **is_active** (boolean)
+- **day_of_month** (integer)
+- **on_holiday_action** (text) - DEFAULT 'IGNORE'
 
 ### finance_payments
 
-_Pagos realizados._
+_Pagos realizados. (~4 rows)_
 
 - **id** (uuid) - PK
 - **created_at** (timestamp with time zone)
@@ -254,34 +257,118 @@ _Pagos realizados._
 - **title** (text)
 - **supplier_id** (uuid) - FK -> master_proveedores.id
 - **due_date** (date)
-- **amount_total** (numeric)
-- **status** (text)
+- **amount_total** (numeric) - DEFAULT 0
+- **status** (text) - DEFAULT 'PENDING'
 - **done_at** (timestamp with time zone)
 - **voucher_type** (text)
 - **payment_method** (text)
 - **notes** (text)
-- **rule_id** (uuid)
-- **opening_def_id** (uuid)
+- **created_by** (uuid)
+- **supplier_order_id** (uuid)
+- **cost_definition_id** (uuid)
+- **work_day_id** (uuid)
+- **invoice_number** (text)
+- **invoice_date** (date)
+- **invoice_amount** (numeric)
+- **approved_by** (uuid)
+- **approved_at** (timestamp with time zone)
+- **opening_def_id** (uuid) - FK -> finance_opening_cost_defs.id
+- **rule_id** (uuid) - FK -> finance_payment_rules.id
 
 ### finance_weekly_closings
 
 _Cierres semanales financieros (White/Black)._
 
 - **id** (uuid) - PK
-- **week_start** (date)
-- **income_white** (numeric)
-- **income_black** (numeric)
-- **expense_white** (numeric)
-- **expense_black** (numeric)
-- **tax_estimate** (numeric)
-- **status** (text)
+- **week_start** (date) - UNIQUE
+- **income_white** (numeric) - DEFAULT 0
+- **income_black** (numeric) - DEFAULT 0
+- **expense_white** (numeric) - DEFAULT 0
+- **expense_black** (numeric) - DEFAULT 0
+- **tax_estimate** (numeric) - DEFAULT 0
+- **status** (text) - DEFAULT 'CLOSED', CHECK: 'CLOSED','AUDITED'
 - **notes** (text)
 - **closed_at** (timestamp with time zone)
 - **closed_by** (uuid) - FK -> auth.users.id
 
+### gbol_sync_log
+
+_Audit log de operaciones de sincronización GBOL API._
+
+- **id** (uuid) - PK
+- **endpoint** (text)
+- **noche** (date)
+- **punto_venta** (text)
+- **records_imported** (integer) - DEFAULT 0
+- **status** (text) - CHECK: 'success','partial','error'
+- **error_detail** (text)
+- **duration_ms** (integer)
+- **synced_by** (uuid) - FK -> auth.users.id
+- **synced_at** (timestamp with time zone)
+
+### import_gbol_comandas
+
+_Detalle de items vendidos por ticket desde GBOL API Endpoint #3 (comandas por noche)._
+
+- **id** (uuid) - PK
+- **gbol_ticket_id** (text)
+- **noche** (date)
+- **tipo** (text) - CHECK: 'venta','descuento','cortesia'
+- **gbol_caja** (text)
+- **hora** (text)
+- **external_id** (text)
+- **product_name** (text)
+- **cantidad** (numeric) - DEFAULT 0
+- **monto** (numeric) - DEFAULT 0
+- **precio_unitario** (numeric) - DEFAULT 0
+- **imported_at** (timestamp with time zone)
+
+### import_gbol_facturacion
+
+_Tickets fiscales importados desde GBOL API Endpoint #1 (facturacionElectronicaConsulta)._
+
+- **id** (uuid) - PK
+- **gbol_ticket_id** (text)
+- **noche** (date)
+- **tipo_fiscal** (text) - CHECK: 'blanco','negro'
+- **tipo_comprobante** (text) - CHECK: 'A','B','X'
+- **cae** (text)
+- **nro_factura** (text)
+- **punto_venta** (integer)
+- **total** (numeric) - DEFAULT 0
+- **efectivo** (numeric) - DEFAULT 0
+- **digital** (numeric) - DEFAULT 0
+- **tarjetas** (numeric) - DEFAULT 0
+- **mercadopago** (numeric) - DEFAULT 0
+- **base_imponible** (numeric) - DEFAULT 0
+- **iva** (numeric) - DEFAULT 0
+- **gbol_caja_nombre** (text)
+- **terminal_id** (uuid) - FK -> pos_terminals.id
+- **cliente_cuit** (text)
+- **cliente_razon** (text)
+- **raw_data** (jsonb)
+- **imported_at** (timestamp with time zone)
+
+### import_gbol_withdrawals
+
+_Extracciones de caja GBOL. Synced durante noches activas via syncNight flow._
+
+- **id** (uuid) - PK
+- **noche** (date)
+- **gbol_id** (text)
+- **gbol_caja_nombre** (text)
+- **terminal_id** (uuid) - FK -> pos_terminals.id
+- **monto** (numeric) - DEFAULT 0
+- **motivo** (text)
+- **autorizado_por** (text)
+- **operador** (text)
+- **hora** (timestamp with time zone)
+- **raw_data** (jsonb)
+- **imported_at** (timestamp with time zone)
+
 ### import_logs
 
-_Logs de importaciones CSV._
+_Logs de importaciones CSV. (RLS: OFF)_
 
 - **id** (uuid) - PK
 - **work_day_id** (uuid) - FK -> work_days.id
@@ -291,11 +378,11 @@ _Logs de importaciones CSV._
 - **started_at** (timestamp with time zone)
 - **completed_at** (timestamp with time zone)
 - **duration_ms** (integer)
-- **status** (text)
-- **rows_processed** (integer)
-- **rows_imported** (integer)
-- **rows_skipped** (integer)
-- **rows_failed** (integer)
+- **status** (text) - DEFAULT 'pending'
+- **rows_processed** (integer) - DEFAULT 0
+- **rows_imported** (integer) - DEFAULT 0
+- **rows_skipped** (integer) - DEFAULT 0
+- **rows_failed** (integer) - DEFAULT 0
 - **error_message** (text)
 - **error_details** (jsonb)
 - **warnings** (jsonb)
@@ -304,14 +391,12 @@ _Logs de importaciones CSV._
 
 ### inventory_ideal
 
-_Stock ideal por SKU._
+_Stock ideal por SKU. PK = sku_id (1 row por SKU)._
 
-- **id** (uuid) - PK
-- **sku_id** (uuid) - FK -> master_sku.id
-- **ideal_stock** (numeric)
-- **min_stock** (numeric)
-- **event_type** (text)
-- **created_at** (timestamp with time zone)
+- **sku_id** (uuid) - PK, FK -> master_sku.id
+- **ideal_500** (numeric) - Stock ideal para 500 asistentes
+- **ideal_900** (numeric) - Stock ideal para 900 asistentes
+- **updated_at** (timestamp with time zone)
 
 ### inventory_movements
 
@@ -319,23 +404,21 @@ _Movimientos de inventario (kardex)._
 
 - **id** (uuid) - PK
 - **sku_id** (uuid) - FK -> master_sku.id
-- **created_by** (uuid) - FK -> profiles.id
-- **type** (text)
-- **quantity** (numeric)
-- **cost** (numeric)
-- **notes** (text)
+- **qty_delta** (numeric) - Cantidad del movimiento (+/-)
+- **movement_type** (text) - Tipo de movimiento
+- **ref_table** (text) - Tabla de referencia
+- **ref_id** (uuid) - ID de referencia
+- **created_by** (uuid) - FK -> profiles.id, DEFAULT auth.uid()
 - **created_at** (timestamp with time zone)
-- **reference_id** (uuid)
 
 ### inventory_stock
 
-_Stock actual._
+_Stock actual. PK = sku_id (1 row por SKU). (~22 rows)_
 
-- **id** (uuid) - PK
-- **sku_id** (uuid) - FK -> master_sku.id
-- **quantity** (numeric)
-- **location** (text)
+- **sku_id** (uuid) - PK, FK -> master_sku.id
+- **stock_actual** (numeric) - DEFAULT 0
 - **updated_at** (timestamp with time zone)
+- **requerido** (numeric) - DEFAULT 0
 
 ### inventory_stock_adjustments
 
@@ -343,37 +426,38 @@ _Ajustes manuales de stock._
 
 - **id** (uuid) - PK
 - **sku_id** (uuid) - FK -> master_sku.id
-- **adjusted_by** (uuid) - FK -> profiles.id
-- **quantity_diff** (numeric)
+- **previous_stock** (numeric)
+- **new_stock** (numeric)
+- **delta** (numeric)
 - **reason** (text)
-- **notes** (text)
-- **created_at** (timestamp with time zone)
-- **approved_at** (timestamp with time zone)
+- **adjusted_by** (uuid) - FK -> profiles.id
+- **adjusted_at** (timestamp with time zone)
+- **source** (text) - DEFAULT 'admin_stock_tool'
 
 ### master_categories
 
-_Categorías de productos._
+_Categorías de productos. (~6 rows)_
 
 - **id** (uuid) - PK
-- **name** (text)
-- **parent_id** (uuid)
-- **is_active** (boolean)
+- **nombre** (text)
+- **active** (boolean) - DEFAULT true
 - **created_at** (timestamp with time zone)
+- **updated_at** (timestamp with time zone)
 
 ### master_proveedores
 
-_Base de proveedores._
+_Base de proveedores. (~47 rows)_
 
 - **id** (uuid) - PK
-- **name** (text)
-- **tax_id** (text)
-- **contact_name** (text)
-- **contact_email** (text)
-- **contact_phone** (text)
-- **payment_terms** (text)
+- **nombre_fantasia** (text)
+- **razon_social** (text)
+- **cuit** (text) - UNIQUE
+- **email** (text)
+- **contacto_nombre** (text)
+- **contacto_telefono** (text)
 - **banco** (text)
 - **cbu_alias** (text)
-- **active** (boolean)
+- **active** (boolean) - DEFAULT true
 - **created_at** (timestamp with time zone)
 - **updated_at** (timestamp with time zone)
 - **notas** (text)
@@ -383,119 +467,125 @@ _Base de proveedores._
 
 ### master_recipes
 
-_Recetas y fórmulas de conversión para conciliación (Venta -> Stock)._
+_Recetas y fórmulas de conversión para conciliación (Venta -> Stock). (~93 rows)_
 
 - **id** (uuid) - PK
 - **name** (text)
-- **external_id** (text)
+- **external_id** (text) - UNIQUE
 - **ingredients** (jsonb)
 - **created_at** (timestamp with time zone)
-- **precio_venta** (numeric)
+- **precio_venta** (numeric) - DEFAULT 0 — Precio de venta al público (incluye IVA)
+- **active** (boolean) - DEFAULT true
 
 ### master_sku
 
-_Catálogo de productos (SKUs)._
+_Catálogo de productos (SKUs). (~58 rows)_
 
 - **id** (uuid) - PK
 - **nombre** (text)
 - **categoria_id** (uuid) - FK -> master_categories.id
 - **proveedor_default_id** (uuid) - FK -> master_proveedores.id
-- **pack_qty** (numeric)
+- **pack_qty** (numeric) - DEFAULT 1
 - **ml_por_unidad** (numeric)
-- **costo** (numeric)
+- **costo** (numeric) - DEFAULT 0
 - **costo_pack** (numeric)
-- **external_id** (numeric)
-- **tipo** (text) - Clasificación: bar, limpieza, descartables, otros
-- **active** (boolean)
+- **external_id** (numeric) - UNIQUE
+- **active** (boolean) - DEFAULT true
 - **created_at** (timestamp with time zone)
 - **updated_at** (timestamp with time zone)
+- **tipo** (text) - DEFAULT 'bar', CHECK: 'bar','limpieza','descartables','otros'
 
 ### master_staff_roles
 
-_Roles de personal._
+_Roles de personal. (~16 rows)_
 
 - **id** (uuid) - PK
 - **name** (text)
-- **description** (text)
-- **base_salary** (numeric)
-- **permissions** (jsonb)
+- **area** (text) - Área funcional
+- **base_rate** (numeric) - DEFAULT 0 — Tarifa base por noche
+- **active** (boolean) - DEFAULT true
 - **created_at** (timestamp with time zone)
 
 ### members
 
-_Miembros del club._
+_Miembros del club. (~2495 rows)_
 
 - **id** (uuid) - PK
-- **member_id** (text)
-- **nombre** (text)
-- **email** (text)
-- **telefono** (text)
-- **instagram** (text)
-- **nacimiento** (text)
-- **status** (text)
-- **access_password** (text)
-- **access_password_hash** (text)
 - **created_at** (timestamp with time zone)
+- **nombre** (text)
+- **nacimiento** (text)
+- **instagram** (text)
+- **telefono** (text)
+- **email** (text)
+- **status** (text) - DEFAULT 'pendiente'
+- **member_id** (text)
+- **access_password_hash** (text)
+- **access_password** (text)
 
 ### menu_categories
 
-_Categorías del menú._
+_Categorías del menú. (~4 rows)_
 
 - **id** (uuid) - PK
 - **name** (text)
-- **slug** (text)
-- **display_order** (integer)
-- **is_active** (boolean)
+- **slug** (text) - UNIQUE
+- **display_order** (integer) - DEFAULT 0
+- **is_active** (boolean) - DEFAULT true
 - **created_at** (timestamp with time zone)
 
 ### menu_items
 
-_Items del menú (carta)._
+_Items del menú (carta). (~16 rows)_
 
 - **id** (uuid) - PK
 - **name** (text)
 - **price** (numeric)
 - **category** (text)
-- **is_active** (boolean)
+- **is_active** (boolean) - DEFAULT true
+- **category_id** (uuid) - FK -> menu_categories.id
 
 ### payment_categories
 
-_Categorías de métodos de pago._
+_Categorías de métodos de pago. (~5 rows)_
 
-- **id** (bigint) - PK
-- **tipo_comprobante** (text)
-- **active** (boolean)
+- **id** (bigint) - PK (identity)
 - **created_at** (timestamp with time zone)
 - **updated_at** (timestamp with time zone)
+- **tipo_comprobante** (text)
+- **active** (boolean) - DEFAULT true
+- **tax_rate** (numeric) - DEFAULT 0
 
 ### payment_methods
 
-_Métodos de pago._
+_Métodos de pago. (~6 rows)_
 
-- **id** (bigint) - PK
-- **category_id** (bigint) - FK -> payment_categories.id
-- **name** (text)
-- **active** (boolean)
+- **id** (bigint) - PK (identity)
 - **created_at** (timestamp with time zone)
 - **updated_at** (timestamp with time zone)
+- **name** (text)
+- **category_id** (bigint) - FK -> payment_categories.id
+- **active** (boolean) - DEFAULT true
+- **sort_order** (integer) - DEFAULT 100
+- **notes** (text)
 
 ### pos_terminals
 
-_Terminales de Punto de Venta._
+_Terminales de Punto de Venta. (~3 rows)_
 
 - **id** (uuid) - PK
 - **friendly_name** (text)
-- **provider** (text)
-- **external_id** (text)
-- **is_active** (boolean)
+- **is_active** (boolean) - DEFAULT true
 - **created_at** (timestamp with time zone)
+- **provider** (text) - DEFAULT 'MERCADO PAGO'
+- **external_id** (text)
+- **gbol_alias** (text) - Nombre de la caja en GBOL POS (ej: CAJA 1) para mapeo automático
 
 ### pos_terminals_alias
 
 _Mapeo de nombres de terminales externos a IDs internos._
 
 - **id** (uuid) - PK
-- **alias** (text)
+- **alias** (text) - UNIQUE
 - **terminal_id** (uuid) - FK -> pos_terminals.id
 - **created_at** (timestamp with time zone)
 
@@ -506,31 +596,32 @@ _Funciones asignadas a perfiles._
 - **id** (uuid) - PK
 - **profile_id** (uuid) - FK -> profiles.id
 - **function_id** (uuid) - FK -> staff_functions.id
-- **active** (boolean)
+- **active** (boolean) - DEFAULT true
 - **created_at** (timestamp with time zone)
 
 ### profiles
 
-_Perfiles de usuario (vinculados a auth)._
+_Perfiles de usuario (vinculados a auth). (~4 rows)_
 
 - **id** (uuid) - FK -> auth.users.id, PK
 - **full_name** (text)
-- **role** (text)
-- **active** (boolean)
+- **role** (text) - CHECK: 'admin','contable','operativo','logistico','encargado_barra','encargado_caja','encargado_limpieza','encargado_seguridad','staff_barra','staff_caja','staff_seguridad','staff_operativo'
+- **active** (boolean) - DEFAULT true
 - **created_at** (timestamp with time zone)
 
 ### qr_batches
 
-_Lotes de códigos QR (entradas/invitaciones)._
+_Lotes de códigos QR (entradas/invitaciones). (~6 rows)_
 
 - **id** (uuid) - PK
 - **name** (text)
 - **description** (text)
-- **financial_type** (text)
+- **financial_type** (text) - DEFAULT 'INVITACION'
 - **market_source** (text)
-- **unit_price** (numeric)
+- **unit_price** (numeric) - DEFAULT 0
 - **created_by** (uuid) - FK -> profiles.id
 - **created_at** (timestamp with time zone)
+- **event_id** (uuid) - FK -> events.id
 
 ### qr_checkins
 
@@ -545,47 +636,54 @@ _Logs de accesos._
 
 ### qr_codes
 
-_Códigos individuales._
+_Códigos individuales. (~6000 rows)_
 
 - **id** (uuid) - PK
 - **batch_id** (uuid) - FK -> qr_batches.id
-- **code** (text)
-- **status** (text)
+- **code** (text) - UNIQUE
+- **status** (text) - DEFAULT 'PENDIENTE', CHECK: 'PENDIENTE','ACREDITADO','ANULADO'
 - **accredited_at** (timestamp with time zone)
 - **accredited_by** (uuid) - FK -> profiles.id
 - **work_day_id** (uuid) - FK -> work_days.id
-- **external_id** (text)
 - **created_at** (timestamp with time zone)
-- **ticket_xml** (text)
+- **external_id** (text)
+- **member_id** (uuid) - FK -> members.id
+- **valid_until** (timestamp with time zone)
 
 ### recipe_code_mappings
 
 _Mapeo de códigos POS a recetas._
 
 - **id** (uuid) - PK
-- **pos_code** (text)
+- **pos_code** (text) - UNIQUE
 - **recipe_id** (uuid) - FK -> master_recipes.id
 - **notes** (text)
 - **created_at** (timestamp with time zone)
 - **updated_at** (timestamp with time zone)
+- **active** (boolean) - DEFAULT true
 
 ### replenishment_items
 
-_Items en solicitudes de reposición._
+_Items en solicitudes de reposición. (~5 rows)_
 
 - **id** (uuid) - PK
 - **request_id** (uuid) - FK -> replenishment_requests.id
 - **sku_id** (uuid) - FK -> master_sku.id
+- **requested_packs** (numeric) - DEFAULT 0
+- **is_deleted** (boolean) - DEFAULT false
+- **created_at** (timestamp with time zone)
+- **supplier_order_id** (uuid) - FK -> replenishment_supplier_orders.id
+- **supplier_id** (uuid) - FK -> master_proveedores.id
+- **status** (text) - DEFAULT 'pending', CHECK: 'pending','assigned','no_stock','backorder','cancelled','received'
+- **adjust_packs** (numeric) - DEFAULT 0
+- **adjust_reason** (text)
 - **adjust_responsible_id** (uuid) - FK -> profiles.id
-- **quantity_requested** (numeric)
-- **quantity_approved** (numeric)
-- **status** (text)
-- **notes** (text)
-- **pre_approval_status** (text)
+- **pack_cost_est** (numeric)
+- **line_total_est** (numeric)
+- **pre_approval_status** (text) - DEFAULT 'pending' — Estado: pending | pre_approved | pre_rejected
 - **pre_approved_by** (uuid) - FK -> profiles.id
 - **pre_approved_at** (timestamp with time zone)
 - **pre_rejection_reason** (text)
-- **created_at** (timestamp with time zone)
 
 ### replenishment_receipt_items
 
@@ -594,14 +692,15 @@ _Items recibidos + conteo de verificación._
 - **id** (uuid) - PK
 - **receipt_id** (uuid) - FK -> replenishment_receipts.id
 - **sku_id** (uuid) - FK -> master_sku.id
-- **quantity_received** (numeric)
-- **cost_at_receipt** (numeric)
-- **counted_qty** (numeric) - Cantidad contada físicamente (Fase 4: encargado-barra-conteo)
-- **counted_by** (uuid) - FK -> auth.users.id - Quién realizó el conteo
-- **counted_at** (timestamp with time zone) - Fecha/hora del conteo
-- **count_notes** (text) - Observaciones del conteo
-- **count_status** (text) - Estado: 'pending', 'counted', 'discrepancy'
+- **expected_units** (numeric) - DEFAULT 0
+- **received_units** (numeric) - DEFAULT 0
+- **diff_units** (numeric) - GENERATED: (received_units - expected_units)
 - **created_at** (timestamp with time zone)
+- **counted_qty** (numeric) - Cantidad contada físicamente
+- **counted_by** (uuid) - FK -> profiles.id — Quién realizó el conteo
+- **counted_at** (timestamp with time zone)
+- **count_notes** (text)
+- **count_status** (text) - DEFAULT 'pending', CHECK: 'pending','counted','discrepancy'
 
 ### replenishment_receipts
 
@@ -609,20 +708,18 @@ _Recepciones de mercadería._
 
 - **id** (uuid) - PK
 - **supplier_order_id** (uuid) - FK -> replenishment_supplier_orders.id
-- **received_by** (uuid) - FK -> profiles.id
-- **receipt_date** (timestamp with time zone)
-- **invoice_number** (text)
-- **total_amount** (numeric)
+- **received_by** (uuid) - FK -> profiles.id, DEFAULT auth.uid()
+- **received_at** (timestamp with time zone)
 - **notes** (text)
 - **created_at** (timestamp with time zone)
 
 ### replenishment_requests
 
-_Solicitudes de reposición (pedidos internos)._
+_Solicitudes de reposición (pedidos internos). (~11 rows)_
 
 - **id** (uuid) - PK
 - **user_id** (uuid) - FK -> profiles.id
-- **status** (text)
+- **status** (text) - DEFAULT 'pending'
 - **operational_date** (date)
 - **created_at** (timestamp with time zone)
 - **updated_at** (timestamp with time zone)
@@ -630,16 +727,16 @@ _Solicitudes de reposición (pedidos internos)._
 
 ### replenishment_supplier_orders
 
-_Órdenes de compra a proveedores._
+_Órdenes de compra a proveedores. (~5 rows)_
 
 - **id** (uuid) - PK
 - **request_id** (uuid) - FK -> replenishment_requests.id
 - **supplier_id** (uuid) - FK -> master_proveedores.id
-- **approved_by** (uuid) - FK -> profiles.id
-- **status** (text)
+- **status** (text) - CHECK: 'draft','ready_for_approval','approved','rejected','ordered','in_transit','arrived','received','cancelled'
 - **final_cost** (numeric)
 - **eta_date** (date)
-- **notes** (text)
+- **approved_by** (uuid) - FK -> profiles.id
+- **approved_at** (timestamp with time zone)
 - **created_at** (timestamp with time zone)
 - **updated_at** (timestamp with time zone)
 - **rejection_reason** (text)
@@ -648,42 +745,43 @@ _Órdenes de compra a proveedores._
 - **invoice_amount** (numeric)
 - **invoice_received_by** (uuid) - FK -> profiles.id
 - **invoice_received_at** (timestamp with time zone)
+- **notes** (text)
 
 ### replenishment_tracking
 
-_Seguimiento de órdenes de compra._
+_Seguimiento de órdenes de compra. (RLS: OFF)_
 
 - **id** (uuid) - PK
 - **order_id** (uuid) - FK -> replenishment_supplier_orders.id
-- **status** (text)
+- **status** (text) - CHECK: 'ordered','in_transit','arrived','delivered'
 - **notes** (text)
 - **created_by** (uuid) - FK -> profiles.id
 - **created_at** (timestamp with time zone)
 
 ### revenue_details
 
-_Detalle de reportes de recaudación._
+_Detalle de reportes de recaudación. (~148 rows)_
 
 - **id** (uuid) - PK
 - **report_id** (uuid) - FK -> revenue_reports.id
 - **recipe_id** (uuid) - FK -> master_recipes.id
 - **recipe_name** (text)
 - **external_code** (text)
-- **q_paga** (numeric)
-- **q_sin_cargo** (numeric)
-- **q_vip** (numeric)
-- **total_quantity** (numeric)
-- **total_amount** (numeric)
+- **q_paga** (numeric) - DEFAULT 0 — Cantidad vendida (pagada)
+- **q_sin_cargo** (numeric) - DEFAULT 0 — Cantidad cortesía
+- **q_vip** (numeric) - DEFAULT 0 — Cantidad tarjeta VIP
+- **total_quantity** (numeric) - DEFAULT 0
+- **total_amount** (numeric) - DEFAULT 0 — Total revenue en $ para esta receta
 - **created_at** (timestamp with time zone)
 
 ### revenue_reports
 
-_Reportes de recaudación._
+_Reportes de recaudación. (~5 rows)_
 
 - **id** (uuid) - PK
-- **operational_date** (date)
+- **operational_date** (date) - UNIQUE
 - **file_name** (text)
-- **total_revenue** (numeric)
+- **total_revenue** (numeric) - DEFAULT 0
 - **notes** (text)
 - **created_at** (timestamp with time zone)
 - **created_by** (uuid) - FK -> auth.users.id
@@ -693,13 +791,16 @@ _Reportes de recaudación._
 
 ### site_config
 
-_Configuración del sitio y variables globales._
+_Configuración del sitio y variables globales. (~10 rows)_
 
 - **id** (uuid) - PK
-- **key** (text)
+- **key** (text) - UNIQUE
 - **url** (text)
-- **is_active** (boolean)
+- **is_active** (boolean) - DEFAULT true
 - **created_at** (timestamp with time zone)
+- **name** (text) - Display name editable
+- **description** (text) - Descripción o notas opcionales
+- **sort_order** (integer) - DEFAULT 0 — Orden de display
 
 ### sku_change_requests
 
@@ -707,15 +808,34 @@ _Solicitudes de cambio en SKUs._
 
 - **id** (uuid) - PK
 - **created_at** (timestamp with time zone)
-- **status** (text)
-- **request_type** (text)
+- **status** (text) - DEFAULT 'pending', CHECK: 'pending','approved','rejected'
+- **request_type** (text) - CHECK: 'create','update','deactivate'
 - **sku_id** (uuid) - FK -> master_sku.id
 - **sku_nombre** (text)
 - **justification** (text)
-- **payload** (jsonb)
+- **payload** (jsonb) - Datos propuestos en formato JSON
 - **requested_by** (uuid) - FK -> profiles.id
 - **approved_by** (uuid) - FK -> profiles.id
 - **approved_at** (timestamp with time zone)
+
+### staff_accruals
+
+_Devenciones de nómina: convierte asistencia (staff_convocations) en deuda salarial por jornada._
+
+- **id** (uuid) - PK
+- **work_day_id** (uuid) - FK -> work_days.id
+- **user_id** (uuid) - FK -> profiles.id
+- **role_id** (uuid) - FK -> master_staff_roles.id
+- **base_amount** (numeric) - DEFAULT 0 — Tarifa del rol (snapshot de base_rate)
+- **adjustments** (numeric) - DEFAULT 0 — Ajuste manual (+/-)
+- **total_amount** (numeric) - GENERATED: base_amount + adjustments
+- **status** (text) - DEFAULT 'accrued', CHECK: 'accrued','exported','paid','cancelled'
+- **notes** (text)
+- **exported_payment_id** (uuid) - FK -> finance_payments.id
+- **created_at** (timestamp with time zone)
+- **created_by** (uuid) - FK -> auth.users.id
+- **updated_at** (timestamp with time zone)
+- **UNIQUE**: (work_day_id, user_id)
 
 ### staff_convocations
 
@@ -725,7 +845,7 @@ _Convocatorias de personal._
 - **work_day_id** (uuid) - FK -> work_days.id
 - **user_id** (uuid) - FK -> profiles.id
 - **role_id** (uuid) - FK -> master_staff_roles.id
-- **status** (text)
+- **status** (text) - DEFAULT 'pending'
 - **assigned_location** (text)
 - **convocated_by** (uuid) - FK -> profiles.id
 - **confirmed_at** (timestamp with time zone)
@@ -734,12 +854,12 @@ _Convocatorias de personal._
 
 ### staff_functions
 
-_Catálogo de funciones de staff._
+_Catálogo de funciones de staff. (~9 rows)_
 
 - **id** (uuid) - PK
-- **slug** (text)
+- **slug** (text) - UNIQUE
 - **name** (text)
-- **description** (text)
+- **active** (boolean) - DEFAULT true
 - **created_at** (timestamp with time zone)
 
 ### work_day_staff_planning
@@ -749,29 +869,31 @@ _Planificación de personal por día._
 - **id** (uuid) - PK
 - **work_day_id** (uuid) - FK -> work_days.id
 - **role_id** (uuid) - FK -> master_staff_roles.id
-- **quantity** (integer)
-- **approved_budget** (numeric)
+- **quantity** (integer) - DEFAULT 1
+- **approved_budget** (numeric) - DEFAULT 0
 - **created_at** (timestamp with time zone)
 
 ### work_days
 
-_Días operativos (jornadas). Lifecycle: DRAFT → PLANNED → ACTIVE → CLOSED._
+_Días operativos (jornadas). Lifecycle: DRAFT → PLANNED → ACTIVE → CLOSED | CANCELLED. (~6 rows)_
 
 - **id** (uuid) - PK
 - **work_date** (date) - UNIQUE
-- **status** (text) - CHECK: 'DRAFT', 'PLANNED', 'ACTIVE', 'CLOSED'
+- **status** (text) - CHECK: 'DRAFT','PLANNED','ACTIVE','CLOSED','CANCELLED'
 - **opened_by** (uuid) - FK -> profiles.id
 - **closed_by** (uuid) - FK -> profiles.id
 - **opened_at** (timestamp with time zone)
 - **closed_at** (timestamp with time zone)
 - **created_at** (timestamp with time zone)
 - **notes** (text)
-- **attendance** (integer) - Asistencia (default: 0)
+- **attendance** (integer) - DEFAULT 0 — Asistencia
 - **event_id** (uuid) - FK -> events.id ON DELETE SET NULL
 - **event_name** (text) - Cache desnormalizado del nombre
-- **countdown_active** (boolean) - Toggle countdown web (default: false)
+- **countdown_active** (boolean) - DEFAULT false — Toggle countdown web
 - **health_score** (integer) - Score 0-100 calculado por calculate_health_score()
 - **net_result** (numeric) - Resultado neto (ingresos - egresos)
+- **cancelled_at** (timestamp with time zone)
+- **cancelled_reason** (text)
 
 ## Tablas de Staging (Fase 1 / Admin Cierre)
 
@@ -827,7 +949,7 @@ _Ingesta cruda de recaudación por ítem Gbol._
 _Ingesta cruda de tickets Passline._
 
 - **id** (bigint) - PK
-- **external_ticket_id** (text)
+- **external_ticket_id** (text) - UNIQUE
 - **nombre** (text)
 - **email** (text)
 - **telefono** (text)
@@ -844,33 +966,20 @@ _Ingesta cruda de tickets Passline._
 - **codigo_activacion** (text)
 - **ingested_at** (timestamp with time zone)
 
-### pos_terminals_alias
+## Tabla de Plantillas
 
-_Mapeo de nombres de terminales externos a IDs internos._
+### work_day_templates
 
-- **id** (uuid) - PK
-- **alias** (text)
-- **terminal_id** (uuid) - FK -> pos_terminals.id
-- **created_at** (timestamp with time zone)
-
-### staff_accruals
-
-_Devenciones de nómina: convierte asistencia (staff_convocations) en deuda salarial por jornada._
+_Plantillas reutilizables para jornadas: configuración de staff, costos asociados y promedios históricos._
 
 - **id** (uuid) - PK
-- **work_day_id** (uuid) - FK -> work_days.id
-- **user_id** (uuid) - FK -> profiles.id
-- **role_id** (uuid) - FK -> master_staff_roles.id
-- **base_amount** (numeric) - Tarifa del rol (snapshot de base_rate)
-- **adjustments** (numeric) - Ajuste manual (+/-)
-- **total_amount** (numeric) - GENERATED: base_amount + adjustments
-- **status** (text) - 'accrued' | 'exported' | 'paid' | 'cancelled'
-- **notes** (text)
-- **exported_payment_id** (uuid) - FK -> finance_payments.id
-- **created_at** (timestamp with time zone)
-- **created_by** (uuid) - FK -> auth.users.id
-- **updated_at** (timestamp with time zone)
-- **UNIQUE**: (work_day_id, user_id)
+- **name** (text) - NOT NULL
+- **staff_config** (jsonb) - DEFAULT '{}' — Configuración de dotación por cargo
+- **cost_ids** (uuid[]) - DEFAULT '{}' — IDs de cost_definitions asociados
+- **avg_revenue** (numeric) - DEFAULT 0 — Promedio de ingresos
+- **avg_attendance** (integer) - DEFAULT 0 — Promedio de asistencia
+- **usage_count** (integer) - DEFAULT 0 — Veces utilizada
+- **created_at** (timestamptz)
 
 ## Vistas
 
@@ -878,35 +987,11 @@ _Devenciones de nómina: convierte asistencia (staff_convocations) en deuda sala
 
 - **sku_id**, **nombre**, **external_id**, **categoria_id**, **categoria_nombre**, **stock_actual**, **ideal_500**, **ideal_900**
 
-### vw_bar_efficiency
-
-_Eficiencia operativa de barras (Costos teóricos vs físicos)._
-
-- **session_id**, **location**, **work_day_id**, **work_date**, **opened_at**, **status**, **items_revenue**, **cost_physical**, **cost_theoretical**, **cost_difference**, **cost_percentage**
-
 ### vw_daily_sales_v2
 
 _Resumen de ventas diarias (Versión 2 - Reemplaza vw_daily_sales)._
 
 - **work_day_id**, **work_date**, **status**, **cash_system**, **cash_declared**, **cash_difference**, **qr_system**, **bar_sales_system**, **total_income**, **total_declared**, **total_difference**, **closing_notes**
-
-### vw_finance_weekly
-
-_Reporte semanal histórico._
-
-- **week_start**, **income_white**, **expense_white**, **balance_white**, **tax_estimate**
-
-### vw_financial_week_live
-
-_Estado financiero de la semana en curso (tiempo real)._
-
-- **week_start**, **current_income**, **current_expense**, **projected_balance**
-
-### vw_pnl_monthly_v2
-
-_Reporte P&L mensual (Ingresos vs Egresos por categoría)._
-
-- **month**, **type**, **category**, **amount**
 
 ### vw_recipe_profitability
 
@@ -1129,20 +1214,106 @@ _Promedios históricos por día de semana y tipo de evento para benchmarking._
 - **avg_margin_pct** (numeric)
 - **avg_attendance** (numeric)
 
-## Tabla de Plantillas
+### vw_consumo_teorico
 
-### work_day_templates
+_Consumo teórico por SKU por noche, calculado desde ventas × recetas._
 
-_Plantillas reutilizables para jornadas: configuración de staff, costos asociados y promedios históricos._
+- **noche** (date)
+- **sku_id** (uuid)
+- **sku_nombre** (text)
+- **cantidad_consumida** (numeric)
+- **costo_consumido** (numeric)
+- **tickets_origen** (bigint)
 
-- **id** (uuid) - PK
-- **name** (text) - NOT NULL
-- **staff_config** (jsonb) - Configuración de dotación por cargo
-- **cost_ids** (uuid[]) - IDs de cost_definitions asociados
-- **avg_revenue** (numeric) - Promedio de ingresos
-- **avg_attendance** (integer) - Promedio de asistencia
-- **usage_count** (integer) - Veces utilizada
-- **created_at** (timestamptz)
+### vw_stock_audit_nightly
+
+_Resumen nocturno de auditoría de stock: alertas de pérdida, costos reales vs sistema._
+
+- **work_date** (date)
+- **total_skus** (bigint)
+- **total_sessions** (bigint)
+- **alertas_perdida** (bigint)
+- **dentro_rango** (bigint)
+- **errores_registro** (bigint)
+- **total_costo_real** (numeric)
+- **total_costo_sistema** (numeric)
+- **total_costo_diferencia** (numeric)
+- **varianza_pct_global** (numeric)
+
+## Mapa Módulo ↔ Tabla
+
+Dependencias de base de datos por módulo JavaScript, extraídas del código fuente (334+ llamadas Supabase).
+
+**Leyenda**: **R** = Read (`.select`), **W** = Write (`.insert` / `.update` / `.upsert` / `.delete`)
+
+### 🔵 Admin (16 módulos)
+
+| Módulo JS                  | Pantalla            | Tablas R                                                                                                                                                                                                                                                | Tablas W                                                                                                                                                                                                    | Vistas                                                                                                                                                                    |
+| :------------------------- | :------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `admin-index`              | Dashboard           | `profiles`, `qr_codes`, `work_days`                                                                                                                                                                                                                     | —                                                                                                                                                                                                           | —                                                                                                                                                                         |
+| `admin-workdays`           | Gestión Jornadas    | `bar_sessions`, `cash_closings`, `closing_terminals`, `cost_definitions`, `events`, `master_staff_roles`, `pos_terminals`, `profiles`, `qr_codes`, `staff_accruals`, `staff_convocations`, `work_day_staff_planning`, `work_day_templates`, `work_days` | `cash_closings`, `cost_definitions`, `events`, `finance_payments`, `qr_batches`, `qr_codes`, `staff_accruals`, `staff_convocations`, `work_day_staff_planning`, `work_day_templates`, `work_days`           | `vw_bar_audit_variance`, `vw_bar_efficiency`, `vw_consumo_teorico`, `vw_daily_sales`, `vw_fiscal_summary`, `vw_night_snapshot`, `vw_workday_benchmarks`, `vw_workday_pnl` |
+| `admin-solicitudes`        | Solicitudes         | `consumption_details`, `consumption_reports`, `master_proveedores`, `master_sku`, `replenishment_items`, `replenishment_requests`, `replenishment_supplier_orders`, `work_days`                                                                         | `finance_payments`, `replenishment_items`, `replenishment_supplier_orders`                                                                                                                                  | `vw_stock_global`                                                                                                                                                         |
+| `admin-central-stock`      | Central Stock       | `consumption_details`, `consumption_reports`, `master_categories`, `master_proveedores`, `master_recipes`, `master_sku`, `recipe_code_mappings`, `revenue_details`, `revenue_reports`, `sku_change_requests`, `work_days`                               | `consumption_details`, `consumption_reports`, `inventory_movements`, `inventory_stock`, `master_recipes`, `master_sku`, `recipe_code_mappings`, `revenue_details`, `revenue_reports`, `sku_change_requests` | `vw_recipe_profitability`, `vw_stock_global`                                                                                                                              |
+| `admin-reportes`           | Reportes            | —                                                                                                                                                                                                                                                       | —                                                                                                                                                                                                           | `vw_bar_efficiency`, `vw_daily_sales_v2`, `vw_pnl_monthly_v2`, `vw_staff_performance`, `vw_tax_monthly`                                                                   |
+| `admin-semanal`            | Balance Semanal     | `finance_weekly_closings`                                                                                                                                                                                                                               | `finance_weekly_closings`                                                                                                                                                                                   | `vw_financial_week_live`                                                                                                                                                  |
+| `admin-pagos`              | Pagos               | `cost_definitions`, `finance_payments`, `master_proveedores`, `master_staff_roles`, `payment_categories`, `payment_methods`                                                                                                                             | `cost_definitions`, `finance_payments`                                                                                                                                                                      | —                                                                                                                                                                         |
+| `admin-config`             | Configuración       | `cost_config`, `master_sku`                                                                                                                                                                                                                             | `cost_config`, `master_sku`                                                                                                                                                                                 | —                                                                                                                                                                         |
+| `admin-master-proveedores` | Maestro Proveedores | `master_categories`, `master_proveedores`                                                                                                                                                                                                               | `master_proveedores`                                                                                                                                                                                        | —                                                                                                                                                                         |
+| `admin-master-categorias`  | Maestro Categorías  | `master_categories`                                                                                                                                                                                                                                     | `master_categories`                                                                                                                                                                                         | —                                                                                                                                                                         |
+| `admin-master-tarifario`   | Tarifario           | `master_staff_roles`                                                                                                                                                                                                                                    | `master_staff_roles`                                                                                                                                                                                        | —                                                                                                                                                                         |
+| `admin-master-nomina`      | Nómina              | `master_staff_roles`, `profiles`                                                                                                                                                                                                                        | `profiles`                                                                                                                                                                                                  | —                                                                                                                                                                         |
+| `admin-master-pos`         | Terminales POS      | `pos_terminals`                                                                                                                                                                                                                                         | `pos_terminals`                                                                                                                                                                                             | —                                                                                                                                                                         |
+| `qr-dashboard`             | QR Dashboard        | `qr_batches`, `qr_checkins`, `qr_codes`                                                                                                                                                                                                                 | —                                                                                                                                                                                                           | —                                                                                                                                                                         |
+| `qr-generator`             | QR Generador        | —                                                                                                                                                                                                                                                       | `qr_batches`, `qr_codes`                                                                                                                                                                                    | —                                                                                                                                                                         |
+| `qr-monitor`               | QR Monitor          | `qr_batches`, `qr_codes`                                                                                                                                                                                                                                | —                                                                                                                                                                                                           | —                                                                                                                                                                         |
+
+### 🟢 Operativo (8 módulos)
+
+| Módulo JS                      | Pantalla        | Tablas R                                                                                               | Tablas W                                                                         | Vistas            |
+| :----------------------------- | :-------------- | :----------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------- | :---------------- |
+| `operativo-index`              | Dashboard       | `qr_codes`                                                                                             | —                                                                                | —                 |
+| `operativo-workday`            | Jornada del día | `replenishment_items`, `replenishment_requests`, `site_config`, `staff_convocations`, `work_days`      | `site_config`                                                                    | —                 |
+| `operativo-solicitudes`        | Solicitudes     | `master_proveedores`, `replenishment_items`, `replenishment_requests`, `replenishment_supplier_orders` | `replenishment_items`, `replenishment_requests`, `replenishment_supplier_orders` | `vw_stock_global` |
+| `operativo-stock`              | Stock Real      | —                                                                                                      | —                                                                                | `vw_stock_global` |
+| `operativo-analisis`           | Análisis        | `consumption_details`, `consumption_reports`, `master_sku`                                             | `consumption_details`, `consumption_reports`                                     | —                 |
+| `operativo-master-sku`         | SKUs            | `master_proveedores`, `master_sku`, `sku_change_requests`                                              | `sku_change_requests`                                                            | —                 |
+| `operativo-master-proveedores` | Proveedores     | `master_proveedores`                                                                                   | `master_proveedores`                                                             | —                 |
+| `scanner`                      | Scanner QR      | `members`, `profiles`, `qr_codes`, `work_days`                                                         | `qr_checkins`, `qr_codes`                                                        | —                 |
+| `cms-members`                  | Miembros        | `members`                                                                                              | `members`                                                                        | —                 |
+
+### 🟠 Encargados (7 módulos)
+
+| Módulo JS                  | Pantalla           | Tablas R                                                                                                         | Tablas W                                                            | Vistas                         |
+| :------------------------- | :----------------- | :--------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------ | :----------------------------- |
+| `encargado-barra-index`    | Dashboard Barra    | `profiles`                                                                                                       | —                                                                   | `vw_supplier_orders_encargado` |
+| `encargado-barra-noche`    | Cierre Noche Barra | `bar_sessions`, `bar_stock_snapshots`, `master_sku`                                                              | `bar_sessions`, `bar_stock_snapshots`                               | —                              |
+| `encargado-barra-personal` | Personal Barra     | `profiles`, `staff_convocations`, `work_day_staff_planning`, `work_days`                                         | `profiles`, `staff_convocations`                                    | —                              |
+| `encargado-caja-index`     | Dashboard Caja     | `profiles`, `work_days`                                                                                          | —                                                                   | —                              |
+| `encargado-caja-noche`     | Cierre Noche Caja  | `bar_sessions`, `cash_closings`, `cash_movements`, `closing_terminals`, `pos_terminals`, `profiles`, `work_days` | `cash_closings`, `cash_movements`, `closing_terminals`, `work_days` | —                              |
+| `encargado-caja-personal`  | Personal Caja      | `profiles`, `staff_convocations`, `work_day_staff_planning`, `work_days`                                         | `profiles`, `staff_convocations`                                    | —                              |
+| `encargado-recepcion`      | Recepción          | `replenishment_items`                                                                                            | —                                                                   | `vw_supplier_orders_encargado` |
+
+### 📦 Logística (5 módulos)
+
+| Módulo JS                | Pantalla       | Tablas R                                                                               | Tablas W                                                                                                                                               | Vistas            |
+| :----------------------- | :------------- | :------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------- | :---------------- |
+| `logistica-index`        | Dashboard      | `profiles`, `work_days`                                                                | —                                                                                                                                                      | —                 |
+| `logistica-stock`        | Stock Depósito | `master_categories`                                                                    | `inventory_movements`, `inventory_stock`, `inventory_stock_adjustments`                                                                                | `vw_stock_global` |
+| `logistica-distribucion` | Distribución   | `replenishment_items`, `replenishment_requests`                                        | `inventory_movements`, `inventory_stock`, `replenishment_items`, `replenishment_requests`                                                              | `vw_stock_global` |
+| `logistica-recepcion`    | Recepción      | `inventory_stock`, `master_proveedores`, `master_sku`, `replenishment_supplier_orders` | `finance_payments`, `inventory_movements`, `inventory_stock`, `replenishment_receipt_items`, `replenishment_receipts`, `replenishment_supplier_orders` | —                 |
+| `logistica-seguimiento`  | Seguimiento    | `replenishment_supplier_orders`                                                        | `replenishment_supplier_orders`, `replenishment_tracking`                                                                                              | —                 |
+
+### 🟡 Staff (1 módulo)
+
+| Módulo JS          | Pantalla   | Tablas R                                                                            | Tablas W                                  | Vistas |
+| :----------------- | :--------- | :---------------------------------------------------------------------------------- | :---------------------------------------- | :----- |
+| `staff-caja-index` | Staff Caja | `cash_closings`, `closing_terminals`, `profiles`, `staff_convocations`, `work_days` | `closing_terminals`, `staff_convocations` | —      |
+
+### 🟣 Gerencia (1 módulo)
+
+| Módulo JS         | Pantalla        | Tablas R | Tablas W | Vistas              |
+| :---------------- | :-------------- | :------- | :------- | :------------------ |
+| `balance-semanal` | Balance Semanal | —        | —        | `vw_finance_weekly` |
 
 ## RPCs de Workday
 

@@ -107,7 +107,7 @@
         
         const out = [];
         for (let i = 0; i < qty; i++) {
-            const uid = crypto.randomUUID();
+            const uid = window.Utils.generateUUID();
             // Prefix + UUID
             // If base ends in /, no separator needed depending on user input. But safer to just append if not empty.
             // If base looks like url, append /uuid? No, standard is usually just the value string.

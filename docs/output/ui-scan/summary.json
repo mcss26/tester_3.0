@@ -1,0 +1,313 @@
+﻿{
+    "scannedAt":  "2026-02-16 15:26:54",
+    "totalPages":  43,
+    "compliant":  1,
+    "partial":  25,
+    "critical":  17,
+    "avgScore":  49,
+    "totalInlineStyles":  3,
+    "totalHints":  317,
+    "pages":  [
+                  {
+                      "page":  "index.html",
+                      "module":  "prototypes",
+                      "score":  0,
+                      "hints":  8,
+                      "inline":  1
+                  },
+                  {
+                      "page":  "index.html",
+                      "module":  "prototypes",
+                      "score":  0,
+                      "hints":  4,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "index.html",
+                      "module":  "prototypes",
+                      "score":  2,
+                      "hints":  9,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "my-qr.html",
+                      "module":  "members",
+                      "score":  2,
+                      "hints":  7,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "scanner.html",
+                      "module":  "operativo",
+                      "score":  4,
+                      "hints":  7,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "generator.html",
+                      "module":  "admin",
+                      "score":  17,
+                      "hints":  9,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "encargado-caja-noche.html",
+                      "module":  "encargados",
+                      "score":  30,
+                      "hints":  12,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "operativo-index.html",
+                      "module":  "operativo",
+                      "score":  33,
+                      "hints":  6,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "admin-index.html",
+                      "module":  "admin",
+                      "score":  33,
+                      "hints":  6,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "encargado-barra-noche.html",
+                      "module":  "encargados",
+                      "score":  39,
+                      "hints":  7,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "encargado-caja-personal.html",
+                      "module":  "encargados",
+                      "score":  41,
+                      "hints":  13,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "encargado-barra-index.html",
+                      "module":  "encargados",
+                      "score":  42,
+                      "hints":  4,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "encargado-caja-index.html",
+                      "module":  "encargados",
+                      "score":  42,
+                      "hints":  4,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "staff-barra-index.html",
+                      "module":  "staff",
+                      "score":  42,
+                      "hints":  4,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "encargado-barra-personal.html",
+                      "module":  "encargados",
+                      "score":  46,
+                      "hints":  12,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "index.html",
+                      "module":  "admin",
+                      "score":  46,
+                      "hints":  5,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "staff-caja-index.html",
+                      "module":  "staff",
+                      "score":  49,
+                      "hints":  6,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "operativo-solicitudes.html",
+                      "module":  "operativo",
+                      "score":  50,
+                      "hints":  9,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "admin-master-pos.html",
+                      "module":  "admin",
+                      "score":  51,
+                      "hints":  9,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "admin-master-tarifario.html",
+                      "module":  "admin",
+                      "score":  52,
+                      "hints":  9,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "balance-semanal.html",
+                      "module":  "gerencia",
+                      "score":  53,
+                      "hints":  9,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "logistica-stock.html",
+                      "module":  "logistica",
+                      "score":  54,
+                      "hints":  9,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "logistica-seguimiento.html",
+                      "module":  "logistica",
+                      "score":  55,
+                      "hints":  9,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "operativo-master-sku.html",
+                      "module":  "operativo",
+                      "score":  55,
+                      "hints":  10,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "encargado-recepcion.html",
+                      "module":  "encargados",
+                      "score":  56,
+                      "hints":  7,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "logistica-distribucion.html",
+                      "module":  "logistica",
+                      "score":  57,
+                      "hints":  7,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "operativo-stock.html",
+                      "module":  "operativo",
+                      "score":  58,
+                      "hints":  6,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "admin-master-proveedores.html",
+                      "module":  "admin",
+                      "score":  60,
+                      "hints":  7,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "admin-master-nomina.html",
+                      "module":  "admin",
+                      "score":  60,
+                      "hints":  8,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "admin-semanal.html",
+                      "module":  "admin",
+                      "score":  61,
+                      "hints":  6,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "logistica-recepcion.html",
+                      "module":  "logistica",
+                      "score":  62,
+                      "hints":  9,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "admin-workdays.html",
+                      "module":  "admin",
+                      "score":  64,
+                      "hints":  12,
+                      "inline":  2
+                  },
+                  {
+                      "page":  "operativo-workday.html",
+                      "module":  "operativo",
+                      "score":  66,
+                      "hints":  6,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "admin-config.html",
+                      "module":  "admin",
+                      "score":  66,
+                      "hints":  7,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "cms-members.html",
+                      "module":  "operativo",
+                      "score":  67,
+                      "hints":  7,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "admin-master-categorias.html",
+                      "module":  "admin",
+                      "score":  68,
+                      "hints":  5,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "operativo-master-proveedores.html",
+                      "module":  "operativo",
+                      "score":  68,
+                      "hints":  5,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "operativo-analisis.html",
+                      "module":  "operativo",
+                      "score":  69,
+                      "hints":  6,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "admin-pagos.html",
+                      "module":  "admin",
+                      "score":  72,
+                      "hints":  9,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "admin-solicitudes.html",
+                      "module":  "admin",
+                      "score":  73,
+                      "hints":  7,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "logistica-index.html",
+                      "module":  "logistica",
+                      "score":  78,
+                      "hints":  3,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "admin-reportes.html",
+                      "module":  "admin",
+                      "score":  78,
+                      "hints":  6,
+                      "inline":  0
+                  },
+                  {
+                      "page":  "admin-central-stock.html",
+                      "module":  "admin",
+                      "score":  91,
+                      "hints":  7,
+                      "inline":  0
+                  }
+              ]
+}

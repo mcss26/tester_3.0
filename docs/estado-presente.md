@@ -1,7 +1,7 @@
 # Estado Presente del Proyecto - FormulaMid 4
 
-> **Fecha**: 16/02/2026 12:00
-> **Versión**: 4.0.6 (Verifier + Security)
+> **Fecha**: 16/02/2026 21:49
+> **Versión**: 4.0.8 (Workspace Audit)
 > **Estado General**: 🟡 En Desarrollo / Consolidación
 > **Fuente de Verdad**: Este documento
 
@@ -9,25 +9,25 @@
 
 ## 📊 Métricas Clave
 
-| Métrica                      | Estado Actual | Variación (vs anterior)                         |
-| :--------------------------- | :------------ | :---------------------------------------------- |
-| **Pantallas Operativas**     | **50**        | +3 (recount: 45 pages/ + 3 prototipos + 2 root) |
-| **Tablas en Base de Datos**  | **60**        | Corrección: eran 60 (no 48)                     |
-| **Vistas SQL (public)**      | **18**        | Verificado ✅                                   |
-| **Módulos JS**               | **42**        | −1 (recount verificado)                         |
-| **Core JS**                  | **20**        | +2 (navigation-debug, navigation-analytics)     |
-| **Importers JS**             | **6**         | Sin cambio                                      |
-| **Archivos CSS**             | **18**        | −1 (recount verificado)                         |
-| **Roles Configurados**       | **12**        | Sin cambio                                      |
-| **Skills Activos**           | **13**        | −3 (cleanup previo)                             |
-| **Documentación de Módulos** | **38**        | +4 (excl. template, verificado)                 |
-| **Recetas Master**           | **93**        | Verificado ✅                                   |
-| **Members Registrados**      | **2,245**     | +2 (live query)                                 |
-| **Proveedores Activos**      | **47**        | Verificado ✅                                   |
-| **SKUs Activos**             | **26**        | Corrección: eran 26 (no 58)                     |
-| **Profiles (Users)**         | **4**         | Live query                                      |
-| **Work Days**                | **5**         | Live query                                      |
-| **Events**                   | **7**         | Live query                                      |
+| Métrica                      | Estado Actual | Variación (vs anterior)                                                                          |
+| :--------------------------- | :------------ | :----------------------------------------------------------------------------------------------- |
+| **Pantallas Operativas**     | **50**        | +3 (recount: 45 pages/ + 3 prototipos + 2 root)                                                  |
+| **Tablas en Base de Datos**  | **65**        | +5 vs anterior (GBOL API + audit_config + work_day_templates)                                    |
+| **Vistas SQL (public)**      | **27**        | +5 vistas remediación (night_snapshot, stock_audit, pnl_monthly, financial_week, finance_weekly) |
+| **Módulos JS**               | **42**        | −1 (recount verificado)                                                                          |
+| **Core JS**                  | **20**        | +2 (navigation-debug, navigation-analytics)                                                      |
+| **Importers JS**             | **6**         | Sin cambio                                                                                       |
+| **Archivos CSS**             | **18**        | −1 (recount verificado)                                                                          |
+| **Roles Configurados**       | **11**        | −1 (recount: 11 en REGISTRY.yml)                                                                 |
+| **Skills Activos**           | **15**        | +2 (testing-pipeline, web-designer agregados post-cleanup)                                       |
+| **Documentación de Módulos** | **38**        | +4 (excl. template, verificado)                                                                  |
+| **Recetas Master**           | **93**        | Verificado ✅                                                                                    |
+| **Members Registrados**      | **2,245**     | +2 (live query)                                                                                  |
+| **Proveedores Activos**      | **47**        | Verificado ✅                                                                                    |
+| **SKUs Activos**             | **26**        | Corrección: eran 26 (no 58)                                                                      |
+| **Profiles (Users)**         | **4**         | Live query                                                                                       |
+| **Work Days**                | **5**         | Live query                                                                                       |
+| **Events**                   | **7**         | Live query                                                                                       |
 
 ---
 
@@ -65,7 +65,7 @@
 | **Subtotal Módulos** |  **42**  | —                                              |
 | Core                 |    20    | `assets/js/core/`                              |
 | Importers            |    6     | `assets/js/importers/`                         |
-| **TOTAL JS**         |  **68**  | —                                              |
+| **TOTAL JS**         |  **69**  | —                                              |
 
 ### Archivos CSS (18 archivos)
 
@@ -104,36 +104,40 @@
 | Misc       |   1    | `docs/modules/misc/`       |
 | **TOTAL**  | **38** | —                          |
 
-### Scripts de Utilidad (15 ejecutables en `scripts/`)
+### Scripts de Utilidad (20 ejecutables en `scripts/`)
 
-| Script                  | Propósito                                             |
-| :---------------------- | :---------------------------------------------------- |
-| `audit-css.js`          | Auditoría CSS                                         |
-| `audit-links.js`        | Auditoría de links internos                           |
-| `audit-modules.js`      | Auditoría automática de módulos                       |
-| `audit.mjs`             | Auditoría general                                     |
-| `extract-recipes.js`    | Extracción de recetas                                 |
-| `security-watchdog.ps1` | Watchdog de seguridad (permisos, integridad, leaks)   |
-| `security-startup.ps1`  | Checks iniciales al abrir VS Code                     |
-| `security-shutdown.ps1` | Checks finales al cerrar VS Code                      |
-| `backup-configs.ps1`    | Backup de configs (.env, credenciales) en ZIP         |
-| `ops-watchdog.ps1`      | Watchdog operativo (health checks continuos)          |
-| `flow-tracer.ps1`       | Trazador de flujos v2 (nav, tablas R/W, cross-module) |
-| `context-loader.ps1`    | Generador de contexto por tópico (KIs + código + git) |
-| `workdays-verifier.ps1` | Verifier progresivo 8 fases para admin-workdays       |
-| `persona_generator.py`  | Generador de personas sintéticas                      |
-| `testing-tracker.js`    | Tracker de testing por módulo                         |
+| Script                     | Propósito                                             |
+| :------------------------- | :---------------------------------------------------- |
+| `audit-css.js`             | Auditoría CSS                                         |
+| `audit-links.js`           | Auditoría de links internos                           |
+| `audit-modules.js`         | Auditoría automática de módulos                       |
+| `audit.mjs`                | Auditoría general                                     |
+| `extract-recipes.js`       | Extracción de recetas                                 |
+| `security-watchdog.ps1`    | Watchdog de seguridad (permisos, integridad, leaks)   |
+| `security-startup.ps1`     | Checks iniciales al abrir VS Code                     |
+| `security-shutdown.ps1`    | Checks finales al cerrar VS Code                      |
+| `backup-configs.ps1`       | Backup de configs (.env, credenciales) en ZIP         |
+| `ops-watchdog.ps1`         | Watchdog operativo (health checks continuos)          |
+| `flow-tracer.ps1`          | Trazador de flujos v2 (nav, tablas R/W, cross-module) |
+| `context-loader.ps1`       | Generador de contexto por tópico (KIs + código + git) |
+| `workdays-verifier.ps1`    | Verifier progresivo 8 fases para admin-workdays       |
+| `batch-remediation.ps1`    | Orquestador batch UI remediation (Gemini CLI)         |
+| `db-batch-remediation.ps1` | Orquestador batch DB remediation (SQL migrations)     |
+| `persona_generator.py`     | Generador de personas sintéticas                      |
+| `testing-tracker.js`       | Tracker de testing por módulo                         |
+| `auto-prompter.ps1`        | Generador de prompts batch para Gemini CLI            |
+| `ui-component-scanner.ps1` | Scanner de componentes UI por página (compliance)     |
 
 ---
 
 ## 🗄️ Base de Datos (Supabase - FormulaMid)
 
-### Tablas (60 en schema `public`)
+### Tablas (65 en schema `public`)
 
 | Dominio           | Tablas                                                                                                                                                              |
 | :---------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Identity**      | `profiles`, `staff_functions`, `profile_functions`                                                                                                                  |
-| **Work Days**     | `work_days`, `work_day_staff_planning`, `events`                                                                                                                    |
+| **Work Days**     | `work_days`, `work_day_staff_planning`, `work_day_templates`, `events`                                                                                              |
 | **Staff**         | `master_staff_roles`, `staff_convocations`, `staff_accruals`                                                                                                        |
 | **Inventory**     | `master_categories`, `master_sku`, `inventory_stock`, `inventory_ideal`, `inventory_stock_adjustments`, `inventory_movements`                                       |
 | **Suppliers**     | `master_proveedores`                                                                                                                                                |
@@ -143,31 +147,41 @@
 | **Bar**           | `bar_sessions`, `bar_stock_snapshots`, `bar_session_sales`, `master_recipes`, `recipe_code_mappings`                                                                |
 | **Revenue**       | `revenue_reports`, `revenue_details`, `consumption_reports`, `consumption_details`                                                                                  |
 | **QR/Members**    | `qr_batches`, `qr_codes`, `qr_checkins`, `members`, `auth_audit_log`                                                                                                |
+| **Import/GBOL**   | `import_gbol_facturacion`, `import_gbol_comandas`, `import_gbol_withdrawals`, `gbol_sync_log`, `import_logs`                                                        |
 | **Staging**       | `stg_extracciones`, `stg_gbol_items`, `stg_passline_tickets`, `stg_afip_facturas`                                                                                   |
-| **Config**        | `site_config`, `audit_config`, `menu_categories`, `menu_items`, `import_logs`, `sku_change_requests`                                                                |
+| **Config**        | `site_config`, `audit_config`, `menu_categories`, `menu_items`, `sku_change_requests`                                                                               |
 
-### Vistas SQL (18 en schema `public`)
+> **Detalle completo**: Ver [scheme.md](./scheme.md) para columnas, FKs, checks y mapa módulo↔tabla.
 
-| Vista                          | Dominio                |
-| :----------------------------- | :--------------------- |
-| `v_admin_stock`                | Inventario             |
-| `vw_bar_audit_variance`        | Auditoría Barra        |
-| `vw_bar_efficiency`            | Eficiencia Barra       |
-| `vw_daily_sales`               | Ventas Diarias         |
-| `vw_daily_sales_v2`            | Ventas Diarias v2      |
-| `vw_finance_weekly`            | Balance Semanal        |
-| `vw_financial_week_live`       | Semana Financiera Live |
-| `vw_pnl_monthly_v2`            | P&L Mensual            |
-| `vw_recipe_profitability`      | Rentabilidad Recetas   |
-| `vw_reconcile_afip_gbol`       | Conciliación AFIP/GBOL |
-| `vw_sku_ideal_dynamic`         | Stock Ideal Dinámico   |
-| `vw_staff_accruals_summary`    | Devengados de Staff    |
-| `vw_staff_performance`         | Performance Staff      |
-| `vw_stock_global`              | Stock Global           |
-| `vw_supplier_orders_admin`     | Órdenes Admin          |
-| `vw_supplier_orders_encargado` | Órdenes Encargado      |
-| `vw_tax_monthly`               | Impuestos Mensuales    |
-| `vw_work_day_summary`          | Resumen Jornada        |
+### Vistas SQL (27 en schema `public`)
+
+| Vista                          | Dominio                  | Estado       |
+| :----------------------------- | :----------------------- | :----------- |
+| `v_admin_stock`                | Inventario               | ✅           |
+| `vw_bar_audit_variance`        | Auditoría Barra          | ✅           |
+| `vw_bar_efficiency`            | Eficiencia Barra         | ✅           |
+| `vw_consumo_teorico`           | Consumo Teórico SKU      | ✅           |
+| `vw_daily_sales`               | Ventas Diarias           | ✅           |
+| `vw_daily_sales_v2`            | Ventas Diarias v2        | ✅           |
+| `vw_finance_weekly`            | Balance Semanal Gerencia | 🆕 migración |
+| `vw_financial_week_live`       | Balance Semanal Live     | 🆕 migración |
+| `vw_fiscal_summary`            | Resumen Fiscal           | ✅           |
+| `vw_night_snapshot`            | Snapshot Nocturno        | 🆕 migración |
+| `vw_per_capita_revenue`        | Revenue Per Capita       | ✅           |
+| `vw_pnl_monthly_v2`            | P&L Mensual v2           | 🆕 migración |
+| `vw_recipe_profitability`      | Rentabilidad Recetas     | ✅           |
+| `vw_reconcile_afip_gbol`       | Conciliación AFIP/GBOL   | ✅           |
+| `vw_sku_ideal_dynamic`         | Stock Ideal Dinámico     | ✅           |
+| `vw_staff_accruals_summary`    | Devengados de Staff      | ✅           |
+| `vw_staff_performance`         | Performance Staff        | ✅           |
+| `vw_stock_audit_nightly`       | Auditoría Stock Noche    | 🆕 migración |
+| `vw_stock_global`              | Stock Global             | ✅           |
+| `vw_supplier_orders_admin`     | Órdenes Admin            | ✅           |
+| `vw_supplier_orders_encargado` | Órdenes Encargado        | ✅           |
+| `vw_tax_monthly`               | Impuestos Mensuales      | ✅           |
+| `vw_work_day_summary`          | Resumen Jornada          | ✅           |
+| `vw_workday_benchmarks`        | Benchmarks por Día       | ✅           |
+| `vw_workday_pnl`               | P&L por Jornada          | ✅           |
 
 ---
 
@@ -220,12 +234,12 @@
 
 ## 🏗️ Estructura del Workspace (Post-Audit)
 
-```
+```text
 tester_3.0/
 ├── .agent/                    # Agent tooling (gitignored)
-│   ├── agents/                # 5 sub-agentes (frontend, logic, data, qa, product)
-│   ├── skills/                # 13 skills atómicos
-│   ├── workflows/             # 1 workflow (track-module)
+│   ├── agents/                # 7 sub-agentes (frontend, logic, data, qa, product, orchestrator, security-ops)
+│   ├── skills/                # 15 skills atómicos
+│   ├── workflows/             # 3 workflows (track-module, testing-pipeline, verify-workdays)
 │   ├── README.md              # Gobernanza del sistema de agentes
 │   └── REGISTRY.yml           # Routing canónico + tiers de riesgo
 ├── .gemini/antigravity/       # Knowledge (fuente de verdad)
@@ -249,8 +263,8 @@ tester_3.0/
 │   ├── output/                # Output por agente (6 subdirs)
 │   └── 5 docs canónicos
 ├── pages/                     # 45 pantallas + 3 prototipos + 2 root = 50
-├── scripts/                   # 15 scripts (5 audit + 5 ops PS1 + 3 security PS1 + 2 misc)
-├── supabase/                  # Edge functions
+├── scripts/                   # 20 scripts (5 audit + 7 ops PS1 + 3 security PS1 + 3 batch + 2 misc)
+├── supabase/                  # Edge functions + 17 migrations (7 legacy + 9 batch + 1 fix)
 ├── test-data/                 # Datos de prueba sintéticos
 ├── AGENT.md                   # Reglas globales de agentes
 ├── index.html                 # Redirect
@@ -261,15 +275,18 @@ tester_3.0/
 
 ## 📝 Última Actualización
 
-**Fecha**: 16/02/2026 12:00
+**Fecha**: 16/02/2026 21:49
 **Cambios**:
 
-- **Verifier peak 100/100**: `workdays-verifier.ps1` alcanzó score perfecto (single-run 11:31). Score progresivo actual: 96/100 con 10 findings residuales
-- **Security Watchdog v3**: `security-watchdog.ps1` con fix de acumulación de avisos (`$sessionWarnLog`)
-- **Scripts 5→15**: Agregados 5 PS1 ops + 3 PS1 security + `persona_generator.py` + `testing-tracker.js`
-- **Admin Workdays**: Promovido de beta a verificado (36 buttons+type, 15 inputs+aria, 6 modals+role, 3 views documentadas)
-- **Deep Verification**: Reporte cross-module generado (`docs/output/qa/2026-02-16_audit_workdays-deep-verification.md`)
-- **F0 Remediación**: Archivos movidos a `output/qa/`, naming R2 corregido, métricas actualizadas
+- **Workspace Audit**: Auditoría exhaustiva aplicando skill `auditing-workspace` v2.0.0 (score higiene 6/6)
+  - Skills 13→15 (testing-pipeline, web-designer)
+  - Agentes 5→7 (orchestrator, security-ops en INDEX)
+  - Workflows 1→3 (testing-pipeline, verify-workdays)
+  - Scripts 17→20 (auto-prompter, ui-component-scanner, testing-tracker)
+  - Roles 12→11 (recount verificado contra REGISTRY.yml)
+  - Total JS 68→69 (recount)
+  - Migraciones Supabase: 17 totales (7 legacy + 9 batch + 1 fix)
+- **INDEX.md actualizado**: +backend-architecture-map, +business-logic/, +testing/, skills 13→15, agentes +2
 - **Supabase Project ID**: `iyknbgmcnbpvalvsjxjz` (región us-west-2)
 
 ---

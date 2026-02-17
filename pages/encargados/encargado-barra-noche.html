@@ -14,23 +14,27 @@
 
 <body class="app-shell admin-shell admin-scroll" data-allowed-roles="encargado_barra,admin">
 
-    <!-- Topbar (app-topbar pattern for sub-modules) -->
     <header class="topbar">
-        <div class="topbar-left">
+        <div class="topbar-start">
             <button class="btn-icon btn-icon-flat" data-go="pages/encargados/encargado-barra-index.html"
-                aria-label="Volver">←</button>
-            <span class="topbar-back">INICIO</span>
+                aria-label="Volver a Inicio">←</button>
+            <nav class="breadcrumb" aria-label="Navegación">
+                <span class="breadcrumb-item"><a class="breadcrumb-link"
+                        href="encargado-barra-index.html">BARRA</a></span>
+                <span class="breadcrumb-sep">/</span>
+                <span class="breadcrumb-item current">STOCK</span>
+            </nav>
         </div>
         <div class="topbar-center">
             <span class="topbar-title">CONTROL DE STOCK</span>
         </div>
-        <div class="topbar-right">
+        <div class="topbar-end">
             <button id="btn-refresh" class="btn-icon btn-icon-flat" aria-label="Refrescar">↻</button>
         </div>
     </header>
 
     <!-- Main Content -->
-    <main class="noche-content">
+    <main class="page-shell noche-content">
 
         <!-- Loading State -->
         <div class="noche-state" id="pageLoading">
@@ -131,7 +135,8 @@
         <div class="modal-content modal-content-sm">
             <div class="modal-header">
                 <h2 id="confirmTitle">Confirmar Acción</h2>
-                <button class="modal-close" onclick="this.closest('dialog').close()">×</button>
+                <button class="modal-close" onclick="this.closest('dialog').close()"
+                    aria-label="Cerrar modal">×</button>
             </div>
             <div class="modal-body">
                 <p id="confirmMessage">¿Estás seguro de continuar?</p>
