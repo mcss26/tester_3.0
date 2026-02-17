@@ -5,7 +5,7 @@
     // if (!session) return;
     if (!window.Utils.assertSbOrShowBlockingError()) return;
     const sb = window.sb;
-    const user = { id: 'mock-user' }; // Mock user for testing
+    const user = { id: '00000000-0000-4000-8000-000000000000' }; // Mock user (valid UUID for DB)
 
     // Elements
     const el = (id) => document.getElementById(id);
