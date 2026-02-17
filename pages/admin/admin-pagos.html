@@ -18,7 +18,7 @@
     <!-- Topbar — Golden Standard 3-column grid -->
     <header class="topbar">
         <!-- Left: Breadcrumb -->
-        <nav class="breadcrumb topbar-start">
+        <nav class="breadcrumb topbar-start" aria-label="Navegación">
             <a href="./admin-index.html" class="breadcrumb-item breadcrumb-link">Administración</a>
             <span class="breadcrumb-sep">/</span>
             <span class="breadcrumb-item current">Pagos</span>
@@ -92,7 +92,7 @@
                         <div class="state-icon">📭</div>
                         <h3 class="state-title">Sin Pagos Pendientes</h3>
                         <p class="state-desc">No se encontraron registros para el filtro seleccionado.</p>
-                        <button class="btn-ghost btn-sm" id="btn-reload-empty">Refrescar</button>
+                        <button class="btn btn-ghost btn-sm" id="btn-reload-empty">Refrescar</button>
                     </div>
                 </div>
 
@@ -149,9 +149,10 @@
                             <!-- Filter Bar -->
                             <div class="sku-filter-bar">
                                 <div class="view-toggle-group">
-                                    <button type="button" class="btn-primary btn-sm"
+                                    <button type="button" class="btn btn-primary btn-sm"
                                         id="btnViewPending">PENDIENTES</button>
-                                    <button type="button" class="btn-ghost btn-sm" id="btnViewDone">REALIZADOS</button>
+                                    <button type="button" class="btn btn-ghost btn-sm"
+                                        id="btnViewDone">REALIZADOS</button>
                                 </div>
 
                                 <div class="search-input-wrap search-input-grow">
@@ -167,10 +168,12 @@
 
                                 <div class="bulk-actions-row hidden" id="bulkActionsPending">
                                     <span class="badge badge-warning" id="bulkCount">0 sel</span>
-                                    <button type="button" class="btn-primary btn-sm" id="btnBulkPay">PAGAR LOTE</button>
+                                    <button type="button" class="btn btn-primary btn-sm" id="btnBulkPay">PAGAR
+                                        LOTE</button>
                                 </div>
 
-                                <button type="button" class="btn-primary btn-sm" id="btnNewExtra">+ Nuevo Pago</button>
+                                <button type="button" class="btn btn-primary btn-sm" id="btnNewExtra">+ Nuevo
+                                    Pago</button>
                             </div>
 
                             <!-- Pending Table (with semáforo rows) -->
@@ -291,7 +294,7 @@
                                         placeholder="Buscar proveedor, CUIT, alias..." />
                                 </div>
                                 <div class="filter-spacer"></div>
-                                <button type="button" class="btn-primary btn-sm" id="btnNewSupplier">+ Nuevo
+                                <button type="button" class="btn btn-primary btn-sm" id="btnNewSupplier">+ Nuevo
                                     Proveedor</button>
                             </div>
 
@@ -351,7 +354,7 @@
                                     <label class="row-flex align-center gap-1 text-xs muted pointer">
                                         <input type="checkbox" id="nocheShowInactive" /> Inactivos
                                     </label>
-                                    <button type="button" class="btn-primary btn-sm" id="btnNewNocheDef">+ Nuevo
+                                    <button type="button" class="btn btn-primary btn-sm" id="btnNewNocheDef">+ Nuevo
                                         Costo</button>
                                 </div>
 
@@ -390,7 +393,7 @@
                                     <label class="row-flex align-center gap-1 text-xs muted pointer">
                                         <input type="checkbox" id="fijosShowInactive" /> Inactivos
                                     </label>
-                                    <button type="button" class="btn-primary btn-sm" id="btnNewFijoDef">+ Nuevo
+                                    <button type="button" class="btn btn-primary btn-sm" id="btnNewFijoDef">+ Nuevo
                                         Costo</button>
                                 </div>
 
@@ -495,7 +498,7 @@
                                     <div class="config-card">
                                         <h4 class="config-card-title">Herramientas</h4>
                                         <div class="row-flex gap-2 mt-2 flex-wrap">
-                                            <button class="btn-ghost btn-sm" id="btnExportCosts">EXPORTAR
+                                            <button class="btn btn-ghost btn-sm" id="btnExportCosts">EXPORTAR
                                                 COSTOS</button>
                                         </div>
                                     </div>
@@ -586,8 +589,8 @@
             </form>
         </div>
         <div class="panel-footer">
-            <button class="btn-secondary" id="btnCancelRule">Cancelar</button>
-            <button class="btn-primary" id="btnSaveRule">Guardar</button>
+            <button class="btn btn-secondary" id="btnCancelRule">Cancelar</button>
+            <button class="btn btn-primary" id="btnSaveRule">Guardar</button>
         </div>
     </aside>
 
@@ -625,8 +628,8 @@
             </form>
         </div>
         <div class="panel-footer">
-            <button class="btn-secondary" id="btnCancelOpening">Cancelar</button>
-            <button class="btn-primary" id="btnSaveOpening">Guardar</button>
+            <button class="btn btn-secondary" id="btnCancelOpening">Cancelar</button>
+            <button class="btn btn-primary" id="btnSaveOpening">Guardar</button>
         </div>
     </aside>
 
@@ -659,8 +662,8 @@
             </form>
         </div>
         <div class="panel-footer">
-            <button class="btn-secondary" id="btnCancelExtra">Cancelar</button>
-            <button class="btn-primary" id="btnSaveExtra">Guardar</button>
+            <button class="btn btn-secondary" id="btnCancelExtra">Cancelar</button>
+            <button class="btn btn-primary" id="btnSaveExtra">Guardar</button>
         </div>
     </aside>
 
@@ -716,8 +719,8 @@
             </div>
 
             <div class="modal-footer">
-                <button class="btn-secondary" id="btnCancelPay">Cancelar</button>
-                <button class="btn-primary" id="btnConfirmPay">REGISTRAR PAGO</button>
+                <button class="btn btn-secondary" id="btnCancelPay">Cancelar</button>
+                <button class="btn btn-primary" id="btnConfirmPay">REGISTRAR PAGO</button>
             </div>
         </div>
     </dialog>

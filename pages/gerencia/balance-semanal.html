@@ -17,7 +17,7 @@
 
     <!-- Topbar: Golden Standard -->
     <header class="topbar">
-        <nav class="breadcrumb topbar-start">
+        <nav class="breadcrumb topbar-start" aria-label="Navegación">
             <span class="breadcrumb-item">
                 <a class="breadcrumb-link" href="../admin/admin-index.html">Gerencia</a>
             </span>
@@ -57,7 +57,7 @@
                     <div class="dashboard-header align-start">
                         <div>
                             <h1 class="dashboard-title dashboard-title-soft">Balance Semanal</h1>
-                            <p class="text-sm text-muted">Resumen financiero semanal y tendencias.</p>
+                            <p class="dashboard-subtitle-soft">Resumen financiero semanal y tendencias.</p>
                         </div>
                     </div>
 
@@ -88,18 +88,20 @@
                         <div class="dashboard-header flex-between align-center mb-md">
                             <h2 class="dashboard-title">Detalle Semanal</h2>
                             <div class="row-flex gap-sm">
-                                <select id="filter-year" class="input input-sm">
+                                <select id="filter-year" class="input input-sm" aria-label="Filtrar por año">
                                     <option value="2026">2026</option>
                                     <option value="2025">2025</option>
                                 </select>
-                                <select id="filter-month" class="input input-sm">
+                                <select id="filter-month" class="input input-sm" aria-label="Filtrar por mes">
                                     <option value="all">Todo el Año</option>
                                     <option value="1">Enero</option>
                                     <option value="2">Febrero</option>
                                     <!-- JS will populate if needed -->
                                 </select>
-                                <button id="btn-export" class="btn-ghost btn-sm" title="Exportar CSV">📥 CSV</button>
-                                <button id="btn-refresh" class="btn-icon btn-ghost" title="Actualizar">↻</button>
+                                <button id="btn-export" class="btn btn-ghost btn-sm" title="Exportar CSV"
+                                    aria-label="Exportar a CSV">📥 CSV</button>
+                                <button id="btn-refresh" class="btn btn-icon btn-ghost" title="Actualizar"
+                                    aria-label="Actualizar datos">↻</button>
                             </div>
                         </div>
 

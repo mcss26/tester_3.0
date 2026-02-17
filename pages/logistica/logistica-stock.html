@@ -17,7 +17,7 @@
     <!-- Topbar: Golden Standard -->
     <header class="topbar">
         <!-- Left: Breadcrumb -->
-        <nav class="breadcrumb topbar-start">
+        <nav class="breadcrumb topbar-start" aria-label="Navegación">
             <span class="breadcrumb-item">
                 <a class="breadcrumb-link" href="logistica-index.html">Logística</a>
             </span>
@@ -92,9 +92,9 @@
                         <div class="dashboard-header align-start">
                             <div>
                                 <h1 class="dashboard-title dashboard-title-soft">Control de Stock</h1>
-                                <p class="text-sm text-muted">Inventario del depósito central y sucursales.</p>
+                                <p class="dashboard-subtitle-soft">Inventario del depósito central y sucursales.</p>
                             </div>
-                            <button class="btn btn-ghost btn-sm" id="btn-refresh">
+                            <button class="btn btn-ghost btn-sm" id="btn-refresh" aria-label="Refrescar datos de stock">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                     stroke-width="2">
                                     <path d="M21 2v6h-6"></path>
@@ -133,11 +133,11 @@
     </main>
 
     <!-- Modal de Ajuste -->
-    <div class="modal-overlay hidden" id="modal-adjust">
-        <div class="modal-card">
+    <div class="modal hidden" id="modal-adjust">
+        <div class="modal-content">
             <div class="modal-header">
                 <h2 class="modal-title">Ajuste de Stock</h2>
-                <button class="btn-icon" id="close-modal" aria-label="Cerrar">×</button>
+                <button class="modal-close btn-icon" id="close-modal" aria-label="Cerrar modal">×</button>
             </div>
             <div class="modal-body">
                 <p id="adjust-sku-name" class="text-muted mb-4 font-medium"></p>
@@ -147,7 +147,8 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="adjust-real">Cantidad Real (Conteo)</label>
-                    <input type="number" id="adjust-real" class="input" min="0" required>
+                    <input type="number" id="adjust-real" class="input" min="0" required
+                        aria-label="Cantidad real contada">
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="adjust-diff">Diferencia</label>
@@ -155,7 +156,7 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="adjust-reason">Motivo</label>
-                    <select id="adjust-reason" class="input select" required>
+                    <select id="adjust-reason" class="input select" required aria-label="Motivo del ajuste">
                         <option value="">Seleccionar...</option>
                         <option value="conteo">Conteo Físico</option>
                         <option value="rotura">Rotura</option>
@@ -167,7 +168,8 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="adjust-notes">Notas</label>
-                    <textarea id="adjust-notes" class="input" rows="2" placeholder="Detalles del ajuste..."></textarea>
+                    <textarea id="adjust-notes" class="input" rows="2" placeholder="Detalles del ajuste..."
+                        aria-label="Notas del ajuste"></textarea>
                 </div>
             </div>
             <div class="modal-footer">

@@ -16,7 +16,7 @@
 
     <!-- Topbar: Golden Standard -->
     <header class="topbar">
-        <nav class="breadcrumb topbar-start">
+        <nav class="breadcrumb topbar-start" aria-label="Navegación">
             <span class="breadcrumb-item">
                 <a class="breadcrumb-link" href="logistica-index.html">Logística</a>
             </span>
@@ -62,9 +62,11 @@
                         <div class="dashboard-header align-start">
                             <div>
                                 <h2 class="dashboard-title dashboard-title-soft">Distribución a Barras</h2>
-                                <p class="text-sm text-muted">Gestión de pedidos internos y despachos a sucursales.</p>
+                                <p class="dashboard-subtitle-soft">Gestión de pedidos internos y despachos a sucursales.
+                                </p>
                             </div>
-                            <button class="btn btn-ghost btn-sm" id="btn-refresh">Refrescar</button>
+                            <button class="btn btn-ghost btn-sm" id="btn-refresh"
+                                aria-label="Refrescar pedidos">Refrescar</button>
                         </div>
 
                         <!-- Filter Bar -->
@@ -87,11 +89,11 @@
     </main>
 
     <!-- Modal de Despacho -->
-    <div class="modal-overlay hidden" id="modal-dispatch">
-        <div class="modal-card">
+    <div class="modal hidden" id="modal-dispatch">
+        <div class="modal-content">
             <div class="modal-header">
                 <h2 class="modal-title">Despachar Pedido</h2>
-                <button class="btn-icon" id="close-modal">✕</button>
+                <button class="modal-close btn-icon" id="close-modal" aria-label="Cerrar modal">✕</button>
             </div>
             <div class="modal-body">
                 <div class="mb-4 bg-surface p-4 rounded text-sm">
@@ -105,8 +107,10 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" id="btn-cancel-dispatch">Cancelar</button>
-                <button class="btn btn-primary" id="btn-confirm-dispatch">Confirmar Despacho</button>
+                <button class="btn btn-secondary" id="btn-cancel-dispatch"
+                    aria-label="Cancelar despacho">Cancelar</button>
+                <button class="btn btn-primary" id="btn-confirm-dispatch" aria-label="Confirmar despacho">Confirmar
+                    Despacho</button>
             </div>
         </div>
     </div>

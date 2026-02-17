@@ -17,7 +17,7 @@
     <!-- Topbar: Golden Standard -->
     <header class="topbar">
         <!-- Left: Breadcrumb -->
-        <nav class="breadcrumb topbar-start">
+        <nav class="breadcrumb topbar-start" aria-label="Navegación">
             <span class="breadcrumb-item">
                 <a class="breadcrumb-link" href="admin-index.html">Administración</a>
             </span>
@@ -101,7 +101,7 @@
                         <div class="dashboard-header align-start">
                             <div>
                                 <h2 class="dashboard-title dashboard-title-soft">Terminales POS</h2>
-                                <p class="text-sm text-muted">Mapeo de Terminales a Puntos de Venta (Mercado Pago,
+                                <p class="dashboard-subtitle-soft">Mapeo de Terminales a Puntos de Venta (Mercado Pago,
                                     Fiserv, etc).</p>
                             </div>
                             <button class="btn btn-primary btn-sm" id="btn-new" aria-label="Nueva Terminal">+ Nueva
@@ -154,12 +154,13 @@
 
             <div class="form-group">
                 <label for="pos-name" class="form-label">Nombre (Friendly Name) *</label>
-                <input type="text" id="pos-name" class="input" placeholder="Ej: Barra Principal" required>
+                <input type="text" id="pos-name" class="input" placeholder="Ej: Barra Principal" required
+                    aria-label="Nombre de la terminal">
             </div>
 
             <div class="form-group">
                 <label for="pos-provider" class="form-label">Proveedor *</label>
-                <select id="pos-provider" class="input select">
+                <select id="pos-provider" class="input select" aria-label="Proveedor de la terminal">
                     <option value="MERCADO PAGO">Mercado Pago</option>
                     <option value="GETNET">Getnet</option>
                     <option value="FISERV">Fiserv / Posnet</option>
@@ -170,7 +171,8 @@
 
             <div class="form-group">
                 <label for="pos-external-id" class="form-label">External ID (Serial/Code) *</label>
-                <input type="text" id="pos-external-id" class="input" placeholder="Ej: MP-POINT-1234" required>
+                <input type="text" id="pos-external-id" class="input" placeholder="Ej: MP-POINT-1234" required
+                    aria-label="ID externo de la terminal">
             </div>
 
             <div class="form-group">
@@ -182,8 +184,8 @@
             </div>
         </div>
         <div class="panel-footer">
-            <button class="btn-secondary" id="btn-cancel">Cancelar</button>
-            <button class="btn-primary" id="btn-save">Guardar</button>
+            <button class="btn btn-secondary" id="btn-cancel">Cancelar</button>
+            <button class="btn btn-primary" id="btn-save">Guardar</button>
         </div>
     </aside>
 

@@ -19,7 +19,7 @@
     <!-- Topbar: Golden Standard -->
     <header class="topbar">
         <!-- Left: Breadcrumb -->
-        <nav class="breadcrumb topbar-start">
+        <nav class="breadcrumb topbar-start" aria-label="Navegación">
             <span class="breadcrumb-item">
                 <a class="breadcrumb-link" href="admin-index.html">Administración</a>
             </span>
@@ -87,7 +87,7 @@
                         <!-- Dashboard Header -->
                         <div class="dashboard-header align-start">
                             <div>
-                                <h2 class="dashboard-title">Reportes Operativos</h2>
+                                <h2 class="dashboard-title dashboard-title-soft">Reportes Operativos</h2>
                                 <p class="dashboard-subtitle dashboard-subtitle-soft">Métricas generadas por SQL Views
                                 </p>
                             </div>
@@ -104,9 +104,10 @@
 
                             <!-- Date Filter -->
                             <div class="report-actions">
-                                <input type="date" id="report-start" class="input input-compact">
+                                <input type="date" id="report-start" class="input input-compact"
+                                    aria-label="Fecha inicio">
                                 <span class="date-separator">-</span>
-                                <input type="date" id="report-end" class="input input-compact">
+                                <input type="date" id="report-end" class="input input-compact" aria-label="Fecha fin">
                                 <button id="btn-refresh-report" class="btn-icon btn-icon-flat" aria-label="Actualizar">
                                     🔄
                                 </button>

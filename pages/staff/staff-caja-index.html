@@ -18,8 +18,10 @@
     <!-- TOPBAR (Golden Standard) -->
     <header class="topbar">
         <!-- Left: Breadcrumb -->
-        <nav class="breadcrumb topbar-start">
-            <span class="breadcrumb-item current">STAFF CAJA</span>
+        <nav class="breadcrumb topbar-start" aria-label="Navegación">
+            <a href="../../index.html" class="breadcrumb-item breadcrumb-link">Inicio</a>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-item current">Staff Caja</span>
         </nav>
 
         <!-- Center: Workday Status -->
@@ -54,6 +56,12 @@
     <main class="page-shell">
         <div class="page-card-wrap">
             <div class="page-card">
+
+                <!-- Dashboard Header -->
+                <header class="dashboard-header">
+                    <h2 class="dashboard-title dashboard-title-soft">Staff Caja</h2>
+                    <p class="dashboard-subtitle-soft">Panel de declaración y cierre de turno</p>
+                </header>
 
                 <section class="action-section container-narrow">
 
@@ -123,28 +131,26 @@
                         <form id="closing-form" class="w-full">
                             <p class="label-welcome text-center mb-md">Declaración</p>
 
-                            <div class="card-section">
-                                <label for="input-cash" class="block text-sm uppercase faint mb-1">Total
-                                    Efectivo</label>
+                            <div class="card-section form-group">
+                                <label for="input-cash" class="form-label">Total Efectivo</label>
                                 <div class="input-group">
                                     <span class="input-prefix">$</span>
                                     <input type="number" id="input-cash" class="input text-lg font-mono"
-                                        placeholder="0.00" step="0.01" required>
+                                        placeholder="0.00" step="0.01" required aria-label="Monto total en efectivo">
                                 </div>
                             </div>
 
-                            <div class="card-section">
-                                <label for="input-zoco" class="block text-sm uppercase faint mb-1">Total Zoco /
-                                    QR</label>
+                            <div class="card-section form-group">
+                                <label for="input-zoco" class="form-label">Total Zoco / QR</label>
                                 <div class="input-group">
                                     <span class="input-prefix">$</span>
                                     <input type="number" id="input-zoco" class="input text-lg font-mono"
-                                        placeholder="0.00" step="0.01" required>
+                                        placeholder="0.00" step="0.01" required aria-label="Monto total Zoco o QR">
                                 </div>
                             </div>
 
-                            <div class="card-section">
-                                <label class="block text-sm uppercase faint mb-2">Firma Digital</label>
+                            <div class="card-section form-group">
+                                <label class="form-label">Firma Digital</label>
                                 <div
                                     class="signature-wrapper relative border border-white/10 rounded-lg bg-black/20 overflow-hidden signature-canvas-height">
                                     <canvas id="signature-canvas" class="w-full h-full cursor-crosshair"></canvas>
@@ -153,13 +159,14 @@
                                         Firmar aquí
                                     </div>
                                     <button type="button" id="btn-clear-signature"
-                                        class="absolute top-2 right-2 btn-icon btn-ghost btn-sm"
-                                        title="Borrar firma">✗</button>
+                                        class="absolute top-2 right-2 btn-icon btn-ghost btn-sm" title="Borrar firma"
+                                        aria-label="Borrar firma">✗</button>
                                 </div>
                             </div>
 
                             <button type="submit" id="btn-submit-close"
-                                class="btn btn-primary w-full py-4 text-sm tracking-widest mt-4">
+                                class="btn btn-primary w-full py-4 text-sm tracking-widest mt-4"
+                                aria-label="Cerrar turno y enviar declaración">
                                 CERRAR TURNO
                             </button>
                         </form>

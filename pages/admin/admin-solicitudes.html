@@ -18,7 +18,7 @@
 
     <header class="topbar">
         <!-- Left: Breadcrumb -->
-        <nav class="breadcrumb topbar-start">
+        <nav class="breadcrumb topbar-start" aria-label="Navegación">
             <a href="./admin-index.html" class="breadcrumb-item breadcrumb-link">Administración</a>
             <span class="breadcrumb-sep">/</span>
             <span class="breadcrumb-item current">Solicitudes</span>
@@ -238,9 +238,9 @@
                                 <div class="filter-spacer"></div>
                                 <div class="filter-actions" id="preapproval-bulk-actions">
                                     <span class="text-xs muted" id="preapproval-selection-info">0 seleccionados</span>
-                                    <button class="btn-primary btn-sm" id="btn-preapprove-selected"
+                                    <button class="btn btn-primary btn-sm" id="btn-preapprove-selected"
                                         disabled>Aprobar</button>
-                                    <button class="btn-ghost btn-sm" id="btn-prereject-selected"
+                                    <button class="btn btn-ghost btn-sm" id="btn-prereject-selected"
                                         disabled>Rechazar</button>
                                 </div>
                             </div>
@@ -290,7 +290,7 @@
         </div>
 
         <div class="panel-footer">
-            <button class="btn-secondary" id="btn-cancel">Cancelar</button>
+            <button class="btn btn-secondary" id="btn-cancel">Cancelar</button>
             <div id="panel-actions" class="row-flex gap-sm">
                 <!-- JS will inject actions -->
             </div>
@@ -315,9 +315,9 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn-secondary"
+                    <button type="button" class="btn btn-secondary"
                         onclick="document.getElementById('modal-prereject').close()">Cancelar</button>
-                    <button type="submit" class="btn-primary">Confirmar Rechazo</button>
+                    <button type="submit" class="btn btn-primary">Confirmar Rechazo</button>
                 </div>
             </form>
         </div>

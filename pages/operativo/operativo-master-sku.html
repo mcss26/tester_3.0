@@ -17,7 +17,7 @@
 
     <!-- Topbar: Golden Standard -->
     <header class="topbar">
-        <nav class="breadcrumb topbar-start">
+        <nav class="breadcrumb topbar-start" aria-label="Navegación">
             <span class="breadcrumb-item">
                 <a class="breadcrumb-link" href="operativo-index.html">Operativo</a>
             </span>
@@ -80,7 +80,7 @@
                         <div class="dashboard-header align-start">
                             <div>
                                 <h2 class="dashboard-title dashboard-title-soft">Configuración de Productos</h2>
-                                <p class="text-sm text-muted">Solicitudes de alta, baja y modificación de SKUs.</p>
+                                <p class="dashboard-subtitle-soft">Solicitudes de alta, baja y modificación de SKUs.</p>
                             </div>
                             <!-- Tab Bar in Header -->
                             <div class="tab-bar" id="sku-view-tabs">
@@ -133,7 +133,7 @@
 
             <div class="form-group mb-4" data-section="action">
                 <label for="req-type" class="form-label">Tipo de Solicitud *</label>
-                <select id="req-type" class="input select w-full">
+                <select id="req-type" class="input select w-full" aria-label="Tipo de solicitud">
                     <option value="">Seleccionar</option>
                     <option value="create">Agregar SKU</option>
                     <option value="update">Editar SKU</option>
@@ -146,7 +146,7 @@
 
             <div class="form-group mb-4" data-section="sku">
                 <label for="req-sku" class="form-label">SKU existente *</label>
-                <select id="req-sku" class="input select w-full">
+                <select id="req-sku" class="input select w-full" aria-label="SKU existente">
                     <option value="">Seleccionar SKU</option>
                 </select>
             </div>
@@ -194,7 +194,7 @@
             <div data-section="supplier" class="mb-4">
                 <div class="form-group">
                     <label for="req-proveedor" class="form-label">Proveedor favorito</label>
-                    <select id="req-proveedor" class="input select w-full">
+                    <select id="req-proveedor" class="input select w-full" aria-label="Proveedor favorito">
                         <option value="">Seleccionar proveedor</option>
                     </select>
                 </div>
@@ -202,8 +202,8 @@
 
             <div class="form-group mb-4" data-section="justification">
                 <label for="req-justification" class="form-label">Justificación *</label>
-                <textarea id="req-justification" class="input w-full" rows="3"
-                    placeholder="Motivo del cambio..."></textarea>
+                <textarea id="req-justification" class="input w-full" rows="3" placeholder="Motivo del cambio..."
+                    aria-label="Justificación de la solicitud"></textarea>
             </div>
         </div>
 

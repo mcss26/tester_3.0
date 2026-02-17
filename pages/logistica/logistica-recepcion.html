@@ -16,7 +16,7 @@
 
     <!-- Topbar: Golden Standard -->
     <header class="topbar">
-        <nav class="breadcrumb topbar-start">
+        <nav class="breadcrumb topbar-start" aria-label="Navegación">
             <span class="breadcrumb-item">
                 <a class="breadcrumb-link" href="logistica-index.html">Logística</a>
             </span>
@@ -63,7 +63,7 @@
                     <div class="dashboard-header align-start">
                         <div>
                             <h2 class="dashboard-title dashboard-title-soft">Recepción de Mercadería</h2>
-                            <p class="text-sm text-muted">Ingreso de productos al depósito central.</p>
+                            <p class="dashboard-subtitle-soft">Ingreso de productos al depósito central.</p>
                         </div>
                         <button class="btn btn-primary btn-sm" id="btn-new-receipt">+ Nueva Recepción</button>
                     </div>
@@ -75,7 +75,8 @@
                             <button class="filter-pill" data-status="RECEIVED">Recibidos</button>
                         </div>
                         <div class="filter-spacer"></div>
-                        <button class="btn btn-ghost btn-sm" id="btn-refresh">Refrescar</button>
+                        <button class="btn btn-ghost btn-sm" id="btn-refresh"
+                            aria-label="Refrescar recepciones">Refrescar</button>
                     </div>
 
                     <div class="table-viewport table-shell" id="list-container">
@@ -87,11 +88,11 @@
     </main>
 
     <!-- Modal de Recepción (Con Orden) -->
-    <div class="modal-overlay hidden" id="modal-receive">
-        <div class="modal-card">
+    <div class="modal hidden" id="modal-receive">
+        <div class="modal-content">
             <div class="modal-header">
                 <h2 class="modal-title" id="modal-title">Recibir Orden</h2>
-                <button class="btn-icon" id="close-modal">✕</button>
+                <button class="modal-close btn-icon" id="close-modal" aria-label="Cerrar modal">✕</button>
             </div>
             <div class="modal-body">
                 <div class="mb-4 bg-surface p-4 rounded text-sm">
@@ -123,24 +124,26 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" id="btn-cancel-receive">Cancelar</button>
-                <button class="btn btn-primary" id="btn-confirm-receive">Confirmar Recepción</button>
+                <button class="btn btn-secondary" id="btn-cancel-receive"
+                    aria-label="Cancelar recepción">Cancelar</button>
+                <button class="btn btn-primary" id="btn-confirm-receive" aria-label="Confirmar recepción">Confirmar
+                    Recepción</button>
             </div>
         </div>
     </div>
 
     <!-- Modal de Nueva Recepción Libre (Sin Orden) -->
-    <div class="modal-overlay hidden" id="modal-free-receipt">
-        <div class="modal-card">
+    <div class="modal hidden" id="modal-free-receipt">
+        <div class="modal-content">
             <div class="modal-header">
                 <h2 class="modal-title">Recepción Directa</h2>
-                <button class="btn-icon" id="close-free-modal">✕</button>
+                <button class="modal-close btn-icon" id="close-free-modal" aria-label="Cerrar modal">✕</button>
             </div>
             <div class="modal-body">
                 <div class="form-row">
                     <div class="form-group flex-1">
                         <label class="form-label" for="free-supplier">Proveedor</label>
-                        <select id="free-supplier" class="input select" required>
+                        <select id="free-supplier" class="input select" required aria-label="Seleccionar proveedor">
                             <option value="">Seleccionar...</option>
                         </select>
                     </div>
@@ -152,7 +155,7 @@
                 <div class="form-group">
                     <label class="form-label" for="free-sku-select">Agregar Producto</label>
                     <div class="flex gap-2">
-                        <select id="free-sku-select" class="input select flex-2">
+                        <select id="free-sku-select" class="input select flex-2" aria-label="Buscar SKU">
                             <option value="">Buscar SKU...</option>
                         </select>
                         <input type="number" id="free-qty" class="input flex-1" placeholder="Cant." min="1">
@@ -181,8 +184,10 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" id="btn-cancel-free">Cancelar</button>
-                <button class="btn btn-primary" id="btn-confirm-free">Confirmar</button>
+                <button class="btn btn-secondary" id="btn-cancel-free"
+                    aria-label="Cancelar recepción libre">Cancelar</button>
+                <button class="btn btn-primary" id="btn-confirm-free"
+                    aria-label="Confirmar recepción libre">Confirmar</button>
             </div>
         </div>
     </div>

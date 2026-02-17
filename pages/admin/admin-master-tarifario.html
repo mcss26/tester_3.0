@@ -17,7 +17,7 @@
     <!-- Topbar: Golden Standard -->
     <header class="topbar">
         <!-- Left: Breadcrumb -->
-        <nav class="breadcrumb topbar-start">
+        <nav class="breadcrumb topbar-start" aria-label="Navegación">
             <span class="breadcrumb-item">
                 <a class="breadcrumb-link" href="admin-index.html">Administración</a>
             </span>
@@ -101,7 +101,8 @@
                         <div class="dashboard-header align-start">
                             <div>
                                 <h2 class="dashboard-title dashboard-title-soft">Roles y Tarifas</h2>
-                                <p class="text-sm text-muted">Gestión de cargos y tarifas base para cálculo de nómina
+                                <p class="dashboard-subtitle-soft">Gestión de cargos y tarifas base para cálculo de
+                                    nómina
                                     operativa.</p>
                             </div>
                             <button class="btn btn-primary btn-sm" id="btn-new" aria-label="Nuevo Cargo">+ Nuevo
@@ -152,12 +153,13 @@
             <form id="role-form" onsubmit="return false;">
                 <div class="form-group">
                     <label class="form-label" for="input-name">Nombre del Cargo *</label>
-                    <input type="text" id="input-name" class="input" placeholder="Ej: Barra Principal" required>
+                    <input type="text" id="input-name" class="input" placeholder="Ej: Barra Principal" required
+                        aria-label="Nombre del cargo">
                 </div>
 
                 <div class="form-group">
                     <label class="form-label" for="input-area">Área</label>
-                    <select id="input-area" class="input select">
+                    <select id="input-area" class="input select" aria-label="Área del cargo">
                         <option value="Barra">Barra</option>
                         <option value="Caja">Caja</option>
                         <option value="Seguridad">Seguridad</option>
@@ -169,14 +171,16 @@
 
                 <div class="form-group">
                     <label class="form-label" for="input-rate">Tarifa Base ($)</label>
-                    <input type="number" id="input-rate" class="input" placeholder="0" min="0" step="100">
+                    <input type="number" id="input-rate" class="input" placeholder="0" min="0" step="100"
+                        aria-label="Tarifa base en pesos">
                 </div>
             </form>
         </div>
         <div class="panel-footer">
-            <button class="btn-danger hidden" id="btn-delete-role" type="button">Eliminar</button>
-            <button class="btn-secondary" id="btn-cancel">Cancelar</button>
-            <button class="btn-primary" id="btn-save">Guardar</button>
+            <button class="btn btn-danger hidden" id="btn-delete-role" type="button"
+                aria-label="Eliminar cargo">Eliminar</button>
+            <button class="btn btn-secondary" id="btn-cancel">Cancelar</button>
+            <button class="btn btn-primary" id="btn-save">Guardar</button>
         </div>
     </aside>
 

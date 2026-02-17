@@ -17,7 +17,7 @@
 
     <!-- Topbar: Golden Standard -->
     <header class="topbar">
-        <nav class="breadcrumb topbar-start">
+        <nav class="breadcrumb topbar-start" aria-label="Navegación">
             <span class="breadcrumb-item">
                 <a class="breadcrumb-link" href="operativo-index.html">Operativo</a>
             </span>
@@ -72,7 +72,7 @@
                         <div class="dashboard-header align-start">
                             <div>
                                 <h2 class="dashboard-title dashboard-title-soft">Work Day Planner</h2>
-                                <p class="text-sm text-muted">Gestión de jornada, accesos y personal.</p>
+                                <p class="dashboard-subtitle-soft">Gestión de jornada, accesos y personal.</p>
                             </div>
                         </div>
 
@@ -140,11 +140,11 @@
     </main>
 
     <!-- Modal: Crear/Editar Link de Passline -->
-    <div class="modal-overlay hidden" id="link-modal">
-        <div class="modal-card">
+    <div class="modal hidden" id="link-modal">
+        <div class="modal-content">
             <div class="modal-header">
                 <h2 class="modal-title" id="link-modal-title">Nuevo Tipo de Entrada</h2>
-                <button class="btn-icon" id="btn-cancel-link-x"
+                <button class="modal-close btn-icon" id="btn-cancel-link-x" aria-label="Cerrar modal"
                     onclick="document.getElementById('link-modal').classList.add('hidden')">×</button>
             </div>
             <div class="modal-body">
@@ -163,8 +163,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" id="btn-cancel-link">Cancelar</button>
-                <button class="btn btn-primary" id="btn-save-link">Guardar</button>
+                <button class="btn btn-secondary" id="btn-cancel-link" aria-label="Cancelar">Cancelar</button>
+                <button class="btn btn-primary" id="btn-save-link" aria-label="Guardar link">Guardar</button>
             </div>
         </div>
     </div>

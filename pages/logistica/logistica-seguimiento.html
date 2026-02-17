@@ -16,7 +16,7 @@
 
   <!-- Topbar: Golden Standard -->
   <header class="topbar">
-    <nav class="breadcrumb topbar-start">
+    <nav class="breadcrumb topbar-start" aria-label="Navegación">
       <span class="breadcrumb-item">
         <a class="breadcrumb-link" href="logistica-index.html">Logística</a>
       </span>
@@ -63,9 +63,9 @@
           <div class="dashboard-header align-start">
             <div>
               <h2 class="dashboard-title dashboard-title-soft">Seguimiento de Pedidos</h2>
-              <p class="text-sm text-muted">Tracking de órdenes de compra hasta entrega.</p>
+              <p class="dashboard-subtitle-soft">Tracking de órdenes de compra hasta entrega.</p>
             </div>
-            <button class="btn btn-ghost btn-sm" id="btn-refresh">Refrescar</button>
+            <button class="btn btn-ghost btn-sm" id="btn-refresh" aria-label="Refrescar pedidos">Refrescar</button>
           </div>
 
           <div class="sku-filter-bar">
@@ -115,7 +115,7 @@
         <h4 class="text-sm font-bold mb-3">Agregar Actualización</h4>
         <div class="form-group mb-3">
           <label class="form-label" for="new-status">Nuevo Estado</label>
-          <select id="new-status" class="input select w-full">
+          <select id="new-status" class="input select w-full" aria-label="Nuevo estado del pedido">
             <option value="">Seleccionar...</option>
             <option value="ordered">📋 Ordenado</option>
             <option value="in_transit">🚚 En Tránsito</option>
@@ -125,8 +125,8 @@
         </div>
         <div class="form-group mb-3">
           <label class="form-label" for="event-notes">Notas (opcional)</label>
-          <textarea id="event-notes" class="input w-full" rows="2"
-            placeholder="Ej: Confirmado por proveedor..."></textarea>
+          <textarea id="event-notes" class="input w-full" rows="2" placeholder="Ej: Confirmado por proveedor..."
+            aria-label="Notas del evento"></textarea>
         </div>
       </div>
     </div>
