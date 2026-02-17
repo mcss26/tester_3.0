@@ -125,13 +125,17 @@
 
       const html5QrCode = new Html5Qrcode('reader');
 
-      // Responsive qrbox: 70% of viewport width, max 250px
-      const vw = Math.min(window.innerWidth * 0.7, 250);
-      const qrboxSize = Math.max(Math.floor(vw), 150); // min 150px
-
+      // Config optimizada para máxima lectura:
+      // - fps alto = más intentos/segundo
+      // - SIN qrbox = escanea TODA la imagen (no solo el centro)
+      // - experimentalFeatures = mejora detección en condiciones pobres
       const config = {
-        fps: 10,
-        qrbox: { width: qrboxSize, height: qrboxSize },
+        fps: 15,
+        // No qrbox = full-frame scanning (much more forgiving)
+        experimentalFeatures: {
+          useBarCodeDetectorIfSupported: true  // Uses native BarcodeDetector API if available (faster + better)
+        },
+        rememberLastUsedCamera: true,
         aspectRatio: 1.0
       };
 
