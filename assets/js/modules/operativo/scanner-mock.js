@@ -67,8 +67,6 @@
     // ══════════════════════════════════════════
     // 3. PRELOAD ALL CODES (offline-first)
     // ══════════════════════════════════════════
-    await preloadCodes();
-
     let lastPreloadAt = 0;
     const PRELOAD_THROTTLE = 30_000; // min 30s between preloads
 
@@ -140,6 +138,8 @@
         }
       }
     }
+
+    await preloadCodes();
 
     // ══════════════════════════════════════════
     // 4. WAKE LOCK
