@@ -1,10 +1,38 @@
-(async function() {
+(function() {
   'use strict';
+
+  // ── Wait for all dependencies to load ──
+  const REQUIRED = ['sb', 'Utils', 'Toast', 'QRCode'];
+  const MAX_WAIT = 10000;
+
+  function ready() {
+    return REQUIRED.every(k => window[k]);
+  }
+
+  function waitForDeps() {
+    return new Promise((resolve, reject) => {
+      if (ready()) return resolve();
+      const start = Date.now();
+      const iv = setInterval(() => {
+        if (ready()) { clearInterval(iv); resolve(); }
+        else if (Date.now() - start > MAX_WAIT) {
+          clearInterval(iv);
+          reject(new Error('Dependencias no cargaron: ' + REQUIRED.filter(k => !window[k]).join(', ')));
+        }
+      }, 80);
+    });
+  }
+
+  waitForDeps().then(async () => {
+    const sb = window.sb;
+
     // Auth: try real session, fallback gracefully
     if (!window.Utils.assertSbOrShowBlockingError()) return;
-    const sb = window.sb;
-    const { data: { session } } = await sb.auth.getSession();
-    const user = session?.user || null;
+    let user = null;
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      user = session?.user || null;
+    } catch (e) { console.warn('Auth session check failed:', e); }
 
     // Elements
     const el = (id) => document.getElementById(id);
@@ -255,4 +283,8 @@
 
         return batch;
     }
+  }).catch(err => {
+    console.error('[QRGenerator] Init failed:', err);
+    document.body.innerHTML = `<div style="color:#ef4444;padding:2rem;text-align:center"><h2>Error de carga</h2><p>${err.message}</p><button onclick="location.reload()" style="margin-top:1rem;padding:8px 16px;cursor:pointer">Reintentar</button></div>`;
+  });
 })();
