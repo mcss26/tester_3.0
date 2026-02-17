@@ -1,3 +1,20 @@
+# Solo listar, no modificar nada
+
+powershell -ExecutionPolicy Bypass -File scripts/doc-mapper.ps1 -DryRun
+
+# Generar mapa sin invocar Gemini CLI
+
+powershell -ExecutionPolicy Bypass -File scripts/doc-mapper.ps1 -SkipCli
+
+# Ejecución completa con análisis CLI
+
+powershell -ExecutionPolicy Bypass -File scripts/doc-mapper.ps1
+
+# Solo una categoría
+
+powershell -ExecutionPolicy Bypass -File scripts/doc-mapper.ps1 -OnlyCategory modules -SkipCli
+}
+
 # Scripts - FormulaMid 4
 
 Índice de scripts de automatización. Todos se corren desde la raíz del proyecto.
@@ -156,9 +173,38 @@ Output: `supabase/migrations/{timestamp}_{prompt-name}.sql`
 
 ---
 
+## 🗺️ Doc Mapper
+
+Escanea todos los `.md` del proyecto, extrae dependencias (links MD, tablas, vistas, RPCs, archivos JS/HTML/CSS) y genera un mapa completo. Al finalizar, invoca Gemini CLI para verificar y generar acciones de actualización.
+
+```powershell
+# Solo listar documentos y dependencias (sin CLI)
+powershell -ExecutionPolicy Bypass -File scripts/doc-mapper.ps1 -SkipCli
+
+# Preview sin ejecutar nada
+powershell -ExecutionPolicy Bypass -File scripts/doc-mapper.ps1 -DryRun
+
+# Ejecución completa (mapa + CLI)
+powershell -ExecutionPolicy Bypass -File scripts/doc-mapper.ps1
+
+# Solo una categoría
+powershell -ExecutionPolicy Bypass -File scripts/doc-mapper.ps1 -OnlyCategory modules
+
+# Más workers para CLI
+powershell -ExecutionPolicy Bypass -File scripts/doc-mapper.ps1 -Workers 3
+```
+
+Output:
+
+- `docs/output/qa/doc-map.json` — Mapa de dependencias completo
+- `docs/output/qa/doc-map-report.md` — Reporte legible
+- `docs/output/qa/doc-map-actions.md` — Acciones recomendadas por Gemini CLI
+
+---
+
 ## Flujo de trabajo recomendado
 
-```
+```text
 ABRO VS CODE
   └─ security-startup.ps1          (una vez)
 
@@ -180,5 +226,6 @@ CIERRO VS CODE
 | flow-tracer       | Reporte de flujo   | `docs/output/qa/{fecha}_audit_flow-trace.md`    |
 | workdays-verifier | Reporte progresivo | `docs/output/qa/workdays-progressive.md`        |
 | backup-configs    | ZIP de configs     | `scripts/backups/config-backup-{timestamp}.zip` |
+| doc-mapper        | Mapa + acciones    | `docs/output/qa/doc-map-*.{json,md}`            |
 
 > Tanto `scripts/logs/` como `scripts/backups/` están en `.gitignore`.

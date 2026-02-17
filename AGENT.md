@@ -25,8 +25,8 @@ skills:
 ### 1) Fuentes de verdad (orden)
 
 1. Reglas globales del workspace (ej: `GEMINI.md` / `.gemini/rules.md`).
-2. `docs/estado-presente.md` (si existe).
-3. `docs/screen-map.md` / `docs/scheme.md`.
+2. `docs/architecture/estado-presente.md` (si existe).
+3. `docs/architecture/screen-map.md` / `docs/architecture/scheme.md`.
 4. `.agent/REGISTRY.yml`.
 
 ### 2) Guardrails por riesgo
@@ -80,9 +80,9 @@ Debug solo en `/dev/` o bajo flag `?mock=true` (si existe), sin contaminar produ
 
 ## Contención documental
 
-- **Regla global**: Todo output documental se crea en `docs/output/{agent_name}/`.
+- **Regla global**: Todo output documental se crea en `docs/_generated/{agent_name}/`.
 - **Naming**: `{YYYY-MM-DD}_{tipo}_{tema}.md`.
 - **Tipos válidos**: `audit`, `plan`, `report`, `spec`, `research`, `migration`, `walkthrough`.
 - **Prohibido** crear docs fuera de la carpeta del agente.
-- **Docs core** (`estado-presente`, `screen-map`, `scheme`, `ui-golden-standard`, `INDEX`) solo se EDITAN.
-- Ver `docs/output/README.md` para convención completa.
+- **Docs core** (en `docs/architecture/`: `estado-presente`, `screen-map`, `scheme`, `ui-golden-standard`; y `INDEX`) solo se EDITAN.
+- Ver `docs/_generated/README.md` para convención completa.

@@ -284,4 +284,4 @@ R: Usa el botón "Ajustar" en el item, selecciona el motivo (Rotura/Merma/etc.),
 - [Operativo Análisis](operativo-analisis.md) - Análisis de consumo para planificación
 - [Master Proveedores](operativo-master-proveedores.md) - Gestión de proveedores referenciados
 - [Admin Solicitudes](../admin/admin-solicitudes.md) - Aprobación de órdenes de compra
-- [Screen Map](../../screen-map.md#operativo-solicitudes) - Ubicación en arquitectura de pantallas
+- [Screen Map](../../architecture/screen-map.md#operativo-solicitudes) - Ubicación en arquitectura de pantallas

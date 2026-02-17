@@ -1,22 +1,24 @@
 # Índice de Documentación
 
-> **Última Actualización**: 2026-02-16
+> **Última Actualización**: 2026-02-17
 
 ---
 
-## Documentos Core
+## 🏗️ Arquitectura (`/architecture`)
 
-| Documento                                                    | Propósito                      |
-| :----------------------------------------------------------- | :----------------------------- |
-| [estado-presente.md](./estado-presente.md)                   | Métricas actuales del proyecto |
-| [screen-map.md](./screen-map.md)                             | Mapa de pantallas por rol      |
-| [scheme.md](./scheme.md)                                     | Esquema de BD (Supabase)       |
-| [ui-golden-standard.md](./ui-golden-standard.md)             | Estándares UI/UX y componentes |
-| [backend-architecture-map.md](./backend-architecture-map.md) | Mapa de arquitectura backend   |
+Documentos core del proyecto — fuente de verdad para estructura, esquema y estándares.
+
+| Documento                                                                 | Propósito                      |
+| :------------------------------------------------------------------------ | :----------------------------- |
+| [estado-presente.md](./architecture/estado-presente.md)                   | Métricas actuales del proyecto |
+| [screen-map.md](./architecture/screen-map.md)                             | Mapa de pantallas por rol      |
+| [scheme.md](./architecture/scheme.md)                                     | Esquema de BD (Supabase)       |
+| [ui-golden-standard.md](./architecture/ui-golden-standard.md)             | Estándares UI/UX y componentes |
+| [backend-architecture-map.md](./architecture/backend-architecture-map.md) | Mapa de arquitectura backend   |
 
 ---
 
-## Guías (`/guides`)
+## 📚 Guías (`/guides`)
 
 | Documento                                                       | Contenido                               |
 | :-------------------------------------------------------------- | :-------------------------------------- |
@@ -26,51 +28,31 @@
 
 ---
 
-## Lógica de Negocio (`/business-logic`)
+## 🔀 Lógica de Negocio (`/business-logic`)
 
-| Documento                                                   | Contenido                               |
-| :---------------------------------------------------------- | :-------------------------------------- |
-| [synthesis-report.md](./business-logic/synthesis-report.md) | Síntesis de reglas de negocio           |
-| `flows/`                                                    | Flujos operativos (workdays, cash, bar) |
-
----
-
-## Testing (`/testing`)
-
-| Documento                        | Contenido                                 |
-| :------------------------------- | :---------------------------------------- |
-| [README.md](./testing/README.md) | Pipeline de testing interactivo           |
-| `observations/`                  | Hallazgos crudos por pantalla             |
-| `tickets/`                       | Tickets accionables (5 activos)           |
-| `plans/`                         | Planes de ejecución generados por agentes |
+| Documento                                                             | Contenido                           |
+| :-------------------------------------------------------------------- | :---------------------------------- |
+| [synthesis-report.md](./business-logic/synthesis-report.md)           | Síntesis de reglas de negocio       |
+| [workday-management.md](./business-logic/flows/workday-management.md) | Flujo: Gestión de Jornadas          |
+| [night-cash-closing.md](./business-logic/flows/night-cash-closing.md) | Flujo: Cierre de Caja Nocturno      |
+| [bar-manager-night.md](./business-logic/flows/bar-manager-night.md)   | Flujo: Noche del Encargado de Barra |
 
 ---
 
-## Migración (`/migration`)
+## 🔍 Auditorías (`/audits`)
 
-| Documento                            | Contenido                              |
-| :----------------------------------- | :------------------------------------- |
-| [README.md](./migration/README.md)   | Estado de migración WorkDays + Balance |
-| [artifacts/](./migration/artifacts/) | Análisis, sprints completados, roadmap |
-
----
-
-## Datos de Referencia (`/important-data-reference`)
-
-| Documento                         | Contenido                           |
-| :-------------------------------- | :---------------------------------- |
-| `Gbol Comandas.xlsx`              | Datos de comandas externas (Gbol)   |
-| `Gbol Factura Electronica.xlsx`   | Facturación electrónica AFIP        |
-| `Passline.csv`                    | Datos de ticketing Passline         |
-| `reporte_Zoco_todos_2025-10.xlsx` | Reporte Zoco completo Oct 2025      |
-| `feature-spec-drinks-by-web.md`   | Spec de funcionalidad Drinks-by-Web |
-| `user-flows-by-role.md`           | Flujos de usuario por rol           |
+| Documento                                                                   | Contenido                         |
+| :-------------------------------------------------------------------------- | :-------------------------------- |
+| [audit-solicitudes-reposicion.md](./audits/audit-solicitudes-reposicion.md) | Auditoría flujo Solicitudes/Repo  |
+| [flow-trace.md](./audits/flow-trace.md)                                     | Trace de flujos cross-module      |
+| [workdays-deep-verification.md](./audits/workdays-deep-verification.md)     | Verificación profunda de Workdays |
+| [supabase-discrepancies.md](./audits/supabase-discrepancies.md)             | Discrepancias Schema vs DB real   |
 
 ---
 
-## Módulos (`/modules`)
+## 📖 Módulos (`/modules`)
 
-Documentación técnica y operativa por módulo:
+Documentación técnica y operativa por módulo. Ver [README.md](./modules/README.md) para índice completo.
 
 | Área       | Cantidad | Ruta                  |
 | :--------- | :------- | :-------------------- |
@@ -87,49 +69,75 @@ Documentación técnica y operativa por módulo:
 
 ---
 
-## Output por Agente (`/output`)
+## 📋 Referencia (`/reference`)
 
-Cada agente documenta exclusivamente en su carpeta. Ver [README](./output/README.md) para convención.
+| Documento                                                                  | Contenido                           |
+| :------------------------------------------------------------------------- | :---------------------------------- |
+| [user-flows-by-role.md](./reference/user-flows-by-role.md)                 | Flujos de usuario por rol           |
+| [feature-spec-drinks-by-web.md](./reference/feature-spec-drinks-by-web.md) | Spec de funcionalidad Drinks-by-Web |
 
-| Carpeta                | Agente       | Contenido                            |
-| :--------------------- | :----------- | :----------------------------------- |
-| `output/frontend/`     | frontend     | Auditorías CSS, specs de componentes |
-| `output/logic/`        | logic        | Specs de módulos JS, flujos de auth  |
-| `output/data/`         | data         | Migraciones schema, specs de RPCs    |
-| `output/qa/`           | qa           | Auditorías de coherencia, reportes   |
-| `output/product/`      | product      | Investigación UX, journey maps       |
-| `output/orchestrator/` | orchestrator | Planes cross-cutting, delegaciones   |
+### Datos Externos (`/reference/external-data`)
+
+| Archivo                           | Contenido                      |
+| :-------------------------------- | :----------------------------- |
+| `Gbol Comandas.xlsx`              | Datos de comandas externas     |
+| `Gbol Factura Electronica.xlsx`   | Facturación electrónica AFIP   |
+| `Passline.csv`                    | Datos de ticketing Passline    |
+| `reporte_Zoco_todos_2025-10.xlsx` | Reporte Zoco completo Oct 2025 |
 
 ---
 
-## Infraestructura de Agentes
+## 🧪 Testing (`/testing`)
+
+| Documento                        | Contenido                                 |
+| :------------------------------- | :---------------------------------------- |
+| [README.md](./testing/README.md) | Pipeline de testing interactivo           |
+| `observations/`                  | Hallazgos crudos por pantalla             |
+| `tickets/`                       | Tickets accionables (5 activos)           |
+| `plans/`                         | Planes de ejecución generados por agentes |
+
+---
+
+## 🔄 Migración (`/migration`)
+
+| Documento                            | Contenido                              |
+| :----------------------------------- | :------------------------------------- |
+| [README.md](./migration/README.md)   | Estado de migración WorkDays + Balance |
+| [artifacts/](./migration/artifacts/) | Análisis, sprints completados, roadmap |
+
+---
+
+## 🎯 Codex / Planes Estratégicos
+
+| Documento                                                    | Contenido                  |
+| :----------------------------------------------------------- | :------------------------- |
+| [PLAN_PRODUCTION_READY.md](./codex/PLAN_PRODUCTION_READY.md) | Plan maestro de producción |
+
+---
+
+## 🤖 Generados por Agentes (`/_generated`)
+
+Artefactos generados automáticamente por el sistema de agentes. **No editar manualmente.**
+
+Ver [README](./_generated/README.md) para convención de naming.
+
+| Carpeta                      | Agente         | Contenido                            |
+| :--------------------------- | :------------- | :----------------------------------- |
+| `_generated/frontend/`       | frontend       | Auditorías CSS, specs de componentes |
+| `_generated/logic/`          | logic          | Specs de módulos JS, flujos de auth  |
+| `_generated/data/`           | data           | Migraciones schema, specs de RPCs    |
+| `_generated/qa/`             | qa             | Auditorías de coherencia, reportes   |
+| `_generated/product/`        | product        | Investigación UX, journey maps       |
+| `_generated/orchestrator/`   | orchestrator   | Planes cross-cutting, delegaciones   |
+| `_generated/ui-scan/`        | ui-scanner     | Compliance matrix, planes UI         |
+| `_generated/db-remediation/` | db-remediation | Prompts SQL de remediación           |
+
+---
+
+## 🏛️ Infraestructura de Agentes
 
 | Archivo                                         | Propósito                                             |
 | :---------------------------------------------- | :---------------------------------------------------- |
 | [`AGENT.md`](../AGENT.md)                       | Reglas globales (semáforo de riesgo, gobernanza, DoD) |
 | [`.agent/README.md`](../.agent/README.md)       | Estructura del sistema agents-of-agents               |
 | [`.agent/REGISTRY.yml`](../.agent/REGISTRY.yml) | Routing canónico por intents + tiers de riesgo        |
-
-### Sub-Agentes (`.agent/agents/`)
-
-| Agente         | Dominio                              | Skills                                                         |
-| :------------- | :----------------------------------- | :------------------------------------------------------------- |
-| `frontend`     | UI/CSS/layout/componentes            | css-architect, web-designer, ui-migrator                       |
-| `logic`        | JS modules, state, auth, integración | logic-engineer, prototyper                                     |
-| `data`         | Schema Supabase, RPCs, migraciones   | db-architect, erp-architect                                    |
-| `qa`           | Auditorías, coherencia, higiene      | auditing-workspace, module-coherence-auditor, testing-pipeline |
-| `product`      | UX, journeys, documentación          | ux-researcher-designer, brand-developer, methodology-generator |
-| `orchestrator` | Routing, delegación, validación      | leader                                                         |
-| `security-ops` | Seguridad, watchdogs, backups        | security-ops                                                   |
-
-### Skills Atómicos (`.agent/skills/`)
-
-15 skills técnicos reutilizables. Skills destacados:
-
-- `leader/` — Orquestación de agentes (orchestrator)
-- `css-architect/` — Reglas de UI/CSS
-- `logic-engineer/` — Reglas de JS/lógica
-- `db-architect/` — Reglas de datos
-- `erp-architect/` — Arquitectura ERP
-- `ux-researcher-designer/` — Investigación UX
-- `auditing-workspace/` — Auditoría de workspace

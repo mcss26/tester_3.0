@@ -690,6 +690,10 @@
             const totalSystem = submitted.reduce((acc, t) =>
                 acc + (t.closing.system_cash || 0) + (t.closing.system_zoco || 0), 0
             );
+            // Convención de signo: declared - system
+            //   Negativo = faltante (se declaró menos que el sistema)
+            //   Positivo = sobrante
+            // Consistente con vw_night_snapshot.conciliacion_diff (fix 2026-02-17)
             const totalDifference = totalDeclared - totalSystem;
 
             // ──────────────────────────────────────────────────────────

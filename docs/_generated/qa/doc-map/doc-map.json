@@ -1,0 +1,3279 @@
+﻿{
+    "generated":  "2026-02-17 07:42",
+    "project":  "FormulaMid 4",
+    "total_docs":  80,
+    "total_deps":  869,
+    "orphan_count":  53,
+    "categories":  [
+                       {
+                           "name":  "modules",
+                           "count":  39
+                       },
+                       {
+                           "name":  "migration",
+                           "count":  10
+                       },
+                       {
+                           "name":  "testing",
+                           "count":  8
+                       },
+                       {
+                           "name":  "core",
+                           "count":  6
+                       },
+                       {
+                           "name":  "root",
+                           "count":  5
+                       },
+                       {
+                           "name":  "business-logic",
+                           "count":  4
+                       },
+                       {
+                           "name":  "guides",
+                           "count":  3
+                       },
+                       {
+                           "name":  "data-reference",
+                           "count":  2
+                       },
+                       {
+                           "name":  "scripts",
+                           "count":  1
+                       },
+                       {
+                           "name":  "audits",
+                           "count":  1
+                       },
+                       {
+                           "name":  "codex",
+                           "count":  1
+                       }
+                   ],
+    "documents":  [
+                      {
+                          "path":  "AGENT.md",
+                          "title":  "Agent: Orchestrator (FormulaMid 4)",
+                          "category":  "root",
+                          "lines":  88,
+                          "sizeKb":  3,
+                          "modified":  "2026-02-16",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/core/*navigation*.js",
+                                                        "assets/js/core/*supabase*.js",
+                                                        "assets/js/core/auth*.js",
+                                                        "assets/js/core/utils*.js"
+                                                    ],
+                                       "html_files":  [
+
+                                                      ],
+                                       "css_files":  [
+                                                         "assets/css/components.css",
+                                                         "assets/css/tokens.css"
+                                                     ]
+                                   },
+                          "dep_count":  6
+                      },
+                      {
+                          "path":  "assets/preview.md",
+                          "title":  "Auditor \u0026 Control Panel (UI Sandbox)",
+                          "category":  "root",
+                          "lines":  37,
+                          "sizeKb":  1.8,
+                          "modified":  "2026-02-01",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+
+                                                    ],
+                                       "html_files":  [
+
+                                                      ],
+                                       "css_files":  [
+                                                         "assets/css/tokens.css"
+                                                     ]
+                                   },
+                          "dep_count":  1
+                      },
+                      {
+                          "path":  "docs/audits/audit-solicitudes-reposicion.md",
+                          "title":  "AuditorÃ­a â€” Flujo Solicitudes / ReposiciÃ³n",
+                          "category":  "audits",
+                          "lines":  323,
+                          "sizeKb":  13.1,
+                          "modified":  "2026-02-17",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+                                                      "inventory_movements",
+                                                      "inventory_stock",
+                                                      "replenishment_items",
+                                                      "replenishment_receipt_items",
+                                                      "replenishment_receipts",
+                                                      "replenishment_requests",
+                                                      "replenishment_supplier_orders",
+                                                      "replenishment_tracking"
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+
+                                                    ],
+                                       "html_files":  [
+
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  8
+                      },
+                      {
+                          "path":  "docs/backend-architecture-map.md",
+                          "title":  "Backend Architecture Map â€” FormulaMid 4",
+                          "category":  "core",
+                          "lines":  215,
+                          "sizeKb":  19.3,
+                          "modified":  "2026-02-16",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+                                                      "accounts_payable",
+                                                      "audit_config",
+                                                      "auth_audit_log",
+                                                      "bar_session_sales",
+                                                      "bar_sessions",
+                                                      "bar_stock_snapshots",
+                                                      "cash_closings",
+                                                      "cash_movements",
+                                                      "closing_terminals",
+                                                      "consumption_details",
+                                                      "consumption_reports",
+                                                      "cost_config",
+                                                      "cost_definitions",
+                                                      "events",
+                                                      "finance_opening_cost_defs",
+                                                      "finance_payment_rules",
+                                                      "finance_payments",
+                                                      "finance_weekly_closings",
+                                                      "gbol_sync_log",
+                                                      "import_gbol_comandas",
+                                                      "import_gbol_facturacion",
+                                                      "import_gbol_withdrawals",
+                                                      "import_logs",
+                                                      "inventory_ideal",
+                                                      "inventory_movements",
+                                                      "inventory_stock",
+                                                      "inventory_stock_adjustments",
+                                                      "master_categories",
+                                                      "master_proveedores",
+                                                      "master_recipes",
+                                                      "master_sku",
+                                                      "master_staff_roles",
+                                                      "members",
+                                                      "menu_categories",
+                                                      "menu_items",
+                                                      "payment_categories",
+                                                      "payment_methods",
+                                                      "pos_terminals",
+                                                      "pos_terminals_alias",
+                                                      "profile_functions",
+                                                      "profiles",
+                                                      "qr_batches",
+                                                      "qr_checkins",
+                                                      "qr_codes",
+                                                      "recipe_code_mappings",
+                                                      "replenishment_items",
+                                                      "replenishment_receipt_items",
+                                                      "replenishment_receipts",
+                                                      "replenishment_requests",
+                                                      "replenishment_supplier_orders",
+                                                      "replenishment_tracking",
+                                                      "revenue_details",
+                                                      "revenue_reports",
+                                                      "site_config",
+                                                      "sku_change_requests",
+                                                      "staff_accruals",
+                                                      "staff_convocations",
+                                                      "staff_functions",
+                                                      "stg_afip_facturas",
+                                                      "stg_extracciones",
+                                                      "stg_gbol_items",
+                                                      "stg_passline_tickets",
+                                                      "work_day_staff_planning",
+                                                      "work_day_templates",
+                                                      "work_days"
+                                                  ],
+                                       "views":  [
+                                                     "v_admin_stock",
+                                                     "vw_bar_audit_variance",
+                                                     "vw_bar_efficiency",
+                                                     "vw_consumo_teorico",
+                                                     "vw_daily_sales",
+                                                     "vw_daily_sales_v2",
+                                                     "vw_fiscal_summary",
+                                                     "vw_per_capita_revenue",
+                                                     "vw_recipe_profitability",
+                                                     "vw_reconcile_afip_gbol",
+                                                     "vw_sku_ideal_dynamic",
+                                                     "vw_staff_accruals_summary",
+                                                     "vw_staff_performance",
+                                                     "vw_stock_global",
+                                                     "vw_supplier_orders_admin",
+                                                     "vw_supplier_orders_encargado",
+                                                     "vw_tax_monthly",
+                                                     "vw_work_day_summary",
+                                                     "vw_workday_benchmarks",
+                                                     "vw_workday_pnl"
+                                                 ],
+                                       "rpcs":  [
+                                                    "admin_approve_payment",
+                                                    "admin_bulk_set_stock",
+                                                    "admin_export_accruals_to_payments",
+                                                    "admin_generate_rule_payments",
+                                                    "admin_generate_workday_accruals",
+                                                    "admin_mark_payment_done",
+                                                    "admin_sync_opening_cost_payments",
+                                                    "admin_undo_payment_done",
+                                                    "calculate_costo_pack",
+                                                    "calculate_health_score",
+                                                    "fn_normalize_terminal_name",
+                                                    "fn_parse_arg_number",
+                                                    "rpc_close_work_day",
+                                                    "rpc_confirm_work_day",
+                                                    "rpc_create_work_day",
+                                                    "rpc_open_work_day",
+                                                    "rpc_plan_work_day",
+                                                    "rpc_preflight_close_workday",
+                                                    "rpc_receive_supplier_order",
+                                                    "rpc_revert_work_day"
+                                                ],
+                                       "js_files":  [
+
+                                                    ],
+                                       "html_files":  [
+
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  105
+                      },
+                      {
+                          "path":  "docs/business-logic/flows/bar-manager-night.md",
+                          "title":  "Flujo de Negocio: Noche del Encargado de Barra",
+                          "category":  "business-logic",
+                          "lines":  70,
+                          "sizeKb":  4.6,
+                          "modified":  "2026-02-16",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+                                                      "bar_sessions",
+                                                      "bar_stock_snapshots",
+                                                      "master_sku",
+                                                      "work_days"
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/encargados/encargado-barra-noche.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  5
+                      },
+                      {
+                          "path":  "docs/business-logic/flows/night-cash-closing.md",
+                          "title":  "Flujo de Negocio: Cierre de Caja Nocturno",
+                          "category":  "business-logic",
+                          "lines":  73,
+                          "sizeKb":  5.4,
+                          "modified":  "2026-02-16",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+                                                      "cash_closings",
+                                                      "closing_terminals",
+                                                      "import_gbol_facturacion",
+                                                      "work_days"
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+                                                    "rpc_close_work_day"
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/core/gbol-service.js",
+                                                        "assets/js/modules/admin/admin-workdays.js",
+                                                        "assets/js/modules/encargados/encargado-caja-noche.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/admin/admin-workdays.html",
+                                                          "pages/encargados/encargado-caja-noche.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  10
+                      },
+                      {
+                          "path":  "docs/business-logic/flows/workday-management.md",
+                          "title":  "Flujo de Negocio: GestiÃ³n de Jornadas de Trabajo (Workday)",
+                          "category":  "business-logic",
+                          "lines":  87,
+                          "sizeKb":  6.6,
+                          "modified":  "2026-02-16",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+                                                      "cash_closings",
+                                                      "closing_terminals",
+                                                      "finance_payments",
+                                                      "staff_accruals",
+                                                      "staff_convocations",
+                                                      "work_day_staff_planning",
+                                                      "work_day_templates",
+                                                      "work_days"
+                                                  ],
+                                       "views":  [
+                                                     "vw_bar_audit_variance",
+                                                     "vw_consumo_teorico",
+                                                     "vw_night_snapshot",
+                                                     "vw_workday_pnl"
+                                                 ],
+                                       "rpcs":  [
+                                                    "admin_generate_workday_accruals",
+                                                    "rpc_close_work_day",
+                                                    "rpc_confirm_work_day",
+                                                    "rpc_open_work_day"
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/core/gbol-service.js",
+                                                        "assets/js/modules/admin/admin-workdays.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/admin/admin-workdays.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  19
+                      },
+                      {
+                          "path":  "docs/business-logic/synthesis-report.md",
+                          "title":  "Reporte de SÃ­ntesis: LÃ³gica de Negocio y Arquitectura de Control",
+                          "category":  "business-logic",
+                          "lines":  114,
+                          "sizeKb":  7,
+                          "modified":  "2026-02-16",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+                                                      "closing_terminals",
+                                                      "staff_accruals",
+                                                      "staff_convocations"
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+
+                                                    ],
+                                       "html_files":  [
+
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  3
+                      },
+                      {
+                          "path":  "docs/codex/PLAN_PRODUCTION_READY.md",
+                          "title":  "PLAN PRODUCTION READY - tester_3.0",
+                          "category":  "codex",
+                          "lines":  337,
+                          "sizeKb":  19.5,
+                          "modified":  "2026-02-17",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+                                                      "cash_movements",
+                                                      "gbol_sync_log",
+                                                      "import_gbol_comandas",
+                                                      "import_gbol_facturacion",
+                                                      "import_logs",
+                                                      "qr_batches",
+                                                      "qr_codes",
+                                                      "replenishment_tracking",
+                                                      "site_config"
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+                                                    "rpc_close_work_day",
+                                                    "rpc_confirm_work_day",
+                                                    "rpc_create_work_day",
+                                                    "rpc_open_work_day",
+                                                    "rpc_preflight_close_workday"
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/core/config.js",
+                                                        "assets/js/core/error-logger.js",
+                                                        "assets/js/core/gbol-service.js",
+                                                        "assets/js/members/my-qr.js",
+                                                        "assets/js/modules/admin/admin-workdays.js",
+                                                        "assets/js/modules/operativo/cms-members.js",
+                                                        "assets/js/modules/operativo/scanner.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/operativo/scanner.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  22
+                      },
+                      {
+                          "path":  "docs/estado-presente.md",
+                          "title":  "Estado Presente del Proyecto - FormulaMid 4",
+                          "category":  "core",
+                          "lines":  297,
+                          "sizeKb":  20.8,
+                          "modified":  "2026-02-17",
+                          "deps":  {
+                                       "md_links":  [
+                                                        "scheme.md",
+                                                        "./AGENT.md"
+                                                    ],
+                                       "tables":  [
+                                                      "accounts_payable",
+                                                      "audit_config",
+                                                      "auth_audit_log",
+                                                      "bar_session_sales",
+                                                      "bar_sessions",
+                                                      "bar_stock_snapshots",
+                                                      "cash_closings",
+                                                      "cash_movements",
+                                                      "closing_terminals",
+                                                      "consumption_details",
+                                                      "consumption_reports",
+                                                      "cost_config",
+                                                      "cost_definitions",
+                                                      "events",
+                                                      "finance_opening_cost_defs",
+                                                      "finance_payment_rules",
+                                                      "finance_payments",
+                                                      "finance_weekly_closings",
+                                                      "gbol_sync_log",
+                                                      "import_gbol_comandas",
+                                                      "import_gbol_facturacion",
+                                                      "import_gbol_withdrawals",
+                                                      "import_logs",
+                                                      "inventory_ideal",
+                                                      "inventory_movements",
+                                                      "inventory_stock",
+                                                      "inventory_stock_adjustments",
+                                                      "master_categories",
+                                                      "master_proveedores",
+                                                      "master_recipes",
+                                                      "master_sku",
+                                                      "master_staff_roles",
+                                                      "members",
+                                                      "menu_categories",
+                                                      "menu_items",
+                                                      "payment_categories",
+                                                      "payment_methods",
+                                                      "pos_terminals",
+                                                      "pos_terminals_alias",
+                                                      "profile_functions",
+                                                      "profiles",
+                                                      "qr_batches",
+                                                      "qr_checkins",
+                                                      "qr_codes",
+                                                      "recipe_code_mappings",
+                                                      "replenishment_items",
+                                                      "replenishment_receipt_items",
+                                                      "replenishment_receipts",
+                                                      "replenishment_requests",
+                                                      "replenishment_supplier_orders",
+                                                      "replenishment_tracking",
+                                                      "revenue_details",
+                                                      "revenue_reports",
+                                                      "site_config",
+                                                      "sku_change_requests",
+                                                      "staff_accruals",
+                                                      "staff_convocations",
+                                                      "staff_functions",
+                                                      "stg_afip_facturas",
+                                                      "stg_extracciones",
+                                                      "stg_gbol_items",
+                                                      "stg_passline_tickets",
+                                                      "work_day_staff_planning",
+                                                      "work_day_templates",
+                                                      "work_days"
+                                                  ],
+                                       "views":  [
+                                                     "v_admin_stock",
+                                                     "vw_bar_audit_variance",
+                                                     "vw_bar_efficiency",
+                                                     "vw_consumo_teorico",
+                                                     "vw_daily_sales",
+                                                     "vw_daily_sales_v2",
+                                                     "vw_finance_weekly",
+                                                     "vw_financial_week_live",
+                                                     "vw_fiscal_summary",
+                                                     "vw_night_snapshot",
+                                                     "vw_per_capita_revenue",
+                                                     "vw_pnl_monthly_v2",
+                                                     "vw_recipe_profitability",
+                                                     "vw_reconcile_afip_gbol",
+                                                     "vw_sku_ideal_dynamic",
+                                                     "vw_staff_accruals_summary",
+                                                     "vw_staff_performance",
+                                                     "vw_stock_audit_nightly",
+                                                     "vw_stock_global",
+                                                     "vw_supplier_orders_admin",
+                                                     "vw_supplier_orders_encargado",
+                                                     "vw_tax_monthly",
+                                                     "vw_work_day_summary",
+                                                     "vw_workday_benchmarks",
+                                                     "vw_workday_pnl"
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/modules/login.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/*.html",
+                                                          "pages/admin/*.html",
+                                                          "pages/admin/qr/*.html",
+                                                          "pages/encargados/*.html",
+                                                          "pages/gerencia/*.html",
+                                                          "pages/logistica/*.html",
+                                                          "pages/members/*.html",
+                                                          "pages/operativo/*.html",
+                                                          "pages/prototypes/*.html",
+                                                          "pages/staff/*.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  103
+                      },
+                      {
+                          "path":  "docs/guides/drive-troubleshooting.md",
+                          "title":  "SoluciÃ³n de Problemas de Google Drive MCP",
+                          "category":  "guides",
+                          "lines":  52,
+                          "sizeKb":  1.7,
+                          "modified":  "2026-02-07",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+
+                                                    ],
+                                       "html_files":  [
+
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  0
+                      },
+                      {
+                          "path":  "docs/guides/navigation.md",
+                          "title":  "Navigation System Architecture",
+                          "category":  "guides",
+                          "lines":  95,
+                          "sizeKb":  3.5,
+                          "modified":  "2026-02-01",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "core/navigation.js"
+                                                    ],
+                                       "html_files":  [
+
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  1
+                      },
+                      {
+                          "path":  "docs/guides/state-management-guide.md",
+                          "title":  "State Management Guide â€” FormulaMid 4",
+                          "category":  "guides",
+                          "lines":  83,
+                          "sizeKb":  1.8,
+                          "modified":  "2026-02-07",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+
+                                                    ],
+                                       "html_files":  [
+
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  0
+                      },
+                      {
+                          "path":  "docs/important-data-reference/feature-spec-drinks-by-web.md",
+                          "title":  "Feature Spec: Drinks by Web (ConsumiciÃ³n Digital)",
+                          "category":  "data-reference",
+                          "lines":  360,
+                          "sizeKb":  21.8,
+                          "modified":  "2026-02-11",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+                                                      "inventory_movements"
+                                                  ],
+                                       "views":  [
+                                                     "vw_drink_consumption_live",
+                                                     "vw_drink_sales_by_channel"
+                                                 ],
+                                       "rpcs":  [
+                                                    "rpc_create_drink_order",
+                                                    "rpc_redeem_drink_qr"
+                                                ],
+                                       "js_files":  [
+
+                                                    ],
+                                       "html_files":  [
+
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  5
+                      },
+                      {
+                          "path":  "docs/important-data-reference/user-flows-by-role.md",
+                          "title":  "User Flows por Rol â€” Mapa Completo + Gap Analysis",
+                          "category":  "data-reference",
+                          "lines":  388,
+                          "sizeKb":  21.1,
+                          "modified":  "2026-02-12",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+
+                                                    ],
+                                       "html_files":  [
+
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  0
+                      },
+                      {
+                          "path":  "docs/INDEX.md",
+                          "title":  "Ãndice de DocumentaciÃ³n",
+                          "category":  "core",
+                          "lines":  135,
+                          "sizeKb":  6.9,
+                          "modified":  "2026-02-16",
+                          "deps":  {
+                                       "md_links":  [
+                                                        "estado-presente.md",
+                                                        "screen-map.md",
+                                                        "scheme.md",
+                                                        "ui-golden-standard.md",
+                                                        "backend-architecture-map.md",
+                                                        "guides/navigation.md",
+                                                        "guides/state-management-guide.md",
+                                                        "guides/drive-troubleshooting.md",
+                                                        "business-logic/synthesis-report.md",
+                                                        "testing/README.md",
+                                                        "migration/README.md",
+                                                        "modules/_template.md",
+                                                        "output/README.md",
+                                                        "./AGENT.md",
+                                                        "./.agent/README.md"
+                                                    ],
+                                       "tables":  [
+
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+
+                                                    ],
+                                       "html_files":  [
+
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  15
+                      },
+                      {
+                          "path":  "docs/migration/artifacts/erp-diagnostic-workdays.md",
+                          "title":  "ðŸ§  ERP Architect â€” DiagnÃ³stico: MÃ³dulo Workdays",
+                          "category":  "migration",
+                          "lines":  264,
+                          "sizeKb":  10.2,
+                          "modified":  "2026-02-10",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+                                                      "cash_closings",
+                                                      "events",
+                                                      "site_config",
+                                                      "staff_accruals",
+                                                      "work_days"
+                                                  ],
+                                       "views":  [
+                                                     "vw_bar_audit_variance",
+                                                     "vw_bar_efficiency",
+                                                     "vw_daily_sales",
+                                                     "vw_daily_sales_v2",
+                                                     "vw_night_snapshot",
+                                                     "vw_sku_ideal_dynamic",
+                                                     "vw_staff_accruals_summary",
+                                                     "vw_work_day_summary"
+                                                 ],
+                                       "rpcs":  [
+                                                    "admin_generate_workday_accruals",
+                                                    "rpc_close_work_day",
+                                                    "rpc_confirm_work_day",
+                                                    "rpc_create_work_day",
+                                                    "rpc_open_work_day",
+                                                    "rpc_plan_work_day"
+                                                ],
+                                       "js_files":  [
+
+                                                    ],
+                                       "html_files":  [
+
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  19
+                      },
+                      {
+                          "path":  "docs/migration/artifacts/kpi-audit.md",
+                          "title":  "KPI Audit: Mock Data vs Supabase Schema",
+                          "category":  "migration",
+                          "lines":  211,
+                          "sizeKb":  13.5,
+                          "modified":  "2026-02-13",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+                                                      "cash_movements",
+                                                      "closing_terminals",
+                                                      "cost_config",
+                                                      "qr_checkins",
+                                                      "replenishment_requests",
+                                                      "replenishment_supplier_orders",
+                                                      "staff_accruals",
+                                                      "stg_passline_tickets",
+                                                      "work_day_staff_planning"
+                                                  ],
+                                       "views":  [
+                                                     "vw_bar_audit_variance",
+                                                     "vw_consumo_teorico",
+                                                     "vw_fiscal_summary",
+                                                     "vw_staff_accruals_summary",
+                                                     "vw_tax_monthly"
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+
+                                                    ],
+                                       "html_files":  [
+
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  14
+                      },
+                      {
+                          "path":  "docs/migration/artifacts/README.md",
+                          "title":  "Artefactos de MigraciÃ³n",
+                          "category":  "migration",
+                          "lines":  27,
+                          "sizeKb":  2.1,
+                          "modified":  "2026-02-15",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+
+                                                    ],
+                                       "html_files":  [
+
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  0
+                      },
+                      {
+                          "path":  "docs/migration/artifacts/roadmap_production.md",
+                          "title":  "ðŸ—ºï¸ Workdays: Roadmap a ProducciÃ³n",
+                          "category":  "migration",
+                          "lines":  631,
+                          "sizeKb":  20.6,
+                          "modified":  "2026-02-10",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+                                                    "rpc_close_work_day",
+                                                    "rpc_confirm_work_day",
+                                                    "rpc_create_work_day",
+                                                    "rpc_open_work_day",
+                                                    "rpc_revert_work_day"
+                                                ],
+                                       "js_files":  [
+
+                                                    ],
+                                       "html_files":  [
+
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  5
+                      },
+                      {
+                          "path":  "docs/migration/artifacts/sprint3-implementation_plan.md",
+                          "title":  "Sprint 3 â€” Frontend Polish: Robustez y Responsividad",
+                          "category":  "migration",
+                          "lines":  129,
+                          "sizeKb":  6.1,
+                          "modified":  "2026-02-10",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+
+                                                  ],
+                                       "views":  [
+                                                     "vw_workday_pnl"
+                                                 ],
+                                       "rpcs":  [
+                                                    "calculate_health_score"
+                                                ],
+                                       "js_files":  [
+
+                                                    ],
+                                       "html_files":  [
+
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  2
+                      },
+                      {
+                          "path":  "docs/migration/artifacts/sprint3-walkthrough.md",
+                          "title":  "Sprint 3 â€” Frontend Polish: Walkthrough",
+                          "category":  "migration",
+                          "lines":  76,
+                          "sizeKb":  3.2,
+                          "modified":  "2026-02-10",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+                                                      "work_days"
+                                                  ],
+                                       "views":  [
+                                                     "vw_night_snapshot",
+                                                     "vw_workday_pnl"
+                                                 ],
+                                       "rpcs":  [
+                                                    "calculate_health_score"
+                                                ],
+                                       "js_files":  [
+
+                                                    ],
+                                       "html_files":  [
+
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  4
+                      },
+                      {
+                          "path":  "docs/migration/artifacts/ux_research_workdays.md",
+                          "title":  "ðŸ”¬ UX Research Report: Workdays Prototypes",
+                          "category":  "migration",
+                          "lines":  168,
+                          "sizeKb":  11.8,
+                          "modified":  "2026-02-12",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+
+                                                    ],
+                                       "html_files":  [
+
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  0
+                      },
+                      {
+                          "path":  "docs/migration/artifacts/workdays-ui-implementation_plan.md",
+                          "title":  "Workdays â€” 6 Edits Plan",
+                          "category":  "migration",
+                          "lines":  135,
+                          "sizeKb":  4.5,
+                          "modified":  "2026-02-11",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+
+                                                    ],
+                                       "html_files":  [
+
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  0
+                      },
+                      {
+                          "path":  "docs/migration/artifacts/workdays-ui-walkthrough.md",
+                          "title":  "Workdays Density Polish â€” Walkthrough",
+                          "category":  "migration",
+                          "lines":  41,
+                          "sizeKb":  1.9,
+                          "modified":  "2026-02-11",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+
+                                                    ],
+                                       "html_files":  [
+
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  0
+                      },
+                      {
+                          "path":  "docs/migration/README.md",
+                          "title":  "MigraciÃ³n: WorkDays Unificado + Balance Semanal",
+                          "category":  "migration",
+                          "lines":  22,
+                          "sizeKb":  1.2,
+                          "modified":  "2026-02-12",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+
+                                                    ],
+                                       "html_files":  [
+
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  0
+                      },
+                      {
+                          "path":  "docs/modules/_template.md",
+                          "title":  "[Nombre del MÃ³dulo]",
+                          "category":  "modules",
+                          "lines":  196,
+                          "sizeKb":  4.9,
+                          "modified":  "2026-02-15",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+
+                                                  ],
+                                       "views":  [
+                                                     "vw_vista_b"
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/modules/[categoria]/[archivo].js",
+                                                        "core/auth.js",
+                                                        "core/config.js",
+                                                        "core/supabase-client.js",
+                                                        "core/toast.js",
+                                                        "core/utils.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/[categoria]/[archivo].html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  8
+                      },
+                      {
+                          "path":  "docs/modules/admin/admin-central-stock.md",
+                          "title":  "Admin Central Stock",
+                          "category":  "modules",
+                          "lines":  46,
+                          "sizeKb":  2.4,
+                          "modified":  "2026-02-05",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+                                                      "consumption_details",
+                                                      "consumption_reports",
+                                                      "inventory_movements",
+                                                      "inventory_stock",
+                                                      "master_categories",
+                                                      "master_proveedores",
+                                                      "master_recipes",
+                                                      "master_sku",
+                                                      "revenue_details",
+                                                      "revenue_reports",
+                                                      "sku_change_requests",
+                                                      "work_days"
+                                                  ],
+                                       "views":  [
+                                                     "vw_stock_global"
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "core/auth.js",
+                                                        "core/supabase-client.js",
+                                                        "core/utils.js",
+                                                        "modules/admin/admin-central-stock.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/admin/admin-central-stock.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  18
+                      },
+                      {
+                          "path":  "docs/modules/admin/admin-config.md",
+                          "title":  "Admin: ConfiguraciÃ³n",
+                          "category":  "modules",
+                          "lines":  138,
+                          "sizeKb":  4.1,
+                          "modified":  "2026-02-08",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+                                                      "cost_config",
+                                                      "master_sku"
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/modules/admin/admin-config.js",
+                                                        "core/auth.js",
+                                                        "core/supabase-client.js",
+                                                        "core/toast.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/admin/admin-config.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  7
+                      },
+                      {
+                          "path":  "docs/modules/admin/admin-index.md",
+                          "title":  "Admin Index (Portal)",
+                          "category":  "modules",
+                          "lines":  53,
+                          "sizeKb":  2.4,
+                          "modified":  "2026-02-01",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+                                                      "profiles",
+                                                      "work_days"
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/modules/admin/admin-navigation.js",
+                                                        "assets/js/modules/work-day-helper.js",
+                                                        "assets/js/pages/admin/admin-index.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/admin/admin-index.html"
+                                                      ],
+                                       "css_files":  [
+                                                         "assets/css/pages/admin-index.css"
+                                                     ]
+                                   },
+                          "dep_count":  7
+                      },
+                      {
+                          "path":  "docs/modules/admin/admin-master-categorias.md",
+                          "title":  "Admin Master CategorÃ­as",
+                          "category":  "modules",
+                          "lines":  230,
+                          "sizeKb":  9.4,
+                          "modified":  "2026-02-15",
+                          "deps":  {
+                                       "md_links":  [
+                                                        "admin-central-stock.md"
+                                                    ],
+                                       "tables":  [
+                                                      "master_categories"
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/modules/admin/admin-master-categorias.js",
+                                                        "core/auth.js",
+                                                        "core/config.js",
+                                                        "core/supabase-client.js",
+                                                        "core/toast.js",
+                                                        "core/utils.js",
+                                                        "modules/panel.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/admin/admin-master-categorias.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  10
+                      },
+                      {
+                          "path":  "docs/modules/admin/admin-master-pos.md",
+                          "title":  "Admin Master POS",
+                          "category":  "modules",
+                          "lines":  228,
+                          "sizeKb":  9.5,
+                          "modified":  "2026-02-10",
+                          "deps":  {
+                                       "md_links":  [
+                                                        "workdays.md"
+                                                    ],
+                                       "tables":  [
+                                                      "pos_terminals"
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/modules/admin/admin-master-pos.js",
+                                                        "core/auth.js",
+                                                        "core/config.js",
+                                                        "core/supabase-client.js",
+                                                        "core/toast.js",
+                                                        "core/utils.js",
+                                                        "modules/panel.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/admin/admin-master-pos.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  10
+                      },
+                      {
+                          "path":  "docs/modules/admin/admin-master-proveedores.md",
+                          "title":  "Admin Master Proveedores",
+                          "category":  "modules",
+                          "lines":  217,
+                          "sizeKb":  9.4,
+                          "modified":  "2026-02-15",
+                          "deps":  {
+                                       "md_links":  [
+                                                        "admin-central-stock.md",
+                                                        "admin-pagos.md",
+                                                        "admin-solicitudes.md"
+                                                    ],
+                                       "tables":  [
+                                                      "master_proveedores"
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/modules/admin/admin-master-proveedores.js",
+                                                        "core/auth.js",
+                                                        "core/config.js",
+                                                        "core/supabase-client.js",
+                                                        "core/toast.js",
+                                                        "core/utils.js",
+                                                        "modules/panel.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/admin/admin-master-proveedores.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  12
+                      },
+                      {
+                          "path":  "docs/modules/admin/admin-master-tarifario.md",
+                          "title":  "Admin Master Tarifario",
+                          "category":  "modules",
+                          "lines":  231,
+                          "sizeKb":  9.5,
+                          "modified":  "2026-02-15",
+                          "deps":  {
+                                       "md_links":  [
+                                                        "workdays.md"
+                                                    ],
+                                       "tables":  [
+                                                      "master_staff_roles"
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/modules/admin/admin-master-tarifario.js",
+                                                        "core/auth.js",
+                                                        "core/config.js",
+                                                        "core/supabase-client.js",
+                                                        "core/toast.js",
+                                                        "core/utils.js",
+                                                        "modules/panel.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/admin/admin-master-tarifario.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  10
+                      },
+                      {
+                          "path":  "docs/modules/admin/admin-pagos.md",
+                          "title":  "Admin Pagos (GestiÃ³n de Finanzas)",
+                          "category":  "modules",
+                          "lines":  351,
+                          "sizeKb":  15.9,
+                          "modified":  "2026-02-15",
+                          "deps":  {
+                                       "md_links":  [
+                                                        "admin-master-proveedores.md",
+                                                        "admin-solicitudes.md",
+                                                        "workdays.md"
+                                                    ],
+                                       "tables":  [
+                                                      "finance_opening_cost_defs",
+                                                      "finance_payment_rules",
+                                                      "finance_payments",
+                                                      "master_proveedores",
+                                                      "replenishment_supplier_orders",
+                                                      "work_days"
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+                                                    "admin_generate_rule_payments",
+                                                    "admin_mark_payment_done"
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/modules/admin/admin-pagos.js",
+                                                        "core/auth.js",
+                                                        "core/config.js",
+                                                        "core/supabase-client.js",
+                                                        "core/toast.js",
+                                                        "core/utils.js",
+                                                        "modules/modal.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/admin/admin-pagos.html"
+                                                      ],
+                                       "css_files":  [
+                                                         "assets/css/modules/admin/admin-pagos.css"
+                                                     ]
+                                   },
+                          "dep_count":  20
+                      },
+                      {
+                          "path":  "docs/modules/admin/admin-reportes.md",
+                          "title":  "Reportes Operativos",
+                          "category":  "modules",
+                          "lines":  25,
+                          "sizeKb":  0.9,
+                          "modified":  "2026-02-01",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+
+                                                  ],
+                                       "views":  [
+                                                     "vw_report_sales_closing",
+                                                     "vw_report_staff_performance"
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/modules/admin/admin-reportes.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/admin/admin-reportes.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  4
+                      },
+                      {
+                          "path":  "docs/modules/admin/admin-solicitudes.md",
+                          "title":  "Admin Solicitudes (AprobaciÃ³n de Pedidos)",
+                          "category":  "modules",
+                          "lines":  285,
+                          "sizeKb":  12.7,
+                          "modified":  "2026-02-15",
+                          "deps":  {
+                                       "md_links":  [
+                                                        "admin-pagos.md",
+                                                        "admin-central-stock.md",
+                                                        "admin-master-proveedores.md"
+                                                    ],
+                                       "tables":  [
+                                                      "master_proveedores",
+                                                      "master_sku",
+                                                      "replenishment_items",
+                                                      "replenishment_requests",
+                                                      "replenishment_supplier_orders"
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/modules/admin/admin-solicitudes.js",
+                                                        "core/auth.js",
+                                                        "core/config.js",
+                                                        "core/supabase-client.js",
+                                                        "core/toast.js",
+                                                        "core/utils.js",
+                                                        "modules/modal.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/admin/admin-solicitudes.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  16
+                      },
+                      {
+                          "path":  "docs/modules/admin/test-devenciones.md",
+                          "title":  "Admin: Test Devenciones",
+                          "category":  "modules",
+                          "lines":  84,
+                          "sizeKb":  2.7,
+                          "modified":  "2026-02-12",
+                          "deps":  {
+                                       "md_links":  [
+                                                        "workdays.md"
+                                                    ],
+                                       "tables":  [
+                                                      "staff_accruals",
+                                                      "staff_convocations"
+                                                  ],
+                                       "views":  [
+                                                     "vw_staff_accruals_summary"
+                                                 ],
+                                       "rpcs":  [
+                                                    "admin_export_accruals_to_payments",
+                                                    "admin_generate_workday_accruals"
+                                                ],
+                                       "js_files":  [
+
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/admin/test-devenciones.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  7
+                      },
+                      {
+                          "path":  "docs/modules/admin/workdays.md",
+                          "title":  "WORKDAYS â€” Admin Module",
+                          "category":  "modules",
+                          "lines":  103,
+                          "sizeKb":  3.6,
+                          "modified":  "2026-02-10",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+                                                      "finance_payments",
+                                                      "work_day_staff_planning",
+                                                      "work_days"
+                                                  ],
+                                       "views":  [
+                                                     "vw_daily_sales",
+                                                     "vw_night_snapshot"
+                                                 ],
+                                       "rpcs":  [
+                                                    "admin_generate_workday_accruals",
+                                                    "rpc_close_work_day",
+                                                    "rpc_confirm_work_day",
+                                                    "rpc_open_work_day",
+                                                    "rpc_revert_work_day"
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/modules/admin/admin-workdays.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/admin/admin-workdays.html"
+                                                      ],
+                                       "css_files":  [
+                                                         "assets/css/components.css"
+                                                     ]
+                                   },
+                          "dep_count":  13
+                      },
+                      {
+                          "path":  "docs/modules/encargados/encargado-barra-index.md",
+                          "title":  "Encargado Barra - Index",
+                          "category":  "modules",
+                          "lines":  33,
+                          "sizeKb":  1.6,
+                          "modified":  "2026-02-01",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+                                                      "profiles",
+                                                      "work_days"
+                                                  ],
+                                       "views":  [
+                                                     "vw_supplier_orders_encargado"
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "core/auth.js",
+                                                        "core/config.js",
+                                                        "core/supabase-client.js",
+                                                        "core/toast.js",
+                                                        "core/utils.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/encargados/encargado-barra-index.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  9
+                      },
+                      {
+                          "path":  "docs/modules/encargados/encargado-barra-noche.md",
+                          "title":  "Encargado Barra - Control de Stock (Noche)",
+                          "category":  "modules",
+                          "lines":  39,
+                          "sizeKb":  1.8,
+                          "modified":  "2026-02-01",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+                                                      "bar_sessions",
+                                                      "bar_stock_snapshots",
+                                                      "master_sku",
+                                                      "work_days"
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "core/auth.js",
+                                                        "core/config.js",
+                                                        "core/supabase-client.js",
+                                                        "core/toast.js",
+                                                        "core/utils.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/encargados/encargado-barra-noche.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  10
+                      },
+                      {
+                          "path":  "docs/modules/encargados/encargado-barra-personal.md",
+                          "title":  "Encargado Barra - GestiÃ³n de Personal",
+                          "category":  "modules",
+                          "lines":  43,
+                          "sizeKb":  1.9,
+                          "modified":  "2026-02-01",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+                                                      "master_staff_roles",
+                                                      "profiles",
+                                                      "staff_convocations",
+                                                      "work_day_staff_planning",
+                                                      "work_days"
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "core/auth.js",
+                                                        "core/config.js",
+                                                        "core/supabase-client.js",
+                                                        "core/toast.js",
+                                                        "core/utils.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/encargados/encargado-barra-personal.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  11
+                      },
+                      {
+                          "path":  "docs/modules/encargados/encargado-caja-index.md",
+                          "title":  "Encargado Caja Index",
+                          "category":  "modules",
+                          "lines":  105,
+                          "sizeKb":  3.2,
+                          "modified":  "2026-02-01",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+                                                      "profiles",
+                                                      "work_days"
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/modules/encargados/encargado-caja-index.js",
+                                                        "core/auth.js",
+                                                        "core/config.js",
+                                                        "core/supabase-client.js",
+                                                        "core/toast.js",
+                                                        "core/utils.js",
+                                                        "modules/encargados/encargado-caja-index.js",
+                                                        "modules/index-navigation.js",
+                                                        "modules/work-day-helper.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/encargados/encargado-caja-index.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  12
+                      },
+                      {
+                          "path":  "docs/modules/encargados/encargado-caja-noche.md",
+                          "title":  "Encargado Caja Noche",
+                          "category":  "modules",
+                          "lines":  147,
+                          "sizeKb":  4.9,
+                          "modified":  "2026-02-01",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+                                                      "cash_closings",
+                                                      "cash_movements",
+                                                      "closing_terminals",
+                                                      "pos_terminals",
+                                                      "profiles",
+                                                      "work_days"
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/modules/encargados/encargado-caja-noche.js",
+                                                        "core/auth.js",
+                                                        "core/config.js",
+                                                        "core/supabase-client.js",
+                                                        "core/toast.js",
+                                                        "core/utils.js",
+                                                        "modules/encargados/encargado-caja-noche.js",
+                                                        "modules/index-navigation.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/encargados/encargado-caja-noche.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  15
+                      },
+                      {
+                          "path":  "docs/modules/encargados/encargado-caja-personal.md",
+                          "title":  "Encargado Caja Personal",
+                          "category":  "modules",
+                          "lines":  120,
+                          "sizeKb":  3.8,
+                          "modified":  "2026-02-01",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+                                                      "master_staff_roles",
+                                                      "profiles",
+                                                      "staff_convocations",
+                                                      "work_day_staff_planning",
+                                                      "work_days"
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/modules/encargados/encargado-caja-personal.js",
+                                                        "core/auth.js",
+                                                        "core/config.js",
+                                                        "core/supabase-client.js",
+                                                        "core/toast.js",
+                                                        "core/utils.js",
+                                                        "modules/encargados/encargado-caja-personal.js",
+                                                        "modules/index-navigation.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/encargados/encargado-caja-personal.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  14
+                      },
+                      {
+                          "path":  "docs/modules/encargados/encargado-recepcion.md",
+                          "title":  "Encargado RecepciÃ³n",
+                          "category":  "modules",
+                          "lines":  256,
+                          "sizeKb":  11.6,
+                          "modified":  "2026-02-15",
+                          "deps":  {
+                                       "md_links":  [
+                                                        "./admin/admin-solicitudes.md",
+                                                        "./admin/admin-central-stock.md",
+                                                        "./admin/admin-master-proveedores.md"
+                                                    ],
+                                       "tables":  [
+                                                      "inventory_movements",
+                                                      "master_sku",
+                                                      "replenishment_items",
+                                                      "replenishment_supplier_orders"
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+                                                    "rpc_receive_supplier_order"
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/modules/encargados/encargado-recepcion.js",
+                                                        "core/auth.js",
+                                                        "core/config.js",
+                                                        "core/supabase-client.js",
+                                                        "core/toast.js",
+                                                        "core/utils.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/encargados/encargado-recepcion.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  15
+                      },
+                      {
+                          "path":  "docs/modules/gerencia/balance-semanal.md",
+                          "title":  "Gerencia: Balance Semanal",
+                          "category":  "modules",
+                          "lines":  128,
+                          "sizeKb":  4,
+                          "modified":  "2026-02-08",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+
+                                                  ],
+                                       "views":  [
+                                                     "vw_finance_weekly"
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/modules/gerencia/balance-semanal.js",
+                                                        "core/auth.js",
+                                                        "core/chart-loader.js",
+                                                        "core/utils.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/gerencia/balance-semanal.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  6
+                      },
+                      {
+                          "path":  "docs/modules/logistica/logistica-distribucion.md",
+                          "title":  "DistribuciÃ³n a Barras (LogÃ­stica)",
+                          "category":  "modules",
+                          "lines":  57,
+                          "sizeKb":  2.1,
+                          "modified":  "2026-02-01",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+                                                      "inventory_movements",
+                                                      "profiles",
+                                                      "replenishment_items",
+                                                      "replenishment_requests"
+                                                  ],
+                                       "views":  [
+                                                     "vw_stock_global"
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/core/notify.js",
+                                                        "assets/js/modules/logistica/logistica-distribucion.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/logistica/logistica-distribucion.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  8
+                      },
+                      {
+                          "path":  "docs/modules/logistica/logistica-index.md",
+                          "title":  "LogÃ­stica Index",
+                          "category":  "modules",
+                          "lines":  33,
+                          "sizeKb":  1.1,
+                          "modified":  "2026-02-01",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+                                                      "profiles",
+                                                      "replenishment_requests",
+                                                      "replenishment_supplier_orders"
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/core/auth.js",
+                                                        "assets/js/modules/index-navigation.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/logistica/logistica-index.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  6
+                      },
+                      {
+                          "path":  "docs/modules/logistica/logistica-recepcion.md",
+                          "title":  "RecepciÃ³n de MercaderÃ­a (LogÃ­stica)",
+                          "category":  "modules",
+                          "lines":  68,
+                          "sizeKb":  2.6,
+                          "modified":  "2026-02-01",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+                                                      "inventory_movements",
+                                                      "inventory_stock",
+                                                      "master_proveedores",
+                                                      "master_sku",
+                                                      "replenishment_items",
+                                                      "replenishment_receipt_items",
+                                                      "replenishment_receipts",
+                                                      "replenishment_supplier_orders"
+                                                  ],
+                                       "views":  [
+                                                     "vw_supplier_orders_encargado"
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/core/notify.js",
+                                                        "assets/js/modules/logistica/logistica-recepcion.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/logistica/logistica-recepcion.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  12
+                      },
+                      {
+                          "path":  "docs/modules/logistica/logistica-seguimiento.md",
+                          "title":  "LogÃ­stica: Seguimiento",
+                          "category":  "modules",
+                          "lines":  155,
+                          "sizeKb":  5.3,
+                          "modified":  "2026-02-08",
+                          "deps":  {
+                                       "md_links":  [
+                                                        "logistica-stock.md",
+                                                        "logistica-recepcion.md"
+                                                    ],
+                                       "tables":  [
+                                                      "master_proveedores",
+                                                      "replenishment_supplier_orders",
+                                                      "replenishment_tracking"
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/modules/logistica/logistica-seguimiento.js",
+                                                        "core/auth.js",
+                                                        "core/panel.js",
+                                                        "core/utils.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/logistica/logistica-seguimiento.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  10
+                      },
+                      {
+                          "path":  "docs/modules/logistica/logistica-stock.md",
+                          "title":  "Stock DepÃ³sito (LogÃ­stica)",
+                          "category":  "modules",
+                          "lines":  57,
+                          "sizeKb":  2.2,
+                          "modified":  "2026-02-01",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+                                                      "inventory_movements",
+                                                      "inventory_stock",
+                                                      "inventory_stock_adjustments",
+                                                      "master_categories",
+                                                      "master_sku"
+                                                  ],
+                                       "views":  [
+                                                     "vw_stock_global"
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/modules/logistica/logistica-stock.js",
+                                                        "assets/js/modules/work-day-helper.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/logistica/logistica-stock.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  9
+                      },
+                      {
+                          "path":  "docs/modules/members/my-qr.md",
+                          "title":  "Members: Mi QR",
+                          "category":  "modules",
+                          "lines":  100,
+                          "sizeKb":  3,
+                          "modified":  "2026-02-15",
+                          "deps":  {
+                                       "md_links":  [
+                                                        "./misc/login.md",
+                                                        "./admin/admin-index.md"
+                                                    ],
+                                       "tables":  [
+                                                      "events",
+                                                      "members"
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/members/my-qr.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/members/login.html",
+                                                          "pages/members/my-qr.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  7
+                      },
+                      {
+                          "path":  "docs/modules/misc/login.md",
+                          "title":  "Login",
+                          "category":  "modules",
+                          "lines":  83,
+                          "sizeKb":  2.3,
+                          "modified":  "2026-02-01",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+                                                      "profiles"
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/modules/login.js"
+                                                    ],
+                                       "html_files":  [
+
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  2
+                      },
+                      {
+                          "path":  "docs/modules/operativo/cms-members.md",
+                          "title":  "CMS Members",
+                          "category":  "modules",
+                          "lines":  322,
+                          "sizeKb":  14.5,
+                          "modified":  "2026-02-15",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+                                                      "members"
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/modules/cms-members.js",
+                                                        "core/auth.js",
+                                                        "core/config.js",
+                                                        "core/supabase-client.js",
+                                                        "core/toast.js",
+                                                        "core/utils.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/operativo/cms-members.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  8
+                      },
+                      {
+                          "path":  "docs/modules/operativo/operativo-analisis.md",
+                          "title":  "Operativo AnÃ¡lisis",
+                          "category":  "modules",
+                          "lines":  267,
+                          "sizeKb":  13.1,
+                          "modified":  "2026-02-01",
+                          "deps":  {
+                                       "md_links":  [
+                                                        "operativo-stock.md",
+                                                        "operativo-solicitudes.md",
+                                                        "operativo-master-sku.md"
+                                                    ],
+                                       "tables":  [
+                                                      "consumption_details",
+                                                      "consumption_reports",
+                                                      "master_sku"
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/modules/operativo/operativo-analisis.js",
+                                                        "core/auth.js",
+                                                        "core/config.js",
+                                                        "core/supabase-client.js",
+                                                        "core/toast.js",
+                                                        "core/utils.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/operativo/operativo-analisis.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  13
+                      },
+                      {
+                          "path":  "docs/modules/operativo/operativo-erp.md",
+                          "title":  "Operativo ERP (MenÃº)",
+                          "category":  "modules",
+                          "lines":  19,
+                          "sizeKb":  0.6,
+                          "modified":  "2026-02-01",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/modules/index-navigation.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/operativo/operativo-erp.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  2
+                      },
+                      {
+                          "path":  "docs/modules/operativo/operativo-index.md",
+                          "title":  "Operativo Index (Portal)",
+                          "category":  "modules",
+                          "lines":  26,
+                          "sizeKb":  0.9,
+                          "modified":  "2026-02-01",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+                                                      "profiles",
+                                                      "work_days"
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/modules/index-navigation.js",
+                                                        "assets/js/modules/work-day-helper.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/operativo/operativo-index.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  5
+                      },
+                      {
+                          "path":  "docs/modules/operativo/operativo-master-proveedores.md",
+                          "title":  "Operativo Master Proveedores",
+                          "category":  "modules",
+                          "lines":  234,
+                          "sizeKb":  10.7,
+                          "modified":  "2026-02-15",
+                          "deps":  {
+                                       "md_links":  [
+                                                        "./admin/admin-master-proveedores.md",
+                                                        "operativo-master-sku.md",
+                                                        "operativo-solicitudes.md"
+                                                    ],
+                                       "tables":  [
+                                                      "master_proveedores"
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/modules/operativo/operativo-master-proveedores.js",
+                                                        "core/auth.js",
+                                                        "core/config.js",
+                                                        "core/supabase-client.js",
+                                                        "core/toast.js",
+                                                        "core/utils.js",
+                                                        "modules/panel.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/operativo/operativo-master-proveedores.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  12
+                      },
+                      {
+                          "path":  "docs/modules/operativo/operativo-master-sku.md",
+                          "title":  "Operativo Master SKU",
+                          "category":  "modules",
+                          "lines":  270,
+                          "sizeKb":  13.4,
+                          "modified":  "2026-02-15",
+                          "deps":  {
+                                       "md_links":  [
+                                                        "./admin/admin-central-stock.md",
+                                                        "operativo-master-proveedores.md",
+                                                        "./admin/admin-master-categorias.md"
+                                                    ],
+                                       "tables":  [
+                                                      "master_categories",
+                                                      "master_proveedores",
+                                                      "master_sku",
+                                                      "sku_change_requests"
+                                                  ],
+                                       "views":  [
+                                                     "vw_stock_global"
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/modules/operativo/operativo-master-sku.js",
+                                                        "core/auth.js",
+                                                        "core/config.js",
+                                                        "core/supabase-client.js",
+                                                        "core/toast.js",
+                                                        "core/utils.js",
+                                                        "modules/panel.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/operativo/operativo-master-sku.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  16
+                      },
+                      {
+                          "path":  "docs/modules/operativo/operativo-solicitudes.md",
+                          "title":  "Operativo Solicitudes",
+                          "category":  "modules",
+                          "lines":  287,
+                          "sizeKb":  14.2,
+                          "modified":  "2026-02-15",
+                          "deps":  {
+                                       "md_links":  [
+                                                        "operativo-stock.md",
+                                                        "operativo-analisis.md",
+                                                        "operativo-master-proveedores.md",
+                                                        "./admin/admin-solicitudes.md"
+                                                    ],
+                                       "tables":  [
+                                                      "master_proveedores",
+                                                      "replenishment_items",
+                                                      "replenishment_requests",
+                                                      "replenishment_supplier_orders",
+                                                      "work_days"
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/modules/operativo/operativo-solicitudes.js",
+                                                        "core/auth.js",
+                                                        "core/config.js",
+                                                        "core/supabase-client.js",
+                                                        "core/toast.js",
+                                                        "core/utils.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/operativo/operativo-solicitudes.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  16
+                      },
+                      {
+                          "path":  "docs/modules/operativo/operativo-stock.md",
+                          "title":  "Operativo Stock",
+                          "category":  "modules",
+                          "lines":  216,
+                          "sizeKb":  9.4,
+                          "modified":  "2026-02-15",
+                          "deps":  {
+                                       "md_links":  [
+                                                        "operativo-solicitudes.md",
+                                                        "./admin/admin-central-stock.md",
+                                                        "operativo-master-sku.md"
+                                                    ],
+                                       "tables":  [
+                                                      "master_categories",
+                                                      "master_sku"
+                                                  ],
+                                       "views":  [
+                                                     "vw_stock_global"
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/modules/operativo/operativo-stock.js",
+                                                        "core/auth.js",
+                                                        "core/config.js",
+                                                        "core/supabase-client.js",
+                                                        "core/toast.js",
+                                                        "core/utils.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/operativo/operativo-stock.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  13
+                      },
+                      {
+                          "path":  "docs/modules/operativo/operativo-workday.md",
+                          "title":  "Operativo Workday",
+                          "category":  "modules",
+                          "lines":  149,
+                          "sizeKb":  5.2,
+                          "modified":  "2026-02-01",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+                                                      "master_sku",
+                                                      "master_staff_roles",
+                                                      "profiles",
+                                                      "replenishment_items",
+                                                      "replenishment_requests",
+                                                      "staff_convocations",
+                                                      "work_days"
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/modules/operativo/operativo-workday.js",
+                                                        "core/auth.js",
+                                                        "core/config.js",
+                                                        "core/navigation.js",
+                                                        "core/supabase-client.js",
+                                                        "core/utils.js",
+                                                        "modules/operativo/operativo-workday.js",
+                                                        "modules/work-day-helper.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/operativo/operativo-solicitudes.html",
+                                                          "pages/operativo/operativo-workday.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  17
+                      },
+                      {
+                          "path":  "docs/modules/staff/staff-barra-index.md",
+                          "title":  "Staff Barra - Landing",
+                          "category":  "modules",
+                          "lines":  27,
+                          "sizeKb":  0.8,
+                          "modified":  "2026-02-01",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/core/auth.js",
+                                                        "assets/js/modules/index-navigation.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/staff/staff-barra-index.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  3
+                      },
+                      {
+                          "path":  "docs/modules/staff/staff-caja-index.md",
+                          "title":  "Terminal de Cajero (Staff)",
+                          "category":  "modules",
+                          "lines":  35,
+                          "sizeKb":  1.4,
+                          "modified":  "2026-02-01",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+                                                      "cash_movements",
+                                                      "staff_convocations"
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/modules/staff/staff-caja-index.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/staff/staff-caja-index.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  4
+                      },
+                      {
+                          "path":  "docs/scheme.md",
+                          "title":  "Esquema de Base de Datos - FormulaMid 4",
+                          "category":  "core",
+                          "lines":  1329,
+                          "sizeKb":  61.8,
+                          "modified":  "2026-02-16",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+                                                      "accounts_payable",
+                                                      "bar_session_sales",
+                                                      "bar_sessions",
+                                                      "bar_stock_snapshots",
+                                                      "cash_closings",
+                                                      "cash_movements",
+                                                      "closing_terminals",
+                                                      "consumption_details",
+                                                      "consumption_reports",
+                                                      "cost_config",
+                                                      "cost_definitions",
+                                                      "events",
+                                                      "finance_payments",
+                                                      "finance_weekly_closings",
+                                                      "gbol_sync_log",
+                                                      "import_gbol_comandas",
+                                                      "import_gbol_facturacion",
+                                                      "import_gbol_withdrawals",
+                                                      "inventory_movements",
+                                                      "inventory_stock",
+                                                      "inventory_stock_adjustments",
+                                                      "master_categories",
+                                                      "master_proveedores",
+                                                      "master_recipes",
+                                                      "master_sku",
+                                                      "master_staff_roles",
+                                                      "members",
+                                                      "payment_categories",
+                                                      "payment_methods",
+                                                      "pos_terminals",
+                                                      "profiles",
+                                                      "qr_batches",
+                                                      "qr_checkins",
+                                                      "qr_codes",
+                                                      "recipe_code_mappings",
+                                                      "replenishment_items",
+                                                      "replenishment_receipt_items",
+                                                      "replenishment_receipts",
+                                                      "replenishment_requests",
+                                                      "replenishment_supplier_orders",
+                                                      "replenishment_tracking",
+                                                      "revenue_details",
+                                                      "revenue_reports",
+                                                      "site_config",
+                                                      "sku_change_requests",
+                                                      "staff_accruals",
+                                                      "staff_convocations",
+                                                      "work_day_staff_planning",
+                                                      "work_day_templates",
+                                                      "work_days"
+                                                  ],
+                                       "views":  [
+                                                     "vw_bar_audit_variance",
+                                                     "vw_bar_efficiency",
+                                                     "vw_consumo_teorico",
+                                                     "vw_daily_sales",
+                                                     "vw_daily_sales_v2",
+                                                     "vw_finance_weekly",
+                                                     "vw_financial_week_live",
+                                                     "vw_fiscal_summary",
+                                                     "vw_night_snapshot",
+                                                     "vw_pnl_monthly_v2",
+                                                     "vw_recipe_profitability",
+                                                     "vw_staff_performance",
+                                                     "vw_stock_global",
+                                                     "vw_supplier_orders_encargado",
+                                                     "vw_tax_monthly",
+                                                     "vw_workday_benchmarks",
+                                                     "vw_workday_pnl"
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+
+                                                    ],
+                                       "html_files":  [
+
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  67
+                      },
+                      {
+                          "path":  "docs/screen-map.md",
+                          "title":  "ðŸ—ºï¸ Mapa de Pantallas - FormulaMid 4",
+                          "category":  "core",
+                          "lines":  352,
+                          "sizeKb":  21.9,
+                          "modified":  "2026-02-16",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+                                                      "bar_sessions",
+                                                      "bar_stock_snapshots",
+                                                      "cash_closings",
+                                                      "cash_movements",
+                                                      "closing_terminals",
+                                                      "consumption_details",
+                                                      "consumption_reports",
+                                                      "cost_config",
+                                                      "cost_definitions",
+                                                      "finance_payments",
+                                                      "finance_weekly_closings",
+                                                      "inventory_stock",
+                                                      "master_categories",
+                                                      "master_proveedores",
+                                                      "master_recipes",
+                                                      "master_sku",
+                                                      "master_staff_roles",
+                                                      "members",
+                                                      "pos_terminals",
+                                                      "profiles",
+                                                      "qr_batches",
+                                                      "qr_checkins",
+                                                      "qr_codes",
+                                                      "replenishment_items",
+                                                      "replenishment_receipts",
+                                                      "replenishment_supplier_orders",
+                                                      "replenishment_tracking",
+                                                      "site_config",
+                                                      "sku_change_requests",
+                                                      "staff_accruals",
+                                                      "staff_convocations",
+                                                      "work_day_staff_planning",
+                                                      "work_days"
+                                                  ],
+                                       "views":  [
+                                                     "vw_bar_efficiency",
+                                                     "vw_daily_sales_v2",
+                                                     "vw_finance_weekly",
+                                                     "vw_financial_week_live",
+                                                     "vw_stock_global",
+                                                     "vw_supplier_orders_encargado"
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/*.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  40
+                      },
+                      {
+                          "path":  "docs/testing/observations/_template.md",
+                          "title":  "[nombre-pantalla]",
+                          "category":  "testing",
+                          "lines":  31,
+                          "sizeKb":  0.7,
+                          "modified":  "2026-02-16",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+
+                                                    ],
+                                       "html_files":  [
+
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  0
+                      },
+                      {
+                          "path":  "docs/testing/README.md",
+                          "title":  "Testing Pipeline â€” Directorio de Trabajo",
+                          "category":  "testing",
+                          "lines":  9,
+                          "sizeKb":  0.3,
+                          "modified":  "2026-02-16",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+
+                                                    ],
+                                       "html_files":  [
+
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  0
+                      },
+                      {
+                          "path":  "docs/testing/tickets/_template.md",
+                          "title":  "TK-[NNN]: [tÃ­tulo]",
+                          "category":  "testing",
+                          "lines":  31,
+                          "sizeKb":  0.6,
+                          "modified":  "2026-02-16",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+
+                                                    ],
+                                       "html_files":  [
+
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  0
+                      },
+                      {
+                          "path":  "docs/testing/tickets/TK-001-crypto-randomuuid-compat.md",
+                          "title":  "TK-001: crypto.randomUUID() no disponible â€” bloquea creaciÃ³n de eventos con QR",
+                          "category":  "testing",
+                          "lines":  59,
+                          "sizeKb":  2.2,
+                          "modified":  "2026-02-16",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/core/utils.js",
+                                                        "assets/js/modules/admin/admin-workdays.js",
+                                                        "assets/js/modules/admin/qr-generator.js"
+                                                    ],
+                                       "html_files":  [
+
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  3
+                      },
+                      {
+                          "path":  "docs/testing/tickets/TK-002-modal-showmodal-compat.md",
+                          "title":  "TK-002: modal.showModal() is not a function â€” bloquea creaciÃ³n de Workday",
+                          "category":  "testing",
+                          "lines":  85,
+                          "sizeKb":  3.4,
+                          "modified":  "2026-02-16",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/core/utils.js"
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/admin/admin-workdays.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  2
+                      },
+                      {
+                          "path":  "docs/testing/tickets/TK-003-staff-cost-not-recalculating.md",
+                          "title":  "TK-003: Staff Costs No Recalculan al Cambiar Cantidad",
+                          "category":  "testing",
+                          "lines":  69,
+                          "sizeKb":  2.6,
+                          "modified":  "2026-02-16",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+                                                      "master_staff_roles"
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/modules/admin/admin-workdays.js"
+                                                    ],
+                                       "html_files":  [
+
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  2
+                      },
+                      {
+                          "path":  "docs/testing/tickets/TK-004-staff-dropdowns-empty.md",
+                          "title":  "TK-004: Dropdowns de AsignaciÃ³n de Staff VacÃ­os / Opciones Incorrectas",
+                          "category":  "testing",
+                          "lines":  91,
+                          "sizeKb":  3.6,
+                          "modified":  "2026-02-16",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+                                                      "master_staff_roles",
+                                                      "profiles"
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/modules/admin/admin-workdays.js"
+                                                    ],
+                                       "html_files":  [
+
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  3
+                      },
+                      {
+                          "path":  "docs/testing/tickets/TK-005-base-salary-column-missing.md",
+                          "title":  "TK-005: SELECT incluye columna `base_salary` inexistente â€” ROMPE TODA la carga",
+                          "category":  "testing",
+                          "lines":  87,
+                          "sizeKb":  2.7,
+                          "modified":  "2026-02-16",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+                                                      "master_staff_roles"
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+                                                        "assets/js/modules/admin/admin-workdays.js"
+                                                    ],
+                                       "html_files":  [
+
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  2
+                      },
+                      {
+                          "path":  "docs/ui-golden-standard.md",
+                          "title":  "UI/UX Golden Standard Reference",
+                          "category":  "core",
+                          "lines":  1350,
+                          "sizeKb":  42.6,
+                          "modified":  "2026-02-16",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+
+                                                  ],
+                                       "views":  [
+                                                     "vw_stock_global"
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+
+                                                    ],
+                                       "html_files":  [
+                                                          "pages/admin/admin-central-stock.html",
+                                                          "pages/admin/admin-solicitudes.html"
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  3
+                      },
+                      {
+                          "path":  "README.md",
+                          "title":  "Midnight Club / FormulaMid",
+                          "category":  "root",
+                          "lines":  33,
+                          "sizeKb":  1,
+                          "modified":  "2026-02-15",
+                          "deps":  {
+                                       "md_links":  [
+                                                        "docs/INDEX.md",
+                                                        "docs/estado-presente.md",
+                                                        "AGENT.md"
+                                                    ],
+                                       "tables":  [
+
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+
+                                                    ],
+                                       "html_files":  [
+
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  3
+                      },
+                      {
+                          "path":  "reporte_comparativo_ui_scan.md",
+                          "title":  "",
+                          "category":  "root",
+                          "lines":  46,
+                          "sizeKb":  2,
+                          "modified":  "2026-02-17",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+
+                                                    ],
+                                       "html_files":  [
+
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  0
+                      },
+                      {
+                          "path":  "scripts/README.md",
+                          "title":  "Solo listar, no modificar nada",
+                          "category":  "scripts",
+                          "lines":  231,
+                          "sizeKb":  7.4,
+                          "modified":  "2026-02-17",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+
+                                                    ],
+                                       "html_files":  [
+
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  0
+                      },
+                      {
+                          "path":  "test-data/README.md",
+                          "title":  "Archivos CSV de Prueba - Testing Fases 1-5",
+                          "category":  "root",
+                          "lines":  115,
+                          "sizeKb":  2.9,
+                          "modified":  "2026-02-15",
+                          "deps":  {
+                                       "md_links":  [
+
+                                                    ],
+                                       "tables":  [
+
+                                                  ],
+                                       "views":  [
+
+                                                 ],
+                                       "rpcs":  [
+
+                                                ],
+                                       "js_files":  [
+
+                                                    ],
+                                       "html_files":  [
+
+                                                      ],
+                                       "css_files":  [
+
+                                                     ]
+                                   },
+                          "dep_count":  0
+                      }
+                  ]
+}

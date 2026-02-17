@@ -264,4 +264,4 @@ R: No, debes ejecutar el análisis manualmente seleccionando el rango de fechas 
 - [Operativo Stock](operativo-stock.md) - Visualización de niveles actuales de inventario
 - [Operativo Solicitudes](operativo-solicitudes.md) - Generación de pedidos basados en análisis
 - [Master SKU](operativo-master-sku.md) - Catálogo de productos referenciados en importación
-- [Screen Map](../../screen-map.md#operativo-analisis) - Ubicación en arquitectura de pantallas
+- [Screen Map](../../architecture/screen-map.md#operativo-analisis) - Ubicación en arquitectura de pantallas

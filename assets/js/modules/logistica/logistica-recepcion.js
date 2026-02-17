@@ -83,7 +83,11 @@
             if (activeStatus) {
                 query = query.eq('status', activeStatus);
             } else {
-                query = query.in('status', ['CONFIRMED', 'IN_TRANSIT', 'RECEIVED', 'PARTIAL']);
+                // FIX: Incluir status en lowercase (nuevos) y uppercase (legacy)
+                query = query.in('status', [
+                    'approved', 'confirmed', 'in_transit', 'received', 'partial',
+                    'CONFIRMED', 'IN_TRANSIT', 'RECEIVED', 'PARTIAL'
+                ]);
             }
 
             const { data, error } = await query;
@@ -150,8 +154,10 @@
     // ─────────────────────────────────────────────────────────────────────────
 
     function getStatusPill(status) {
+        const normalized = (status || '').toUpperCase();
         const classes = {
             'PENDING': 'status-pill status-warning',
+            'APPROVED': 'status-pill status-info',
             'CONFIRMED': 'status-pill status-info',
             'IN_TRANSIT': 'status-pill status-info',
             'RECEIVED': 'status-pill status-success',
@@ -159,12 +165,13 @@
             'CANCELLED': 'status-pill status-error'
         };
         const labels = {
+            'APPROVED': 'Aprobado',
             'CONFIRMED': 'Por Recibir',
             'IN_TRANSIT': 'En Camino',
             'RECEIVED': 'Recibido',
             'PARTIAL': 'Parcial'
         };
-        return `<span class="${classes[status] || 'status-pill'}">${labels[status] || status}</span>`;
+        return `<span class="${classes[normalized] || 'status-pill'}">${labels[normalized] || status}</span>`;
     }
 
     function formatDate(dateStr) {
@@ -202,7 +209,9 @@
         `;
 
         data.forEach(order => {
-            const canReceive = order.status === 'CONFIRMED' || order.status === 'IN_TRANSIT' || order.status === 'PARTIAL';
+            // FIX: Normalizar comparación de status
+            const statusUpper = (order.status || '').toUpperCase();
+            const canReceive = statusUpper === 'APPROVED' || statusUpper === 'CONFIRMED' || statusUpper === 'IN_TRANSIT' || statusUpper === 'PARTIAL';
             
             html += `
                 <tr class="table-row">
@@ -383,15 +392,16 @@
                 .eq('supplier_order_id', selectedOrder.id)
                 .in('status', ['PENDING', 'APPROVED']);
             // 1. Crear registro de recepción
+            // FIX BUG 3: Schema real de replenishment_receipts:
+            // id, supplier_order_id, received_by, received_at, notes, created_at
+            // (no tiene receipt_date, invoice_number ni total_amount)
             const { data: receipt, error: rcptError } = await window.sb
                 .from('replenishment_receipts')
                 .insert({
                     supplier_order_id: selectedOrder.id,
                     received_by: session.user.id,
-                    receipt_date: new Date().toISOString(),
-                    invoice_number: invoice,
-                    total_amount: selectedOrder.final_cost || 0,
-                    notes: notes || null
+                    received_at: new Date().toISOString(),
+                    notes: notes ? `[Factura: ${invoice}] ${notes}` : `Factura: ${invoice}`
                 })
                 .select()
                 .single();
@@ -402,41 +412,49 @@
             for (const item of receiveItems) {
                 if (item.quantity_received > 0) {
                     // Item de recepción
+                    // FIX BUG 4: Schema real de replenishment_receipt_items:
+                    // id, receipt_id, sku_id, expected_units, received_units, diff_units, ...
+                    // (no tiene quantity_received ni cost_at_receipt)
                     await window.sb
                         .from('replenishment_receipt_items')
                         .insert({
                             receipt_id: receipt.id,
                             sku_id: item.sku_id,
-                            quantity_received: item.quantity_received,
-                            cost_at_receipt: 0 // Podría calcularse
+                            expected_units: item.quantity_expected,
+                            received_units: item.quantity_received,
+                            diff_units: item.quantity_received - item.quantity_expected
                         });
 
                     // Movimiento de entrada
+                    // FIX BUG 5: Schema real de inventory_movements:
+                    // id, sku_id, qty_delta, movement_type, ref_table, ref_id, created_by, created_at
+                    // (no tiene type, quantity, cost, notes)
                     await window.sb
                         .from('inventory_movements')
                         .insert({
                             sku_id: item.sku_id,
-                            created_by: session.user.id,
-                            type: 'in',
-                            quantity: item.quantity_received,
-                            cost: 0,
-                            notes: `Recepción ${invoice} - Orden ${selectedOrder.id.slice(0, 8)}`
+                            qty_delta: item.quantity_received,
+                            movement_type: 'receipt',
+                            ref_table: 'replenishment_receipts',
+                            ref_id: receipt.id,
+                            created_by: session.user.id
                         });
 
                     // Actualizar stock
+                    // FIX: Schema real usa 'stock_actual', no 'quantity'
                     const { data: currentStock } = await window.sb
                         .from('inventory_stock')
-                        .select('quantity')
+                        .select('stock_actual')
                         .eq('sku_id', item.sku_id)
                         .single();
 
-                    const newQty = (currentStock?.quantity || 0) + item.quantity_received;
+                    const newQty = (currentStock?.stock_actual || 0) + item.quantity_received;
                     
                     await window.sb
                         .from('inventory_stock')
                         .upsert({
                             sku_id: item.sku_id,
-                            quantity: newQty,
+                            stock_actual: newQty,
                             updated_at: new Date().toISOString()
                         }, { onConflict: 'sku_id' });
                 }
@@ -446,7 +464,8 @@
             const allReceived = receiveItems.every(
                 item => item.quantity_received >= item.quantity_expected
             );
-            const newStatus = allReceived ? 'RECEIVED' : 'PARTIAL';
+            // FIX BUG 1: Normalizar status a lowercase para consistencia
+            const newStatus = allReceived ? 'received' : 'partial';
 
             await window.sb
                 .from('replenishment_supplier_orders')
@@ -529,15 +548,14 @@
 
         try {
             // 1. Crear registro de recepción sin orden
+            // FIX BUG 3 (free receipt): Mismas columnas correctas
             const { data: receipt, error: rcptError } = await window.sb
                 .from('replenishment_receipts')
                 .insert({
                     supplier_order_id: null,
                     received_by: session.user.id,
-                    receipt_date: new Date().toISOString(),
-                    invoice_number: invoice || 'LIBRE-' + Date.now(),
-                    total_amount: 0,
-                    notes: `[RECEPCIÓN LIBRE] ${notes || ''}`
+                    received_at: new Date().toISOString(),
+                    notes: `[RECEPCIÓN LIBRE] Factura: ${invoice || 'LIBRE-' + Date.now()} ${notes || ''}`
                 })
                 .select()
                 .single();
@@ -547,41 +565,45 @@
             // 2. Procesar items
             for (const item of freeItems) {
                 // Item de recepción
+                // FIX BUG 4 (free receipt): Columnas correctas
                 await window.sb
                     .from('replenishment_receipt_items')
                     .insert({
                         receipt_id: receipt.id,
                         sku_id: item.sku_id,
-                        quantity_received: item.quantity,
-                        cost_at_receipt: 0
+                        expected_units: 0,
+                        received_units: item.quantity,
+                        diff_units: item.quantity
                     });
 
                 // Movimiento de entrada
+                // FIX BUG 5 (free receipt): Columnas correctas
                 await window.sb
                     .from('inventory_movements')
                     .insert({
                         sku_id: item.sku_id,
-                        created_by: session.user.id,
-                        type: 'in',
-                        quantity: item.quantity,
-                        cost: 0,
-                        notes: `Recepción libre ${invoice || ''}`
+                        qty_delta: item.quantity,
+                        movement_type: 'free_receipt',
+                        ref_table: 'replenishment_receipts',
+                        ref_id: receipt.id,
+                        created_by: session.user.id
                     });
 
                 // Actualizar stock
+                // FIX: Schema real usa 'stock_actual', no 'quantity'
                 const { data: currentStock } = await window.sb
                     .from('inventory_stock')
-                    .select('quantity')
+                    .select('stock_actual')
                     .eq('sku_id', item.sku_id)
                     .single();
 
-                const newQty = (currentStock?.quantity || 0) + item.quantity;
+                const newQty = (currentStock?.stock_actual || 0) + item.quantity;
                 
                 await window.sb
                     .from('inventory_stock')
                     .upsert({
                         sku_id: item.sku_id,
-                        quantity: newQty,
+                        stock_actual: newQty,
                         updated_at: new Date().toISOString()
                     }, { onConflict: 'sku_id' });
             }

@@ -296,7 +296,7 @@ R: Sí, la pestaña Cumpleaños filtra automáticamente miembros cuyo día y mes
 - Formulario Público de Registro: pendiente de documentar en `docs/`
 - Config EmailJS: pendiente de documentar en `docs/`
 - Sistema de Autenticación MCO: pendiente de documentar en `docs/`
-- [Screen Map](../../screen-map.md#cms-members) - Ubicación en arquitectura de pantallas
+- [Screen Map](../../architecture/screen-map.md#cms-members) - Ubicación en arquitectura de pantallas
 
 ---
 

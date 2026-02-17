@@ -7,7 +7,11 @@
     "audit:pages": "node scripts/audit-modules.js",
     "audit:links": "node scripts/audit-links.js",
     "audit": "npm run audit:modules && npm run audit:css && npm run audit:pages && npm run audit:links",
-    "extract:recipes": "node scripts/extract-recipes.js"
+    "extract:recipes": "node scripts/extract-recipes.js",
+    "test": "node tests/run-audits.mjs",
+    "test:stock": "node tests/run-audits.mjs --suite stock",
+    "test:cash": "node tests/run-audits.mjs --suite cash",
+    "test:payments": "node tests/run-audits.mjs --suite payments"
   },
   "dependencies": {
     "xlsx": "^0.18.5"

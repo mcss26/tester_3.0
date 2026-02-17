@@ -248,7 +248,7 @@ R: No, por seguridad y privacidad, cada usuario solo ve sus propias solicitudes.
 - [Admin Central Stock](../admin/admin-central-stock.md) - Módulo de aprobación de solicitudes creadas aquí
 - [Operativo Master Proveedores](operativo-master-proveedores.md) - Gestión de proveedores referenciados en solicitudes
 - [Master Categorías](../admin/admin-master-categorias.md) - Categorías de productos
-- [Screen Map](../../screen-map.md#operativo-master-sku) - Ubicación en arquitectura de pantallas
+- [Screen Map](../../architecture/screen-map.md#operativo-master-sku) - Ubicación en arquitectura de pantallas
 
 ---
 

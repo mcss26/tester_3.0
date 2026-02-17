@@ -207,7 +207,7 @@
       const endDate = today.toISOString().split("T")[0];
 
       // ── 2. Parallel fetch: SKUs, stock, reports, attendance ──
-      const [skuRes, stockRes, reportRes, workDayRes] = await Promise.all([
+      const [skuRes, stockRes, reportRes, workDayRes, processedRes] = await Promise.all([
         window.sb.from("master_sku")
           .select("id, nombre, pack_qty, costo, costo_pack, proveedor_default_id, active")
           .eq("active", true).order("nombre"),
@@ -217,6 +217,9 @@
           .select("id").gte("operational_date", startDate).lte("operational_date", endDate),
         window.sb.from("work_days")
           .select("attendance").gte("work_date", startDate).lte("work_date", endDate).eq("status", "closed"),
+        window.sb.from("replenishment_items")
+          .select("sku_id, pre_approval_status")
+          .in("pre_approval_status", ["pre_approved", "pre_rejected"]),
       ]);
 
       if (skuRes.error) throw skuRes.error;
@@ -231,6 +234,11 @@
 
       const stockMap = {};
       (stockRes.data || []).forEach((s) => (stockMap[s.sku_id] = s));
+
+      // SKUs already pre-approved or pre-rejected → exclude from grid
+      const processedSkuIds = new Set(
+        (processedRes.data || []).map((r) => r.sku_id),
+      );
 
       const reportIds = (reportRes.data || []).map((r) => r.id);
 
@@ -306,9 +314,12 @@
         };
       });
 
-      // ── 9. Filter: only SKUs below their dynamic ideal ──
+      // ── 9. Filter: only SKUs below ideal AND not already processed ──
       preapprovalItems = allItems.filter(
-        (item) => item.stock_ideal > 0 && item.deficit_units > 0,
+        (item) =>
+          item.stock_ideal > 0 &&
+          item.deficit_units > 0 &&
+          !processedSkuIds.has(item.sku_id),
       );
 
       // Sort by largest deficit first
@@ -551,6 +562,7 @@
 
         return {
           id: o.id,
+          supplier_id: o.supplier_id,
           proveedor: o.master_proveedores?.nombre_fantasia || "Desconocido",
           status: o.status,
           eta_date: o.eta_date,
@@ -936,26 +948,58 @@
     });
   }
 
-  // Pre-Approve Items
-  async function preApproveItems(itemIds) {
-    if (!itemIds || itemIds.length === 0) return;
+  // Pre-Approve Items (upsert: update existing pending + insert missing)
+  async function preApproveItems(skuIds) {
+    if (!skuIds || skuIds.length === 0) return;
     if (
-      !(await window.Utils.confirmAction(`¿Aprobar ${itemIds.length} item(s)?`))
+      !(await window.Utils.confirmAction(`¿Aprobar ${skuIds.length} item(s)?`))
     )
       return;
 
     try {
-      const { error } = await window.sb
+      // 1. Update any existing pending items for these SKUs
+      const { data: updated, error: updateErr } = await window.sb
         .from("replenishment_items")
         .update({
           pre_approval_status: "pre_approved",
           pre_approved_by: session.user.id,
           pre_approved_at: new Date().toISOString(),
         })
-        .in("id", itemIds);
+        .in("sku_id", skuIds)
+        .eq("pre_approval_status", "pending")
+        .select("sku_id");
 
-      if (error) throw error;
-      window.Toast.success(`${itemIds.length} item(s) pre-aprobados`);
+      if (updateErr) throw updateErr;
+
+      // 2. Find SKUs that had no pending record → insert new ones
+      const updatedSkuIds = new Set((updated || []).map((r) => r.sku_id));
+      const missingSkuIds = skuIds.filter((id) => !updatedSkuIds.has(id));
+
+      if (missingSkuIds.length > 0) {
+        const newItems = missingSkuIds.map((skuId) => {
+          const item = preapprovalItems.find((i) => i.sku_id === skuId);
+          return {
+            sku_id: skuId,
+            requested_packs: item?.deficit_packs || 0,
+            pack_cost_est: item?.estimated_cost
+              ? item.estimated_cost / (item.deficit_packs || 1)
+              : null,
+            line_total_est: item?.estimated_cost || null,
+            supplier_id: item?.supplier_id || null,
+            pre_approval_status: "pre_approved",
+            pre_approved_by: session.user.id,
+            pre_approved_at: new Date().toISOString(),
+          };
+        });
+
+        const { error: insertErr } = await window.sb
+          .from("replenishment_items")
+          .insert(newItems);
+
+        if (insertErr) throw insertErr;
+      }
+
+      window.Toast.success(`${skuIds.length} item(s) pre-aprobados`);
       selectedItemIds.clear();
       updateSelectionUI();
       loadPreApprovalItems();
@@ -982,7 +1026,8 @@
     }
 
     try {
-      const { error } = await window.sb
+      // 1. Update existing pending items for these SKUs
+      const { data: updated, error: updateErr } = await window.sb
         .from("replenishment_items")
         .update({
           pre_approval_status: "pre_rejected",
@@ -990,9 +1035,33 @@
           pre_approved_by: session.user.id,
           pre_approved_at: new Date().toISOString(),
         })
-        .in("id", pendingRejectIds);
+        .in("sku_id", pendingRejectIds)
+        .eq("pre_approval_status", "pending")
+        .select("sku_id");
 
-      if (error) throw error;
+      if (updateErr) throw updateErr;
+
+      // 2. Insert rejection records for SKUs with no pending items
+      const updatedSkuIds = new Set((updated || []).map((r) => r.sku_id));
+      const missingSkuIds = pendingRejectIds.filter(
+        (id) => !updatedSkuIds.has(id),
+      );
+
+      if (missingSkuIds.length > 0) {
+        const newItems = missingSkuIds.map((skuId) => ({
+          sku_id: skuId,
+          pre_approval_status: "pre_rejected",
+          pre_rejection_reason: reason,
+          pre_approved_by: session.user.id,
+          pre_approved_at: new Date().toISOString(),
+        }));
+
+        const { error: insertErr } = await window.sb
+          .from("replenishment_items")
+          .insert(newItems);
+
+        if (insertErr) throw insertErr;
+      }
 
       window.Toast.success("Items rechazados");
       ui.modalPrereject.close();
@@ -1123,7 +1192,7 @@
             .from("finance_payments")
             .insert({
               title: `Pedido #${order.id.slice(0, 8)} - ${order.proveedor}`,
-              supplier_id: order.items[0]?.master_sku?.proveedor_default_id || null,
+              supplier_id: order.supplier_id || null,
               supplier_order_id: order.id,
               amount_total: paymentAmount,
               due_date: dueDate,

@@ -228,4 +228,4 @@ R: Actualmente las áreas están hard-coded en el formulario. Para agregar una n
 ## 11. Referencias y Links
 
 - [Admin Workdays](workdays.md) - Utiliza tarifas para calcular costos de dotación
-- [Screen Map](../../screen-map.md#admin-master-tarifario) - Ubicación en arquitectura de pantallas
+- [Screen Map](../../architecture/screen-map.md#admin-master-tarifario) - Ubicación en arquitectura de pantallas

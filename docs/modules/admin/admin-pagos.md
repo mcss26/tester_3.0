@@ -348,4 +348,4 @@ R: El dashboard muestra un calendario de vencimientos y contadores de pagos pró
 - [Master Proveedores](admin-master-proveedores.md) - Datos bancarios para pagos
 - [Admin Solicitudes](admin-solicitudes.md) - Órdenes de compra que se importan
 - [Admin Workdays](workdays.md) - Generación de costos de apertura
-- [Screen Map](../../screen-map.md#admin-pagos) - Ubicación en arquitectura de pantallas
+- [Screen Map](../../architecture/screen-map.md#admin-pagos) - Ubicación en arquitectura de pantallas

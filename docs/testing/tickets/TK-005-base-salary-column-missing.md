@@ -4,7 +4,7 @@
 > **Agente(s)**: logic
 > **Severidad**: 🔴
 > **Tier**: Tier0
-> **Estado**: Abierto
+> **Estado**: ✅ Cerrado
 
 ---
 
@@ -73,15 +73,13 @@ También limpiar las referencias a `base_salary` en el JS:
 
 ## Criterio de Éxito
 
-- [ ] Página carga sin errores en consola
-- [ ] Tabla de dotación muestra los 16 roles activos
-- [ ] KPIs de staff muestran valores reales
-- [ ] No quedan referencias a `base_salary` en el código
+- [x] Página carga sin errores en consola
+- [x] Tabla de dotación muestra los 16 roles activos
+- [x] KPIs de staff muestran valores reales
+- [x] No quedan referencias a `base_salary` en el código
 
 ## Resolución
 
-> Completar al cerrar:
->
-> - Plan: 1 línea — quitar `base_salary` del SELECT
-> - Commit: [ref]
-> - Verificado: [fecha]
+- **Fix**: `base_salary` eliminado del SELECT y de 3 referencias fallback en `admin-workdays.js`
+- **Verificado**: 2026-02-17 — grep confirma 0 ocurrencias de `base_salary`
+- **Cerrado por**: QA Agent (acciones automáticas post-auditoría)

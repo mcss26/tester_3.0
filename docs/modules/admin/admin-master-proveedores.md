@@ -214,4 +214,4 @@ R: No son obligatorios al crear el proveedor, pero son necesarios para poder pro
 - [Admin Central Stock](admin-central-stock.md) - Vincula proveedores a productos
 - [Admin Pagos](admin-pagos.md) - Utiliza datos bancarios de proveedores
 - [Admin Solicitudes](admin-solicitudes.md) - Aprobación de órdenes de compra por proveedor
-- [Screen Map](../../screen-map.md#admin-master-proveedores) - Ubicación en arquitectura de pantallas
+- [Screen Map](../../architecture/screen-map.md#admin-master-proveedores) - Ubicación en arquitectura de pantallas

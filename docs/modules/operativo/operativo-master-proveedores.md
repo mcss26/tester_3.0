@@ -231,4 +231,4 @@ R: Sí, ambos módulos consultan y modifican la misma tabla `master_proveedores`
 - [Admin Master Proveedores](../admin/admin-master-proveedores.md) - Versión administrativa con más campos
 - [Operativo Master SKU](operativo-master-sku.md) - Gestión de productos que referencian proveedores
 - [Operativo Solicitudes](operativo-solicitudes.md) - Asignación de proveedores a órdenes de compra
-- [Screen Map](../../screen-map.md#operativo-master-proveedores) - Ubicación en arquitectura de pantallas
+- [Screen Map](../../architecture/screen-map.md#operativo-master-proveedores) - Ubicación en arquitectura de pantallas

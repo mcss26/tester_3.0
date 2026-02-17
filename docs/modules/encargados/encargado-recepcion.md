@@ -253,4 +253,4 @@ R: Sí, hay un campo de notas opcional donde puedes registrar observaciones sobr
 - [Admin Central Stock](../admin/admin-central-stock.md) - Visualización de inventario actualizado
 - [Admin Central Stock](../admin/admin-central-stock.md) - Catálogo de productos
 - [Master Proveedores](../admin/admin-master-proveedores.md) - Gestión de proveedores
-- [Screen Map](../../screen-map.md#encargado-recepcion) - Ubicación en arquitectura de pantallas
+- [Screen Map](../../architecture/screen-map.md#encargado-recepcion) - Ubicación en arquitectura de pantallas
