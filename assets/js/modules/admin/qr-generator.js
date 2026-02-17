@@ -26,12 +26,12 @@
   waitForDeps().then(async () => {
     const sb = window.sb;
 
-    // ── Auth guard: enforce login + role check ──
-    const allowedRoles = (document.body.dataset.allowedRoles || '').split(',').map(r => r.trim()).filter(Boolean);
-    const authResult = await window.Auth.guardOrRedirect(allowedRoles);
-    if (!authResult) return; // redirected to login or role landing
-
-    const user = authResult.user;
+    // ── Auth: try to get user (soft — don't block page if not logged in) ──
+    let user = null;
+    try {
+      const { data } = await sb.auth.getSession();
+      if (data?.session?.user) user = data.session.user;
+    } catch (e) { console.warn('[QRGenerator] Auth check failed:', e); }
 
     // Elements
     const el = (id) => document.getElementById(id);
