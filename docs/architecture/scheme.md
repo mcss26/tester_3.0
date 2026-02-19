@@ -1315,15 +1315,51 @@ Dependencias de base de datos por módulo JavaScript, extraídas del código fue
 | :---------------- | :-------------- | :------- | :------- | :------------------ |
 | `balance-semanal` | Balance Semanal | —        | —        | `vw_finance_weekly` |
 
-## RPCs de Workday
+## RPCs de Workday & Utility
 
-| RPC                                                         | Retorna | Descripción                                           |
-| ----------------------------------------------------------- | ------- | ----------------------------------------------------- |
-| `rpc_create_work_day(date, event_id?, event_name?, notes?)` | void    | Crea jornada en DRAFT                                 |
-| `rpc_confirm_work_day(id)`                                  | void    | DRAFT → PLANNED                                       |
-| `rpc_revert_work_day(id)`                                   | void    | PLANNED → DRAFT                                       |
-| `rpc_open_work_day(id)`                                     | jsonb   | PLANNED → ACTIVE + pre-flight checks                  |
-| `rpc_close_work_day(id)`                                    | void    | ACTIVE → CLOSED                                       |
-| `calculate_health_score(id)`                                | integer | Score 0-100 (staff 40, bar 20, requests 20, stock 20) |
-| `admin_generate_workday_accruals(id)`                       | jsonb   | Genera devenciones (guard: ACTIVE/CLOSED)             |
-| `admin_export_accruals_to_payments(id)`                     | jsonb   | Exporta devenciones a finance_payments                |
+| RPC                                                          | Retorna | Descripción                                           |
+| ------------------------------------------------------------ | ------- | ----------------------------------------------------- |
+| `rpc_create_work_day(date, event_id?, event_name?, notes?)`  | void    | Crea jornada en DRAFT                                 |
+| `rpc_confirm_work_day(id)`                                   | void    | DRAFT → PLANNED                                       |
+| `rpc_revert_work_day(id)`                                    | void    | PLANNED → DRAFT                                       |
+| `rpc_open_work_day(id)`                                      | jsonb   | PLANNED → ACTIVE + pre-flight checks                  |
+| `rpc_close_work_day(id)`                                     | void    | ACTIVE → CLOSED                                       |
+| `calculate_health_score(id)`                                 | integer | Score 0-100 (staff 40, bar 20, requests 20, stock 20) |
+| `admin_generate_workday_accruals(id)`                        | jsonb   | Genera devenciones (guard: ACTIVE/CLOSED)             |
+| `admin_export_accruals_to_payments(p_user_id, p_from, p_to)` | jsonb   | Exporta devenciones a finance_payments                |
+| `rpc_plan_work_day(p_work_date, p_notes?)`                   | uuid    | Shortcut: crea workday saltando DRAFT                 |
+| `rpc_preflight_close_workday(p_work_day_id)`                 | jsonb   | Validaciones pre-cierre y resumen financiero          |
+
+### Finance & Payments
+
+| RPC                                                    | Retorna | Descripción                           |
+| ------------------------------------------------------ | ------- | ------------------------------------- |
+| `admin_approve_payment(p_payment_id, p_approved_by)`   | void    | Aprueba un pago pendiente             |
+| `admin_generate_rule_payments()`                       | void    | Genera pagos recurrentes mensuales    |
+| `admin_mark_payment_done(p_payment_id, p_amount, ...)` | void    | Marca pago como realizado             |
+| `admin_undo_payment_done(p_payment_id)`                | void    | Revierta pago a pendiente             |
+| `admin_sync_opening_cost_payments(p_plan_date)`        | void    | Sincroniza costos de apertura a pagos |
+
+### Inventory & Stock
+
+| RPC                                                        | Retorna | Descripción                          |
+| ---------------------------------------------------------- | ------- | ------------------------------------ |
+| `admin_bulk_set_stock(changes, p_reason?)`                 | jsonb   | Ajuste masivo de stock con auditoría |
+| `rpc_receive_supplier_order(p_order_id, p_items, p_notes)` | void    | Recepción de mercadería              |
+
+### Auth & Security
+
+| RPC                                                    | Retorna | Descripción                            |
+| ------------------------------------------------------ | ------- | -------------------------------------- |
+| `get_my_role()`                                        | text    | Retorna rol del usuario actual         |
+| `has_role(r)`                                          | boolean | Verifica si usuario tiene rol 'r'      |
+| `is_admin()`                                           | boolean | Wrapper para has_role('admin')         |
+| `update_member_password_hash(p_member_id, p_password)` | void    | Actualiza contraseña de miembro (hash) |
+| `verify_member_password(p_member_id, p_password)`      | TABLE   | Verifica credenciales de miembro       |
+
+### Utility
+
+| RPC                               | Retorna | Descripción                           |
+| --------------------------------- | ------- | ------------------------------------- |
+| `fn_normalize_terminal_name(val)` | text    | Normaliza nombres de POS              |
+| `fn_parse_arg_number(val)`        | numeric | Parsea inputs numéricos con locale AR |

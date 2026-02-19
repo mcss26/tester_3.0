@@ -30,4 +30,4 @@ npm run audit
 
 - Documentación: [docs/INDEX.md](docs/INDEX.md)
 - Estado: [docs/estado-presente.md](docs/estado-presente.md)
-- Reglas del agente: [AGENT.md](AGENT.md)
+- Instrucciones para agentes: [AGENTS.md](AGENTS.md)

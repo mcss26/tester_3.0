@@ -1,8 +1,0 @@
-﻿Batch Remediation - 2026-02-16 18:43:32
-Workers: 3 | Pending: 2 | Delay: 2000ms
----
-[OK] encargado-caja-personal.html (score: 41)
-[OK] operativo-analisis.html (score: 69)
----
-Completed: 2 | Failed: 0 | Time: 1.7min
-

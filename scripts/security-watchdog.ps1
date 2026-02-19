@@ -330,6 +330,7 @@ function Test-Processes {
             'memory-server'                          { "MCP: memory"; break }
             'gemini-cli'                             { "Gemini CLI"; break }
             'ms-playwright'                          { "Playwright (browser)"; break }
+            'vertex-ai-agent|launch --local'         { "Google AI Agent"; break }
             'npx-cli\.js.*-y\s'                      { "npx launcher"; break }
             default                                  { "node (desconocido)" }
         }
