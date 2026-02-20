@@ -1,127 +1,180 @@
-# ✦ Plan Maestro Unificado: Rediseño UI & Resiliencia (Refactoring UI)
+# ✦ Roadmap Técnico: Rediseño UI & Seguridad
 
-> **Última actualización:** 2026-02-19
-> **Estado de componentes:** [truth.md](docs/_generated/orchestrator/truth.md) (P0 ✅ 8/8 | P1-P3 pendientes)
-
-Este documento es la fuente de verdad definitiva para la transformación del sistema visual Swiss/Zinc. Integra protocolos de blindaje JS, validación bloqueante y reestructuración de rutas limpias.
-
----
-
-## 1. Objetivos Estratégicos y Alcance
-
-### Objetivos Principales
-
-1.  **Estética Premium SaaS:** Elevar la interfaz a nivel corporativo mediante jerarquía visual, sistema de 8pt y profundidad (sombras multinivel) sin dependencias externas.
-2.  **Arquitectura de "Ruta Limpia":** Consolidar 15+ archivos fragmentados en una estructura modular y atómica para optimizar el rendimiento y el contexto de desarrollo.
-3.  **Resiliencia y Blindaje:** Garantizar integridad total (0 roturas) en los mapeos JS-to-DOM y habilitar monitoreo proactivo de errores de UI.
-
-### Alcance (Scope)
-
-- **In-Scope:** Archivos en `assets/css/`, módulos JS críticos (`admin`, `staff`, `operativo`), y archivos HTML en `pages/`.
-- **Out-of-Scope:** Lógica de backend (SQL/RPC), librerías externas (Chart.js) y cambios en flujos de datos de Supabase.
+> **Última actualización:** 2026-02-20
+> **Fuente de verdad:** Este documento — basado en auditoría de codebase real
+> **Método:** Secuencia por dependencias técnicas (cada capa consume la anterior)
 
 ---
 
-## 2. Mapa de Arquitectura "Ruta Limpia" (Target)
+## Principio Ordenador
 
-Se migrará de un modelo fragmentado a uno organizado por responsabilidades:
+> **Cada capa es consumidora de la anterior y proveedora de la siguiente.**
+> Tocar una capa fuera de orden genera retrabajo en cascada.
 
 ```text
-assets/css/
-├── foundations/         # La "Verdad" del Diseño
-│   ├── tokens.css       # Variables: Zinc Palette, Spacing (8pt), Shadows, Z-Index.
-│   └── reset.css        # Normalización y estilos globales.
-│
-├── layout/              # Estructura del "Shell"
-│   ├── swiss-shell.css  # Topbar, Sidebar, Grids (Reemplaza swiss-style.css).
-│   └── navigation.css   # Menús, Breadcrumbs, Tabs.
-│
-├── components/          # Átomos e Iones (Atómicos)
-│   ├── buttons.css      # Variantes de botones y estados.
-│   ├── forms.css        # Inputs, Selects, Dropboxes, Toggles.
-│   ├── cards.css        # KPI Cards, Contenedores, Modales.
-│   ├── data-viz.css     # Tablas, Badges, Status Indicators.
-│   └── feedback.css     # Toasts, Spinners, Empty States, Skeletons.
-│
-└── .archive/            # Depósito de deuda técnica (NO cargar en HTML)
-    ├── admin-central-stock.css
-    ├── launcher.css
-    └── ... (Archivos consolidados)
+CAPA 0 → CAPA 1 → CAPA 2 → CAPA 3 → CAPA 4 → CAPA 5
+Seguridad   Tokens   Layout   Componentes   Integración   Polish
 ```
 
 ---
 
-## 3. Protocolo de Resiliencia y Validación Bloqueante
+## Capa 0 — Seguridad Core 🔒
 
-### Reglas de Operación (Anti-Error)
+> Bloqueante. Sin esto, la ANON_KEY pública expone toda la data vía API directo.
 
-- **Atomicidad:** Cada cambio se divide en micro-pasos. No se avanza si el validador retorna `false`.
-- **Blindaje JS (Safe-List):** Se prohíbe renombrar IDs o clases funcionales detectadas en la auditoría JS.
-- **Snapshots:** Lectura previa obligatoria de cada archivo antes de aplicar cambios.
-- **Rollback Inmediato:** Si el Gatekeeper detecta fallo, se revierte el archivo a su estado previo al micro-paso.
+### Objetivos
 
-### Motor de Validación (Phase Gatekeeper)
+1. **`index.html`** — Verificar sesión antes de redirigir (usar `Auth.getMyProfile()` + `Auth.roleLanding()`)
+2. **RLS masivo** — Habilitar en todas las tablas con policies por rol (no genéricas `authenticated`)
+3. **CSP** — Meta tag alineado al stack: `jsdelivr.net`, `supabase.co`, `api.emailjs.com`
+4. **Guard faltante** — Descomentar `guardOrRedirect` en `scanner.js`
 
-| Fase              | Check de Validación      | Lógica de Bloqueo                                  | Criterio de Éxito     |
-| :---------------- | :----------------------- | :------------------------------------------------- | :-------------------- |
-| **1. AUDIT**      | `verifySafeList`         | ¿Falta algún ID crítico en el HTML?                | `missingIDs === 0`    |
-| **2. TOKENS**     | `verifyFoundations`      | ¿Hay `px` hardcoded fuera de `tokens.css`?         | `hardcodedPx === 0`   |
-| **3. ATOMIC**     | `scripts/audit-links.js` | ¿Hay errores 404 en los nuevos paths?              | `brokenLinks === 0`   |
-| **4. RESILIENCE** | `checkErrorLogging`      | ¿Hay bloques `catch` silenciosos en el JS migrado? | `silentCatches === 0` |
+### Decisiones Pendientes
 
----
+- **RLS por rol**: ¿Custom claims (eficiente, requiere función `set_claim`) o sub-select a `profiles` (simple, overhead por query)?
+- **Body hide**: ¿Centralizar `display:none` → `block` post-auth en `auth.js` o por módulo?
 
-## 4. Cronograma de Ejecución (Fases Detalladas)
+### Verificación
 
-### Fase 1: Blindaje y Auditoría (La Muralla) - ✅ P0 COMPLETO / ⏳ P1+ EN PROGRESO
+- [ ] `index.html` redirige a login sin sesión
+- [ ] Tablas core tienen RLS con filtro por rol
+- [ ] Navegador muestra CSP activo en DevTools > Network
+- [ ] `scanner.js` redirige sin sesión
 
-- **Acción:** Mapear el 100% de `getElementById` y `querySelector` en módulos Tier 0.
-- **Estado Actual:** P0 (8 componentes universales) verificados en `swiss-style.css`. P1 (10 componentes) pendiente.
-- **Resultado:** `docs/architecture/safe-list-selectors.json` generado. `truth.md` es el tracker canónico.
+### Evidencia
 
-### Fase 2: Cimientos (Foundations) - 🔥 CRÍTICA
-
-- **Acción:** Refactor de `tokens.css`. Sistema 8pt, Zinc Palette WCAG y Shadows SaaS.
-- **Validación:** No existen estilos computados que no usen variables de tokens.
-
-### Fase 3: Consolidación Atómica - ⚡ ALTA
-
-- **Acción:** Creación de carpetas y migración de estilos de `admin-*.css` a `components/`.
-- **Resultado:** `buttons.css`, `forms.css`, `cards.css` y `data-viz.css` funcionales.
-
-### Fase 4: Re-mapeo Global y Limpieza - ⚡ ALTA
-
-- **Acción:** Actualización masiva de `<link>` en HTML. Movimiento de archivos a `.archive/`.
-- **Validación:** Ejecución de `audit-links.js` con éxito.
-
-### Fase 5: Refactoring UI (Polish) - 📈 MEDIA
-
-- **Acción:** Tratamiento de profundidad, refinamiento tipográfico y micro-interacciones.
-- **Validación:** Cumplimiento de jerarquía visual en `components_catalog.html`.
-
-### Fase 6: Resiliencia y Monitoreo - 📈 MEDIA
-
-- **Acción:** Centralized Logging y Fallback Components (Circuit Breakers).
-- **Validación:** 100% de los errores de red muestran feedback visual proactivo.
+- [Seguridad_Arquitectura.md](docs/operaciones/testing/observations/Seguridad_Arquitectura.md) — 7 hallazgos
+- [Plan_Blindaje_Review.md](docs/operaciones/testing/observations/Plan_Blindaje_Review.md) — 5 correcciones al plan propuesto
 
 ---
 
-## 5. Métricas de Éxito y Entregables
+## Capa 1 — Tokens (Base Visual) 🎨
 
-- **Integridad:** 0 Errores de Referencia en consola post-migración.
-- **Rendimiento:** Reducción del 20% en tiempo de renderizado (FCP).
-- **Entregable 1:** `docs/architecture/ui-golden-standard.md` (Documentación del Sistema).
-- **Entregable 2:** Carpeta `assets/css/` limpia y modularizada.
-- **Entregable 3:** `docs/_generated/orchestrator/CHANGELOG.md` actualizado.
+> `tokens.css` existe y funciona parcialmente. Encargados ya lo consumen correctamente.
+
+### Objetivos
+
+1. **Auditar Design Drift** — Eliminar redefiniciones locales de `:root` en módulos admin
+2. **Consolidar** — Spacing 8pt, Zinc Palette WCAG, Shadows SaaS, Z-Index scale
+3. **Blindar** — `tokens.css` debe ser la única fuente de variables CSS
+
+### Por qué antes de Layout
+
+Layout consume `--space-*`, `--z-*`, `--shadow-*`, `--topbar-h` de tokens. Si los tokens cambian después, hay que re-tocar todo el layout.
+
+### Verificación
+
+- [ ] 0 redefiniciones de `:root` fuera de `tokens.css`
+- [ ] Todas las variables de spacing usan múltiplos de 8
+- [ ] `ds-verify.ps1` muestra 0 regresiones Tier0
 
 ---
 
-## 6. Planes Relacionados (Otros Dominios)
+## Capa 2 — Layout / Shell 📐
 
-| Plan                  | Dominio                                       | Ubicación                                        |
-| :-------------------- | :-------------------------------------------- | :----------------------------------------------- |
-| PLAN_PRODUCTION_READY | Security, CI/CD, Deploy, Observabilidad       | `docs/codex/PLAN_PRODUCTION_READY.md`            |
-| Workdays Roadmap      | Módulo Workdays (8 sprints, backend+frontend) | `docs/migration/artifacts/roadmap_production.md` |
+> Estructura que contiene todo. Topbar, sidebar, grids, navigation.
+
+### Objetivos
+
+1. **`swiss-shell.css`** — Topbar, sidebar, grid system (reemplaza `swiss-style.css`)
+2. **`navigation.css`** — Menús, breadcrumbs, tabs
+3. **Responsive** — Breakpoints del token system
+
+### Por qué antes de Componentes
+
+Los componentes se posicionan DENTRO del layout. Sin shell definido, cada componente inventa su propio posicionamiento (lo que pasa hoy en encargados).
+
+### Sandbox
+
+**Encargados** = zona de bajo riesgo para prototipar layout:
+
+- 0 selectores `#id`, 0 `!important`
+- Solo 1 CSS propio (76 líneas, ya usa tokens)
+- Nunca fueron diseñados — ideal para diseñar desde cero
+
+### Verificación
+
+- [ ] Shell funciona en las 8 páginas Tier0
+- [ ] Encargados usan el nuevo shell
+- [ ] `ds-verify.ps1 -SaveBaseline` → cambios → `ds-verify.ps1` = 0 regresiones
+
+---
+
+## Capa 3 — Componentes 🧱
+
+> Átomos: buttons, forms, cards, data-viz, feedback.
+
+### Objetivos
+
+1. **Migrar** estilos de `admin-*.css` → `components/` (buttons, forms, cards, data-viz, feedback)
+2. **Resolver acoplamiento JS-CSS** — Inyectar hooks `js-` en los 312 selectores de presentación antes de renombrar clases
+3. **Aplanar especificidad** — Solo donde sea necesario (2 selectores `#id` reales: `#payModal`, `#btn-view-all-requests`)
+
+### Dato clave descubierto
+
+El script de aplanamiento masivo es innecesario: solo existen **2 selectores `#id`** en los 9 archivos `admin-*.css`. Las 142 ocurrencias de `!important` sí necesitan tratamiento pero en esta fase, no antes.
+
+### Verificación
+
+- [ ] `components/` contiene buttons, forms, cards, data-viz, feedback
+- [ ] 0 clases de presentación usadas como selectores JS
+- [ ] `audit-links.js` retorna 0 errores 404
+
+---
+
+## Capa 4 — Integración 🔗
+
+### Objetivos
+
+1. **Re-mapeo HTML** — Actualizar `<link>` en todos los HTML hacia la nueva estructura
+2. **Limpieza** — Mover archivos consolidados a `.archive/`
+3. **Validación** — `audit-links.js` + `ds-verify.ps1` en todas las páginas
+
+---
+
+## Capa 5 — Polish ✨
+
+### Objetivos
+
+1. **Profundidad** — Sombras multinivel SaaS
+2. **Tipografía** — Jerarquía visual refinada
+3. **Micro-animaciones** — Transitions, hover states
+4. **Validación final** — `components_catalog.html` + `layout_patterns.html` como golden standard
+
+---
+
+## Protocolo de Cambios (Estándar)
+
+Cada cambio sigue este flujo:
+
+```text
+1. ds-verify.ps1 -SaveBaseline     → fijar estado actual
+2. Ejecutar transformación          → una capa a la vez
+3. ds-verify.ps1                    → comparar contra baseline
+4. Si regresión Tier0 → revertir   → no avanzar
+5. Si ok → nuevo baseline          → siguiente cambio
+```
+
+---
+
+## Herramientas Disponibles
+
+| Script                     | Uso                                                 |
+| -------------------------- | --------------------------------------------------- |
+| `ui-component-scanner.ps1` | Escanea páginas y genera `summary.json` con scores  |
+| `ds-verify.ps1`            | Compara scores pre/post y detecta regresiones Tier0 |
+| `audit-links.js`           | Verifica 0 errores 404 en rutas CSS/JS              |
+| `audit-css.js`             | Audita especificidad y patrones tóxicos             |
+| `security-watchdog.ps1`    | Monitoreo de seguridad                              |
+
+---
+
+## Planes Relacionados (Otros Dominios)
+
+| Plan                  | Dominio                        | Ubicación                                        |
+| --------------------- | ------------------------------ | ------------------------------------------------ |
+| PLAN_PRODUCTION_READY | Security, CI/CD, Deploy        | `docs/codex/PLAN_PRODUCTION_READY.md`            |
+| Workdays Roadmap      | Backend + Frontend (8 sprints) | `docs/migration/artifacts/roadmap_production.md` |
 
 > [!NOTE]
-> Estos planes cubren dominios **fuera del scope** de este ROADMAP (que es solo UI/CSS). Se abordarán en Fase 2 de consolidación.
+> Estos planes cubren dominios **fuera del scope** de este ROADMAP (que es UI/CSS + Seguridad Core).

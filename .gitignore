@@ -33,6 +33,9 @@ token*.json
 scripts/logs/
 scripts/backups/
 
+# Scanner output (regenerable)
+docs/output/ui-scan/
+
 # Sandbox Dev Tools (local only)
 assets/sandbox.html
 assets/sandbox.md

@@ -32,9 +32,9 @@ $ProjectRoot = Split-Path -Parent $PSScriptRoot
 if (-not $ProjectRoot -or -not (Test-Path $ProjectRoot)) {
     $ProjectRoot = (Get-Location).Path
 }
-$PagesDir  = Join-Path $ProjectRoot "pages"
+$PagesDir = Join-Path $ProjectRoot "pages"
 $OutputDir = Join-Path $ProjectRoot "docs\output\ui-scan"
-$PagesOut  = Join-Path $OutputDir "pages"
+$PagesOut = Join-Path $OutputDir "pages"
 $PromptsOut = Join-Path $OutputDir "cli-prompts"
 
 $startTime = Get-Date
@@ -53,105 +53,105 @@ function Write-Head ($msg) { Write-Host "`n  $msg" -ForegroundColor Cyan }
 # =============================================================================
 
 $GSRegistry = [ordered]@{
-    Layout = @{
+    Layout          = @{
         Classes  = @('page-shell', 'page-card-wrap', 'page-card')
         Weight   = 3  # 1=low, 2=med, 3=high priority
         Required = $true
     }
-    Navigation = @{
+    Navigation      = @{
         Classes  = @('topbar', 'topbar-start', 'topbar-center', 'topbar-end',
-                     'breadcrumb', 'breadcrumb-item', 'breadcrumb-link', 'breadcrumb-sep')
+            'breadcrumb', 'breadcrumb-item', 'breadcrumb-link', 'breadcrumb-sep')
         Weight   = 3
         Required = $true
     }
-    Header = @{
+    Header          = @{
         Classes  = @('dashboard-header', 'dashboard-title', 'dashboard-title-soft',
-                     'dashboard-subtitle-soft', 'actions-bar')
+            'dashboard-subtitle-soft', 'actions-bar')
         Weight   = 2
         Required = $true
     }
-    Metrics = @{
+    Metrics         = @{
         Classes  = @('summary-metrics-container', 'summary-metrics-grid',
-                     'summary-metric-card', 'summary-metric-label', 'summary-metric-value')
+            'summary-metric-card', 'summary-metric-label', 'summary-metric-value')
         Weight   = 2
         Required = $false
     }
-    Sidebar = @{
+    Sidebar         = @{
         Classes  = @('sidebar-filters', 'sidebar-section-title', 'sidebar-section',
-                     'sidebar-actions', 'grid-sidebar-main', 'main-content-area')
+            'sidebar-actions', 'grid-sidebar-main', 'main-content-area')
         Weight   = 2
         Required = $false
     }
-    TabSystem = @{
+    TabSystem       = @{
         Classes  = @('tab-bar', 'tab-chip', 'tab-content')
         Weight   = 2
         Required = $false
     }
-    FilterBar = @{
+    FilterBar       = @{
         Classes  = @('sku-filter-bar', 'pill-group', 'pill', 'is-active',
-                     'search-input-wrap', 'search-icon', 'filter-counter', 'filter-spacer')
+            'search-input-wrap', 'search-icon', 'filter-counter', 'filter-spacer')
         Weight   = 1
         Required = $false
     }
-    Tables = @{
+    Tables          = @{
         Classes  = @('table-viewport', 'table-shell', 'table-scroll', 'table',
-                     'table-sticky', 'table-compact', 'table-head', 'table-cell',
-                     'is-header', 'cell-pad', 'sortable', 'sort-icon')
+            'table-sticky', 'table-compact', 'table-head', 'table-cell',
+            'is-header', 'cell-pad', 'sortable', 'sort-icon')
         Weight   = 2
         Required = $false
     }
-    Buttons = @{
+    Buttons         = @{
         Classes  = @('btn-primary', 'btn-secondary', 'btn-ghost', 'btn-icon',
-                     'btn-icon-flat', 'btn-icon-plus', 'btn-danger', 'btn-sm')
+            'btn-icon-flat', 'btn-icon-plus', 'btn-danger', 'btn-sm')
         Weight   = 1
         Required = $false
     }
-    Modals = @{
+    Modals          = @{
         Classes  = @('modal', 'modal-content', 'modal-content-md', 'modal-content-lg',
-                     'modal-header', 'modal-title', 'modal-close', 'modal-body', 'modal-footer')
+            'modal-header', 'modal-title', 'modal-close', 'modal-body', 'modal-footer')
         Weight   = 2
         Required = $false
     }
-    Panels = @{
+    Panels          = @{
         Classes  = @('slide-panel', 'panel-overlay', 'panel-header', 'panel-title',
-                     'panel-close', 'panel-body', 'panel-footer')
+            'panel-close', 'panel-body', 'panel-footer')
         Weight   = 1
         Required = $false
     }
     CustomDropdowns = @{
         Classes  = @('custom-dropdown', 'custom-dropdown-trigger', 'custom-dropdown-menu',
-                     'custom-dropdown-option', 'custom-dropdown-text', 'custom-dropdown-icon')
+            'custom-dropdown-option', 'custom-dropdown-text', 'custom-dropdown-icon')
         Weight   = 2
         Required = $false
     }
-    Charts = @{
+    Charts          = @{
         Classes  = @('chart-section', 'chart-header', 'chart-kpis-grid',
-                     'chart-kpi-card', 'chart-kpi-label', 'chart-kpi-value',
-                     'chart-kpi-trend', 'chart-canvas-max')
+            'chart-kpi-card', 'chart-kpi-label', 'chart-kpi-value',
+            'chart-kpi-trend', 'chart-canvas-max')
         Weight   = 1
         Required = $false
     }
-    Dropbox = @{
+    Dropbox         = @{
         Classes  = @('dropbox-zone', 'dropbox-grid-2', 'dropbox-icon',
-                     'dropbox-title', 'dropbox-subtitle')
+            'dropbox-title', 'dropbox-subtitle')
         Weight   = 1
         Required = $false
     }
-    Forms = @{
+    Forms           = @{
         Classes  = @('input', 'input-compact', 'form-group', 'form-label',
-                     'date-range-inline', 'date-separator')
+            'date-range-inline', 'date-separator')
         Weight   = 1
         Required = $false
     }
-    Stats = @{
+    Stats           = @{
         Classes  = @('stats-header', 'stats-body', 'stats-compact',
-                     'stat-item', 'stat-label', 'stat-value', 'toggle-icon')
+            'stat-item', 'stat-label', 'stat-value', 'toggle-icon')
         Weight   = 1
         Required = $false
     }
-    Utilities = @{
+    Utilities       = @{
         Classes  = @('u-hidden', 'u-visible', 'hidden', 'text-center', 'text-right',
-                     'text-xs', 'text-muted', 'badge', 'badge-quiet')
+            'text-xs', 'text-muted', 'badge', 'badge-quiet')
         Weight   = 0
         Required = $false
     }
@@ -268,12 +268,12 @@ function Scan-Page {
         # Contextual relevance detection
         if (-not $isRelevant) {
             switch ($catName) {
-                'Tables'          { $isRelevant = $elements.table -gt 0 }
-                'Modals'          { $isRelevant = $elements.dialog -gt 0 }
+                'Tables' { $isRelevant = $elements.table -gt 0 }
+                'Modals' { $isRelevant = $elements.dialog -gt 0 }
                 'CustomDropdowns' { $isRelevant = $elements.nativeSelect -gt 0 }
-                'Sidebar'         { $isRelevant = $elements.aside -gt 0 }
-                'Charts'          { $isRelevant = $elements.canvas -gt 0 }
-                'Forms'           { $isRelevant = $elements.input -gt 0 -or $elements.nativeSelect -gt 0 }
+                'Sidebar' { $isRelevant = $elements.aside -gt 0 }
+                'Charts' { $isRelevant = $elements.canvas -gt 0 }
+                'Forms' { $isRelevant = $elements.input -gt 0 -or $elements.nativeSelect -gt 0 }
             }
         }
 
@@ -311,7 +311,7 @@ function Scan-Page {
         $remediationHints = @("HIGH: Eliminar $($inlineStyles.Count) inline style= atributos") + $remediationHints
     }
     if ($elements.nativeSelect -gt 0 -and 'custom-dropdown' -notin $uniqueClasses) {
-        $remediationHints = @("HIGH: Reemplazar $($elements.nativeSelect) <select> nativos con .custom-dropdown") + $remediationHints
+        $remediationHints = @("HIGH: Reemplazar $($elements.nativeSelect) ``<select>`` nativos con .custom-dropdown") + $remediationHints
     }
     if ($ariaTotal -eq 0 -and ($elements.button -gt 0 -or $elements.input -gt 0)) {
         $remediationHints += "MED: Agregar atributos ARIA a elementos interactivos"
@@ -325,29 +325,29 @@ function Scan-Page {
 
     # ── Build result ──
     return [ordered]@{
-        meta = [ordered]@{
+        meta             = [ordered]@{
             page       = $fileName
             path       = $relPath
             scannedAt  = (Get-Date -Format "yyyy-MM-dd HH:mm:ss")
             totalLines = $lines.Count
             module     = ($relPath -split '/')[1]  # admin, operativo, etc.
         }
-        linkedAssets = [ordered]@{
+        linkedAssets     = [ordered]@{
             css = @($linkedCSS)
             js  = @($linkedJS)
         }
-        classInventory = [ordered]@{
-            totalUnique      = $uniqueClasses.Count
-            goldenStandard   = @($allPresent)
-            unclassified     = @($unknownClasses)
+        classInventory   = [ordered]@{
+            totalUnique    = $uniqueClasses.Count
+            goldenStandard = @($allPresent)
+            unclassified   = @($unknownClasses)
         }
-        elements = $elements
-        aria = [ordered]@{
+        elements         = $elements
+        aria             = [ordered]@{
             coverage = $aria
             total    = $ariaTotal
         }
-        dataAttributes = @($dataAttrs)
-        antiPatterns = [ordered]@{
+        dataAttributes   = @($dataAttrs)
+        antiPatterns     = [ordered]@{
             inlineStyles      = @($inlineStyles)
             inlineStyleCount  = $inlineStyles.Count
             nativeSelectCount = $elements.nativeSelect
@@ -418,27 +418,32 @@ function Generate-CliPrompt {
     $lines += ""
     $lines += "## Estado actual del componente"
     $lines += ""
-    $lines += "### Compliance por categoria (solo relevantes):"
+    $lines += "### Compliance por categoria (solo relevantes)"
+    $lines += ""
     $lines += $catStatus
     $lines += ""
-    $lines += "### Anti-patrones detectados:"
+    $lines += "### Anti-patrones detectados"
+    $lines += ""
     $lines += "  * Inline styles: ${inline}"
     $lines += "  * Native select sin custom-dropdown: ${selects}"
     $lines += "  * Cobertura ARIA total: ${ariaT} attrs"
     $lines += ""
-    $lines += "### Elementos HTML:"
+    $lines += "### Elementos HTML"
+    $lines += ""
     $lines += $elSummary
     $lines += ""
     $lines += "### Headings: ${hSummary}"
     $lines += ""
-    $lines += "### Hints de remediacion (priorizados):"
-    $lines += "  * ${hints}"
+    $lines += "### Hints de remediacion (priorizados)"
+    $lines += ""
+    $lines += "* ${hints}"
     $lines += ""
     $lines += "## Instrucciones"
     $lines += ""
     $lines += "Crea un plan de implementacion para remediar ${page} al Golden Standard."
     $lines += ""
-    $lines += "### Reglas:"
+    $lines += "### Reglas"
+    $lines += ""
     $lines += "1. Consulta docs/ui-golden-standard.md como referencia absoluta"
     $lines += "2. Referencia de implementacion: pages/admin/admin-central-stock.html"
     $lines += "3. Solo modifica HTML y CSS. NO toques logica JS (Supabase, state, event handlers)"
@@ -449,17 +454,20 @@ function Generate-CliPrompt {
     $lines += "8. Asegura heading hierarchy correcta (h2, h3, h4 -- sin h1)"
     $lines += "9. Agrega atributos ARIA a elementos interactivos"
     $lines += ""
-    $lines += "### Formato del plan:"
+    $lines += "### Formato del plan"
+    $lines += ""
     $lines += "Para cada archivo a modificar, indica:"
-    $lines += "  * Que cambia y por que"
+    $lines += ""
+    $lines += "* Que cambia y por que"
     $lines += "  * Lineas aproximadas afectadas"
     $lines += "  * Patron GS de referencia (numero de seccion del golden standard)"
     $lines += ""
-    $lines += "### Criterio de exito:"
-    $lines += "  * Score de compliance mayor o igual a 85%"
-    $lines += "  * 0 inline styles"
-    $lines += "  * 0 native selects sin custom-dropdown"
-    $lines += "  * ARIA labels en todos los botones e inputs"
+    $lines += "### Criterio de exito"
+    $lines += ""
+    $lines += "* Score de compliance mayor o igual a 85%"
+    $lines += "* 0 inline styles"
+    $lines += "* 0 native selects sin custom-dropdown"
+    $lines += "* ARIA labels en todos los botones e inputs"
 
     return ($lines -join "`n")
 }
@@ -479,7 +487,8 @@ function Generate-Matrix {
     $tier3 = @($AllResults | Where-Object { $_.goldenCompliance.overallScore -lt 50 }).Count
     $avgScore = if ($AllResults.Count -gt 0) {
         [math]::Round(($AllResults | ForEach-Object { $_.goldenCompliance.overallScore } | Measure-Object -Average).Average)
-    } else { 0 }
+    }
+    else { 0 }
 
     # Build markdown line by line (avoids here-string parsing issues)
     $md = @()
@@ -493,7 +502,7 @@ function Generate-Matrix {
     $md += "## Resumen ejecutivo"
     $md += ""
     $md += "| Metrica | Valor |"
-    $md += "|---|---|"
+    $md += "| --- | --- |"
     $md += "| Score promedio | **${avgScore}** |"
     $md += "| Paginas compliant (80+) | ${tier1} |"
     $md += "| Paginas parcial (50-79) | ${tier2} |"
@@ -504,7 +513,7 @@ function Generate-Matrix {
     $md += "## Matriz de compliance"
     $md += ""
     $md += "| Pagina | Modulo | Score | Layout | Nav | Header | Metrics | Tables | Dropdowns | Inline | ARIA | Hints |"
-    $md += "|---|---|---|---|---|---|---|---|---|---|---|---|"
+    $md += "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |"
 
     foreach ($r in ($AllResults | Sort-Object { $_.goldenCompliance.overallScore })) {
         $pg = $r.meta.page
@@ -528,6 +537,7 @@ function Generate-Matrix {
 
     $md += ""
     $md += "### Leyenda"
+    $md += ""
     $md += "OK = categoria 80+ compliance"
     $md += "!! = categoria bajo 80 y relevante (necesita remediacion)"
     $md += "-- = categoria no relevante para esta pagina"
@@ -545,9 +555,11 @@ function Generate-Matrix {
         $md += ""
         if ($r.remediationHints.Count -gt 0) {
             foreach ($h in $r.remediationHints) {
+                $h = $h -replace '<select>', '``<select>``'
                 $md += "  * ${h}"
             }
-        } else {
+        }
+        else {
             $md += "  * Sin hints pendientes"
         }
         $md += ""
@@ -671,25 +683,26 @@ $matrixContent | Out-File $matrixPath -Encoding utf8
 
 # Summary JSON
 $summaryJson = [ordered]@{
-    scannedAt  = (Get-Date -Format "yyyy-MM-dd HH:mm:ss")
-    totalPages = $allResults.Count
-    compliant  = $compliant
-    partial    = $partial
-    critical   = $critical
-    avgScore   = if ($allResults.Count -gt 0) {
+    scannedAt         = (Get-Date -Format "yyyy-MM-dd HH:mm:ss")
+    totalPages        = $allResults.Count
+    compliant         = $compliant
+    partial           = $partial
+    critical          = $critical
+    avgScore          = if ($allResults.Count -gt 0) {
         [math]::Round(($allResults | ForEach-Object { $_.goldenCompliance.overallScore } | Measure-Object -Average).Average)
-    } else { 0 }
+    }
+    else { 0 }
     totalInlineStyles = $totalInline
-    totalHints = $totalHints
-    pages = @($allResults | ForEach-Object {
-        [ordered]@{
-            page  = $_.meta.page
-            module = $_.meta.module
-            score = $_.goldenCompliance.overallScore
-            hints = $_.remediationHints.Count
-            inline = $_.antiPatterns.inlineStyleCount
-        }
-    } | Sort-Object { $_.score })
+    totalHints        = $totalHints
+    pages             = @($allResults | ForEach-Object {
+            [ordered]@{
+                page   = $_.meta.page
+                module = $_.meta.module
+                score  = $_.goldenCompliance.overallScore
+                hints  = $_.remediationHints.Count
+                inline = $_.antiPatterns.inlineStyleCount
+            }
+        } | Sort-Object { $_.score })
 }
 $summaryJson | ConvertTo-Json -Depth 5 | Out-File (Join-Path $OutputDir "summary.json") -Encoding utf8
 
