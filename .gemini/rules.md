@@ -322,7 +322,7 @@ Supabase → state.items → renderTable(state.items) → DOM
 | Si modificaste...           | Actualizar...                               |
 | :-------------------------- | :------------------------------------------ |
 | Módulo HTML/CSS             | `docs/estado-presente.md` (métricas)        |
-| Lógica JS significativa     | `docs/modules/{context}/{module}.md`        |
+| Lógica JS significativa     | `docs/logica/{flujo}.md` (flujo relevante)  |
 | Schema BD                   | `docs/scheme.md`                            |
 | Vista/Function SQL          | `db-architect/SKILL.md` §3                  |
 | Nuevo patrón de negocio     | `logic-engineer/SKILL.md` sección relevante |
