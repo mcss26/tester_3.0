@@ -138,7 +138,7 @@
         
         if (!widget) return;
 
-        const MCO_BATCH_ID = '141e44d9-42bc-4c2b-a3bb-4d9721e03802';
+        const MCO_BATCH_ID = window.APP_CONFIG.MCO_BATCH_ID;
 
         const fetchMcoStats = async () => {
             try {

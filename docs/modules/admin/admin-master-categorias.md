@@ -227,4 +227,4 @@ R: No hay límite técnico, pero se recomienda mantener entre 5-15 categorías p
 
 - [Admin Central Stock](admin-central-stock.md) - Utiliza categorías para clasificar productos y stock
 - [Admin Central Stock](admin-central-stock.md) - Filtros por categoría en visualización de inventario
-- [Screen Map](../../architecture/screen-map.md#admin-master-categorias) - Ubicación en arquitectura de pantallas
+- [Screen Map](../../architecture/screen-map.md#admin-17) - Ubicación en arquitectura de pantallas

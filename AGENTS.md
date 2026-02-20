@@ -15,24 +15,23 @@ description: Punto de entrada. Interpreta, clasifica riesgo, delega y valida.
 
 When performing these actions, ALWAYS invoke the corresponding skill FIRST:
 
-| Action                             | Skill                              |
-| :--------------------------------- | :--------------------------------- |
-| Editar CSS / layout / tokens       | `css-architect`                    |
-| Diseño visual / UI patterns        | `web-designer`, `ui-ux-pro-max`    |
-| Migración entre design systems     | `ui-migrator`                      |
-| Lógica JS / state / auth           | `logic-engineer`                   |
-| Schema SQL / RPCs / vistas         | `db-architect`, `erp-architect`    |
-| SQL performance / indexes / RLS    | `supabase-postgres-best-practices` |
-| Auditoría de módulo                | `module-coherence-auditor`         |
-| Auditoría de workspace / higiene   | `auditing-workspace`               |
-| Testing interactivo / tickets      | `testing-pipeline`                 |
-| Research UX / personas / journeys  | `ux-researcher-designer`           |
-| Prototipado UI (sandbox)           | `prototyper`                       |
-| Assets de marca / social / merch   | `brand-developer`                  |
-| Planificación / roadmaps / sprints | `methodology-generator`            |
-| Seguridad / permisos               | `security-ops`                     |
-| Limpieza de repo / higiene         | `repo-cleanup`                     |
-| Documentación / planes             | `writing-clearly-and-concisely`    |
+| Action                             | Skill                                 |
+| :--------------------------------- | :------------------------------------ |
+| Editar CSS / layout / tokens       | `css-architect`                       |
+| Componentes UI / layout audits     | `component-builder`, `layout-auditor` |
+| Lógica JS / state / auth           | `logic-engineer`                      |
+| Schema SQL / RPCs / vistas         | `db-architect`, `erp-architect`       |
+| SQL performance / indexes / RLS    | `supabase-postgres-best-practices`    |
+| Auditoría de módulo / coherencia   | `module-coherence-auditor`            |
+| Auditoría de workspace / higiene   | `auditing-workspace`                  |
+| Testing interactivo / tickets      | `testing-pipeline`                    |
+| Research UX / personas / journeys  | `ux-researcher-designer`              |
+| Prototipado UI (sandbox)           | `prototyper`                          |
+| Assets de marca / social / merch   | `brand-developer`                     |
+| Planificación / roadmaps / sprints | `methodology-generator`               |
+| Seguridad / permisos               | `security-ops`                        |
+| Limpieza de repo / higiene         | `repo-cleanup`                        |
+| Documentación / planes             | `writing-clearly-and-concisely`       |
 
 ---
 
@@ -65,6 +64,8 @@ Agents without their own code folder. Live in `.agent/agents/`:
 | Agent          | When to use                           |
 | :------------- | :------------------------------------ |
 | `orchestrator` | Always. Entry point.                  |
+| `frontend`     | CSS, layout, components, visual       |
+| `logic`        | JS modules, auth, state, integration  |
 | `data`         | Schema, RPCs, views, migrations       |
 | `qa`           | Audits, coherence, testing, cleanup   |
 | `product`      | UX, journeys, prioritization, metrics |

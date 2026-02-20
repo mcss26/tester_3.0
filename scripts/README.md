@@ -1,27 +1,14 @@
-# Solo listar, no modificar nada
+# Scripts — FormulaMid 4
 
-powershell -ExecutionPolicy Bypass -File scripts/doc-mapper.ps1 -DryRun
+Indice completo de scripts de automatizacion. Todos se corren desde la raiz del proyecto.
 
-# Generar mapa sin invocar Gemini CLI
-
-powershell -ExecutionPolicy Bypass -File scripts/doc-mapper.ps1 -SkipCli
-
-# Ejecución completa con análisis CLI
-
-powershell -ExecutionPolicy Bypass -File scripts/doc-mapper.ps1
-
-# Solo una categoría
-
-powershell -ExecutionPolicy Bypass -File scripts/doc-mapper.ps1 -OnlyCategory modules -SkipCli
-}
-
-# Scripts - FormulaMid 4
-
-Índice de scripts de automatización. Todos se corren desde la raíz del proyecto.
+**31 scripts** | PowerShell (.ps1) + Node (.js/.mjs) + Python (.py)
 
 ---
 
-## 🔒 Security Startup
+## 1. Seguridad
+
+### security-startup.ps1
 
 Checks iniciales al abrir VS Code.
 
@@ -29,98 +16,28 @@ Checks iniciales al abrir VS Code.
 powershell -ExecutionPolicy Bypass -File scripts/security-startup.ps1
 ```
 
----
-
-## 🛡️ Security Watchdog
+### security-watchdog.ps1
 
 Monitoreo continuo de seguridad (cada 60s). Detecta: permisos, integridad SHA-256, archivos sospechosos, git leaks, patrones peligrosos, agentes rogue, procesos sospechosos, MCP servers desconocidos.
 
 ```powershell
-# Sin log
 powershell -ExecutionPolicy Bypass -File scripts/security-watchdog.ps1
-
-# Con log persistente (recomendado)
 powershell -ExecutionPolicy Bypass -File scripts/security-watchdog.ps1 -LogToFile
 ```
 
-**Ctrl+C** → resumen de sesión.
+**Ctrl+C** para resumen de sesion.
 
----
+### security-shutdown.ps1
 
-## 📡 Ops Watchdog
-
-Torre de control operativa (cada 90s). Monitorea: actividad reciente, docs de agentes, estado git, cobertura de documentación.
+Checks finales al cerrar VS Code. Incluye backup automatico, limpieza de zombie processes, verificacion de secrets en git.
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File scripts/ops-watchdog.ps1
+powershell -ExecutionPolicy Bypass -File scripts/security-shutdown.ps1
 ```
 
-**Ctrl+C** → detiene.
+### backup-configs.ps1
 
----
-
-## 🔍 Flow Tracer v2
-
-Análisis estático de navegación y datos. Detecta `data-go` + `<a href>` + `navigateTo()`, clasifica operaciones Supabase como READ/WRITE, y cruza flujos entre módulos. Ejecución single-run (no requiere Ctrl+C).
-
-```powershell
-# Solo reporte (default)
-powershell -ExecutionPolicy Bypass -File scripts/flow-tracer.ps1
-
-# Con análisis Gemini CLI
-powershell -ExecutionPolicy Bypass -File scripts/flow-tracer.ps1 -WithAnalysis
-```
-
-Output: `docs/output/qa/{fecha}_audit_flow-trace.md`
-
----
-
-## 🧠 Context Loader
-
-Genera un reporte de contexto sobre un tema buscando en 7 fuentes: Knowledge Items, código, docs, schema, git history, reportes previos, y conversaciones. Ideal para arrancar sesiones de agente sin repetir preguntas.
-
-```powershell
-# Generar contexto sobre un tema
-powershell -ExecutionPolicy Bypass -File scripts/context-loader.ps1 -Topic "workdays"
-
-# Copiar al clipboard (para pegar directo en chat)
-powershell -ExecutionPolicy Bypass -File scripts/context-loader.ps1 -Topic "stock" -Clipboard
-
-# Con análisis Gemini CLI
-powershell -ExecutionPolicy Bypass -File scripts/context-loader.ps1 -Topic "cashflow" -Analyze
-```
-
-Output: `docs/output/qa/context-{topic}.md`
-
----
-
-## 📊 Workdays Verifier v2 (Progressive Scanner)
-
-Escanea el módulo Workdays en 8 fases progresivas. Cada ciclo analiza algo diferente y acumula hallazgos con score ponderado. Estado persistido en JSON para sobrevivir crashes.
-
-**Fases:** Baseline → Deep JS → Deep HTML → Deep CSS → Cross-Module → Supabase → UX Patterns → Summary + Delta
-
-```powershell
-# Una sola vez (8 fases, genera reporte y sale)
-powershell -ExecutionPolicy Bypass -File scripts/workdays-verifier.ps1
-
-# Progresivo: 1 fase por ciclo cada 60s
-powershell -ExecutionPolicy Bypass -File scripts/workdays-verifier.ps1 -Watch
-
-# Full scan cada ciclo (8 fases cada 60s)
-powershell -ExecutionPolicy Bypass -File scripts/workdays-verifier.ps1 -Watch -FullScan
-
-# Reset: limpiar estado y empezar de cero
-powershell -ExecutionPolicy Bypass -File scripts/workdays-verifier.ps1 -Reset
-```
-
-**Ctrl+C** → resumen de sesión. Output: `docs/output/workdays-progressive.md`
-
----
-
-## 💾 Backup Configs
-
-Backup de archivos de configuración (.env, credenciales, MCP config) en ZIP con timestamp. Retiene últimas 5 copias.
+Backup de archivos de configuracion (.env, credenciales, MCP config) en ZIP con timestamp. Retiene ultimas 5 copias.
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts/backup-configs.ps1
@@ -128,44 +45,189 @@ powershell -ExecutionPolicy Bypass -File scripts/backup-configs.ps1
 
 ---
 
-## 🔐 Security Shutdown
+## 2. Monitoreo
 
-Checks finales al cerrar VS Code. Incluye backup automático, limpieza de zombie processes, verificación de secrets en git.
+### ops-watchdog.ps1
+
+Torre de control operativa (cada 90s). Monitorea: actividad reciente, docs de agentes, estado git, cobertura de documentacion.
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File scripts/security-shutdown.ps1
+powershell -ExecutionPolicy Bypass -File scripts/ops-watchdog.ps1
+```
+
+**Ctrl+C** para detener.
+
+### auto-prompter.ps1
+
+Envia prompts estrategicos al CLI activo cada N minutos (via SendKeys). Cicla por 10 prompts predefinidos de verificacion y continuacion.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/auto-prompter.ps1
+powershell -ExecutionPolicy Bypass -File scripts/auto-prompter.ps1 -IntervalMinutes 10
 ```
 
 ---
 
-## 🤖 UI Batch Remediation
+## 3. Auditoria de Codigo
 
-Orquesta Gemini CLI en paralelo para generar planes de remediación UI desde prompts del scanner. Workers configurables.
+Scripts que verifican salud del codebase (JS, HTML, CSS, links).
+
+### audit.mjs
+
+Audita modulos JS contra el Golden Standard: patron IIFE, assertSb, escapeHtml, alert/confirm nativos, getThemeColor duplicados.
 
 ```powershell
-# Ejecución (3 workers por defecto)
+node scripts/audit.mjs
+```
+
+### audit-css.js
+
+Detecta `<style>` tags e inline `style=` en HTML.
+
+```powershell
+node scripts/audit-css.js
+```
+
+### audit-links.js
+
+Audita links locales rotos en archivos `.md` y `.html`.
+
+```powershell
+node scripts/audit-links.js
+```
+
+### audit-modules.js
+
+Audita estructura de paginas HTML: assets faltantes, inline styles, metadata, topbar, slide-panel.
+
+```powershell
+node scripts/audit-modules.js
+node scripts/audit-modules.js --json reports/module-audit.json
+```
+
+---
+
+## 4. Analisis Estatico y Flujo
+
+### flow-tracer.ps1
+
+Analisis estatico de navegacion y datos. Detecta `data-go` + `<a href>` + `navigateTo()`, clasifica operaciones Supabase como READ/WRITE, cruza flujos entre modulos.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/flow-tracer.ps1
+powershell -ExecutionPolicy Bypass -File scripts/flow-tracer.ps1 -WithAnalysis
+```
+
+Output: `docs/output/qa/{fecha}_audit_flow-trace.md`
+
+### context-loader.ps1
+
+Genera un reporte de contexto sobre un tema buscando en 7 fuentes: Knowledge Items, codigo, docs, schema, git history, reportes previos, y conversaciones.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/context-loader.ps1 -Topic "workdays"
+powershell -ExecutionPolicy Bypass -File scripts/context-loader.ps1 -Topic "stock" -Clipboard
+powershell -ExecutionPolicy Bypass -File scripts/context-loader.ps1 -Topic "cashflow" -Analyze
+```
+
+Output: `docs/output/qa/context-{topic}.md`
+
+### doc-mapper.ps1
+
+Escanea todos los `.md` del proyecto, extrae dependencias (links, tablas, vistas, RPCs, archivos) y genera un mapa completo. Opcionalmente invoca Gemini CLI para acciones.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/doc-mapper.ps1 -DryRun
+powershell -ExecutionPolicy Bypass -File scripts/doc-mapper.ps1 -SkipCli
+powershell -ExecutionPolicy Bypass -File scripts/doc-mapper.ps1
+powershell -ExecutionPolicy Bypass -File scripts/doc-mapper.ps1 -OnlyCategory modules
+```
+
+Output: `docs/output/qa/doc-map.json`, `doc-map-report.md`, `doc-map-actions.md`
+
+### select-risk-analyzer.ps1
+
+Traza cada `<select>` en HTML a traves de JS hasta operaciones Supabase. Genera reporte de riesgo por pagina para decidir entre wrap vs replace.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/select-risk-analyzer.ps1
+```
+
+Output: `docs/output/ui-scan/select-risk-report.md`
+
+---
+
+## 5. UI / Design System
+
+### ui-component-scanner.ps1
+
+Escanea todas las paginas HTML, extrae componentes, mide compliance contra el Golden Standard. Genera JSON por pagina, matriz de compliance, y prompts CLI para remediacion.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/ui-component-scanner.ps1
+powershell -ExecutionPolicy Bypass -File scripts/ui-component-scanner.ps1 -TargetPage admin-workdays.html
+```
+
+Output: `docs/output/ui-scan/compliance-matrix.md`, `pages/*.json`, `cli-prompts/*.md`
+
+### ds-verify.ps1
+
+Post-component verification. Ejecuta ui-component-scanner, compara summary.json contra baseline.json, detecta regresiones en Tier0.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/ds-verify.ps1
+powershell -ExecutionPolicy Bypass -File scripts/ds-verify.ps1 -SaveBaseline
+powershell -ExecutionPolicy Bypass -File scripts/ds-verify.ps1 -SkipScan
+```
+
+Output: `docs/output/ui-scan/verify-diff.md`
+
+### ds-pre-audit.ps1
+
+Ejecuta 5 comandos Gemini CLI en secuencia: inventario tokens, inventario swiss-style, diff de tokens, inventario componentes, hex hardcodeados.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/ds-pre-audit.ps1
+```
+
+Output: `docs/_generated/frontend/*.md`
+
+### ds-fix-hex.ps1
+
+Fase A: reemplaza `#0a0a0f` por `#000000` en meta theme-color. Fase B: genera mapa hex-to-token desde `hardcoded-colors-report.md`.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/ds-fix-hex.ps1
+```
+
+Output: `docs/_generated/frontend/hex-to-token-map.md`
+
+### ds-parallel-launch.ps1
+
+Orquestador visual del Design System. Abre Windows Terminal tabs para ejecutar scripts en paralelo con dependencias automaticas. Requiere `wt.exe`.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/ds-parallel-launch.ps1
+```
+
+### batch-remediation.ps1
+
+Orquesta Gemini CLI en paralelo para generar planes de remediacion UI desde prompts del scanner.
+
+```powershell
 powershell -ExecutionPolicy Bypass -File scripts/batch-remediation.ps1
-
-# Solo preview sin ejecutar
 powershell -ExecutionPolicy Bypass -File scripts/batch-remediation.ps1 -DryRun
-
-# Más workers
 powershell -ExecutionPolicy Bypass -File scripts/batch-remediation.ps1 -Workers 5
 ```
 
 Output: `docs/output/ui-scan/{page}/remediation-plan.md`
 
----
+### db-batch-remediation.ps1
 
-## 🗃️ DB Batch Remediation
-
-Orquesta Gemini CLI en paralelo para generar migraciones SQL desde prompts de remediación DB. Limpia markdown residual.
+Orquesta Gemini CLI en paralelo para generar migraciones SQL desde prompts de remediacion DB. Limpia markdown residual.
 
 ```powershell
-# Ejecución (3 workers por defecto)
 powershell -ExecutionPolicy Bypass -File scripts/db-batch-remediation.ps1
-
-# Solo preview
 powershell -ExecutionPolicy Bypass -File scripts/db-batch-remediation.ps1 -DryRun
 ```
 
@@ -173,32 +235,121 @@ Output: `supabase/migrations/{timestamp}_{prompt-name}.sql`
 
 ---
 
-## 🗺️ Doc Mapper
+## 6. Repo Optimization (Nuevo)
 
-Escanea todos los `.md` del proyecto, extrae dependencias (links MD, tablas, vistas, RPCs, archivos JS/HTML/CSS) y genera un mapa completo. Al finalizar, invoca Gemini CLI para verificar y generar acciones de actualización.
+Scripts de auditoria integral y limpieza del repo. Diseñados para ejecucion en paralelo via Windows Terminal.
+
+### repo-audit-collect.ps1
+
+Audita infraestructura de agentes (REGISTRY.yml, AGENT.md, skills). Detecta orfanos, paths rotos, solapamiento de keywords.
 
 ```powershell
-# Solo listar documentos y dependencias (sin CLI)
-powershell -ExecutionPolicy Bypass -File scripts/doc-mapper.ps1 -SkipCli
-
-# Preview sin ejecutar nada
-powershell -ExecutionPolicy Bypass -File scripts/doc-mapper.ps1 -DryRun
-
-# Ejecución completa (mapa + CLI)
-powershell -ExecutionPolicy Bypass -File scripts/doc-mapper.ps1
-
-# Solo una categoría
-powershell -ExecutionPolicy Bypass -File scripts/doc-mapper.ps1 -OnlyCategory modules
-
-# Más workers para CLI
-powershell -ExecutionPolicy Bypass -File scripts/doc-mapper.ps1 -Workers 3
+powershell -ExecutionPolicy Bypass -File scripts/repo-audit-collect.ps1
 ```
 
-Output:
+Output: `docs/output/repo-audit/agent-crossref.json`
 
-- `docs/output/qa/doc-map.json` — Mapa de dependencias completo
-- `docs/output/qa/doc-map-report.md` — Reporte legible
-- `docs/output/qa/doc-map-actions.md` — Acciones recomendadas por Gemini CLI
+### docs-audit-collect.ps1
+
+Escanea `docs/` completo: directorios vacios, duplicados output vs \_generated, naming violations, stubs, dead references, heatmap de tamanio.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/docs-audit-collect.ps1
+```
+
+Output: `docs/output/repo-audit/docs-waste.json`
+
+### scripts-audit-collect.ps1
+
+Audita `scripts/` completo: salud por archivo (tamanio, params, outputs), cross-ref con package.json, scripts muertos, migraciones Supabase.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/scripts-audit-collect.ps1
+```
+
+Output: `docs/output/repo-audit/scripts-health.json`
+
+### repo-optimize.ps1
+
+Lee los 3 JSON de collectors y ejecuta acciones seguras: borrar dirs vacios, duplicados confirmados, cuarentenar orfanos. Log de items que requieren review manual.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/repo-optimize.ps1
+powershell -ExecutionPolicy Bypass -File scripts/repo-optimize.ps1 -DryRun
+```
+
+Output: `docs/output/repo-audit/optimization-report.md`
+
+### repo-parallel-optimize.ps1
+
+Orquestador. Lanza los 3 collectors en paralelo (Windows Terminal), espera `.done` markers, luego ejecuta optimizer y verificacion.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/repo-parallel-optimize.ps1 -DryRun
+powershell -ExecutionPolicy Bypass -File scripts/repo-parallel-optimize.ps1
+```
+
+---
+
+## 7. QA y Verificacion
+
+### workdays-verifier.ps1
+
+Escanea el modulo Workdays en 8 fases progresivas. Cada ciclo analiza algo diferente y acumula hallazgos con score ponderado. Estado persistido en JSON.
+
+**Fases:** Baseline - Deep JS - Deep HTML - Deep CSS - Cross-Module - Supabase - UX Patterns - Summary + Delta
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/workdays-verifier.ps1
+powershell -ExecutionPolicy Bypass -File scripts/workdays-verifier.ps1 -Watch
+powershell -ExecutionPolicy Bypass -File scripts/workdays-verifier.ps1 -Watch -FullScan
+powershell -ExecutionPolicy Bypass -File scripts/workdays-verifier.ps1 -Reset
+```
+
+Output: `docs/output/workdays-progressive.md`
+
+### testing-tracker.js
+
+CLI para visualizar estado del pipeline de testing: observaciones, tickets y planes.
+
+```powershell
+node scripts/testing-tracker.js
+node scripts/testing-tracker.js --tickets
+node scripts/testing-tracker.js --open
+node scripts/testing-tracker.js --obs
+```
+
+---
+
+## 8. Datos y Utilidades
+
+### extract-recipes.js
+
+Extrae recetas de un XLSX y genera JSON + SQL insert para `master_recipes`.
+
+```powershell
+node scripts/extract-recipes.js "./docs/important-data-reference/archivo.xlsx"
+```
+
+Output: `supabase/migrations/generated/excel-items.json`, `insert-recipes.sql`
+
+### persona_generator.py
+
+Genera user personas data-driven para el dominio nightclub ERP/CRM. 4 perfiles: admin, operativo, logistico, encargado.
+
+```powershell
+python scripts/persona_generator.py
+python scripts/persona_generator.py admin
+python scripts/persona_generator.py operativo json
+```
+
+### \_path-check.ps1
+
+Verifica la existencia de paths criticos del proyecto (scripts, workflows, outputs, CSS). Diagnostico rapido.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/_path-check.ps1
+```
 
 ---
 
@@ -206,26 +357,33 @@ Output:
 
 ```text
 ABRO VS CODE
-  └─ security-startup.ps1          (una vez)
+  +-- security-startup.ps1          (una vez)
 
 DURANTE LA SESION (4 terminales)
-  ├─ security-watchdog.ps1 -LogToFile   (siempre corriendo)
-  ├─ ops-watchdog.ps1                    (siempre corriendo)
-  ├─ workdays-verifier.ps1 -Watch        (durante sprints workdays)
-  └─ flow-tracer.ps1                     (cuando quiero auditar flujo)
+  |-- security-watchdog.ps1 -LogToFile   (siempre corriendo)
+  |-- ops-watchdog.ps1                    (siempre corriendo)
+  |-- workdays-verifier.ps1 -Watch        (durante sprints workdays)
+  +-- flow-tracer.ps1                     (cuando quiero auditar flujo)
+
+REPO MAINTENANCE (bajo demanda)
+  +-- repo-parallel-optimize.ps1 -DryRun  (preview + live)
 
 CIERRO VS CODE
-  └─ security-shutdown.ps1          (una vez)
+  +-- security-shutdown.ps1          (una vez)
 ```
 
 ## Archivos generados
 
-| Script            | Output             | Ubicación                                       |
-| :---------------- | :----------------- | :---------------------------------------------- |
-| security-watchdog | Log diario         | `scripts/logs/watchdog-{fecha}.log`             |
-| flow-tracer       | Reporte de flujo   | `docs/output/qa/{fecha}_audit_flow-trace.md`    |
-| workdays-verifier | Reporte progresivo | `docs/output/qa/workdays-progressive.md`        |
-| backup-configs    | ZIP de configs     | `scripts/backups/config-backup-{timestamp}.zip` |
-| doc-mapper        | Mapa + acciones    | `docs/output/qa/doc-map-*.{json,md}`            |
+| Script               | Output              | Ubicacion                                       |
+| :------------------- | :------------------ | :---------------------------------------------- |
+| security-watchdog    | Log diario          | `scripts/logs/watchdog-{fecha}.log`             |
+| flow-tracer          | Reporte de flujo    | `docs/output/qa/{fecha}_audit_flow-trace.md`    |
+| workdays-verifier    | Reporte progresivo  | `docs/output/qa/workdays-progressive.md`        |
+| backup-configs       | ZIP de configs      | `scripts/backups/config-backup-{timestamp}.zip` |
+| doc-mapper           | Mapa + acciones     | `docs/output/qa/doc-map-*.{json,md}`            |
+| ui-component-scanner | Compliance matrix   | `docs/output/ui-scan/compliance-matrix.md`      |
+| ds-verify            | Diff report         | `docs/output/ui-scan/verify-diff.md`            |
+| repo collectors      | JSON reports        | `docs/output/repo-audit/*.json`                 |
+| repo-optimize        | Optimization report | `docs/output/repo-audit/optimization-report.md` |
 
-> Tanto `scripts/logs/` como `scripts/backups/` están en `.gitignore`.
+> Tanto `scripts/logs/` como `scripts/backups/` estan en `.gitignore`.

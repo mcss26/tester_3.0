@@ -123,7 +123,7 @@
           lastPreloadAt = Date.now();
           if (preloadStatus) preloadStatus.textContent = `${codesMap.size} códigos`;
           if (connStatus) connStatus.className = 'conn on';
-          console.log(`✅ Preloaded ${allCodes.length} QR codes into memory`);
+          // Preloaded QR codes into memory
           return; // success — exit retry loop
 
         } catch (err) {
@@ -150,7 +150,7 @@
       try {
         if ('wakeLock' in navigator) {
           wakeLock = await navigator.wakeLock.request('screen');
-          wakeLock.addEventListener('release', () => console.log('🔓 Wake lock released'));
+          wakeLock.addEventListener('release', () => { /* wake lock released */ });
         }
       } catch (err) { console.warn('Wake lock failed:', err); }
     }

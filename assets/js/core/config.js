@@ -7,5 +7,6 @@ window.APP_CONFIG = {
     SERVICE_ID: "service_j7h80jk",
     TEMPLATE_APROBADO: "template_l425bfo",
     TEMPLATE_CUMPLE: "template_rmkp7zo"
-  }
+  },
+  MCO_BATCH_ID: "141e44d9-42bc-4c2b-a3bb-4d9721e03802"
 };

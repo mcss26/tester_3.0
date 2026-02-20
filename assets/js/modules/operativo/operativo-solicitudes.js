@@ -159,7 +159,7 @@
 
     // 4. Insert new items found
     if (toInsert.length > 0) {
-      console.log(`[OperativoSolicitudes] Adding ${toInsert.length} new low-stock items.`);
+      // OperativoSolicitudes: Adding new low-stock items
       await window.sb.from("replenishment_items").insert(toInsert);
     }
   }

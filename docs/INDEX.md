@@ -39,14 +39,12 @@ Documentos core del proyecto — fuente de verdad para estructura, esquema y est
 
 ---
 
-## 🔍 Auditorías (`/audits`)
+## 🔍 Auditorías (`/_generated`)
 
-| Documento                                                                   | Contenido                         |
-| :-------------------------------------------------------------------------- | :-------------------------------- |
-| [audit-solicitudes-reposicion.md](./audits/audit-solicitudes-reposicion.md) | Auditoría flujo Solicitudes/Repo  |
-| [flow-trace.md](./audits/flow-trace.md)                                     | Trace de flujos cross-module      |
-| [workdays-deep-verification.md](./audits/workdays-deep-verification.md)     | Verificación profunda de Workdays |
-| [supabase-discrepancies.md](./audits/supabase-discrepancies.md)             | Discrepancias Schema vs DB real   |
+| Documento                                                                                                        | Contenido                         |
+| :--------------------------------------------------------------------------------------------------------------- | :-------------------------------- |
+| [2026-02-16_audit_flow-trace.md](./_generated/qa/2026-02-16_audit_flow-trace.md)                                 | Trace de flujos cross-module      |
+| [2026-02-16_audit_workdays-deep-verification.md](./_generated/qa/2026-02-16_audit_workdays-deep-verification.md) | Verificación profunda de Workdays |
 
 ---
 
@@ -109,9 +107,11 @@ Documentación técnica y operativa por módulo. Ver [README.md](./modules/READM
 
 ## 🎯 Codex / Planes Estratégicos
 
-| Documento                                                    | Contenido                  |
-| :----------------------------------------------------------- | :------------------------- |
-| [PLAN_PRODUCTION_READY.md](./codex/PLAN_PRODUCTION_READY.md) | Plan maestro de producción |
+| Documento                                                            | Contenido                               |
+| :------------------------------------------------------------------- | :-------------------------------------- |
+| [ROADMAP.md](../ROADMAP.md)                                          | Plan maestro UI/CSS (fuente de verdad)  |
+| [PLAN_PRODUCTION_READY.md](./codex/PLAN_PRODUCTION_READY.md)         | Security, CI/CD, Deploy, Observabilidad |
+| [roadmap_production.md](./migration/artifacts/roadmap_production.md) | Workdays Module (8 sprints)             |
 
 ---
 
@@ -138,6 +138,6 @@ Ver [README](./_generated/README.md) para convención de naming.
 
 | Archivo                                         | Propósito                                             |
 | :---------------------------------------------- | :---------------------------------------------------- |
-| [`AGENT.md`](../AGENT.md)                       | Reglas globales (semáforo de riesgo, gobernanza, DoD) |
+| [`AGENTS.md`](../AGENTS.md)                     | Reglas globales (semáforo de riesgo, gobernanza, DoD) |
 | [`.agent/README.md`](../.agent/README.md)       | Estructura del sistema agents-of-agents               |
 | [`.agent/REGISTRY.yml`](../.agent/REGISTRY.yml) | Routing canónico por intents + tiers de riesgo        |

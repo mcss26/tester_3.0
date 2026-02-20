@@ -1253,9 +1253,7 @@
         const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
         const aoa = XLSX.utils.sheet_to_json(firstSheet, { header: 1, defval: '' });
 
-        console.log('[parseExcel] Total rows in sheet:', aoa.length);
-        console.log('[parseExcel] First 10 rows:');
-        aoa.slice(0, 10).forEach((row, i) => console.log(`  Row ${i}:`, row.slice(0, 4)));
+        // parseExcel debug logging removed
 
         let headerIdx = 0;
         let found = false;
@@ -1276,7 +1274,7 @@
             if ((hasCodigo && hasArticulo) || (hasArticulo && (hasCantidad || hasDetalle))) {
                 headerIdx = i;
                 found = true;
-                console.log('[parseExcel] Header found at row:', i, '- Content:', aoa[i]);
+                // Header found at row i
                 break;
             }
         }
@@ -1291,11 +1289,7 @@
             defval: '' 
         });
 
-        console.log('[parseExcel] Parsed JSON rows:', json.length);
-        if (json.length > 0) {
-            console.log('[parseExcel] First row keys:', Object.keys(json[0]));
-            console.log('[parseExcel] First row values:', Object.values(json[0]).slice(0, 5));
-        }
+        // parseExcel parsing complete
 
         // Filter out metadata rows (those containing dates or "Noche:", "Fecha:", etc.)
         json = json.filter(row => {
@@ -1308,7 +1302,7 @@
             return !hasMetadata;
         });
 
-        console.log('[parseExcel] After filtering metadata:', json.length, 'rows');
+        // Metadata filtering complete
 
         processImportData(json, found);
     }
@@ -1391,12 +1385,7 @@
                 .select('id, name, external_id, ingredients');
             if (error) throw error;
             state.recipes = recipes || [];
-            console.log('[Revenue Import] Loaded recipes:', state.recipes.length);
-            // Show first 10 recipes for debugging
-            console.log('[Revenue Import] Primeras 10 recetas del sistema:');
-            state.recipes.slice(0, 10).forEach(r => {
-                console.log(`  - "${r.name}" (external_id: ${r.external_id || 'null'})`);
-            });
+            // Revenue import: recipes loaded
         }
         
         // 2. Load code mappings
@@ -1405,7 +1394,7 @@
             .select('pos_code, recipe_id, recipe:master_recipes(id, name)');
         if (mapErr) console.error('Error loading code mappings:', mapErr);
         state.codeMappings = mappings || [];
-        console.log('[Revenue Import] Loaded code mappings:', state.codeMappings.length);
+        // Code mappings loaded
 
         if (!json || json.length === 0) {
             ui.importPreview.innerHTML = '<p class="state-desc text-error text-center">No se encontraron filas.</p>';
@@ -1417,10 +1406,7 @@
         let matched = 0;
         let totalSales = 0;
 
-        // Debug: Log first row keys
-        if (json.length > 0) {
-            console.log('[Revenue Import] Columnas detectadas:', Object.keys(json[0]));
-        }
+        // Revenue import: column detection complete
 
         json.forEach((row, idx) => {
             const keys = Object.keys(row);
@@ -1453,7 +1439,7 @@
                     recipe = state.recipes.find(r => String(r.id) === String(mapping.recipe_id));
                     if (recipe) {
                         matchType = 'manual';
-                        if (idx < 3) console.log(`[Match] "${name}" -> Manual mapping to "${recipe.name}"`);
+                        // Manual mapping match
                     }
                 }
             }
@@ -1465,7 +1451,7 @@
                 );
                 if (recipe) {
                     matchType = 'ext_id';
-                    if (idx < 3) console.log(`[Match] "${name}" -> External ID match to "${recipe.name}"`);
+                    // External ID match
                 }
             }
 
@@ -1475,7 +1461,7 @@
                 recipe = state.recipes.find(r => normalize(r.name) === normalizedName);
                 if (recipe) {
                     matchType = 'nombre';
-                    if (idx < 3) console.log(`[Match] "${name}" -> Name match to "${recipe.name}"`);
+                    // Name match
                 }
             }
 
@@ -1489,13 +1475,13 @@
                 });
                 if (recipe) {
                     matchType = 'fuzzy';
-                    if (idx < 5) console.log(`[Match] "${name}" -> Fuzzy match to "${recipe.name}"`);
+                    // Fuzzy match
                 }
             }
 
-            // Debug log for unmatched items
+            // Unmatched item tracking
             if (!recipe && idx < 10) {
-                console.log(`[No Match] Code: "${code}", Name: "${name}"`);
+                // No match for this item
             }
 
             // Store revenue detail (for new table)
@@ -1519,7 +1505,7 @@
             }
         });
 
-        console.log(`[Revenue Import] Matched: ${matched}/${state.importData.length}`);
+        // Revenue import matching complete
         renderRevenuePreview(matched, totalSales, foundHeader);
     }
 

@@ -1337,10 +1337,10 @@ These components are specific to `admin-herramientas` and extend the global Gold
 
 ## Resources
 
-- **Reference Implementation**: [admin-central-stock.html](../pages/admin/admin-central-stock.html)
-- **CSS Source**: [admin-central-stock.css](../assets/css/admin-central-stock.css)
-- **Design Tokens**: [tokens.css](../assets/css/tokens.css)
-- **Global Components**: [components.css](../assets/css/components.css) — includes Admin Layout Foundation
+- **Reference Implementation**: [admin-central-stock.html](../../pages/admin/admin-central-stock.html)
+- **CSS Source**: [admin-central-stock.css](../../assets/css/admin-central-stock.css)
+- **Design Tokens**: [tokens.css](../../assets/css/tokens.css)
+- **Global Components**: [components.css](../../assets/css/components.css) — includes Admin Layout Foundation
 
 ---
 

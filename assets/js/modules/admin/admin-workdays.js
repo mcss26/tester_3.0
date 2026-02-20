@@ -1681,7 +1681,7 @@
             });
             if (closeErr) throw closeErr;
 
-            console.log('[cierre] Result:', closeResult);
+            // console.log('[cierre] Result:', closeResult);
 
             window.Toast.success('Noche cerrada exitosamente.');
             setTimeout(() => window.location.reload(), 1500);
@@ -1717,7 +1717,7 @@
     function startPolling() {
         if (pollingTimer) return; // Already running
         if (state.activeWorkDay?.status !== STATUS.ACTIVE) return;
-        console.log('[night-chief] Polling started (60s)');
+        // console.log('[night-chief] Polling started (60s)');
         pollingTimer = setInterval(pollKPIs, POLL_INTERVAL_MS);
         pollKPIs(); // Immediate first fetch
 
@@ -1730,7 +1730,7 @@
         if (pollingTimer) {
             clearInterval(pollingTimer);
             pollingTimer = null;
-            console.log('[night-chief] Polling stopped');
+            // console.log('[night-chief] Polling stopped');
         }
 
         // Sprint 5: Hide LIVE indicator

@@ -37,7 +37,8 @@ assets/
 ## Skills Disponibles
 
 - `css-architect` — Arquitectura CSS y tokens
-- `web-designer` — Diseño visual y layout
+- `component-builder` — Componentes atómicos en swiss-style.css
+- `layout-auditor` — Auditoría de layouts y patches CSS
 - `logic-engineer` — Lógica JS, state management, integración
 
 ## COMMANDS

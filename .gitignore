@@ -40,3 +40,6 @@ assets/preview.html
 assets/preview.md
 assets/preview-demo.html
 assets/Midnight UI Kit*.jpg
+
+# Gemini CLI temp files
+gcli-request-*.json

@@ -1,0 +1,460 @@
+﻿{
+    "summary":  {
+                    "npm_scripts_mapped":  10,
+                    "scripts_with_output":  19,
+                    "broken_references":  0,
+                    "total_issues":  7,
+                    "total_scripts":  31,
+                    "dead_scripts":  7,
+                    "readme_issues":  0
+                },
+    "npm_script_map":  [
+                           {
+                               "script_ref":  "scripts/audit.mjs",
+                               "npm_name":  "audit:modules",
+                               "exists":  true,
+                               "command":  "node scripts/audit.mjs"
+                           },
+                           {
+                               "script_ref":  "scripts/audit-css.js",
+                               "npm_name":  "audit:css",
+                               "exists":  true,
+                               "command":  "node scripts/audit-css.js"
+                           },
+                           {
+                               "script_ref":  "scripts/audit-modules.js",
+                               "npm_name":  "audit:pages",
+                               "exists":  true,
+                               "command":  "node scripts/audit-modules.js"
+                           },
+                           {
+                               "script_ref":  "scripts/audit-links.js",
+                               "npm_name":  "audit:links",
+                               "exists":  true,
+                               "command":  "node scripts/audit-links.js"
+                           },
+                           {
+                               "script_ref":  null,
+                               "npm_name":  "audit",
+                               "exists":  false,
+                               "command":  "npm run audit:modules \u0026\u0026 npm run audit:css \u0026\u0026 npm run audit:pages \u0026\u0026 npm run audit:links"
+                           },
+                           {
+                               "script_ref":  "scripts/extract-recipes.js",
+                               "npm_name":  "extract:recipes",
+                               "exists":  true,
+                               "command":  "node scripts/extract-recipes.js"
+                           },
+                           {
+                               "script_ref":  "tests/run-audits.mjs",
+                               "npm_name":  "test",
+                               "exists":  true,
+                               "command":  "node tests/run-audits.mjs"
+                           },
+                           {
+                               "script_ref":  "tests/run-audits.mjs",
+                               "npm_name":  "test:stock",
+                               "exists":  true,
+                               "command":  "node tests/run-audits.mjs --suite stock"
+                           },
+                           {
+                               "script_ref":  "tests/run-audits.mjs",
+                               "npm_name":  "test:cash",
+                               "exists":  true,
+                               "command":  "node tests/run-audits.mjs --suite cash"
+                           },
+                           {
+                               "script_ref":  "tests/run-audits.mjs",
+                               "npm_name":  "test:payments",
+                               "exists":  true,
+                               "command":  "node tests/run-audits.mjs --suite payments"
+                           }
+                       ],
+    "migration_status":  {
+                             "last":  "20260217101700_create_vw_workday_stock_variance.sql",
+                             "total_size_kb":  98.3,
+                             "first":  "20260204000000_create_revenue_tables.sql",
+                             "count":  28
+                         },
+    "broken_references":  [
+
+                          ],
+    "output_map":  [
+                       {
+                           "outputs":  [
+                                           "docs/output/ui-scan/plans/.",
+                                           "docs/output/ui-scan"
+                                       ],
+                           "script":  "batch-remediation.ps1"
+                       },
+                       {
+                           "outputs":  [
+                                           "docs/output/qa"
+                                       ],
+                           "script":  "context-loader.ps1"
+                       },
+                       {
+                           "outputs":  [
+                                           "docs/output/db-remediation/prompts/",
+                                           "docs/output/db-remediation/prompts",
+                                           "docs/output/db-remediation/batch-log.txt"
+                                       ],
+                           "script":  "db-batch-remediation.ps1"
+                       },
+                       {
+                           "outputs":  [
+                                           "docs/output/qa/doc-map.json",
+                                           "docs/output/qa/doc-map-report.md",
+                                           "docs/output/qa"
+                                       ],
+                           "script":  "doc-mapper.ps1"
+                       },
+                       {
+                           "outputs":  [
+                                           "docs/output/repo-audit/docs-waste.json",
+                                           "docs/output/repo-audit"
+                                       ],
+                           "script":  "docs-audit-collect.ps1"
+                       },
+                       {
+                           "outputs":  [
+                                           "docs/_generated/frontend"
+                                       ],
+                           "script":  "ds-fix-hex.ps1"
+                       },
+                       {
+                           "outputs":  [
+                                           "docs/_generated/frontend/design-system-visual.html",
+                                           "docs/_generated/frontend/design-system-visual.html.",
+                                           "docs/_generated/frontend/component-inventory.md"
+                                       ],
+                           "script":  "ds-parallel-launch.ps1"
+                       },
+                       {
+                           "outputs":  [
+                                           "docs/_generated/frontend"
+                                       ],
+                           "script":  "ds-pre-audit.ps1"
+                       },
+                       {
+                           "outputs":  [
+                                           "docs/output/ui-scan"
+                                       ],
+                           "script":  "ds-verify.ps1"
+                       },
+                       {
+                           "outputs":  [
+                                           "docs/output/qa/",
+                                           "docs/output/qa"
+                                       ],
+                           "script":  "flow-tracer.ps1"
+                       },
+                       {
+                           "outputs":  [
+                                           "docs/output/."
+                                       ],
+                           "script":  "ops-watchdog.ps1"
+                       },
+                       {
+                           "outputs":  [
+                                           "docs/output/repo-audit/agent-crossref.json",
+                                           "docs/output/repo-audit"
+                                       ],
+                           "script":  "repo-audit-collect.ps1"
+                       },
+                       {
+                           "outputs":  [
+                                           "docs/output/repo-audit/optimization-report.md",
+                                           "docs/output/repo-audit",
+                                           "docs/_generated/ui-scan",
+                                           "docs/output/repo-audit/agent-crossref.json",
+                                           "docs/output/repo-audit/docs-waste.json",
+                                           "docs/output/repo-audit/scripts-health.json"
+                                       ],
+                           "script":  "repo-optimize.ps1"
+                       },
+                       {
+                           "outputs":  [
+                                           "docs/output/repo-audit",
+                                           "docs/output/repo-audit/agent-crossref.json",
+                                           "docs/output/repo-audit/docs-waste.json",
+                                           "docs/output/repo-audit/scripts-health.json",
+                                           "docs/output/repo-audit/optimization-report.md"
+                                       ],
+                           "script":  "repo-parallel-optimize.ps1"
+                       },
+                       {
+                           "outputs":  [
+                                           "docs/output/repo-audit/scripts-health.json",
+                                           "docs/output/repo-audit"
+                                       ],
+                           "script":  "scripts-audit-collect.ps1"
+                       },
+                       {
+                           "outputs":  [
+                                           "docs/output/ui-scan/select-risk-report.md",
+                                           "docs/output/ui-scan"
+                                       ],
+                           "script":  "select-risk-analyzer.ps1"
+                       },
+                       {
+                           "outputs":  [
+                                           "docs/output/ui-scan/pages/",
+                                           "docs/output/ui-scan/compliance-matrix.md",
+                                           "docs/output/ui-scan/cli-prompts/",
+                                           "docs/output/ui-scan"
+                                       ],
+                           "script":  "ui-component-scanner.ps1"
+                       },
+                       {
+                           "outputs":  [
+                                           "docs/output/qa",
+                                           "docs/output/qa/workdays-progressive.md"
+                                       ],
+                           "script":  "workdays-verifier.ps1"
+                       },
+                       {
+                           "outputs":  [
+                                           "docs/output/ui-scan/baseline.json",
+                                           "docs/output/ui-scan/summary.json",
+                                           "docs/output/ui-scan/compliance-matrix.md",
+                                           "docs/output/ui-scan/select-risk-report.md",
+                                           "docs/_generated/orchestrator/multi-chat-architecture.md",
+                                           "docs/_generated/orchestrator/CHANGELOG.md",
+                                           "docs/_generated/orchestrator/prompts/frontend-custom-dropdown.md",
+                                           "docs/_generated/orchestrator/workflows",
+                                           "docs/output/ui-scan/pages"
+                                       ],
+                           "script":  "_path-check.ps1"
+                       }
+                   ],
+    "readme_issues":  [
+
+                      ],
+    "timestamp":  "2026-02-19 09:09",
+    "all_scripts":  [
+                        {
+                            "size_kb":  3.3,
+                            "name":  "audit-css.js",
+                            "ext":  ".js",
+                            "modified":  "2026-02-15 23:49"
+                        },
+                        {
+                            "size_kb":  2.8,
+                            "name":  "audit-links.js",
+                            "ext":  ".js",
+                            "modified":  "2026-02-15 23:47"
+                        },
+                        {
+                            "size_kb":  4.7,
+                            "name":  "audit-modules.js",
+                            "ext":  ".js",
+                            "modified":  "2026-02-15 23:44"
+                        },
+                        {
+                            "size_kb":  3.5,
+                            "name":  "audit.mjs",
+                            "ext":  ".mjs",
+                            "modified":  "2026-02-07 20:06"
+                        },
+                        {
+                            "size_kb":  2.4,
+                            "name":  "auto-prompter.ps1",
+                            "ext":  ".ps1",
+                            "modified":  "2026-02-16 20:51"
+                        },
+                        {
+                            "size_kb":  7.3,
+                            "name":  "backup-configs.ps1",
+                            "ext":  ".ps1",
+                            "modified":  "2026-02-16 06:10"
+                        },
+                        {
+                            "size_kb":  10.7,
+                            "name":  "batch-remediation.ps1",
+                            "ext":  ".ps1",
+                            "modified":  "2026-02-16 15:43"
+                        },
+                        {
+                            "size_kb":  16.4,
+                            "name":  "context-loader.ps1",
+                            "ext":  ".ps1",
+                            "modified":  "2026-02-16 09:39"
+                        },
+                        {
+                            "size_kb":  4.2,
+                            "name":  "db-batch-remediation.ps1",
+                            "ext":  ".ps1",
+                            "modified":  "2026-02-16 18:51"
+                        },
+                        {
+                            "size_kb":  24.1,
+                            "name":  "doc-mapper.ps1",
+                            "ext":  ".ps1",
+                            "modified":  "2026-02-17 07:26"
+                        },
+                        {
+                            "size_kb":  9.4,
+                            "name":  "docs-audit-collect.ps1",
+                            "ext":  ".ps1",
+                            "modified":  "2026-02-19 08:59"
+                        },
+                        {
+                            "size_kb":  4.9,
+                            "name":  "ds-fix-hex.ps1",
+                            "ext":  ".ps1",
+                            "modified":  "2026-02-18 23:37"
+                        },
+                        {
+                            "size_kb":  8.1,
+                            "name":  "ds-parallel-launch.ps1",
+                            "ext":  ".ps1",
+                            "modified":  "2026-02-19 02:10"
+                        },
+                        {
+                            "size_kb":  1.9,
+                            "name":  "ds-pre-audit.ps1",
+                            "ext":  ".ps1",
+                            "modified":  "2026-02-18 23:09"
+                        },
+                        {
+                            "size_kb":  7.2,
+                            "name":  "ds-verify.ps1",
+                            "ext":  ".ps1",
+                            "modified":  "2026-02-19 05:31"
+                        },
+                        {
+                            "size_kb":  2.8,
+                            "name":  "extract-recipes.js",
+                            "ext":  ".js",
+                            "modified":  "2026-02-15 23:45"
+                        },
+                        {
+                            "size_kb":  26.8,
+                            "name":  "flow-tracer.ps1",
+                            "ext":  ".ps1",
+                            "modified":  "2026-02-16 12:13"
+                        },
+                        {
+                            "size_kb":  13,
+                            "name":  "ops-watchdog.ps1",
+                            "ext":  ".ps1",
+                            "modified":  "2026-02-16 06:37"
+                        },
+                        {
+                            "size_kb":  31.4,
+                            "name":  "persona_generator.py",
+                            "ext":  ".py",
+                            "modified":  "2026-02-16 03:30"
+                        },
+                        {
+                            "size_kb":  11,
+                            "name":  "repo-audit-collect.ps1",
+                            "ext":  ".ps1",
+                            "modified":  "2026-02-19 08:58"
+                        },
+                        {
+                            "size_kb":  10.8,
+                            "name":  "repo-optimize.ps1",
+                            "ext":  ".ps1",
+                            "modified":  "2026-02-19 09:08"
+                        },
+                        {
+                            "size_kb":  7.8,
+                            "name":  "repo-parallel-optimize.ps1",
+                            "ext":  ".ps1",
+                            "modified":  "2026-02-19 09:01"
+                        },
+                        {
+                            "size_kb":  10.8,
+                            "name":  "scripts-audit-collect.ps1",
+                            "ext":  ".ps1",
+                            "modified":  "2026-02-19 09:00"
+                        },
+                        {
+                            "size_kb":  11,
+                            "name":  "security-shutdown.ps1",
+                            "ext":  ".ps1",
+                            "modified":  "2026-02-16 06:13"
+                        },
+                        {
+                            "size_kb":  4.9,
+                            "name":  "security-startup.ps1",
+                            "ext":  ".ps1",
+                            "modified":  "2026-02-16 06:04"
+                        },
+                        {
+                            "size_kb":  30.3,
+                            "name":  "security-watchdog.ps1",
+                            "ext":  ".ps1",
+                            "modified":  "2026-02-18 06:27"
+                        },
+                        {
+                            "size_kb":  13.6,
+                            "name":  "select-risk-analyzer.ps1",
+                            "ext":  ".ps1",
+                            "modified":  "2026-02-19 06:00"
+                        },
+                        {
+                            "size_kb":  7.6,
+                            "name":  "testing-tracker.js",
+                            "ext":  ".js",
+                            "modified":  "2026-02-16 05:00"
+                        },
+                        {
+                            "size_kb":  28,
+                            "name":  "ui-component-scanner.ps1",
+                            "ext":  ".ps1",
+                            "modified":  "2026-02-16 15:26"
+                        },
+                        {
+                            "size_kb":  36.5,
+                            "name":  "workdays-verifier.ps1",
+                            "ext":  ".ps1",
+                            "modified":  "2026-02-16 13:12"
+                        },
+                        {
+                            "size_kb":  1.4,
+                            "name":  "_path-check.ps1",
+                            "ext":  ".ps1",
+                            "modified":  "2026-02-19 06:07"
+                        }
+                    ],
+    "dead_scripts":  [
+                         {
+                             "size_kb":  2.4,
+                             "name":  "auto-prompter.ps1",
+                             "modified":  "2026-02-16 20:51"
+                         },
+                         {
+                             "size_kb":  4.2,
+                             "name":  "db-batch-remediation.ps1",
+                             "modified":  "2026-02-16 18:51"
+                         },
+                         {
+                             "size_kb":  24.1,
+                             "name":  "doc-mapper.ps1",
+                             "modified":  "2026-02-17 07:26"
+                         },
+                         {
+                             "size_kb":  4.9,
+                             "name":  "ds-fix-hex.ps1",
+                             "modified":  "2026-02-18 23:37"
+                         },
+                         {
+                             "size_kb":  1.9,
+                             "name":  "ds-pre-audit.ps1",
+                             "modified":  "2026-02-18 23:09"
+                         },
+                         {
+                             "size_kb":  7.8,
+                             "name":  "repo-parallel-optimize.ps1",
+                             "modified":  "2026-02-19 09:01"
+                         },
+                         {
+                             "size_kb":  1.4,
+                             "name":  "_path-check.ps1",
+                             "modified":  "2026-02-19 06:07"
+                         }
+                     ]
+}

@@ -62,7 +62,7 @@
 
       if (match) {
         e.preventDefault();
-        console.log(`Command: ${match.desc}`);
+        // Command matched: ${match.desc}
         match.action();
       }
     },

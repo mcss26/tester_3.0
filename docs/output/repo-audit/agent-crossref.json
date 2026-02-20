@@ -1,0 +1,49 @@
+﻿{
+    "summary":  {
+                    "total_agents":  7,
+                    "total_routes":  10,
+                    "total_skills":  25,
+                    "issues_found":  5,
+                    "total_workflows":  8
+                },
+    "stale_readmes":  [
+
+                      ],
+    "orphan_workflows":  [
+                             "ds-parallel-phases.md",
+                             "track-module.md",
+                             "verify-workdays.md"
+                         ],
+    "unrouted_agents":  [
+
+                        ],
+    "timestamp":  "2026-02-19 09:09",
+    "broken_rule_paths":  [
+
+                          ],
+    "orphan_skills":  [
+
+                      ],
+    "missing_skills":  [
+
+                       ],
+    "keyword_overlaps":  [
+                             {
+                                 "routes":  [
+                                                "finance_weekly",
+                                                "master_data"
+                                            ],
+                                 "keyword":  "semanal"
+                             },
+                             {
+                                 "routes":  [
+                                                "solicitudes_replenishment",
+                                                "master_data"
+                                            ],
+                                 "keyword":  "proveedores"
+                             }
+                         ],
+    "broken_commands":  [
+
+                        ]
+}

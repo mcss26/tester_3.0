@@ -295,6 +295,6 @@ tester_3.0/
 > [!IMPORTANT]
 > **Este documento debe actualizarse inmediatamente después de cada cambio significativo**.
 >
-> Ver reglas completas en: [AGENT.md](../AGENT.md)
+> Ver reglas completas en: [AGENTS.md](../AGENTS.md)
 
 ---

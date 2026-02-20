@@ -42,9 +42,8 @@ pages/
 ## Skills Disponibles
 
 - `css-architect` — Arquitectura CSS y tokens
-- `ui-ux-pro-max` — Patrones de interfaz avanzados
-- `web-designer` — Diseño visual y layout
-- `ui-migrator` — Migración entre sistemas de diseño
+- `component-builder` — Componentes atómicos en swiss-style.css
+- `layout-auditor` — Auditoría de layouts y patches CSS
 
 ## COMMANDS
 

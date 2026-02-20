@@ -62,7 +62,7 @@
 
   /* Tipografías base */
   --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
-  --font-mono: "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
+  --font-mono: 'JetBrains Mono', monospace;
 
   /* Font Weights */
   --fw-normal:   400;
@@ -107,14 +107,14 @@
 
   /* Superficies (Negro sólido) */
   --bg-body:   #000000;                   /* Negro puro */
-  --bg-surface: #000000;                  /* Negro puro */
+  --bg-surface: #0a0a0a;                  /* var(--neutral-100) — user decision: swiss wins */
   --bg-surface-hover: var(--neutral-150); /* #111111 */
   --bg-elevated: var(--neutral-200);      /* #18181b */
   --backdrop:  var(--black-alpha-60);
 
   /* Tipografía */
   --text-primary:   var(--neutral-1000);  /* #ffffff */
-  --text-secondary: var(--neutral-800);   /* #d4d4d8 */
+  --text-secondary: #a1a1aa;              /* user decision: swiss wins (was --neutral-800 #d4d4d8) */
   --text-tertiary:  var(--neutral-700);   /* #a1a1aa */
   --text-placeholder: var(--neutral-600); /* #71717a */
 
@@ -122,6 +122,7 @@
   --border-subtle: var(--white-alpha-10);
   --border-active: var(--white-alpha-20);
   --border-highlight: var(--white-alpha-30);
+  --border-default: var(--neutral-400);    /* #3f3f46 — added: referenced in swiss-style.css */
 
   /* Fondos de Estado */
   --accent-success-bg: rgba(74, 222, 128, 0.1);
@@ -147,11 +148,14 @@
   --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.25);
   --shadow-lg:   0 16px 48px rgba(0, 0, 0, 0.4);
 
-  /* Primary Aliases (used across 5+ files) */
-  --primary:       var(--brand-primary);
+  /* Primary Aliases (used across 5+ files)
+     --primary       → 15 refs | canonical shorthand for --brand-primary
+     --primary-hover → hover state for white buttons
+     --primary-light → light accent for highlights */
+  --primary:        var(--brand-primary);
   --primary-hover:  var(--neutral-900);
   --primary-light:  var(--neutral-950);
-  --primary-color:  var(--brand-primary);
+  /* --primary-color: REMOVED — was identical to --primary (1 usage migrated) */
 
   /* Z-Index Hierarchy */
   --z-base:      1;
@@ -164,7 +168,24 @@
   --z-skip-link: 9999;
   --z-progress:  10000;
 
-  /* Legacy Aliases (backward compatibility) */
+  /* Shorthand Aliases — OFFICIAL (actively used across codebase)
+     DO NOT REMOVE — these are embedded in 300+ references.
+     Canonical     │ Shorthand   │ Usages
+     ──────────────┼─────────────┼───────
+     --bg-body     │ --bg-base   │   8
+     --bg-elevated │ --bg-elev   │  18
+     --white-α-05  │ --surface-1 │  24
+     --white-α-10  │ --surface-2 │  16
+     --text-primary│ --text-1    │  59
+     --text-second.│ --text-2    │  40
+     --text-tertia.│ --text-3    │  33
+     --border-subt.│ --border-1  │  88
+     --border-act. │ --border-2  │  20
+     --fs-sm       │ --text-sm   │   7
+     --neutral-300 │ --bg-tert.  │   3
+     --topbar-hei. │ --topbar-h  │   5
+     16px          │ --space-4   │  43
+     20px          │ --space-5   │   4  */
   --bg-base:    var(--bg-body);
   --bg-elev:    var(--bg-elevated);
   --surface-1:  var(--white-alpha-05);
@@ -203,6 +224,10 @@
   --input-bg:     var(--bg-surface);
   --input-border: var(--border-subtle);
   --input-radius: var(--radius-md);
+  --input-font:   var(--font-sans);
+  --input-fs:     var(--fs-base);   /* 13px */
+  --input-lh:     var(--lh-normal); /* 1.4 */
+  --input-h:      var(--control-h); /* 36px */
 
   /* Legacy Aurora Red aliases (for gradual migration) */
   --aurora-red: #ff3b30;
@@ -211,7 +236,24 @@
 }
 
 /* =========================================================================
-   4. TOKENS ESPECÍFICOS (Print / QR)
+   4. CHART TOKENS (Themed Chart.js rendering)
+   ========================================================================= */
+:root {
+  --chart-text:       var(--text-tertiary);
+  --chart-grid:       var(--white-alpha-05);
+  --chart-border:     var(--white-alpha-08);
+  --chart-font:       var(--font-mono);
+  --chart-line-1:     var(--text-primary);    /* Primary dataset */
+  --chart-line-2:     var(--success);         /* Secondary dataset */
+  --chart-line-3:     var(--danger);          /* Tertiary dataset */
+  --chart-line-4:     var(--info);            /* Quaternary dataset */
+  --chart-point-bg:   var(--bg-surface);      /* Point fill */
+  --chart-point-border: var(--text-primary);  /* Point stroke */
+  --chart-fill:       var(--white-alpha-05);  /* Area fill */
+}
+
+/* =========================================================================
+   5. TOKENS ESPECÍFICOS (Print / QR)
    ========================================================================= */
 :root {
   --paper-mm: 80mm;

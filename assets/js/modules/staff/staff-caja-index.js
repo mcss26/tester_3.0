@@ -479,7 +479,7 @@
                 (payload) => {
                     // Check if update relates to me
                     if (payload.new && payload.new.staff_id === state.currentUser.id) {
-                        console.log('[Realtime] My assignment updated', payload);
+                        // Realtime assignment updated
                         checkForAssignment();
                         window.Toast.info('Estado de terminal actualizado');
                     } else if (payload.eventType === 'DELETE' && payload.old.id === state.assignedTerminal?.id) {

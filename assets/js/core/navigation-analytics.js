@@ -72,12 +72,7 @@
       const debugMode = localStorage.getItem("debug_analytics") === "true";
 
       if (debugMode) {
-        console.groupCollapsed(
-          `📊 Analytics: ${event.type} [${event.path || event.action}]`,
-        );
-        console.log("Event Data:", event);
-        console.log("Session Queue Length:", this.sessionQueue.length);
-        console.groupEnd();
+        // Debug analytics logging available via localStorage.debug_analytics
       }
     },
 

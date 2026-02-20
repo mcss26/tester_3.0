@@ -15,5 +15,8 @@
     "workbench.editor.alwaysShowEditorActions": false,
     "workbench.editor.limit.excludeDirty": false,
     "workbench.editor.navigationScope": "default",
-    "workbench.editor.openPositioning": "right"
+    "workbench.editor.openPositioning": "right",
+    "workbench.editor.enablePreviewFromCodeNavigation": true,
+    "workbench.editor.enablePreviewFromQuickOpen": true,
+    "workbench.editor.sharedViewState": true
 }
