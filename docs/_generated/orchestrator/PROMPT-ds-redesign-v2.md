@@ -10,8 +10,8 @@ Sos el Orchestrator. Leé tus reglas antes de actuar:
 
 - `.agent/agents/orchestrator/AGENT.md`
 - `.agent/agents/orchestrator/rules.md`
-- `.agent/rules/design-system.md`
-- `.agent/rules/directives.md`
+- `.gemini/design-system.md`
+- `.gemini/directives.md`
 
 <!-- FUNDAMENTO: El CLI anterior no leyó design-system.md porque tenía trigger:manual.
      Ahora es trigger:always, pero lo mandamos explícito para redundancia crítica. -->
@@ -103,8 +103,8 @@ Crear sección en `truth.md` (al final):
 | swiss-style.css           | `assets/css/swiss-style.css`                         | Destino de producción                 |
 | components.css            | `assets/css/components.css`                          | Ref funcional legacy (NO copiar)      |
 | design-system-visual.html | `docs/_generated/frontend/design-system-visual.html` | Referencia visual (output, no fuente) |
-| Plan v8                   | `docs/_generated/2026-02-19_plan_page-build_v8.md`       | Plan aprobado                         |
-| DS Rules                  | `.agent/rules/design-system.md`                      | R1-R8 para todo agente                |
+| Plan v8                   | `docs/_generated/2026-02-19_plan_page-build_v8.md`   | Plan aprobado                         |
+| DS Rules                  | `.gemini/design-system.md`                           | R1-R9 para todo agente                |
 ```
 
 No agregar más archivos. Si un archivo no está en esta tabla, no es necesario para Step 0B.

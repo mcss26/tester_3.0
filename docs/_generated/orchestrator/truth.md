@@ -153,4 +153,4 @@ Solo marcar `[x]` cuando `Select-String -Path swiss-style.css -Pattern "nombre-c
 | components.css            | `assets/css/components.css`                          | Ref funcional legacy (NO copiar) |
 | design-system-visual.html | `docs/_generated/frontend/design-system-visual.html` | Referencia visual                |
 | ROADMAP.md                | `ROADMAP.md`                                         | Plan maestro unificado           |
-| DS Rules                  | `.agent/rules/design-system.md`                      | R1-R8 para todo agente           |
+| DS Rules                  | `.gemini/design-system.md`                           | R1-R9 para todo agente           |

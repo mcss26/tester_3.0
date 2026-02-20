@@ -39,11 +39,11 @@ Si no hay briefs nuevos, avisá: "No hay specs pendientes del Orchestrator."
 
 ### Core (obligatorio)
 
-| Archivo                         | Para qué                                                   |
-| :------------------------------ | :--------------------------------------------------------- |
-| `assets/css/tokens.css`         | Tokens (colores, spacing, typography) — **INMUTABLE** (R1) |
-| `assets/css/swiss-style.css`    | Componentes existentes (14 prod)                           |
-| `.agent/rules/design-system.md` | Reglas R1-R7                                               |
+| Archivo                      | Para qué                                                   |
+| :--------------------------- | :--------------------------------------------------------- |
+| `assets/css/tokens.css`      | Tokens (colores, spacing, typography) — **INMUTABLE** (R1) |
+| `assets/css/swiss-style.css` | Componentes existentes (14 prod)                           |
+| `.gemini/design-system.md`   | Reglas R1-R9                                               |
 
 ### Inventarios y Auditorías (en `docs/_generated/frontend/`)
 

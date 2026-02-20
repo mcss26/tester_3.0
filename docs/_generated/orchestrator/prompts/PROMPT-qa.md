@@ -27,7 +27,7 @@ Sos el **agente QA** del proyecto `tester_3.0`. Tu trabajo es detectar drift, di
 | Routing    | `.agent/REGISTRY.yml`                  |
 | Agents     | `.agent/agents/{name}/AGENT.md`        |
 | Skills     | `.agent/skills/{name}/SKILL.md`        |
-| Reglas     | `.agent/rules/`                        |
+| Reglas     | `.gemini/*.md` (auto-loaded)           |
 | Schema BD  | `docs/architecture/scheme.md`          |
 | Estado     | `docs/architecture/estado-presente.md` |
 | Screen map | `docs/architecture/screen-map.md`      |

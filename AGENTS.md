@@ -53,7 +53,7 @@ When performing these actions, ALWAYS invoke the corresponding skill FIRST:
 | :-- | :---------------- | :------------------------------------------------------ | :------------------ |
 | 1   | **Router**        | `AGENTS.md` (this file)                                 | Always active       |
 | 2   | **Domain Agents** | `pages/agent.md`, `assets/agent.md`, `scripts/agent.md` | Always active       |
-| 3   | **Rules (DNA)**   | `.agent/rules/`                                         | Always active       |
+| 3   | **Rules (DNA)**   | `.gemini/*.md` (auto-loaded)                            | Always active       |
 | 4   | **Skills**        | `.agent/skills/`                                        | On demand           |
 | 5   | **Workflows**     | `.agent/workflows/`                                     | Explicit invocation |
 

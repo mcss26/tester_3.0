@@ -1,12 +1,14 @@
 # Esquema de Base de Datos - FormulaMid 4
 
-Listado actualizado automáticamente al 16/02/2026.
+Listado actualizado automáticamente al 20/02/2026.
 
-> **Actualización Fase 4.1** (Updated: 2026-02-16 16:30): Sincronización completa contra Supabase real.
+> **Actualización Fase 4.2** (Updated: 2026-02-20 03:47): Sincronización profunda contra Supabase real.
 >
-> - Agregadas 4 tablas GBOL API: `import_gbol_facturacion`, `import_gbol_comandas`, `import_gbol_withdrawals`, `gbol_sync_log`.
-> - Corregidas columnas en ~25 tablas (renombramientos, columnas nuevas, checks actualizados).
-> - Conteos de filas actualizados.
+> - Agregadas 3 tablas: `sku_price_history`, `payment_commission_config`, `payment_reconciliation`.
+> - Agregadas 6 vistas: `vw_financial_week_live`, `vw_pnl_monthly_v2`, `vw_workday_cash_balance`, `vw_workday_commissions`, `vw_workday_stock_variance`, `vw_reconciliation_status`.
+> - Columna `notes` agregada a `closing_terminals`.
+> - Corregidas columnas de vistas existentes contra DB live.
+> - Conteos de filas actualizados (67 tablas, 30 vistas, 38 RPCs).
 
 ## Tablas Publicas
 
@@ -42,7 +44,7 @@ _Configuración de umbrales y reglas de clasificación para auditorías de cierr
 
 ### auth_audit_log
 
-_Audit trail de eventos de autenticación para detección de abusos. (~6627 rows)_
+_Audit trail de eventos de autenticación para detección de abusos. (~6858 rows)_
 
 - **id** (uuid) - PK
 - **created_at** (timestamp with time zone)
@@ -145,6 +147,7 @@ _Detalle de cierre por terminal._
 - **submitted_at** (timestamp with time zone)
 - **created_at** (timestamp with time zone)
 - **signature_data** (text)
+- **notes** (text) - Notas del operativo al declarar
 
 ### consumption_details
 
@@ -207,7 +210,7 @@ _Definiciones de costos recurrentes y por noche. Alimenta la cola de pagos. (~14
 
 ### events
 
-_Eventos especiales. (~9 rows)_
+_Eventos especiales. (~11 rows)_
 
 - **id** (uuid) - PK
 - **name** (text)
@@ -249,7 +252,7 @@ _Reglas de pago a proveedores._
 
 ### finance_payments
 
-_Pagos realizados. (~4 rows)_
+_Pagos realizados. (~13 rows)_
 
 - **id** (uuid) - PK
 - **created_at** (timestamp with time zone)
@@ -508,7 +511,7 @@ _Roles de personal. (~16 rows)_
 
 ### members
 
-_Miembros del club. (~2495 rows)_
+_Miembros del club. (~2546 rows)_
 
 - **id** (uuid) - PK
 - **created_at** (timestamp with time zone)
@@ -555,6 +558,20 @@ _Categorías de métodos de pago. (~5 rows)_
 - **active** (boolean) - DEFAULT true
 - **tax_rate** (numeric) - DEFAULT 0
 
+### payment_commission_config
+
+_Configuración de comisiones por método de pago digital. (~4 rows)_
+
+- **id** (uuid) - PK
+- **payment_method** (text) - UNIQUE — Método de pago (MercadoPago, tarjeta, etc.)
+- **commission_rate** (numeric) - DEFAULT 0 — Tasa de comisión como decimal
+- **iva_on_commission** (numeric) - DEFAULT 0.21 — IVA sobre la comisión
+- **settlement_delay_days** (integer) - DEFAULT 0 — Días de demora en la liquidación
+- **is_active** (boolean) - DEFAULT true
+- **notes** (text)
+- **created_at** (timestamp with time zone)
+- **updated_at** (timestamp with time zone)
+
 ### payment_methods
 
 _Métodos de pago. (~6 rows)_
@@ -567,6 +584,24 @@ _Métodos de pago. (~6 rows)_
 - **active** (boolean) - DEFAULT true
 - **sort_order** (integer) - DEFAULT 100
 - **notes** (text)
+
+### payment_reconciliation
+
+_Reconciliación de pagos por método y terminal. Flujo: pending → matched/mismatch → resolved/expired._
+
+- **id** (uuid) - PK
+- **work_day_id** (uuid) - FK -> work_days.id
+- **terminal_id** (uuid) - FK -> pos_terminals.id
+- **payment_method** (text) - CHECK: 'efectivo','mercadopago','tarjeta','digital'
+- **system_amount** (numeric) - DEFAULT 0 — Monto reportado por sistema
+- **declared_amount** (numeric) - DEFAULT 0 — Monto declarado
+- **settled_amount** (numeric) - Monto liquidado (procesador)
+- **diff_amount** (numeric) - Diferencia calculada
+- **status** (text) - DEFAULT 'pending', CHECK: 'pending','matched','mismatch','resolved','expired'
+- **resolved_by** (uuid)
+- **resolved_at** (timestamp with time zone)
+- **resolution_notes** (text)
+- **created_at** (timestamp with time zone)
 
 ### pos_terminals
 
@@ -611,7 +646,7 @@ _Perfiles de usuario (vinculados a auth). (~4 rows)_
 
 ### qr_batches
 
-_Lotes de códigos QR (entradas/invitaciones). (~6 rows)_
+_Lotes de códigos QR (entradas/invitaciones). (~19 rows)_
 
 - **id** (uuid) - PK
 - **name** (text)
@@ -636,7 +671,7 @@ _Logs de accesos._
 
 ### qr_codes
 
-_Códigos individuales. (~6000 rows)_
+_Códigos individuales. (~9426 rows)_
 
 - **id** (uuid) - PK
 - **batch_id** (uuid) - FK -> qr_batches.id
@@ -664,7 +699,7 @@ _Mapeo de códigos POS a recetas._
 
 ### replenishment_items
 
-_Items en solicitudes de reposición. (~5 rows)_
+_Items en solicitudes de reposición. (~13 rows)_
 
 - **id** (uuid) - PK
 - **request_id** (uuid) - FK -> replenishment_requests.id
@@ -818,6 +853,18 @@ _Solicitudes de cambio en SKUs._
 - **approved_by** (uuid) - FK -> profiles.id
 - **approved_at** (timestamp with time zone)
 
+### sku_price_history
+
+_Historial de precios de costos de SKUs. Alimentado por trigger `trg_sku_cost_price_history`. (~53 rows)_
+
+- **id** (uuid) - PK
+- **sku_id** (uuid) - FK -> master_sku.id
+- **cost_price** (numeric) - Precio de costo vigente
+- **effective_from** (timestamp with time zone) - DEFAULT now() — Inicio vigencia
+- **effective_to** (timestamp with time zone) - Fin vigencia (NULL = vigente)
+- **changed_by** (uuid) - FK -> auth.users.id
+- **created_at** (timestamp with time zone)
+
 ### staff_accruals
 
 _Devenciones de nómina: convierte asistencia (staff_convocations) en deuda salarial por jornada._
@@ -875,7 +922,7 @@ _Planificación de personal por día._
 
 ### work_days
 
-_Días operativos (jornadas). Lifecycle: DRAFT → PLANNED → ACTIVE → CLOSED | CANCELLED. (~6 rows)_
+_Días operativos (jornadas). Lifecycle: DRAFT → PLANNED → ACTIVE → CLOSED | CANCELLED. (~9 rows)_
 
 - **id** (uuid) - PK
 - **work_date** (date) - UNIQUE
@@ -989,15 +1036,15 @@ _Plantillas reutilizables para jornadas: configuración de staff, costos asociad
 
 ### vw_daily_sales_v2
 
-_Resumen de ventas diarias (Versión 2 - Reemplaza vw_daily_sales)._
+_Resumen de ventas diarias (Versión 2 simplificada)._
 
-- **work_day_id**, **work_date**, **status**, **cash_system**, **cash_declared**, **cash_difference**, **qr_system**, **bar_sales_system**, **total_income**, **total_declared**, **total_difference**, **closing_notes**
+- **work_day_id**, **work_date**, **status**, **cash_system**, **cash_declared**, **cash_difference**, **qr_system**, **bar_sales_system**, **total_retiros**, **cant_retiros**, **total_income**, **total_declared**, **total_difference**
 
 ### vw_recipe_profitability
 
 _Análisis de rentabilidad por receta (Costo vs. Precio Venta)._
 
-- **recipe_id**, **name**, **category**, **cost_per_unit**, **sale_price**, **margin_amount**, **margin_percentage**
+- **id**, **name**, **external_id**, **precio_venta**, **costo_producto**, **base_imponible**, **iva_debito**, **margen_bruto**, **margen_bruto_pct**, **roi_pct**, **flag_rentabilidad**
 
 ### vw_reconcile_afip_gbol
 
@@ -1007,9 +1054,9 @@ _Conciliación diaria entre AFIP y Gbol (Staging)._
 
 ### vw_sku_ideal_dynamic
 
-_Cálculo dinámico de stock ideal basado en ventas históricas._
+_Cálculo dinámico de stock ideal basado en consumo histórico (4 semanas)._
 
-- **sku_id**, **product_name**, **avg_weekly_sales**, **safety_stock**, **recommended_order_qty**
+- **id**, **nombre**, **tipo**, **costo**, **active**, **consumo_4w**, **fechas_con_consumo**, **asistentes_4w**, **consumo_por_persona**, **ideal_500_calc**, **ideal_800_calc**, **ideal_500_static**, **ideal_900_static**
 
 ### vw_staff_performance
 
@@ -1177,27 +1224,57 @@ _Snapshot completo por noche: ingresos, caja, stock, staff y health score. Alime
 
 _Resumen fiscal por noche: totales AFIP/GBOL para mini-cards en tab Evento._
 
-**Fuentes**: `revenue_details`, `work_days`
+**Fuentes**: `import_gbol_facturacion`, `work_days`
 
 - **noche** (date) - Fecha de la jornada
-- **total_bruto** (numeric) - Total bruto facturado
-- **pct_blanqueado** (numeric) - Porcentaje blanqueado
-- **total_iva** (numeric) - Total IVA
-- **total_tickets** (integer) - Cantidad de tickets
+- **total_tickets** (integer)
+- **tickets_blanco** (integer)
+- **tickets_negro** (integer)
+- **total_bruto** (numeric)
+- **total_blanco** (numeric)
+- **total_negro** (numeric)
+- **total_efectivo** (numeric)
+- **total_digital** (numeric)
+- **total_tarjetas** (numeric)
+- **total_mercadopago** (numeric)
+- **total_iva** (numeric)
+- **total_base_imponible** (numeric)
+- **pct_blanqueado** (numeric)
+- **total_cajas** (integer)
+- **total_retiros** (numeric)
+- **cant_retiros** (integer)
+- **efectivo_neto** (numeric)
 
 ### vw_bar_audit_variance
 
-_Varianza de auditoría de barra: diferencia entre stock teórico y físico por producto._
+_Varianza de auditoría de barra: diferencia entre stock teórico y físico por producto por sesión._
 
-**Fuentes**: `bar_sessions`, `bar_session_sales`, `consumption_reports`, `consumption_details`, `master_sku`
+**Fuentes**: `bar_sessions`, `bar_stock_snapshots`, `bar_session_sales`, `master_recipes`, `master_sku`, `profiles`
 
+- **session_id** (uuid)
 - **work_day_id** (uuid)
+- **work_date** (date)
+- **location** (text)
 - **sku_id** (uuid)
-- **sku_name** (text)
-- **theoretical_qty** (numeric) - Cantidad teórica
-- **physical_qty** (numeric) - Cantidad física
-- **variance_qty** (numeric) - Diferencia
-- **variance_pct** (numeric) - Porcentaje de varianza
+- **sku_nombre** (text)
+- **categoria** (text)
+- **stock_apertura** (numeric)
+- **stock_cierre** (numeric)
+- **stock_efectivo** (numeric)
+- **unidades_repuestas** (numeric)
+- **consumo_real** (numeric)
+- **consumo_sistema** (numeric)
+- **diferencia** (numeric)
+- **costo_real** (numeric)
+- **costo_sistema** (numeric)
+- **costo_diferencia** (numeric)
+- **varianza_pct** (numeric)
+- **clasificacion** (text)
+- **session_status** (text)
+- **opened_by_name** (text)
+- **closed_by_name** (text)
+- **opened_at** (timestamp)
+- **closed_at** (timestamp)
 
 ### vw_workday_benchmarks
 
@@ -1239,6 +1316,48 @@ _Resumen nocturno de auditoría de stock: alertas de pérdida, costos reales vs 
 - **total_costo_sistema** (numeric)
 - **total_costo_diferencia** (numeric)
 - **varianza_pct_global** (numeric)
+
+### vw_financial_week_live
+
+_Resumen financiero semanal en vivo (sin cerrar)._
+
+- **year_number**, **week_number**, **week_start**, **week_end**, **workdays_count**, **total_attendance**, **income_cash**, **income_qr**, **income_bar**, **total_income**, **expense_staff**, **expense_stock**, **expense_extras**, **total_expense**, **net_result**, **avg_margin_pct**
+
+### vw_finance_weekly
+
+_Resumen financiero semanal cerrado._
+
+- **year_number**, **week_number**, **income_gross**, **expenses_total**, **operating_profit**, **margin_pct**, **tax_vat_payable**, **workdays_count**, **total_attendance**
+
+### vw_pnl_monthly_v2
+
+_P&L mensual (Versión 2 con desglose de ingresos/egresos)._
+
+- **year_number**, **month_number**, **workdays_count**, **total_attendance**, **avg_attendance**, **income_cash**, **income_qr**, **income_bar**, **total_income**, **expense_staff**, **expense_stock**, **expense_extras**, **total_expense**, **net_result**, **avg_margin_pct**
+
+### vw_workday_cash_balance
+
+_Balance de caja completo por jornada: declarado vs sistema, retiros, depósitos, neto._
+
+- **work_day_id**, **work_date**, **total_declared_cash**, **total_declared_zoco**, **total_system_cash**, **total_system_zoco**, **total_declared**, **total_system**, **total_difference**, **total_withdrawals**, **total_deposits**, **net_cash_flow**, **terminal_count**, **withdrawal_count**, **deposit_count**, **closing_status**, **closing_closed_at**, **closing_notes**
+
+### vw_workday_commissions
+
+_Comisiones digitales por jornada: MercadoPago, tarjetas, neto digital._
+
+- **work_date**, **total_mp_bruto**, **total_tarjetas_bruto**, **total_digital_bruto**, **comision_mp**, **comision_tarjetas**, **total_comisiones**, **neto_digital**
+
+### vw_workday_stock_variance
+
+_Varianza de stock consolidada por jornada (todas las sesiones de barra)._
+
+- **work_day_id**, **work_date**, **sku_id**, **sku_nombre**, **categoria**, **stock_apertura_total**, **reposiciones_total**, **stock_cierre_real**, **consumo_real_total**, **consumo_teorico_total**, **stock_esperado**, **varianza_unidades**, **varianza_pct**, **costo_real_total**, **costo_teorico_total**, **costo_varianza**, **diferencia_consumo**, **clasificacion**, **session_count**
+
+### vw_reconciliation_status
+
+_Estado de reconciliación de pagos por jornada._
+
+- **work_day_id**, **work_date**, **total_items**, **matched_count**, **mismatch_count**, **pending_count**, **total_diff**, **overall_status**
 
 ## Mapa Módulo ↔ Tabla
 

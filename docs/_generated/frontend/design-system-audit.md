@@ -3,7 +3,7 @@
 > **Generated**: 2026-02-18T23:24 (ART)
 > **Skill**: `design-system-architect` v1.0.0 — Steps 1 & 2
 > **Scope**: `tokens.css` · `swiss-style.css` · `design-system-visual.html`
-> **Rule compliance**: `.agent/rules/design-system.md` — **no CSS files were modified**
+> **Rule compliance**: `.gemini/design-system.md` — **no CSS files were modified**
 
 ---
 
