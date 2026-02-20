@@ -30,6 +30,7 @@
     inputLinkUrl: document.getElementById("input-link-url"),
     btnSaveLink: document.getElementById("btn-save-link"),
     btnCancelLink: document.getElementById("btn-cancel-link"),
+    btnCancelLinkX: document.getElementById("btn-cancel-link-x"),
 
     // Panel B: Nómina
     staffContainer: document.getElementById("staff-container"),
@@ -91,6 +92,7 @@
 
     // Modal Actions
     ui.btnCancelLink?.addEventListener("click", closeLinkModal);
+    ui.btnCancelLinkX?.addEventListener("click", closeLinkModal);
     ui.btnSaveLink?.addEventListener("click", saveLinkType);
 
     // Close modal on overlay click

@@ -36,7 +36,7 @@ Sos el Orchestrator. Leé tus reglas antes de actuar:
 
 Antes de planificar, entender dónde estamos. Ejecutar en este orden:
 
-1. Leer `docs/output/2026-02-19_plan_page-build_v8.md` — plan aprobado vigente
+1. Leer `docs/_generated/2026-02-19_plan_page-build_v8.md` — plan aprobado vigente
 2. Grep `swiss-style.css` para contar qué componentes **realmente existen** (no lo que digan los reportes)
 3. Grep `tokens.css` para confirmar tokens disponibles
 4. Leer `CHANGELOG.md` de orchestrator para saber qué se hizo hoy
@@ -103,7 +103,7 @@ Crear sección en `truth.md` (al final):
 | swiss-style.css           | `assets/css/swiss-style.css`                         | Destino de producción                 |
 | components.css            | `assets/css/components.css`                          | Ref funcional legacy (NO copiar)      |
 | design-system-visual.html | `docs/_generated/frontend/design-system-visual.html` | Referencia visual (output, no fuente) |
-| Plan v8                   | `docs/output/2026-02-19_plan_page-build_v8.md`       | Plan aprobado                         |
+| Plan v8                   | `docs/_generated/2026-02-19_plan_page-build_v8.md`       | Plan aprobado                         |
 | DS Rules                  | `.agent/rules/design-system.md`                      | R1-R8 para todo agente                |
 ```
 

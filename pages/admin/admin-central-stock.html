@@ -711,7 +711,7 @@
         <div class="modal-content modal-content-xl">
             <div class="modal-header">
                 <h3 class="modal-title">Tendencia Top 5 Productos</h3>
-                <button class="modal-close" onclick="document.getElementById('chartModal').close()">&times;</button>
+                <button class="modal-close" id="btn-close-chart" aria-label="Cerrar modal">&times;</button>
             </div>
             <div class="modal-body modal-body-scroll">
                 <canvas id="history-chart"></canvas>
@@ -725,7 +725,7 @@
         <div class="modal-content modal-content-imports">
             <div class="modal-header">
                 <h3 class="modal-title">Historial de Importaciones</h3>
-                <button class="modal-close" onclick="document.getElementById('importsModal').close()">&times;</button>
+                <button class="modal-close" id="btn-close-imports" aria-label="Cerrar modal">&times;</button>
             </div>
             <div class="modal-body modal-body-imports">
                 <!-- Tabs -->

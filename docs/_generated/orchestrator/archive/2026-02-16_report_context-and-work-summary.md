@@ -13,7 +13,7 @@ Based on `docs/estado-presente.md`, the project "FormulaMid 4" is in a consolida
 *   The project has a significant number of assets: 50 HTML pages, 68 JS modules (including core and importers), and 18 CSS files.
 *   The database schema is extensive, with 60 tables and 18 views.
 *   There is a strong emphasis on automation and verification, with 15 utility scripts in place, including various auditors and a "Progressive Verifier" for the `admin-workdays` module.
-*   The project has a clear documentation structure, with a distinction between canonical docs (`AGENT.md`, `estado-presente.md`, etc.) and agent-generated output in `docs/output/`.
+*   The project has a clear documentation structure, with a distinction between canonical docs (`AGENT.md`, `estado-presente.md`, etc.) and agent-generated output in `docs/_generated/`.
 
 ## 2. Recent Verification and Remediation
 

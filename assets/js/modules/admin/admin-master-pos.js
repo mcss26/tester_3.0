@@ -23,6 +23,7 @@
     btnNew: document.getElementById("btn-new"),
     pageCardLoading: document.getElementById("page-card-loading"),
     pageCardEmpty: document.getElementById("page-card-empty"),
+    btnReloadEmpty: document.getElementById("btn-reload-empty"),
     // Filter Pills
     filterPills: document.querySelectorAll(".filter-pill[data-status]"),
     countTotal: document.getElementById("pos-total"),
@@ -250,6 +251,9 @@
 
   // 10. Bind Events
   function bindEvents() {
+    // Empty state reload
+    ui.btnReloadEmpty?.addEventListener("click", () => location.reload());
+
     // Toggle Panel (New)
     if (ui.btnNew) {
       ui.btnNew.addEventListener("click", () => {

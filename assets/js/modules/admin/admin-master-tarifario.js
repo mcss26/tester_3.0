@@ -29,6 +29,7 @@
     // Global States
     pageCardLoading: document.getElementById("page-card-loading"),
     pageCardEmpty: document.getElementById("page-card-empty"),
+    btnReloadEmpty: document.getElementById("btn-reload-empty"),
 
     // Filters
     filterPills: document.querySelectorAll(".filter-pill[data-area]"),
@@ -254,6 +255,8 @@
   });
 
   // 10. Bind Events
+  ui.btnReloadEmpty?.addEventListener("click", () => location.reload());
+
   if (ui.btnAdd) {
     ui.btnAdd.addEventListener("click", () => {
       state.activeRole = null;

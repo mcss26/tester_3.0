@@ -1,7 +1,7 @@
 # Auditoría Cruzada: Discrepancias Business Logic ↔ Supabase
 
 > **Fecha:** 2026-02-16
-> **Método:** Comparación exhaustiva entre documentación de negocio (`docs/business-logic/`),
+> **Método:** Comparación exhaustiva entre documentación de negocio (`docs/architecture/`),
 > esquema documentado (`docs/scheme.md`) y objetos reales en Supabase producción.
 
 ---

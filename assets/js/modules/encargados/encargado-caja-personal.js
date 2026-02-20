@@ -66,6 +66,7 @@
         
         // Confirm Modal
         confirmModal: document.getElementById('confirmModal'),
+        btnCloseConfirm: document.getElementById('btn-close-confirm'),
         confirmTitle: document.getElementById('confirm-title'),
         confirmMessage: document.getElementById('confirm-message'),
         btnCancelConfirm: document.getElementById('btn-cancel-confirm'),
@@ -510,6 +511,7 @@
         });
 
         // Confirm modal
+        ui.btnCloseConfirm?.addEventListener('click', hideConfirmModal);
         ui.btnCancelConfirm?.addEventListener('click', hideConfirmModal);
         ui.btnConfirmAction?.addEventListener('click', () => {
             if (state.pendingConfirmAction) {

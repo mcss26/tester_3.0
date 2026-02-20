@@ -59,7 +59,7 @@ Si no hay briefs nuevos, avisá: "No hay specs pendientes del Orchestrator."
 | `hex-to-token-map.md`           | Mapeo hex→token para reemplazos                                |
 | `hardcoded-colors-report.md`    | Colores hardcodeados por página (qué falta migrar)             |
 
-### Reportes de Scan (en `docs/output/ui-scan/`)
+### Reportes de Scan (en `docs/_generated/ui-scan/`)
 
 | Archivo                 | Para qué                            |
 | :---------------------- | :---------------------------------- |

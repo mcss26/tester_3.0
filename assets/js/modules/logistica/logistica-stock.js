@@ -10,6 +10,7 @@
   const moduleContent = document.getElementById("module-content");
   const pageCardLoading = document.getElementById("page-card-loading");
   const pageCardEmpty = document.getElementById("page-card-empty");
+  const btnReloadEmpty = document.getElementById("btn-reload-empty");
 
   const ui = { pageCardLoading, pageCardEmpty, moduleContent };
 
@@ -374,6 +375,11 @@
     modalAdjust.addEventListener("click", (e) => {
       if (e.target === modalAdjust) closeAdjustModal();
     });
+  }
+
+  // Empty state reload
+  if (btnReloadEmpty) {
+    btnReloadEmpty.addEventListener("click", () => location.reload());
   }
 
   // ─────────────────────────────────────────────────────────────────────────

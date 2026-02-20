@@ -68,6 +68,8 @@
 
     // Modal
     modalPrereject: document.getElementById("modal-prereject"),
+    btnClosePrereject: document.getElementById("btn-close-prereject"),
+    btnCancelPrereject: document.getElementById("btn-cancel-prereject"),
     formPrereject: document.getElementById("form-prereject"),
     prerejectCount: document.getElementById("prereject-count"),
     prerejectReason: document.getElementById("prereject-reason"),
@@ -1248,6 +1250,8 @@
     );
 
     // Modal Pre-Reject
+    ui.btnClosePrereject?.addEventListener("click", () => ui.modalPrereject?.close());
+    ui.btnCancelPrereject?.addEventListener("click", () => ui.modalPrereject?.close());
     ui.formPrereject?.addEventListener("submit", submitPreReject);
 
     // View Selection: Pre-Aprobacion

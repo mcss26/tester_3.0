@@ -65,6 +65,7 @@
         importPreviewContent: document.getElementById('import-preview-content'),
         
         btnCloseChart: document.getElementById('btn-close-chart'),
+        btnCloseImports: document.getElementById('btn-close-imports'),
         btnRetry: document.getElementById('btn-retry'),
         
         // Tabs
@@ -285,6 +286,10 @@
         ui.btnViewImports?.addEventListener('click', openImportsModal);
         ui.importTabConsumption?.addEventListener('click', () => switchImportTab('consumption'));
         ui.importTabRevenue?.addEventListener('click', () => switchImportTab('revenue'));
+        
+        // Modal close buttons
+        ui.btnCloseChart?.addEventListener('click', () => ui.chartModal?.close());
+        ui.btnCloseImports?.addEventListener('click', () => ui.importsModal?.close());
         
         ui.btnRetry?.addEventListener('click', () => location.reload());
         

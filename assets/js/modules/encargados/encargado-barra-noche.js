@@ -48,6 +48,7 @@
         confirmTitle: document.getElementById('confirmTitle'),
         confirmMessage: document.getElementById('confirmMessage'),
         btnCancelConfirm: document.getElementById('btnCancelConfirm'),
+        btnCloseConfirm: document.getElementById('btn-close-confirm'),
         btnConfirm: document.getElementById('btnConfirm')
     };
 
@@ -304,11 +305,13 @@
                 ui.confirmModal.close();
                 ui.btnConfirm.removeEventListener('click', handleConfirm);
                 ui.btnCancelConfirm.removeEventListener('click', handleCancel);
+                ui.btnCloseConfirm?.removeEventListener('click', handleCancel);
                 ui.confirmModal.removeEventListener('cancel', handleCancel);
             };
 
             ui.btnConfirm.addEventListener('click', handleConfirm);
             ui.btnCancelConfirm.addEventListener('click', handleCancel);
+            ui.btnCloseConfirm?.addEventListener('click', handleCancel);
             ui.confirmModal.addEventListener('cancel', handleCancel);
         });
     }

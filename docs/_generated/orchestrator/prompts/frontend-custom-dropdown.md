@@ -2,7 +2,7 @@
 
 ## Contexto
 
-El Orchestrator ejecutó un risk analysis (`docs/output/ui-scan/select-risk-report.md`) que encontró **45 `<select>`** en producción:
+El Orchestrator ejecutó un risk analysis (`docs/_generated/ui-scan/select-risk-report.md`) que encontró **45 `<select>`** en producción:
 
 - **5 CRITICAL** — usan 3-5 APIs nativas (`.value`, `.selectedIndex`, `.options`, `.innerHTML`, `.appendChild`) y escriben a DB
 - **22 HIGH** — usan 1-2 APIs nativas con DB ops
@@ -92,8 +92,8 @@ API de clases CSS:
 | ------------------------------------------- | ------------------------------------ |
 | `assets/css/tokens.css`                     | Colores, spacing, typography         |
 | `assets/css/swiss-style.css`                | Componentes existentes, ver patterns |
-| `docs/output/ui-scan/select-risk-report.md` | Detalle de cada select y su riesgo   |
-| `docs/output/ui-scan/compliance-matrix.md`  | Score de cada página pre-cambio      |
+| `docs/_generated/ui-scan/select-risk-report.md` | Detalle de cada select y su riesgo   |
+| `docs/_generated/ui-scan/compliance-matrix.md`  | Score de cada página pre-cambio      |
 
 ### 6. Output esperado
 

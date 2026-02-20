@@ -14,7 +14,7 @@ El usuario te va a indicar páginas para auditar. Para cada una, leé:
 
 1. El JS en `assets/js/modules/[dominio]/[pagina].js`
 2. El HTML en `pages/[pagina].html`
-3. El risk report en `docs/output/ui-scan/select-risk-report.md`
+3. El risk report en `docs/_generated/ui-scan/select-risk-report.md`
 
 ## Qué buscar
 

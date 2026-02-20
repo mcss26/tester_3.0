@@ -49,7 +49,7 @@ Para cada página, generar una tabla:
 
 ## Referencia de riesgo
 
-Antes de proponer cambios a cualquier `<select>`, consultá `docs/output/ui-scan/select-risk-report.md` para ver si es CRITICAL/HIGH/LOW.
+Antes de proponer cambios a cualquier `<select>`, consultá `docs/_generated/ui-scan/select-risk-report.md` para ver si es CRITICAL/HIGH/LOW.
 
 - **CRITICAL/HIGH**: Solo wrap visual. No cambiar DOM funcional.
 - **LOW**: Libertad total para rediseñar.
