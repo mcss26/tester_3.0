@@ -58,21 +58,27 @@
       <div class="page-card">
 
         <div class="staff-dashboard">
-          <!-- Tabs -->
-          <div class="tabs-row">
-            <div class="tab-bar">
-              <button class="tab-chip active" data-view="convocar">Convocatorias</button>
-              <button class="tab-chip" data-view="nomina">Nómina (Staff)</button>
+          <!-- Header -->
+          <div class="dashboard-header">
+            <div>
+              <h2 class="dashboard-title dashboard-title-soft">Personal de Cajas</h2>
+              <p class="dashboard-subtitle-soft">Convocatorias y n&oacute;mina de staff</p>
+            </div>
+            <div class="actions-bar">
+              <div class="tab-bar">
+                <button class="tab-chip active" data-view="convocar">Convocatorias</button>
+                <button class="tab-chip" data-view="nomina">N&oacute;mina (Staff)</button>
+              </div>
             </div>
           </div>
 
           <!-- TAB: CONVOCAR -->
-          <div id="view-convocar" class="fade-in">
+          <div id="view-convocar" class="tab-content fade-in">
             <!-- Toolbar using FilterBar pattern -->
             <div class="filter-bar filter-bar-compact">
               <div class="filter-group">
                 <div class="form-group">
-                  <label class="muted">Jornada Activa</label>
+                  <label class="form-label">Jornada Activa</label>
                   <select id="select-workday" class="input input-compact" aria-label="Seleccionar jornada activa">
                     <option value="">Cargando fechas...</option>
                   </select>
@@ -151,19 +157,19 @@
     <div class="panel-body">
       <form id="staff-form">
         <div class="form-group">
-          <label>Nombre Completo</label>
+          <label class="form-label">Nombre Completo</label>
           <input type="text" id="staff-name" class="input" required>
         </div>
 
         <div class="form-group">
-          <label>Teléfono</label>
+          <label class="form-label">Teléfono</label>
           <input type="tel" id="staff-phone" class="input">
         </div>
       </form>
     </div>
     <div class="panel-footer">
-      <button type="button" class="btn-secondary" id="btn-cancel-staff">Cancelar</button>
-      <button type="submit" class="btn-primary" id="btn-save-staff">Guardar</button>
+      <button type="button" class="btn btn-secondary" id="btn-cancel-staff">Cancelar</button>
+      <button type="submit" class="btn btn-primary" id="btn-save-staff">Guardar</button>
     </div>
   </aside>
 
@@ -171,15 +177,15 @@
   <dialog class="modal" id="confirmModal">
     <div class="modal-content modal-content-sm">
       <div class="modal-header">
-        <h2 id="confirm-title">Confirmar</h2>
+        <h2 class="modal-title" id="confirm-title">Confirmar</h2>
         <button class="modal-close" id="btn-close-confirm" aria-label="Cerrar modal">×</button>
       </div>
       <div class="modal-body">
         <p id="confirm-message">¿Confirmas esta acción?</p>
       </div>
       <div class="modal-footer">
-        <button class="btn-secondary" id="btn-cancel-confirm">Cancelar</button>
-        <button class="btn-primary" id="btn-confirm-action">Confirmar</button>
+        <button class="btn btn-secondary" id="btn-cancel-confirm">Cancelar</button>
+        <button class="btn btn-primary" id="btn-confirm-action">Confirmar</button>
       </div>
     </div>
   </dialog>

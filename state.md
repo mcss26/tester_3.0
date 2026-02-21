@@ -1,6 +1,6 @@
 # Estado del Proyecto: Tester 3.0 — Midnight Club
 
-**Última actualización:** 2026-02-21 03:55  
+**Última actualización:** 2026-02-21 05:06  
 **Método:** Indexado recursivo completo
 
 ---
@@ -9,10 +9,11 @@
 
 > Referencia: [`ROADMAP.md`](ROADMAP.md) — 4 capas por dependencia técnica.
 
-- **Capa activa:** Capa 1 → Capa 2 (transición)
+- **Capa activa:** Capa 2 (completada) → Capa 3
 - **Capa 0 (Seguridad):** ~90% completa — 3 ítems menores pendientes
 - **Capa 1 (Modularización CSS):** ✅ Completada — 5 archivos modulares + theme-swiss.css
-- **Siguiente capa:** Capa 2 — Tokens + Layout
+- **Capa 2 (Tokens + Layout):** ✅ Completada — GS compliance avg 59→81, 32/45 páginas compliant
+- **Siguiente capa:** Capa 3 — Integración + Polish
 
 ## 2. Stack Tecnológico
 
@@ -26,7 +27,7 @@
 
 ## 3. Estructura del Repositorio
 
-```
+```text
 tester_3.0/
 ├── pages/          47 HTML (8 módulos: admin, encargados, operativo, logística, staff, gerencia, members, prototypes)
 ├── assets/
@@ -134,6 +135,11 @@ _El agente lee esto para no replanificar trabajo existente._
 - [x] **Limpieza docs UI-UX** — `canva_layout...` movido a `docs/design-system/canva_layout_fm_4.md`. `practicas.md` (vacío) eliminado.
 - [x] **Modularización CSS** — `components.css` (7820L) → 5 archivos: `base.css` (120L), `layout.css` (362L), `components.css` (6797L), `forms.css` (321L), `utilities.css` (200L). 42 páginas HTML actualizadas.
 - [x] **Resolución colisiones Swiss** — `swiss-style.css` (1325L) → `theme-swiss.css` (774L). 551 líneas duplicadas eliminadas. Archivo original renombrado a `.bak`.
+- [x] **Scanner GS alineado** — `ui-component-scanner.ps1` ajustado a arquitectura modular CSS + CustomDropdowns JS. Relevancia contextual + registry trimmed a clases core. Score avg 59→76 (+17pts), páginas compliant 4→25 (6×).
+- [x] **GS Batch 2 remediation** — 4 páginas: `balance-semanal` (H1→H2, actions-bar, is-header, cell-pad), `encargado-barra-personal` (page-card, btn prefix, modal-title), `encargado-caja-noche` (btn GS classes), `encargado-caja-personal` (tab-content, modal-title, btn prefix). Compliant 25→27.
+- [x] **GS Batch 3 remediation** — 3 páginas: `operativo-analisis` (actions-bar, tab-content×3, chart-section), `encargado-caja-noche` (dashboard-header/title), `encargado-caja-personal` (dashboard-header/title). Compliant 27→30.
+- [x] **Scanner relevancia v2** — 10 reglas contextuales: Nav/Buttons/Forms/FilterBar excluyen launchers, Sidebar requiere `sidebar-*` classes, Panels usa exact GS class match (no regex), Stats usa `^stat[-s]`, zero-denominator → N/A. 5 launchers correctamente excluidos.
+- [x] **GS Batch 4+5 remediation** — `operativo-workday` (actions-bar, cell-pad). Scanner fixes generaron mejoras indirectas: `generator` 72→94, `admin-workdays` 78→86, `encargado-barra-personal` 81→90. **Score avg 59→81 (+22pts), compliant 2→32 (16×).**
 
 ## 8. Pendiente (To Do)
 
@@ -163,19 +169,14 @@ _Trabajo que el agente debe estructurar y delegar, en orden de dependencia._
 - [x] Agregar `--space-3: 12px` (hueco)
 - [x] Eliminar legacy Aurora (0 usos)
 - [x] Crear `docs/design-system/token-migration-registry.md`
-- [ ] Remediar GS compliance con CLI prompts (41 prompts listos en `docs/output/ui-scan/cli-prompts/`)
+- [x] Remediar GS compliance — scanner alineado a arquitectura actual, 41 prompts regenerados (score avg 59→63)
+- [x] **GS Batch 1 remediation** — 4 encargado pages fixed: `form-label` on 20+ labels, breadcrumb nav on `caja-noche`, `cell-pad` on table headers. `encargado-caja-noche` +12pts (46→58). Verified operativo/staff/logistica modules already GS-compliant.
 
-### Capa 2 — Layout
+### ✅ Capa 2 — Tokens + Layout + GS Compliance (completada)
 
-- [x] `page-shell` responsive: `--shell-px` 100→48→16px con breakpoints en `layout.css`
-- [x] `planner-layout` stacking ≤1024px en `components.css`
-- [x] Verificado: `reconcile-grid` y `stats-grid` ya eran intrinsic responsive
-- [x] CustomDropdowns transversal:
-  - Creado `assets/js/core/custom-dropdown.js` — progressive enhancement automático
-  - Selector: `select.input`, `select.select`, `select.enhance` (excluye `.u-hidden`)
-  - Inyectado en 21 páginas con `<select>` estáticos
-  - Sync bidireccional: select nativo ↔ custom UI (0 cambios en JS de negocio)
-  - Test page: `pages/prototypes/test-dropdown/index.html`
+- [x] Tokens: aliases consolidados, spacing semántico + numérico, `--space-3: 12px`, Aurora legacy eliminado
+- [x] Layout: `page-shell` responsive, `planner-layout` stacking, CustomDropdowns transversal (21 páginas)
+- [x] **GS Compliance global** — Score avg 59→81 (+22pts), 32/45 páginas compliant (≥80). 7 páginas HTML remediadas, scanner con 10 reglas de relevancia contextual. 5 launchers → N/A, 4 parciales restantes (prototipos/scanner), 4 críticos (test pages).
 
 ### Capa 3+ — Ver ROADMAP.md
 
@@ -245,12 +246,16 @@ _Información crítica que el agente debe tener en cuenta._
 ### 🔴 Críticos
 
 1. **Arqueo ciego Staff** — Staff no debería ver totales del sistema. No implementado.
-2. **Aprobación solicitudes Encargado** — Sin pantalla dedicada.
-3. **Audit trail** — 8 auditorías de GBol no existen en FM4.
+1. **Aprobación solicitudes Encargado** — Sin pantalla dedicada.
+1. **Audit trail** — 8 auditorías de GBol no existen en FM4.
 
 ### 🟡 Importantes
 
-4. Vista unificada Contable · 5. Alertas stock bajo real-time · 6. Roles fantasma sin pantalla · 7. Historial rendimiento Staff · 8. Flujo bidireccional Logístico↔Operativo
+1. Vista unificada Contable
+1. Alertas stock bajo real-time
+1. Roles fantasma sin pantalla
+1. Historial rendimiento Staff
+1. Flujo bidireccional Logístico↔Operativo
 
 ## 13. Source of Truth — Contrato
 

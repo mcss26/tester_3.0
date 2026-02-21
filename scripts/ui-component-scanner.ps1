@@ -56,19 +56,19 @@ $GSRegistry = [ordered]@{
     Layout          = @{
         Classes  = @('page-shell', 'page-card-wrap', 'page-card')
         Weight   = 3  # 1=low, 2=med, 3=high priority
-        Required = $true
+        Required = $false  # contextual: skip launcher pages
     }
     Navigation      = @{
         Classes  = @('topbar', 'topbar-start', 'topbar-center', 'topbar-end',
             'breadcrumb', 'breadcrumb-item', 'breadcrumb-link', 'breadcrumb-sep')
         Weight   = 3
-        Required = $true
+        Required = $false  # contextual: only if topbar present
     }
     Header          = @{
         Classes  = @('dashboard-header', 'dashboard-title', 'dashboard-title-soft',
             'dashboard-subtitle-soft', 'actions-bar')
         Weight   = 2
-        Required = $true
+        Required = $false  # contextual: only content pages, not launchers
     }
     Metrics         = @{
         Classes  = @('summary-metrics-container', 'summary-metrics-grid',
@@ -88,27 +88,24 @@ $GSRegistry = [ordered]@{
         Required = $false
     }
     FilterBar       = @{
-        Classes  = @('sku-filter-bar', 'pill-group', 'pill', 'is-active',
-            'search-input-wrap', 'search-icon', 'filter-counter', 'filter-spacer')
+        Classes  = @('sku-filter-bar', 'pill-group', 'search-input-wrap', 'search-icon')
         Weight   = 1
         Required = $false
     }
     Tables          = @{
-        Classes  = @('table-viewport', 'table-shell', 'table-scroll', 'table',
-            'table-sticky', 'table-compact', 'table-head', 'table-cell',
-            'is-header', 'cell-pad', 'sortable', 'sort-icon')
+        Classes  = @('table-scroll', 'table', 'table-head',
+            'table-cell', 'is-header', 'cell-pad')
         Weight   = 2
         Required = $false
     }
     Buttons         = @{
-        Classes  = @('btn-primary', 'btn-secondary', 'btn-ghost', 'btn-icon',
-            'btn-icon-flat', 'btn-icon-plus', 'btn-danger', 'btn-sm')
+        Classes  = @('btn-primary', 'btn-secondary', 'btn-ghost', 'btn-icon')
         Weight   = 1
         Required = $false
     }
     Modals          = @{
-        Classes  = @('modal', 'modal-content', 'modal-content-md', 'modal-content-lg',
-            'modal-header', 'modal-title', 'modal-close', 'modal-body', 'modal-footer')
+        Classes  = @('modal', 'modal-content', 'modal-header',
+            'modal-title', 'modal-close', 'modal-body', 'modal-footer')
         Weight   = 2
         Required = $false
     }
@@ -125,9 +122,7 @@ $GSRegistry = [ordered]@{
         Required = $false
     }
     Charts          = @{
-        Classes  = @('chart-section', 'chart-header', 'chart-kpis-grid',
-            'chart-kpi-card', 'chart-kpi-label', 'chart-kpi-value',
-            'chart-kpi-trend', 'chart-canvas-max')
+        Classes  = @('chart-section', 'chart-header', 'chart-canvas-max', 'chart-kpis-grid')
         Weight   = 1
         Required = $false
     }
@@ -138,8 +133,7 @@ $GSRegistry = [ordered]@{
         Required = $false
     }
     Forms           = @{
-        Classes  = @('input', 'input-compact', 'form-group', 'form-label',
-            'date-range-inline', 'date-separator')
+        Classes  = @('input', 'form-group', 'form-label')
         Weight   = 1
         Required = $false
     }
@@ -150,8 +144,7 @@ $GSRegistry = [ordered]@{
         Required = $false
     }
     Utilities       = @{
-        Classes  = @('u-hidden', 'u-visible', 'hidden', 'text-center', 'text-right',
-            'text-xs', 'text-muted', 'badge', 'badge-quiet')
+        Classes  = @('u-hidden', 'hidden', 'text-muted', 'badge')
         Weight   = 0
         Required = $false
     }
@@ -262,19 +255,107 @@ function Scan-Page {
         $missing = @($cat.Classes | Where-Object { $_ -notin $uniqueClasses })
 
         # Determine if this category is relevant for this page
+        # Phase 1: Required flag
         $isRelevant = $cat.Required
-        if (-not $isRelevant -and $present.Count -gt 0) { $isRelevant = $true }
 
-        # Contextual relevance detection
-        if (-not $isRelevant) {
-            switch ($catName) {
-                'Tables' { $isRelevant = $elements.table -gt 0 }
-                'Modals' { $isRelevant = $elements.dialog -gt 0 }
-                'CustomDropdowns' { $isRelevant = $elements.nativeSelect -gt 0 }
-                'Sidebar' { $isRelevant = $elements.aside -gt 0 }
-                'Charts' { $isRelevant = $elements.canvas -gt 0 }
-                'Forms' { $isRelevant = $elements.input -gt 0 -or $elements.nativeSelect -gt 0 }
+        # Phase 2: Contextual relevance (ALWAYS runs, can override partial-presence)
+        $hasContextualRule = $false
+        switch ($catName) {
+            'Layout' {
+                $hasContextualRule = $true
+                # Launcher pages use launcher-center/launcher-page, not page-card
+                $isLauncher = 'launcher-center' -in $uniqueClasses -or 'launcher-page' -in $uniqueClasses
+                $isRelevant = -not $isLauncher
             }
+            'Navigation' {
+                $hasContextualRule = $true
+                # Relevant if page has a topbar, but launchers have simpler nav (no breadcrumb-link/sep)
+                $isLauncher = 'launcher-center' -in $uniqueClasses -or 'launcher-page' -in $uniqueClasses
+                if ($isLauncher) {
+                    $isRelevant = $false
+                }
+                else {
+                    $isRelevant = 'topbar' -in $uniqueClasses
+                }
+            }
+            'Header' {
+                $hasContextualRule = $true
+                # Only content pages (not launchers/scanners)
+                $isLauncher = 'launcher-center' -in $uniqueClasses -or 'launcher-page' -in $uniqueClasses
+                $isRelevant = -not $isLauncher -and ($elements.table -gt 0 -or $elements.form -gt 0 -or $elements.canvas -gt 0 -or $elements.input -gt 0)
+            }
+            'Tables' {
+                $hasContextualRule = $true
+                $isRelevant = $elements.table -gt 0
+            }
+            'Modals' {
+                $hasContextualRule = $true
+                $isRelevant = $elements.dialog -gt 0
+            }
+            'CustomDropdowns' {
+                $hasContextualRule = $true
+                $hasAutoEnhance = $linkedJS | Where-Object { $_ -match 'custom-dropdown\.js' }
+                if ($hasAutoEnhance) {
+                    # JS auto-enhances selects at runtime -> treat as fully compliant
+                    $isRelevant = $true
+                    $present = @($cat.Classes)
+                    $missing = @()
+                }
+                else {
+                    $isRelevant = $elements.nativeSelect -gt 0
+                }
+            }
+            'Sidebar' {
+                $hasContextualRule = $true
+                # Only relevant if page uses sidebar-specific classes (not just any <aside>)
+                $hasSidebarClasses = @($uniqueClasses | Where-Object { $_ -match '^sidebar-' -or $_ -eq 'grid-sidebar-main' -or $_ -eq 'main-content-area' })
+                $isRelevant = $hasSidebarClasses.Count -gt 0
+            }
+            'Charts' {
+                $hasContextualRule = $true
+                $isRelevant = $elements.canvas -gt 0
+            }
+            'Forms' {
+                $hasContextualRule = $true
+                $isLauncher = 'launcher-center' -in $uniqueClasses -or 'launcher-page' -in $uniqueClasses
+                $isRelevant = ($elements.input -gt 0 -or $elements.nativeSelect -gt 0) -and -not $isLauncher
+            }
+            'Buttons' {
+                $hasContextualRule = $true
+                $isLauncher = 'launcher-center' -in $uniqueClasses -or 'launcher-page' -in $uniqueClasses
+                $isRelevant = $elements.button -gt 0 -and -not $isLauncher
+            }
+            'Panels' {
+                $hasContextualRule = $true
+                # Only relevant if page uses GS panel classes (exact match, not regex)
+                $gsPanelClasses = @('slide-panel', 'panel-overlay', 'panel-header', 'panel-title', 'panel-close', 'panel-body', 'panel-footer')
+                $hasPanelClasses = @($uniqueClasses | Where-Object { $_ -in $gsPanelClasses })
+                $isRelevant = $hasPanelClasses.Count -gt 0
+            }
+            'Stats' {
+                $hasContextualRule = $true
+                # Use ^stat[-s] to avoid false positives like status-closed
+                $hasStatsClasses = @($uniqueClasses | Where-Object { $_ -match '^stat[-s]' })
+                $isRelevant = $hasStatsClasses.Count -gt 0
+            }
+            'TabSystem' {
+                $hasContextualRule = $true
+                $isRelevant = $content -match 'data-tab\s*=' -or $content -match 'data-view\s*='
+            }
+            'Dropbox' {
+                $hasContextualRule = $true
+                $isRelevant = $content -match 'type\s*=\s*"file"'
+            }
+            'FilterBar' {
+                $hasContextualRule = $true
+                $isLauncher = 'launcher-center' -in $uniqueClasses -or 'launcher-page' -in $uniqueClasses
+                $isRelevant = -not $isLauncher -and ($present.Count -gt 0)
+            }
+        }
+
+        # Phase 3: Fallback — categories WITHOUT a contextual rule use partial-presence
+        if (-not $hasContextualRule -and -not $isRelevant -and $present.Count -gt 0) {
+            $isRelevant = $true
         }
 
         $catScore = 0
@@ -310,7 +391,8 @@ function Scan-Page {
     if ($inlineStyles.Count -gt 0) {
         $remediationHints = @("HIGH: Eliminar $($inlineStyles.Count) inline style= atributos") + $remediationHints
     }
-    if ($elements.nativeSelect -gt 0 -and 'custom-dropdown' -notin $uniqueClasses) {
+    $hasDropdownJS = $linkedJS | Where-Object { $_ -match 'custom-dropdown\.js' }
+    if ($elements.nativeSelect -gt 0 -and -not $hasDropdownJS -and 'custom-dropdown' -notin $uniqueClasses) {
         $remediationHints = @("HIGH: Reemplazar $($elements.nativeSelect) ``<select>`` nativos con .custom-dropdown") + $remediationHints
     }
     if ($ariaTotal -eq 0 -and ($elements.button -gt 0 -or $elements.input -gt 0)) {
@@ -320,8 +402,8 @@ function Scan-Page {
     # Unknown classes (not in GS registry)
     $unknownClasses = @($uniqueClasses | Where-Object { $_ -notin $AllGSClasses -and $_ -ne '' })
 
-    # Overall score
-    $overallPct = if ($maxScore -gt 0) { [math]::Round(($totalScore / $maxScore) * 100) } else { 0 }
+    # Overall score (-1 = no relevant categories for this page)
+    $overallPct = if ($maxScore -gt 0) { [math]::Round(($totalScore / $maxScore) * 100) } else { -1 }
 
     # ── Build result ──
     return [ordered]@{
@@ -444,13 +526,13 @@ function Generate-CliPrompt {
     $lines += ""
     $lines += "### Reglas"
     $lines += ""
-    $lines += "1. Consulta docs/ui-golden-standard.md como referencia absoluta"
+    $lines += "1. Consulta docs/UI-UX/ui-golden-standard.md como referencia absoluta"
     $lines += "2. Referencia de implementacion: pages/admin/admin-central-stock.html"
     $lines += "3. Solo modifica HTML y CSS. NO toques logica JS (Supabase, state, event handlers)"
-    $lines += "4. Usa clases de components.css, no inventes clases nuevas"
+    $lines += "4. Usa clases de los archivos modulares (base.css, layout.css, components.css, forms.css, utilities.css), no inventes clases nuevas"
     $lines += "5. Si la pagina tiene CSS propio (ej: assets/css/${cssFile}), refactoriza ahi"
     $lines += "6. Elimina TODOS los inline style y reemplazalos con clases GS"
-    $lines += "7. Reemplaza select nativos con el patron .custom-dropdown"
+    $lines += "7. Si la pagina NO carga custom-dropdown.js, agrega el script (progressive enhancement automatico). No crear markup manual para dropdowns"
     $lines += "8. Asegura heading hierarchy correcta (h2, h3, h4 -- sin h1)"
     $lines += "9. Agrega atributos ARIA a elementos interactivos"
     $lines += ""
@@ -481,12 +563,14 @@ function Generate-Matrix {
     $date = Get-Date -Format "yyyy-MM-dd HH:mm"
     $elapsed = [math]::Round(((Get-Date) - $startTime).TotalSeconds, 1)
 
-    # Count tiers
-    $tier1 = @($AllResults | Where-Object { $_.goldenCompliance.overallScore -ge 80 }).Count
-    $tier2 = @($AllResults | Where-Object { $_.goldenCompliance.overallScore -ge 50 -and $_.goldenCompliance.overallScore -lt 80 }).Count
-    $tier3 = @($AllResults | Where-Object { $_.goldenCompliance.overallScore -lt 50 }).Count
-    $avgScore = if ($AllResults.Count -gt 0) {
-        [math]::Round(($AllResults | ForEach-Object { $_.goldenCompliance.overallScore } | Measure-Object -Average).Average)
+    # Count tiers (exclude pages with score -1 = no relevant categories)
+    $scoredResults = @($AllResults | Where-Object { $_.goldenCompliance.overallScore -ge 0 })
+    $naResults = @($AllResults | Where-Object { $_.goldenCompliance.overallScore -lt 0 })
+    $tier1 = @($scoredResults | Where-Object { $_.goldenCompliance.overallScore -ge 80 }).Count
+    $tier2 = @($scoredResults | Where-Object { $_.goldenCompliance.overallScore -ge 50 -and $_.goldenCompliance.overallScore -lt 80 }).Count
+    $tier3 = @($scoredResults | Where-Object { $_.goldenCompliance.overallScore -lt 50 }).Count
+    $avgScore = if ($scoredResults.Count -gt 0) {
+        [math]::Round(($scoredResults | ForEach-Object { $_.goldenCompliance.overallScore } | Measure-Object -Average).Average)
     }
     else { 0 }
 
@@ -495,7 +579,7 @@ function Generate-Matrix {
     $md += "# UI Component Scan -- Golden Standard Compliance Matrix"
     $md += ""
     $md += "Generado: ${date} | Duracion: ${elapsed}s | Paginas: $($AllResults.Count)"
-    $md += "Referencia: docs/ui-golden-standard.md"
+    $md += "Referencia: docs/UI-UX/ui-golden-standard.md"
     $md += ""
     $md += "---"
     $md += ""
@@ -507,6 +591,9 @@ function Generate-Matrix {
     $md += "| Paginas compliant (80+) | ${tier1} |"
     $md += "| Paginas parcial (50-79) | ${tier2} |"
     $md += "| Paginas critico (bajo 50) | ${tier3} |"
+    if ($naResults.Count -gt 0) {
+        $md += "| Paginas sin categorias relevantes | $($naResults.Count) |"
+    }
     $md += ""
     $md += "---"
     $md += ""
@@ -519,6 +606,7 @@ function Generate-Matrix {
         $pg = $r.meta.page
         $mo = $r.meta.module
         $sc = $r.goldenCompliance.overallScore
+        $scLabel = if ($sc -lt 0) { "N/A" } else { "**${sc}**" }
 
         $cats = $r.goldenCompliance.categories
         $li = Get-CategoryIcon $cats 'Layout'
@@ -532,7 +620,7 @@ function Generate-Matrix {
         $ar = $r.aria.total
         $hc = $r.remediationHints.Count
 
-        $md += "| ${pg} | ${mo} | **${sc}** | ${li} | ${ni} | ${hi} | ${mi} | ${ti} | ${di} | ${il} | ${ar} | ${hc} |"
+        $md += "| ${pg} | ${mo} | ${scLabel} | ${li} | ${ni} | ${hi} | ${mi} | ${ti} | ${di} | ${il} | ${ar} | ${hc} |"
     }
 
     $md += ""

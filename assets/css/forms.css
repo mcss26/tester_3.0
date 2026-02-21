@@ -319,3 +319,17 @@
 .custom-dropdown-option:first-child { border-radius: 4px 4px 0 0; }
 .custom-dropdown-option:last-child { border-radius: 0 0 4px 4px; }
 
+/* Selected + Disabled states */
+.custom-dropdown-option.is-selected,
+.custom-dropdown-option.selected {
+  opacity: 1;
+  color: var(--text-primary);
+  background-color: rgba(42, 42, 42, 0.4);
+}
+
+.custom-dropdown.is-disabled .custom-dropdown-trigger {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: default;
+}
+

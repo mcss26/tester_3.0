@@ -6,9 +6,10 @@
  * so existing JS business logic (event listeners, form submits) keeps working.
  *
  * Usage:
- *   - Add class="select" to any <select> → auto-enhanced on DOMContentLoaded
+ *   - Any <select class="input"> or <select class="select"> → auto-enhanced on DOMContentLoaded
  *   - Or call CustomDropdown.enhance(selectElement) manually
- *   - Or call CustomDropdown.enhanceAll('.my-selector') for bulk
+ *   - Or call CustomDropdown.enhanceAll('select.custom') for bulk
+ *   - Selects with class "u-hidden" are skipped (already paired with manual custom-dropdowns)
  *
  * @module core/custom-dropdown
  */
@@ -82,11 +83,9 @@ const CustomDropdown = (() => {
     select.setAttribute('tabindex', '-1');
     select.setAttribute('aria-hidden', 'true');
 
-    // Disabled state
+    // Disabled state (CSS-driven via .is-disabled in forms.css)
     if (select.disabled) {
       wrapper.classList.add('is-disabled');
-      trigger.style.opacity = '0.5';
-      trigger.style.pointerEvents = 'none';
     }
 
     // ── Events ──
@@ -146,7 +145,7 @@ const CustomDropdown = (() => {
 
   /**
    * Enhance all selects matching a CSS selector.
-   * @param {string} [selector='.select, select.enhance']
+   * @param {string} [selector='select.input, select.select, select.enhance']
    */
   function enhanceAll(selector = 'select.input, select.select, select.enhance') {
     document.querySelectorAll(selector).forEach((el) => {

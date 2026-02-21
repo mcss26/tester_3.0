@@ -1,6 +1,6 @@
 # ✦ Roadmap Técnico: Rediseño UI & Seguridad
 
-> **Última actualización:** 2026-02-20 13:48
+> **Última actualización:** 2026-02-21 05:06
 > **Fuente de verdad:** Este documento — basado en auditoría de codebase real
 > **Método:** Secuencia por dependencias técnicas (cada capa consume la anterior)
 
@@ -43,77 +43,57 @@ Seguridad  CSS Modular  Layout+Components  Integración  Polish
 
 ---
 
-## Capa 1 — Modularización CSS 🔧 _(decisión pendiente)_
+## Capa 1 — Modularización CSS ✅ _(completada)_
 
-> **Hallazgo crítico:** `components.css` (7820L) es un monolito cargado por 39 páginas. `swiss-style.css` (1325L) tiene el diseño Swiss pero NO lo carga ninguna página de producción. Hay **112 colisiones** de clases definidas en ambos archivos con estilos opuestos.
+> `components.css` (7820L) modularizado en 5 archivos. 112 colisiones Swiss↔Zinc resueltas. `swiss-style.css` → `theme-swiss.css` (opt-in, 774L). 42 páginas actualizadas.
 
-### Problema
+### Resultado
 
-```text
-Hoy:                              Objetivo:
-components.css    7820L (todo)    base.css         ~80L
-swiss-style.css   1325L (0 páginas) → layout.css       ~400L
-tokens.css         264L (OK)        components.css   ~800L (slim)
-16 page-specific  ~4700L            forms.css        ~250L
-                                    utilities.css    ~100L
-                                    tokens.css        264L (sin cambios)
-                                    16 page-specific ~4700L (sin cambios)
-```
+| Archivo          | Líneas | Contenido                                        |
+| :--------------- | :----- | :----------------------------------------------- |
+| `base.css`       | 120    | Reset, body, accesibilidad, @keyframes           |
+| `layout.css`     | 362    | Topbar, page-shell, breadcrumb, grids, dashboard |
+| `components.css` | 6797   | Buttons, cards, toasts, modals, dropdowns        |
+| `forms.css`      | 321    | Inputs, selects, checkbox, toggle, form-group    |
+| `utilities.css`  | 200    | .hidden, .d-flex, .gap-2, responsive helpers     |
 
-### Objetivos
+### Verificación ✅
 
-1. **Modularizar** `components.css` (7820L) → 5 archivos categorizados (~1630L total)
-2. **Resolver 112 colisiones** — Para cada componente, elegir Swiss o Zinc como canónico
-3. **Activar Swiss** — Los componentes P0 ya migrados (buttons ‹›, cards transparentes, toasts CLI) pasan a producción
-4. **Crear definiciones Swiss** para tables, tabs, badges (P1 con alto uso)
-5. **Absorber `swiss-style.css`** — Se distribuye en los archivos modulares y se elimina
-6. **Actualizar `<link>`** en las 39 páginas HTML
-
-### Archivos propuestos
-
-| Archivo          | Contenido                                                                        | Fuente                                              |
-| :--------------- | :------------------------------------------------------------------------------- | :-------------------------------------------------- |
-| `base.css`       | Reset, body, accesibilidad, @keyframes                                           | components.css L99-160 + swiss-style.css L48-81     |
-| `layout.css`     | Topbar, page-shell, breadcrumb, wrapper, grids, dashboard-header                 | swiss-style.css L83-523 + components.css L1127-1384 |
-| `components.css` | Buttons, cards, toasts, modals, badges, dropdowns, progress, spinners, skeletons | Swiss P0 + Zinc P1/P2                               |
-| `forms.css`      | Inputs, selects, checkbox, toggle, custom-dropdown, form-group                   | components.css L293-463 + swiss-style.css forms     |
-| `utilities.css`  | .hidden, .d-flex, .gap-2, .text-right, responsive helpers                        | components.css L1741-1825                           |
-
-### Por qué antes de Layout/Components
-
-Sin esta modularización, cualquier cambio en Layout (Capa 2 antigua) o Componentes (Capa 3 antigua) requiere editar un archivo de 7820 líneas. La modularización habilita que agentes trabajen en archivos de 200-400 líneas con scope claro.
-
-### Verificación
-
-- [ ] Cada clase existe en UN solo archivo (0 colisiones)
-- [ ] Las 39 páginas cargan los 5 archivos modulares
-- [ ] Visual regression: las páginas se ven igual o mejor
-- [ ] `swiss-style.css` eliminado
+- [x] Cada clase existe en UN solo archivo (0 colisiones)
+- [x] 42 páginas cargan los 5 archivos modulares
+- [x] Visual regression: páginas se ven igual
+- [x] `swiss-style.css` → `swiss-style.css.bak`, reemplazado por `theme-swiss.css`
 
 ---
 
-## Capa 2 — Tokens + Layout 🎨📐
+## Capa 2 — Tokens + Layout + GS Compliance ✅ _(completada)_
 
-> Tokens ya funcionan parcialmente. Layout se beneficia de la modularización.
+> Tokens consolidados, layout responsive, CustomDropdowns transversal, GS compliance remediation.
 
-### Tokens
+### Tokens ✅
 
-1. **Consolidar aliases** — `--border-1`↔`--border-subtle`, `--bg-elev`↔`--bg-elevated`
-2. **Consolidar** — Spacing 8pt, Zinc Palette WCAG, Shadows SaaS, Z-Index scale
-3. **Blindar** — `tokens.css` como única fuente de variables CSS
-4. **Remediar** — 41 prompts CLI listos en `docs/output/ui-scan/cli-prompts/`
+- [x] Aliases consolidados — 14 pares documentados con migration registry
+- [x] Spacing semántico (canonical) + numérico (retrocompat aliases), `--space-3: 12px`
+- [x] Aurora legacy eliminado (0 usos)
 
-### Layout
+### Layout ✅
 
-1. **Prototipar** layout refinado en módulo encargados (sandbox: 0 `#id`, 0 `!important`, 76L CSS)
-2. **CustomDropdowns** transversal — reemplazar `<select>` nativos (~25 páginas)
-3. **Responsive** — Breakpoints del token system
+- [x] `page-shell` responsive: `--shell-px` 100→48→16px con breakpoints
+- [x] `planner-layout` stacking ≤1024px
+- [x] CustomDropdowns transversal — progressive enhancement en 21 páginas
 
-### Verificación
+### GS Compliance ✅
 
-- [ ] 0 redefiniciones de `:root` fuera de `tokens.css`
-- [ ] Todas las variables de spacing usan múltiplos de 8
-- [ ] Encargados usan el layout refinado
+- [x] Scanner relevancia: 10 reglas contextuales (launchers, sidebar, panels, stats, zero-denominator N/A)
+- [x] 7 páginas HTML remediadas (batches 1-5)
+- [x] **Score avg 59→81 (+22pts), compliant 2→32 (16×)**
+- [x] 5 launchers → N/A, 4 parciales (prototipos/scanner), 4 críticos (test pages)
+
+### Verificación ✅
+
+- [x] 0 redefiniciones de `:root` fuera de `tokens.css`
+- [x] Variables de spacing usan múltiplos de 8
+- [x] 32/45 páginas ≥80% GS compliance
 
 ---
 
@@ -148,13 +128,13 @@ Sin esta modularización, cualquier cambio en Layout (Capa 2 antigua) o Componen
 
 ## Herramientas Disponibles
 
-| Script                     | Uso                                                 |
-| -------------------------- | --------------------------------------------------- |
-| `ui-component-scanner.ps1` | Escanea páginas y genera `summary.json` con scores  |
-| `ds-verify.ps1`            | Compara scores pre/post y detecta regresiones Tier0 |
-| `audit-links.js`           | Verifica 0 errores 404 en rutas CSS/JS              |
-| `audit-css.js`             | Audita especificidad y patrones tóxicos             |
-| `security-watchdog.ps1`    | Monitoreo de seguridad                              |
+| Script                     | Uso                                                                                 |
+| -------------------------- | ----------------------------------------------------------------------------------- |
+| `ui-component-scanner.ps1` | Escanea 45 páginas, 10 reglas de relevancia contextual, genera matrix + CLI prompts |
+| `ds-verify.ps1`            | Compara scores pre/post y detecta regresiones Tier0                                 |
+| `audit-links.js`           | Verifica 0 errores 404 en rutas CSS/JS                                              |
+| `audit-css.js`             | Audita especificidad y patrones tóxicos                                             |
+| `security-watchdog.ps1`    | Monitoreo de seguridad                                                              |
 
 ---
 

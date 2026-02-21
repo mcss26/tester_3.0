@@ -20,8 +20,13 @@
 
     <header class="topbar">
         <div class="topbar-start">
-            <button class="topbar-link" data-go="pages/encargados/encargado-caja-index.html"
-                aria-label="Volver a Cajas">← Volver</button>
+            <nav class="breadcrumb" aria-label="Navegación">
+                <span class="breadcrumb-item">
+                    <a class="breadcrumb-link" href="encargado-caja-index.html">Cajas</a>
+                </span>
+                <span class="breadcrumb-sep">/</span>
+                <span class="breadcrumb-item current">Noche</span>
+            </nav>
         </div>
         <nav class="topbar-center">
             <button class="topbar-link" data-go="pages/encargados/encargado-caja-personal.html"
@@ -54,16 +59,22 @@
             <!-- Content Card -->
             <div id="page-card-content" class="page-card hidden">
                 <div class="staff-dashboard">
-                    <!-- Tabs -->
-                    <div class="tabs-row">
-                        <div class="tab-bar">
-                            <button class="tab-chip active" data-view="monitor">Monitor</button>
-                            <button class="tab-chip" data-view="movements">Movimientos</button>
+                    <!-- Header -->
+                    <div class="dashboard-header">
+                        <div>
+                            <h2 class="dashboard-title dashboard-title-soft">Cierre Nocturno</h2>
+                            <p class="dashboard-subtitle-soft">Monitor de terminales y movimientos</p>
+                        </div>
+                        <div class="actions-bar">
+                            <div class="tab-bar">
+                                <button class="tab-chip active" data-view="monitor">Monitor</button>
+                                <button class="tab-chip" data-view="movements">Movimientos</button>
+                            </div>
                         </div>
                     </div>
 
                     <!-- View 1: Monitor -->
-                    <div id="view-monitor">
+                    <div id="view-monitor" class="tab-content">
                         <!-- Stats Row -->
                         <div class="filter-bar">
                             <div class="stat-row">
@@ -93,9 +104,9 @@
                                 </div>
                             </div>
                             <div class="filter-actions">
-                                <button id="btn-open-terminal-modal" class="btn-outline"
+                                <button id="btn-open-terminal-modal" class="btn btn-secondary btn-sm"
                                     aria-label="Abrir nueva terminal">+ Abrir</button>
-                                <button id="btn-request-withdrawal-modal" class="btn-action"
+                                <button id="btn-request-withdrawal-modal" class="btn btn-primary btn-sm"
                                     aria-label="Solicitar retiro de efectivo">$ Retiro</button>
                             </div>
                         </div>
@@ -107,7 +118,7 @@
                     </div>
 
                     <!-- View 2: Movements -->
-                    <div id="view-movements" class="hidden">
+                    <div id="view-movements" class="tab-content hidden">
                         <div class="log-container" id="movements-log">
                             <!-- Injected via JS -->
                         </div>
@@ -127,21 +138,21 @@
 
             <form id="form-open-terminal" class="modal-body">
                 <div class="form-group">
-                    <label class="text-label-sm">Terminal</label>
+                    <label class="form-label">Terminal</label>
                     <select id="open-select-terminal" class="input" required aria-label="Seleccionar terminal">
                         <!-- Options loaded via JS -->
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label class="text-label-sm">Responsable (Staff)</label>
+                    <label class="form-label">Responsable (Staff)</label>
                     <select id="open-select-staff" class="input" required aria-label="Seleccionar responsable">
                         <option value="">Cargando staff...</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label class="text-label-sm">Fondo Inicial ($)</label>
+                    <label class="form-label">Fondo Inicial ($)</label>
                     <div class="input-currency-wrap">
                         <span class="input-currency-symbol">$</span>
                         <input type="number" id="open-amount" class="input input-currency-field" value="0" min="0"
@@ -167,14 +178,14 @@
 
             <form id="form-withdrawal" class="modal-body">
                 <div class="form-group">
-                    <label class="text-label-sm">Terminal Origen</label>
+                    <label class="form-label">Terminal Origen</label>
                     <select id="select-terminal" class="input" required aria-label="Seleccionar terminal origen">
                         <!-- Options loaded via JS -->
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label class="text-label-sm">Monto a Retirar</label>
+                    <label class="form-label">Monto a Retirar</label>
                     <div class="input-currency-wrap">
                         <span class="input-currency-symbol">$</span>
                         <input type="number" id="input-amount" class="input input-currency-field" required min="1"
@@ -183,7 +194,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="text-label-sm">Motivo</label>
+                    <label class="form-label">Motivo</label>
                     <input type="text" id="input-reason" class="input" placeholder="Ej: Pago Proveedor, Saturation..."
                         required>
                 </div>
@@ -208,7 +219,7 @@
                 <input type="hidden" id="close-terminal-id">
 
                 <div class="form-group">
-                    <label class="text-label-sm">Efectivo ($)</label>
+                    <label class="form-label">Efectivo ($)</label>
                     <div class="input-currency-wrap">
                         <span class="input-currency-symbol">$</span>
                         <input type="number" id="close-cash-amount" class="input input-currency-field" required min="0"
@@ -217,7 +228,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="text-label-sm">Zoco / QR ($)</label>
+                    <label class="form-label">Zoco / QR ($)</label>
                     <div class="input-currency-wrap">
                         <span class="input-currency-symbol">$</span>
                         <input type="number" id="close-zoco-amount" class="input input-currency-field" required min="0"
@@ -226,13 +237,13 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="text-label-sm">Notas</label>
+                    <label class="form-label">Notas</label>
                     <input type="text" id="close-notes" class="input" placeholder="Opcional...">
                 </div>
 
                 <!-- Signature Pad -->
                 <div class="form-group">
-                    <label class="text-label-sm">Firma de Conformidad</label>
+                    <label class="form-label">Firma de Conformidad</label>
                     <div class="signature-pad-container">
                         <canvas id="signature-canvas"></canvas>
                         <button type="button" id="btn-clear-signature" class="btn-clear-sig" title="Borrar Firma">
@@ -275,7 +286,7 @@
 
             <form id="form-close-night" class="modal-body">
                 <div class="form-group">
-                    <label class="text-label-sm">Notas del Cierre</label>
+                    <label class="form-label">Notas del Cierre</label>
                     <textarea id="night-close-notes" class="input" rows="3"
                         placeholder="Comentarios generales..."></textarea>
                 </div>

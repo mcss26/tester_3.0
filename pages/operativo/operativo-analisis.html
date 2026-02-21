@@ -66,15 +66,17 @@
                             <p class="dashboard-subtitle-soft">Importación y cálculo de ideales</p>
                         </div>
                         <!-- Tab Bar in Header -->
-                        <div class="tab-bar" id="analysis-tabs-container">
-                            <button class="tab-chip active">Importar</button>
-                            <button class="tab-chip">Analizar</button>
-                            <button class="tab-chip">Histórica</button>
+                        <div class="actions-bar">
+                            <div class="tab-bar" id="analysis-tabs-container">
+                                <button class="tab-chip active">Importar</button>
+                                <button class="tab-chip">Analizar</button>
+                                <button class="tab-chip">Histórica</button>
+                            </div>
                         </div>
                     </div>
 
                     <!-- TAB CONTENT: IMPORTAR -->
-                    <div id="analysis-tab-importar" class="p-4">
+                    <div id="analysis-tab-importar" class="tab-content p-4">
                         <div class="form-group mb-4">
                             <label class="form-label" for="import-date">Fecha Operativa</label>
                             <input type="date" id="import-date" class="input input-compact">
@@ -92,7 +94,7 @@
                     </div>
 
                     <!-- TAB CONTENT: ANALIZAR -->
-                    <div id="analysis-tab-analizar" class="hidden p-4">
+                    <div id="analysis-tab-analizar" class="tab-content hidden p-4">
                         <div class="dashboard-toolbar mb-4 gap-4">
                             <div class="form-group">
                                 <label class="form-label fs-11" for="analyze-date-start">Desde</label>
@@ -111,9 +113,10 @@
                     </div>
 
                     <!-- TAB CONTENT: HISTORICA -->
-                    <div id="analysis-tab-historica" class="hidden p-4">
-                        <div class="chart-container">
-                            <canvas id="history-chart"></canvas>
+                    <div id="analysis-tab-historica" class="tab-content hidden p-4">
+                        <div class="chart-section">
+                            <h3 class="chart-header">Tendencia Histórica</h3>
+                            <canvas id="history-chart" class="chart-canvas-max"></canvas>
                         </div>
                     </div>
 
