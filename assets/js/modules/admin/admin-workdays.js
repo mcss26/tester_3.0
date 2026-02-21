@@ -761,16 +761,18 @@
         let html = '';
         const currentAllocations = state.allocations[roleId] || [];
         
-        // Filter users for this role (loose match or catch-all)
-        // Heuristic: Match user.role string with role.name (normalized)
-        // Or assume 'staff' user role covers most.
-        // TK-004: Broaden filter to ensure staff availability. 
-        // Profiles.role is system-level (admin, encargado, staff_*) and doesn't always match master_staff_roles name.
-        // We allow all operational roles to appear in the dropdown to prevent blocking.
-        const eligibleUsers = state.users.filter(u => {
-            const r = (u.role || '').toLowerCase();
-            return r.includes('staff') || r.includes('encargado') || r === 'admin' || r === 'operativo' || r === 'logistico';
-        });
+        // Filter users eligible for staff assignment
+        // ────────────────────────────────────────────────────────────
+        // Design Decision (TK-004, 2026-02-21):
+        //   profiles.role is system-level (admin, operativo, encargado_*)
+        //   and does NOT map to master_staff_roles.name (Bartender, Cajero...).
+        //   With 4 users, showing all active users in every dropdown is correct.
+        //
+        //   Structural path: when scaling to more staff, populate
+        //   profile_functions (bridge: profile_id ↔ function_id) and filter
+        //   by matching master_staff_roles.area ↔ staff_functions.name.
+        // ────────────────────────────────────────────────────────────
+        const eligibleUsers = state.users;
 
         const userOptions = eligibleUsers.map(u => `<option value="${u.id}">${window.Utils.escapeHtml(u.full_name)}</option>`).join('');
 

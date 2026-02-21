@@ -1,6 +1,6 @@
 # ✦ Roadmap Técnico: Rediseño UI & Seguridad
 
-> **Última actualización:** 2026-02-21 05:06
+> **Última actualización:** 2026-02-21 08:20
 > **Fuente de verdad:** Este documento — basado en auditoría de codebase real
 > **Método:** Secuencia por dependencias técnicas (cada capa consume la anterior)
 
@@ -18,9 +18,9 @@ Seguridad  CSS Modular  Layout+Components  Integración  Polish
 
 ---
 
-## Capa 0 — Seguridad Core 🔒 _(~90% completa)_
+## Capa 0 — Seguridad Core 🔒 _(~95% completa)_
 
-> La mayoría de los ítems están resueltos. Quedan 3 pendientes menores.
+> La mayoría de los ítems están resueltos. Quedan 2 pendientes menores.
 
 ### Completado ✅
 
@@ -32,7 +32,7 @@ Seguridad  CSS Modular  Layout+Components  Integración  Polish
 
 ### Pendiente
 
-- [ ] Descomentar `guardOrRedirect` en `scanner.js` (delegado al usuario)
+- [x] ~~Descomentar `guardOrRedirect` en `scanner.js`~~ → ✅ Restaurado + mock user eliminado + profile real (2026-02-21)
 - [ ] Expandir CSP a las demás páginas (post-piloto)
 - [ ] Refinar policies RLS genéricas (`authenticated` sin filtro de rol) en ~20 tablas
 

@@ -4,21 +4,31 @@
  */
 (async function() {
   'use strict';
-    // 1. Auth Guard — DISABLED FOR TESTING
-    // const session = await window.Auth.guardOrRedirect(['admin', 'operativo', 'staff_guardia']);
-    // if (!session) return;
+    // 1. Auth Guard
+    const session = await window.Auth.guardOrRedirect(['admin', 'operativo', 'staff_guardia']);
+    if (!session) return;
     
     if (!window.Utils.assertSbOrShowBlockingError()) return;
     const sb = window.sb;
-    const user = { id: 'mock-user' }; // Mock user for testing
+    const user = session.user;
     const MCO_BATCH_ID = window.APP_CONFIG.MCO_BATCH_ID;
 
-    // Load Profile Info — skip in mock mode
-    document.getElementById('userName').textContent = 'Operador';
-    document.getElementById('userRole').textContent = 'TEST';
-    document.getElementById('userAvatar').textContent = 'O';
+    // Load Profile Info
+    const { data: profile } = await sb
+        .from('profiles')
+        .select('full_name, role')
+        .eq('id', user.id)
+        .single();
+    const displayName = profile?.full_name || user.email || 'Operador';
+    const displayRole = profile?.role || 'operativo';
+    document.getElementById('userName').textContent = displayName;
+    document.getElementById('userRole').textContent = displayRole;
+    document.getElementById('userAvatar').textContent = displayName.charAt(0).toUpperCase();
 
-    document.getElementById('btnLogout').addEventListener('click', () => location.reload());
+    document.getElementById('btnLogout').addEventListener('click', async () => {
+        await sb.auth.signOut();
+        window.location.href = '/login.html';
+    });
 
     // 2. Elements
     const statusCard = document.getElementById('statusCard');

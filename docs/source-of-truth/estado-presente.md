@@ -44,11 +44,11 @@
 | 🟠 Encargados    |    7    | `pages/encargados/*.html` | Barra (3) + Caja (3) + Recepción                       |
 | 🟡 Staff         |    2    | `pages/staff/*.html`      | Barra + Caja                                           |
 | 🟣 Gerencia      |    1    | `pages/gerencia/*.html`   | Balance Semanal                                        |
-| 🔴 Members       |    1    | `pages/members/*.html`    | My QR                                                  |
+| 🔴 Members       |    0    | `pages/members/*.html`    | Migrado a `midnightclub` (página pública)              |
 | 🛠️ Dev Utilities |    3    | `pages/*.html`            | Components Catalog, Layout Patterns, Module Audit      |
 | 🧪 Prototypes    |    3    | `pages/prototypes/*.html` | lab-balance-semanal, lab-workdays, lab-workdays-night  |
 | 🏠 Root          |    2    | `/*.html`                 | index.html (redirect) + login.html                     |
-| **TOTAL**        | **50**  | —                         | —                                                      |
+| **TOTAL**        | **49**  | —                         | — (my-qr migrado a midnightclub)                       |
 
 ### Módulos JavaScript
 
@@ -60,12 +60,12 @@
 | Logística            |    5     | `assets/js/modules/logistica/`                 |
 | Gerencia             |    1     | `assets/js/modules/gerencia/`                  |
 | Staff                |    1     | `assets/js/modules/staff/`                     |
-| Members              |    1     | `assets/js/members/`                           |
+| Members              |    0     | `assets/js/members/` (migrado a midnightclub)  |
 | Root                 |    1     | `assets/js/modules/login.js`                   |
 | **Subtotal Módulos** |  **42**  | —                                              |
 | Core                 |    20    | `assets/js/core/`                              |
 | Importers            |    6     | `assets/js/importers/`                         |
-| **TOTAL JS**         |  **69**  | —                                              |
+| **TOTAL JS**         |  **68**  | —                                              |
 
 ### Archivos CSS (18 archivos)
 

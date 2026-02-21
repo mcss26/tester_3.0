@@ -497,3 +497,63 @@ textarea::placeholder {
   opacity: 1;
 }
 ```
+
+---
+
+## 12. Component Inventory — Estado de Implementación
+
+> Consolidado desde `truth.md` (2026-02-21).
+> Regla: Solo marcar `[x]` cuando `Select-String -Path swiss-style.css -Pattern "nombre-clase"` devuelva ≥1 resultado.
+
+### P0 — Universales (35+ páginas)
+
+- [x] Buttons (`.btn`) — 47 pages, 384+860 hits ✅
+- [x] Topbar (`.topbar`) — 45 pages, 254+6 hits ✅
+- [x] Page Shell (`.page-shell`) — 45 pages, 48+0 hits ✅
+- [x] Breadcrumb (`.breadcrumb`) — 43 pages, 267 hits ✅
+- [x] Toasts (`.toast`) — 40 pages, 48+336 hits ✅
+- [x] Cards (`.card`) — 39 pages, 313+190 hits ✅
+- [x] Dashboard Header (`.dashboard-header`) — 36 pages ✅
+- [x] Dropdown Menu (`.dropdown-menu`) — 34 pages ✅
+
+### P1 — Alto uso (13-29 páginas)
+
+- [ ] Staff Dashboard (`.staff-dashboard`) — 29 pages ⭐ NEW
+- [ ] Input/Forms (`.input`, `.form-group`) — 27 pages ⭐ NEW
+- [ ] State Blocks (`.state-block`, `.state-loader`) — 20 pages ⭐ NEW
+- [ ] Modals (`.modal`) — 17 pages, ⚠️ Alto riesgo (458 JS hits)
+- [ ] Spinner (`.spinner`) — 15 pages
+- [ ] Slide Panel (`.slide-panel`) — 14 pages ⭐ NEW
+- [ ] Tabs (`.tab-bar`, `.tab-chip`) — 13 pages ⭐ NEW
+- [ ] Table cells (`.table-cell`) — 11 pages ⭐ NEW
+- [ ] Pill Group (`.pill-group`) — 11 pages ⭐ NEW
+- [ ] Checkbox (`.checkbox`) — 10 pages
+
+### P2 — Especializados (2-9 páginas)
+
+- [ ] Workday Status (`.workday-status`) — 9 pages ⭐ NEW
+- [ ] Actions Bar (`.actions-bar`) — 8 pages ⭐ NEW
+- [ ] KPI (`.kpi-value`) — 5 pages
+- [ ] Summary Metrics (`.summary-metric`) — 4 pages ⭐ NEW
+- [ ] Progress Bar (`.progress-bar`) — 4 pages
+- [ ] Tables (`.data-table`) — 3 pages
+- [ ] Chart KPI (`.chart-kpi`) — 3 pages ⭐ NEW
+- [ ] Badge (`.badge`) — 3 pages ⭐ NEW
+- [ ] Tooltips (`.tooltip`) — 2 pages
+- [ ] Custom Dropdown (`.custom-dropdown`) — 2 pages
+- [ ] Avatar (`.avatar`) — 2 pages ⭐ NEW
+- [ ] Skeleton (`.skeleton`) — 2 pages ⭐ NEW
+
+### P3 — Uso mínimo (1 página)
+
+- [ ] Toggle Switch (`.toggle-switch`) — admin-workdays
+- [ ] Anomaly Alerts (`.anomaly-alert`) — admin-workdays
+- [ ] Status Dots (`.status-dot`) — operativo-index
+
+|   Tier    | Componentes | Páginas cubiertas |
+| :-------: | :---------: | :---------------: |
+|    P0     |      8      |       34-47       |
+|    P1     |     10      |       10-29       |
+|    P2     |     12      |        2-9        |
+|    P3     |      3      |         1         |
+| **Total** |   **33**    |         —         |

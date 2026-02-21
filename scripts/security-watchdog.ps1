@@ -11,11 +11,11 @@ param(
 
 # ── Paths ────────────────────────────────────────────────────────────────────
 $ProjectRoot = "C:\Users\siste\Documents\GitHub\tester_3.0"
-$GeminiRoot  = "C:\Users\siste\.gemini\antigravity"
-$McpConfig   = Join-Path $GeminiRoot "mcp_config.json"
-$CredDir     = Join-Path $GeminiRoot "scratch\google-drive-mcp-personal"
-$LogDir      = Join-Path $ProjectRoot "scripts\logs"
-$LogFile     = Join-Path $LogDir "watchdog-$(Get-Date -Format 'yyyyMMdd').log"
+$GeminiRoot = "C:\Users\siste\.gemini\antigravity"
+$McpConfig = Join-Path $GeminiRoot "mcp_config.json"
+$CredDir = Join-Path $GeminiRoot "scratch\google-drive-mcp-personal"
+$LogDir = Join-Path $ProjectRoot "scripts\logs"
+$LogFile = Join-Path $LogDir "watchdog-$(Get-Date -Format 'yyyyMMdd').log"
 
 $SensitiveFiles = @(
     $McpConfig,
@@ -33,42 +33,41 @@ $WatchDirs = @(
 )
 
 $Whitelist = @(
-    @{ File = 'login.js';        Pattern = 'password' },
-    @{ File = 'cms-members.js';  Pattern = 'password' },
-    @{ File = 'cms-members.js';  Pattern = 'bearer' },
+    @{ File = 'login.js'; Pattern = 'password' },
+    @{ File = 'cms-members.js'; Pattern = 'password' },
+    @{ File = 'cms-members.js'; Pattern = 'bearer' },
     @{ File = 'gbol-service.js'; Pattern = 'password' },
-    @{ File = 'gbol-service.js'; Pattern = 'bearer' },
-    @{ File = 'my-qr.js';       Pattern = 'bearer' }
+    @{ File = 'gbol-service.js'; Pattern = 'bearer' }
 )
 
-$DangerPatterns  = @('password','bearer','private_key','ssh-rsa','BEGIN RSA','BEGIN PRIVATE','api_secret')
-$SuspiciousProcs = @('keylogger','mimikatz','lazagne','nirsoft')
-$KnownMcpServers = @('supabase-mcp-server','notebooklm-mcp-server','figma-mcp-server',
-                      'drive-personal','drive-business-1','drive-business-2','stitch','memory-server')
-$GodModePaths    = @((Join-Path $GeminiRoot "god-mode"), (Join-Path $GeminiRoot "agente-0"))
+$DangerPatterns = @('password', 'bearer', 'private_key', 'ssh-rsa', 'BEGIN RSA', 'BEGIN PRIVATE', 'api_secret')
+$SuspiciousProcs = @('keylogger', 'mimikatz', 'lazagne', 'nirsoft')
+$KnownMcpServers = @('supabase-mcp-server', 'notebooklm-mcp-server', 'figma-mcp-server',
+    'drive-personal', 'drive-business-1', 'drive-business-2', 'stitch', 'memory-server')
+$GodModePaths = @((Join-Path $GeminiRoot "god-mode"), (Join-Path $GeminiRoot "agente-0"))
 
 # ── State ────────────────────────────────────────────────────────────────────
-$fileHashes    = @{}
+$fileHashes = @{}
 $initialCounts = @{}
-$alertLog      = @()
-$warnLog       = @()
+$alertLog = @()
+$warnLog = @()
 $sessionAlertLog = @()
-$sessionWarnLog  = @()
-$checkCount    = 0
-$startTime     = Get-Date
-$watchers      = @()
+$sessionWarnLog = @()
+$checkCount = 0
+$startTime = Get-Date
+$watchers = @()
 
 # ── Output ───────────────────────────────────────────────────────────────────
 function Log($level, $msg) {
     $ts = Get-Date -Format "HH:mm:ss"
     $line = "[$ts] [$level] $msg"
     switch ($level) {
-        "OK"    { Write-Host "  [OK] $msg" -ForegroundColor Green }
-        "WARN"  { Write-Host "  [!]  $msg" -ForegroundColor Yellow; $script:warnLog += $line }
-        "ALERT" { Write-Host "  [!!] $msg" -ForegroundColor Red;    $script:alertLog += $line }
-        "INFO"  { Write-Host "  [i]  $msg" -ForegroundColor DarkGray }
-        "TIP"   { Write-Host "       $msg" -ForegroundColor DarkCyan }
-        "HDR"   { Write-Host "`n$msg" -ForegroundColor Cyan }
+        "OK" { Write-Host "  [OK] $msg" -ForegroundColor Green }
+        "WARN" { Write-Host "  [!]  $msg" -ForegroundColor Yellow; $script:warnLog += $line }
+        "ALERT" { Write-Host "  [!!] $msg" -ForegroundColor Red; $script:alertLog += $line }
+        "INFO" { Write-Host "  [i]  $msg" -ForegroundColor DarkGray }
+        "TIP" { Write-Host "       $msg" -ForegroundColor DarkCyan }
+        "HDR" { Write-Host "`n$msg" -ForegroundColor Cyan }
     }
     if ($LogToFile -and $level -ne "HDR") { $line | Out-File -Append -FilePath $LogFile -Encoding utf8 }
 }
@@ -97,9 +96,11 @@ function Test-Perms {
             Log "TIP"   "Esto significa que CUALQUIER programa en tu PC puede leer este archivo."
             Log "TIP"   "Para arreglarlo, ejecuta en terminal:"
             Log "TIP"   "icacls '$f' /inheritance:r /grant:r siste:(R,W)"
-        } elseif ($c -le 2) {
+        }
+        elseif ($c -le 2) {
             Log "OK" "$($n): solo tu usuario puede acceder"
-        } else {
+        }
+        else {
             Log "WARN" "$($n): tiene $c permisos (lo normal es 1-2)"
             Log "TIP"  "Revisalo con: icacls '$f'"
         }
@@ -128,8 +129,10 @@ function Test-Integrity {
                 Log "TIP"   "  - Un proceso malicioso inyectando tokens nuevos"
                 Log "TIP"   "Revisa el contenido: code '$f'"
                 $fileHashes[$f] = $h
-            } else { Log "OK" "$($n): sin cambios" }
-        } else {
+            }
+            else { Log "OK" "$($n): sin cambios" }
+        }
+        else {
             $fileHashes[$f] = $h
             Log "OK" "$($n): fingerprint registrado ($($h.Substring(0,12))...)"
         }
@@ -147,10 +150,10 @@ function Test-NewFiles {
     Log "HDR" "3. ARCHIVOS NUEVOS SOSPECHOSOS"
     Log "INFO" "Busco archivos tipo credencial/key que no deberian estar en el proyecto"
     $suspects = Get-ChildItem $ProjectRoot -Recurse -File -EA SilentlyContinue |
-        Where-Object {
-            $_.Name -match '(credential|secret|private.key|\.pem$|\.key$|id_rsa)' -and
-            $_.Name -notmatch '(\.gitignore|package-lock|node_modules)'
-        }
+    Where-Object {
+        $_.Name -match '(credential|secret|private.key|\.pem$|\.key$|id_rsa)' -and
+        $_.Name -notmatch '(\.gitignore|package-lock|node_modules)'
+    }
     if ($suspects) {
         foreach ($s in $suspects) {
             Log "ALERT" "Archivo sospechoso encontrado: $($s.FullName)"
@@ -158,7 +161,8 @@ function Test-NewFiles {
             Log "TIP"   "Si lo creaste vos, asegurate de que este en .gitignore."
             Log "TIP"   "Si NO lo creaste, un agente o proceso lo genero. Revisalo y eliminalo."
         }
-    } else { Log "OK" "No hay archivos sospechosos en el proyecto" }
+    }
+    else { Log "OK" "No hay archivos sospechosos en el proyecto" }
 
     Log "INFO" "Verifico que no hayan aparecido archivos masivamente en carpetas clave"
     foreach ($d in $WatchDirs) {
@@ -173,12 +177,15 @@ function Test-NewFiles {
                 Log "TIP"   "un agente haciendo scaffolding sin permiso (como paso con god-mode)."
                 Log "TIP"   "Revisa que hay nuevo: Get-ChildItem '$d' -Recurse | Sort LastWriteTime -Desc | Select -First 10"
                 $initialCounts[$d] = $cnt  # Actualizo baseline para no repetir
-            } elseif ($diff -gt 0) {
+            }
+            elseif ($diff -gt 0) {
                 Log "WARN" "$($dn): +$diff archivos nuevos"
                 Log "TIP"  "Pocos archivos nuevos. Puede ser normal si estas trabajando."
                 $initialCounts[$d] = $cnt  # Actualizo baseline para no repetir
-            } else { Log "OK" "$($dn): estable ($cnt archivos)" }
-        } else {
+            }
+            else { Log "OK" "$($dn): estable ($cnt archivos)" }
+        }
+        else {
             $initialCounts[$d] = $cnt
             Log "OK" "$($dn): baseline registrado ($cnt archivos)"
         }
@@ -209,7 +216,8 @@ function Test-GitLeak {
         Log "TIP"   "  git rm --cached <archivo>"
         Log "TIP"   "  Agregar al .gitignore"
         Log "TIP"   "  git commit -m 'Remove sensitive file from tracking'"
-    } else { Log "OK" "Ningun archivo sensible esta trackeado por git" }
+    }
+    else { Log "OK" "Ningun archivo sensible esta trackeado por git" }
 }
 
 # ═════════════════════════════════════════════════════════════════════════════
@@ -226,8 +234,8 @@ function Test-CodePatterns {
     $assetsPath = Join-Path $ProjectRoot "assets"
     $found = $false
     foreach ($p in $DangerPatterns) {
-        $matches = Get-ChildItem $assetsPath -Recurse -Include *.js,*.html -EA SilentlyContinue |
-            Select-String -Pattern $p -CaseSensitive:$false -List
+        $matches = Get-ChildItem $assetsPath -Recurse -Include *.js, *.html -EA SilentlyContinue |
+        Select-String -Pattern $p -CaseSensitive:$false -List
         foreach ($m in $matches) {
             $fileName = Split-Path $m.Path -Leaf
             $isWhitelisted = $Whitelist | Where-Object { $_.File -eq $fileName -and $_.Pattern -eq $p }
@@ -268,7 +276,7 @@ function Test-GodMode {
 
     $skillsDir = Join-Path $GeminiRoot "skills"
     $sol = Get-ChildItem $skillsDir -Directory -EA SilentlyContinue |
-        Where-Object { $_.Name -match 'solidity|hack|exploit|attack' }
+    Where-Object { $_.Name -match 'solidity|hack|exploit|attack' }
     if ($sol) {
         Log "ALERT" "Skill sospechosa encontrada: $($sol.Name)"
         Log "TIP"   "Esta skill no es parte del proyecto. Un agente la instalo sin permiso."
@@ -319,20 +327,20 @@ function Test-Processes {
 
         # Identificar servicio por command line
         $svcName = switch -Regex ($cmd) {
-            'server-gdrive.*credentials-personal'    { "MCP: drive-personal"; break }
-            'server-gdrive.*credentials-business-1'  { "MCP: drive-business-1"; break }
-            'server-gdrive.*credentials-business-2'  { "MCP: drive-business-2"; break }
-            'server-gdrive|google-drive-mcp'         { "MCP: drive (cuenta?)"; break }
-            'notebooklm-mcp'                         { "MCP: notebooklm"; break }
+            'server-gdrive.*credentials-personal' { "MCP: drive-personal"; break }
+            'server-gdrive.*credentials-business-1' { "MCP: drive-business-1"; break }
+            'server-gdrive.*credentials-business-2' { "MCP: drive-business-2"; break }
+            'server-gdrive|google-drive-mcp' { "MCP: drive (cuenta?)"; break }
+            'notebooklm-mcp' { "MCP: notebooklm"; break }
             'supabase.*mcp-server|mcp-server-supaba' { "MCP: supabase"; break }
-            'figma.*mcp|figma-developer'             { "MCP: figma"; break }
-            'stitch'                                 { "MCP: stitch"; break }
-            'memory-server'                          { "MCP: memory"; break }
-            'gemini-cli'                             { "Gemini CLI"; break }
-            'ms-playwright'                          { "Playwright (browser)"; break }
-            'vertex-ai-agent|launch --local'         { "Google AI Agent"; break }
-            'npx-cli\.js.*-y\s'                      { "npx launcher"; break }
-            default                                  { "node (desconocido)" }
+            'figma.*mcp|figma-developer' { "MCP: figma"; break }
+            'stitch' { "MCP: stitch"; break }
+            'memory-server' { "MCP: memory"; break }
+            'gemini-cli' { "Gemini CLI"; break }
+            'ms-playwright' { "Playwright (browser)"; break }
+            'vertex-ai-agent|launch --local' { "Google AI Agent"; break }
+            'npx-cli\.js.*-y\s' { "npx launcher"; break }
+            default { "node (desconocido)" }
         }
 
         $serviceMap += [PSCustomObject]@{
@@ -351,7 +359,8 @@ function Test-Processes {
         $times = ($g.Group | ForEach-Object { $_.StartTime } | Sort-Object -Unique) -join ", "
         if ($g.Count -gt 1) {
             Log "WARN" "$($g.Name) x$($g.Count) (PIDs: $pids | Inicio: $times)"
-        } else {
+        }
+        else {
             Log "OK" "$($g.Name) (PID: $pids | Inicio: $times)"
         }
     }
@@ -367,7 +376,8 @@ function Test-Processes {
     # Alerta global si hay demasiados
     if ($nodeProcs.Count -gt $expectedMax) {
         Log "WARN" "Total $($nodeProcs.Count) procesos Node.js excede el maximo esperado ($expectedMax)"
-    } else {
+    }
+    else {
         Log "OK" "Total procesos Node.js: $($nodeProcs.Count) (normal, max $expectedMax)"
     }
 }
@@ -404,7 +414,8 @@ function Test-McpConfig {
                 Log "TIP"   "Revisa: code '$McpConfig'"
             }
         }
-    } catch {
+    }
+    catch {
         Log "WARN" "No se pudo leer mcp_config.json (archivo corrupto?)"
     }
 }
@@ -497,9 +508,9 @@ try {
         $checkCount++
         # Reset per-round counters (session totals preserved separately)
         $script:sessionAlertLog += $alertLog
-        $script:sessionWarnLog  += $warnLog
+        $script:sessionWarnLog += $warnLog
         $alertLog = @()
-        $warnLog  = @()
+        $warnLog = @()
         $ts = Get-Date -Format "HH:mm:ss"
         $elapsed = [math]::Round(((Get-Date) - $startTime).TotalMinutes, 0)
         Write-Host "=== Check #$checkCount @ $ts (sesion activa: $elapsed min) ===" -ForegroundColor White
@@ -516,9 +527,11 @@ try {
         Write-Host ""
         if ($alertLog.Count -gt 0) {
             Write-Host "  RESULTADO: $($alertLog.Count) ALERTAS | $($warnLog.Count) avisos" -ForegroundColor Red
-        } elseif ($warnLog.Count -gt 0) {
+        }
+        elseif ($warnLog.Count -gt 0) {
             Write-Host "  RESULTADO: TODO BIEN | $($warnLog.Count) avisos menores" -ForegroundColor Yellow
-        } else {
+        }
+        else {
             Write-Host "  RESULTADO: TODO BIEN" -ForegroundColor Green
         }
         Write-Host "  Proximo check en $IntervalSeconds segundos..." -ForegroundColor DarkGray
@@ -533,7 +546,7 @@ finally {
 
     # Merge final round into session totals
     $sessionAlertLog += $alertLog
-    $sessionWarnLog  += $warnLog
+    $sessionWarnLog += $warnLog
     $elapsed = [math]::Round(((Get-Date) - $startTime).TotalMinutes, 1)
 
     Write-Host ""

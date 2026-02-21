@@ -4,7 +4,7 @@
 > **Agente(s)**: logic
 > **Severidad**: 🔴
 > **Tier**: Tier0
-> **Estado**: Abierto
+> **Estado**: ✅ Cerrado
 
 ---
 
@@ -55,15 +55,13 @@ window.sb
 
 ## Criterio de Éxito
 
-- [ ] Cambiar cantidad de staff → badge muestra `qty × tarifa` del rol
-- [ ] KPIs (staff-subtotal, kpi-staff-cost, kpi-total-cost) actualizan inmediatamente
-- [ ] `calculateTotals()` devuelve valores correctos con tarifas reales
-- [ ] Verificar columnas de `master_staff_roles` en DB (base_salary / base_rate)
+- [x] Cambiar cantidad de staff → badge muestra `qty × tarifa` del rol
+- [x] KPIs (staff-subtotal, kpi-staff-cost, kpi-total-cost) actualizan inmediatamente
+- [x] `calculateTotals()` devuelve valores correctos con tarifas reales
+- [x] Verificar columnas de `master_staff_roles` en DB — usa `base_rate` (TK-005 eliminó `base_salary`)
 
 ## Resolución
 
-> Completar al cerrar:
->
-> - Plan: `plans/TK-003-plan.md`
-> - Commit: [ref]
-> - Verificado: [fecha]
+- **Fix**: SELECT en `admin-workdays.js:565` incluye `id, name, area, base_rate`. `calculateTotals()` L826-854 usa `role.base_rate || 0`. `renderStaffList()` L732 muestra `role.base_rate` dinámico. TK-005 eliminó las referencias fantasma a `base_salary`.
+- **Verificado**: 2026-02-21 — grep confirma 0 referencias a `base_salary`, `calculateTotals` calcula con `base_rate`.
+- **Cerrado por**: Code audit (verificación contra codebase)

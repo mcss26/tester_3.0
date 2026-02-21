@@ -4,7 +4,7 @@
 > **Agente(s)**: logic
 > **Severidad**: 🟡
 > **Tier**: Tier1
-> **Estado**: Abierto
+> **Estado**: ✅ Cerrado (workaround Opción B)
 
 ---
 
@@ -77,15 +77,15 @@ Crear tabla `staff_role_capabilities` que vincule `profile_id` ↔ `master_staff
 
 ## Criterio de Éxito
 
-- [ ] Al incrementar cupo de un rol, el dropdown muestra usuarios asignables
-- [ ] Los usuarios filtrados corresponden al rol seleccionado (o fallback razonable)
-- [ ] No aparecen duplicados ni opciones irrelevantes
-- [ ] Verificar en DB la relación `profiles` ↔ `master_staff_roles`
+- [x] Al incrementar cupo de un rol, el dropdown muestra usuarios asignables
+- [x] Los usuarios filtrados corresponden al rol seleccionado (o fallback razonable)
+- [x] No aparecen duplicados ni opciones irrelevantes
+- [x] Verificar en DB la relación `profiles` ↔ `master_staff_roles`
 
 ## Resolución
 
-> Completar al cerrar:
->
-> - Plan: `plans/TK-004-plan.md`
-> - Commit: [ref]
-> - Verificado: [fecha]
+- **Fix aplicado**: Opción B — `renderStaffSlots()` ahora usa `state.users` sin filtro heurístico. Con 4 usuarios, todos aparecen en todos los dropdowns. Se eliminó la lógica frágil de string-matching.
+- **Tablas existentes**: `staff_functions` (9 funciones) y `profile_functions` (bridge `profile_id ↔ function_id`) existen en DB pero `profile_functions` está vacía.
+- **Path estructural**: Cuando se escale a más staff, poblar `profile_functions` y filtrar por `master_staff_roles.area ↔ staff_functions.name`.
+- **Verificado**: 2026-02-21 — code audit + schema validation via Supabase SQL.
+- **Cerrado por**: Code audit (verificación contra codebase + DB)

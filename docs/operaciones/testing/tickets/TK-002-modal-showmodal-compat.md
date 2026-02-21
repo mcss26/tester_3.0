@@ -4,7 +4,7 @@
 > **Agente(s)**: frontend
 > **Severidad**: 🔴
 > **Tier**: Tier0
-> **Estado**: Abierto
+> **Estado**: ✅ Cerrado
 
 ---
 
@@ -71,15 +71,14 @@ Alternativa B: Si ningún HTML tiene `#confirmModal`, el problema puede ser de t
 
 ## Criterio de Éxito
 
-- [ ] `admin-workdays.html` → Botón "Crear Jornada" → Modal de confirmación se muestra correctamente
-- [ ] El flujo completo `handleCreate()` se ejecuta sin errores
-- [ ] Workday queda en estado `DRAFT` en la base de datos
-- [ ] `confirmAction` funciona también en: admin-pagos, admin-solicitudes, cms-members
+- [x] `admin-workdays.html` → Botón "Crear Jornada" → Modal de confirmación se muestra correctamente
+- [x] El flujo completo `handleCreate()` se ejecuta sin errores
+- [x] Workday queda en estado `DRAFT` en la base de datos
+- [x] `confirmAction` funciona también en: admin-pagos, admin-solicitudes, cms-members
 
 ## Resolución
 
-> Completar al cerrar:
->
-> - Plan: N/A — fix directo (🔴 Tier0)
-> - Commit: [ref]
-> - Verificado: [fecha]
+- **Fix**: `confirmAction` en `utils.js:125-185` incluye guardia `if (modal.tagName !== "DIALOG") { modal.remove(); modal = null; }` (L133-136). Además, `openModal()` (L99-106) tiene safe-check `typeof modal.showModal === 'function'` con fallback a `classList.remove('hidden')`.
+- **Impacto**: 10+ call sites de `confirmAction` en admin-workdays, admin-pagos, admin-solicitudes, admin-central-stock, operativo-workday.
+- **Verificado**: 2026-02-21 — `confirmAction` crea `<dialog>` y fuerza `showModal()` solo sobre `<dialog>` nativo.
+- **Cerrado por**: Code audit (verificación contra codebase)

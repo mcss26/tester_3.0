@@ -1,6 +1,6 @@
 # Estado del Proyecto: Tester 3.0 — Midnight Club
 
-**Última actualización:** 2026-02-21 05:06  
+**Última actualización:** 2026-02-21 08:20  
 **Método:** Indexado recursivo completo
 
 ---
@@ -29,7 +29,7 @@
 
 ```text
 tester_3.0/
-├── pages/          47 HTML (8 módulos: admin, encargados, operativo, logística, staff, gerencia, members, prototypes)
+├── pages/          46 HTML (7 módulos: admin, encargados, operativo, logística, staff, gerencia, prototypes)
 ├── assets/
 │   ├── css/        tokens.css + 5 modulares (base/layout/components/forms/utilities) + theme-swiss.css (opt-in) + 16 page-specific
 │   └── js/
@@ -39,7 +39,7 @@ tester_3.0/
 ├── scripts/        34 herramientas (audit, extract, scan)
 ├── docs/           design-system/ (consolidado ✅), source-of-truth/, operaciones/
 ├── supabase/       29 migraciones + 1 edge function
-├── .agent/         4 agentes, 11 workflows, 22 skills (component-builder absorbida → css-architect v3.0)
+├── .agent/         4 agentes, 12 workflows, 22 skills (component-builder absorbida → css-architect v3.0)
 └── tests/          4 suites
 ```
 
@@ -81,17 +81,17 @@ tester_3.0/
 
 ## 5. Roles y Pantallas (12 roles × 45 pantallas)
 
-| Rol       | Sub-roles                                                       | Pantallas | Acceso                       |
-| --------- | --------------------------------------------------------------- | --------- | ---------------------------- |
-| Admin     | `admin`                                                         | 20+       | Acceso total                 |
-| Contable  | `contable`                                                      | 12        | Compartidas con admin (read) |
-| Gerente   | `gerente`                                                       | 1         | `balance-semanal`            |
-| Operativo | `operativo`, `staff_operativo`                                  | 9         | ERP + Scanner                |
-| Logístico | `logistico`                                                     | 5+3       | Stock + distribución         |
-| Encargado | `enc_barra`, `enc_caja`, `enc_limpieza`, `enc_seguridad`        | 7         | Cierre nocturno              |
-| Staff     | `staff_barra`, `staff_caja`, `staff_guardia`, `staff_seguridad` | 2-3       | POS terminal                 |
-| Manager   | `manager`                                                       | 1         | QR monitor                   |
-| Member    | (sin rol explícito)                                             | 1         | `my-qr` autoservicio         |
+| Rol       | Sub-roles                                                       | Pantallas | Acceso                                    |
+| --------- | --------------------------------------------------------------- | --------- | ----------------------------------------- |
+| Admin     | `admin`                                                         | 20+       | Acceso total                              |
+| Contable  | `contable`                                                      | 12        | Compartidas con admin (read)              |
+| Gerente   | `gerente`                                                       | 1         | `balance-semanal`                         |
+| Operativo | `operativo`, `staff_operativo`                                  | 9         | ERP + Scanner                             |
+| Logístico | `logistico`                                                     | 5+3       | Stock + distribución                      |
+| Encargado | `enc_barra`, `enc_caja`, `enc_limpieza`, `enc_seguridad`        | 7         | Cierre nocturno                           |
+| Staff     | `staff_barra`, `staff_caja`, `staff_guardia`, `staff_seguridad` | 2-3       | POS terminal                              |
+| Manager   | `manager`                                                       | 1         | QR monitor                                |
+| Member    | (sin rol explícito)                                             | 0         | Migrado a `midnightclub` (página pública) |
 
 > **Nota:** 6 roles sin pantalla propia: `enc_limpieza`, `enc_seguridad`, `staff_guardia`, `staff_seguridad`, `gerente` (1), `manager` (1).
 
@@ -99,10 +99,10 @@ tester_3.0/
 
 | Métrica              | Valor                                                                                |
 | -------------------- | ------------------------------------------------------------------------------------ |
-| Pantallas operativas | 47                                                                                   |
+| Pantallas operativas | 46 (my-qr migrado a midnightclub)                                                    |
 | Tablas BD            | 65                                                                                   |
 | Vistas SQL           | 27                                                                                   |
-| Módulos JS           | 42 + 20 core + 6 importers = 68                                                      |
+| Módulos JS           | 41 + 20 core + 6 importers = 67 (my-qr.js migrado)                                   |
 | Archivos CSS         | 24 (5 modulares + 1 theme-swiss opt-in + 16 page-specific + tokens + 1 bak monolito) |
 | Migraciones SQL      | 29                                                                                   |
 | Members registrados  | 2,245                                                                                |
@@ -140,6 +140,11 @@ _El agente lee esto para no replanificar trabajo existente._
 - [x] **GS Batch 3 remediation** — 3 páginas: `operativo-analisis` (actions-bar, tab-content×3, chart-section), `encargado-caja-noche` (dashboard-header/title), `encargado-caja-personal` (dashboard-header/title). Compliant 27→30.
 - [x] **Scanner relevancia v2** — 10 reglas contextuales: Nav/Buttons/Forms/FilterBar excluyen launchers, Sidebar requiere `sidebar-*` classes, Panels usa exact GS class match (no regex), Stats usa `^stat[-s]`, zero-denominator → N/A. 5 launchers correctamente excluidos.
 - [x] **GS Batch 4+5 remediation** — `operativo-workday` (actions-bar, cell-pad). Scanner fixes generaron mejoras indirectas: `generator` 72→94, `admin-workdays` 78→86, `encargado-barra-personal` 81→90. **Score avg 59→81 (+22pts), compliant 2→32 (16×).**
+- [x] **DT-01: scanner.js auth guard** — Restaurado `guardOrRedirect`, eliminado mock user, profile conectado a DB real
+- [x] **Migración Member QR** — `my-qr.js` + `my-qr.html` eliminados de ERP, lógica vive en `midnightclub/members-only.js`. Edge function `generate-member-qr` v9 fix (`'open'`→`'ACTIVE'`)
+- [x] **Deuda técnica audit** — 18 ítems documentados (3 críticos, 4 altos, 7 medios, 4 bajos). Reporte en brain artifacts.
+- [x] **Orchestrator workflow** — `.agent/workflows/orchestrate.md` creado. Modo planificación invocable con `/orchestrate`
+- [x] **Skills-First rule** — Agregada a `GEMINI.md` §4 Filosofía de Ingeniería
 
 ## 8. Pendiente (To Do)
 
@@ -150,7 +155,7 @@ _Trabajo que el agente debe estructurar y delegar, en orden de dependencia._
 - [x] ~~`index.html` — redirect a admin sin auth~~ → Deprecado, redirige a `login.html`
 - [x] ~~RLS masivo~~ → Ya habilitado en 68/68 tablas con 113 policies (corregido diagnóstico)
 - [x] ~~CSP~~ → Meta tag piloto en `login.html`
-- [ ] Descomentar `guardOrRedirect` en `scanner.js` (delegado)
+- [x] ~~Descomentar `guardOrRedirect` en `scanner.js`~~ → ✅ Restaurado + mock user eliminado (2026-02-21)
 - [ ] Expandir CSP a las demás páginas (post-piloto)
 - [ ] Refinar policies RLS genéricas (`authenticated` sin filtro de rol) en ~20 tablas
 
@@ -194,7 +199,7 @@ _Requieren input del usuario antes de implementar._
 _Información crítica que el agente debe tener en cuenta._
 
 - ~~**`index.html`** redirige a admin sin verificar sesión~~ → ✅ Deprecado
-- **`scanner.js`** tiene guard comentado → accesible sin auth (pendiente)
+- ~~**`scanner.js`** tiene guard comentado~~ → ✅ Auth guard restaurado (2026-02-21)
 - **~20 tablas** con policies genéricas `authenticated` sin filtro de rol (aceptable con 4 users, mejorar en siguiente sprint)
 - ~~**CSS/Layout** → 112 colisiones Swiss↔Zinc~~ → ✅ Resuelto. `theme-swiss.css` como opt-in layer
 - ~~**`swiss-style.css`** → 1325L~~ → ✅ Reemplazado por `theme-swiss.css` (774L). Original en `.bak`
@@ -211,7 +216,7 @@ _Información crítica que el agente debe tener en cuenta._
 | 3   | Auth 100% client-side, sin refuerzo server-side                | 🔴   | Mitigado (body hide T1 + RLS)                |
 | 4   | RLS en solo ~6/65 tablas                                       | 🔴   | ✅ **Dato erróneo** — 68/68 con 113 policies |
 | 5   | Policies genéricas `authenticated` sin filtro por rol          | 🟡   | ~20 tablas pendientes                        |
-| 6   | Guard comentado en `scanner.js`                                | 🟡   | Pendiente                                    |
+| 6   | Guard comentado en `scanner.js`                                | 🟡   | ✅ Restaurado (2026-02-21)                   |
 | 7   | Sin CSP ni security headers                                    | 🟡   | ✅ CSP piloto en `login.html` (T4)           |
 
 ### Plan de Blindaje — 5 correcciones → [`Plan_Blindaje_Review.md`](docs/operaciones/testing/observations/Plan_Blindaje_Review.md)

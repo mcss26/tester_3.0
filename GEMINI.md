@@ -29,6 +29,7 @@ Este proyecto prioriza la mantenibilidad y la claridad sobre el código intelige
 - KISS: Simplicidad sobre optimización críptica.
 - CLEAN CODE: Escribe código legible y autodocumentado con nombres significativos, funciones pequeñas y una estructura clara.
 - Repo-First: Buscar antes de opinar (`Select-String`, `Get-ChildItem`, `Get-Content`).
+- Skills-First: Antes de resolver manualmente, revisar si hay una skill relevante en `.gemini/antigravity/skills/`.
 
 ## 5. Seguridad (Deny List)
 
@@ -38,4 +39,4 @@ Este proyecto prioriza la mantenibilidad y la claridad sobre el código intelige
 
 - Siempre verifica los cambios localmente antes de pedir una revisión.
 - Sigue los flujos de trabajo definidos en `.agent/workflows/
-- Documenta todos los cambios en el archivo `state.md` f
+- Documenta todos los cambios en el archivo `state.md`

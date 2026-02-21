@@ -1,47 +1,13 @@
-# UI/UX Golden Standard Reference
+# UI/UX Golden Standard — Pattern Library
 
-## Admin Layout — Pattern Library
-
-**Last Updated**: 2026-02-16 (Phase 6 — CSS Consolidation)
+**Last Updated**: 2026-02-21 (deduplicado con MASTER.md)
 **Reference Files**: `pages/admin/admin-central-stock.html`, `pages/admin/admin-solicitudes.html`
-**Status**: ✅ Zero Inline CSS | ✅ UI/UX Consistency | ✅ CSS Architecture | ✅ Accessibility | ✅ Consolidated Topbar
 
 ---
 
 ## Overview
 
-This document defines the golden standard UI/UX patterns established in `admin-central-stock.html`. All new pages and components should follow these patterns for consistency.
-
----
-
-## Design Tokens (tokens.css)
-
-### Color System - Zinc Palette
-
-```css
-/* Backgrounds */
---bg-body: #000000 /* Pure black */ --bg-surface: #000000 /* Pure black */
-  --bg-elevated: #18181b /* Elevated surfaces */ /* Text */
-  --text-primary: #ffffff /* Primary text */ --text-secondary: #d4d4d8
-  /* Secondary text */ --text-tertiary: #a1a1aa /* Tertiary/muted text */
-  /* Borders */ --border-subtle: rgba(255, 255, 255, 0.1)
-  --border-active: rgba(255, 255, 255, 0.2) /* Accents */
-  --brand-primary: #ffffff /* White for primary actions */ --success: #4ade80
-  --warning: #fbbf24 --danger: #f87171;
-```
-
-### Spacing System
-
-```css
---space-xs: 4px --space-sm: 8px --space-md: 16px --space-lg: 24px
-  --space-xl: 32px;
-```
-
-### Border Radius
-
-```css
---radius-sm: 4px --radius-md: 6px --radius-lg: 10px --radius-xl: 12px;
-```
+Este documento define los **patrones HTML/JS de referencia** para componentes de UI. Para **tokens de diseño** (colores, tipografía, spacing, z-index, motion), consultar [`MASTER.md`](../design-system/MASTER.md).
 
 ---
 
@@ -846,79 +812,7 @@ Use these semantic state classes:
 
 ---
 
-## Accessibility Guidelines
-
-### Keyboard Navigation
-
-- All interactive elements must be keyboard accessible
-- Use `tabindex="0"` for custom interactive elements
-- Implement keyboard handlers for Enter and Space keys
-
-### Focus Indicators
-
-```css
-:focus-visible {
-  outline: 2px solid var(--accent-focus);
-  outline-offset: 2px;
-}
-```
-
-### ARIA Labels
-
-- Use `aria-label` for icon-only buttons
-- Use `role="table"`, `role="row"`, etc. for semantic tables
-- Provide `aria-label` for complex widgets
-
-### Color Contrast
-
-- Text on dark backgrounds: minimum WCAG AA compliance
-- Primary text: #ffffff (21:1 ratio)
-- Secondary text: #d4d4d8 (15:1 ratio)
-- Tertiary text: #a1a1aa (9:1 ratio)
-
----
-
-## Animation Guidelines
-
-### Transitions
-
-Use consistent timing function:
-
-```css
-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-```
-
-### Hover Effects
-
-```css
-/* Subtle lift on hover */
-transform: translateY(-1px);
-box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
-```
-
-### Loading States
-
-Use `.state-spinner` for loading indicators:
-
-```html
-<div class="state-spinner"></div>
-```
-
----
-
-## Responsive Breakpoints
-
-```css
-/* Mobile: < 768px */
-/* Tablet: 768px - 1024px */
-/* Desktop: > 1024px */
-
-@media (max-width: 1024px) {
-  .grid-sidebar-main {
-    grid-template-columns: 1fr; /* Stack sidebar */
-  }
-}
-```
+> **Accessibility, Motion & Responsive:** Ver [`MASTER.md`](../design-system/MASTER.md) §11 (Stack Guidelines), §5 (Transitions), Pre-Delivery Checklist.
 
 ---
 
@@ -937,15 +831,6 @@ assets/css/
 ├── cms-members.css         # Page-specific: CMS Members (staff list, badges)
 └── admin-workdays.css      # Page-specific: Workdays (planner layout)
 ```
-
-### Consolidation Rules
-
-| Component                | Location          | Rationale                        |
-| :----------------------- | :---------------- | :------------------------------- |
-| Topbar `.topbar`         | `components.css`  | Shared across all admin pages    |
-| Page Shell `.page-shell` | `components.css`  | Shared layout (max-width 1440px) |
-| Dropdowns                | `components.css`  | Shared notification/user menus   |
-| Chart Section            | Page-specific CSS | Unique layout requirements       |
 
 ### Consolidation Rules
 
@@ -1212,7 +1097,15 @@ To apply golden standard to an existing page:
 
 ---
 
-## Phase 2 Consistency Changes
+## Implementation History
+
+| Phase   | Date       | Summary                                                                                              |
+| ------- | ---------- | ---------------------------------------------------------------------------------------------------- |
+| Phase 2 | 2026-02-04 | Tab consistency (sidebar → sidebar-filters, stat-card → summary-metric, filter-bar → sku-filter-bar) |
+| Phase 4 | 2026-02-05 | CSS architecture cleanup (FASE sections in admin-central-stock.css)                                  |
+| Phase 5 | 2026-02-05 | Accessibility & responsive testing (WCAG AA, 4 breakpoints verified)                                 |
+| Phase 6 | 2026-02-07 | Topbar/Breadcrumb/Dropdown consolidated to components.css                                            |
+| Dedup   | 2026-02-21 | Tokens, accessibility, animation sections moved to MASTER.md                                         |
 
 The following standardizations were applied in Phase 2 to ensure all tabs follow the golden standard:
 

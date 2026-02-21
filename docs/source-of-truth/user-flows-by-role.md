@@ -11,17 +11,17 @@
 Los notebooks documentan 6 roles (Admin, Contable, Operativo, Logístico, Encargado, Staff).
 El código **implementa 12 sub-roles**:
 
-| Rol Base      | Sub-roles en código                                                              | Pantallas                  |
-| ------------- | -------------------------------------------------------------------------------- | -------------------------- |
-| **Admin**     | `admin`                                                                          | 20+ (acceso total)         |
-| **Contable**  | `contable`                                                                       | 12 (compartidas con admin) |
-| **Gerente**   | `gerente`                                                                        | 1 (`balance-semanal`)      |
-| **Operativo** | `operativo`, `staff_operativo`                                                   | 9                          |
-| **Logístico** | `logistico`                                                                      | 5 + 3 compartidas          |
-| **Encargado** | `encargado_barra`, `encargado_caja`, `encargado_limpieza`, `encargado_seguridad` | 7                          |
-| **Staff**     | `staff_barra`, `staff_caja`, `staff_guardia`, `staff_seguridad`                  | 2-3                        |
-| **Manager**   | `manager`                                                                        | 1 (`qr/monitor`)           |
-| **Member**    | (sin rol explícito)                                                              | 1 (`my-qr`)                |
+| Rol Base      | Sub-roles en código                                                              | Pantallas                    |
+| ------------- | -------------------------------------------------------------------------------- | ---------------------------- |
+| **Admin**     | `admin`                                                                          | 20+ (acceso total)           |
+| **Contable**  | `contable`                                                                       | 12 (compartidas con admin)   |
+| **Gerente**   | `gerente`                                                                        | 1 (`balance-semanal`)        |
+| **Operativo** | `operativo`, `staff_operativo`                                                   | 9                            |
+| **Logístico** | `logistico`                                                                      | 5 + 3 compartidas            |
+| **Encargado** | `encargado_barra`, `encargado_caja`, `encargado_limpieza`, `encargado_seguridad` | 7                            |
+| **Staff**     | `staff_barra`, `staff_caja`, `staff_guardia`, `staff_seguridad`                  | 2-3                          |
+| **Manager**   | `manager`                                                                        | 1 (`qr/monitor`)             |
+| **Member**    | (sin rol explícito)                                                              | 0 (migrado a `midnightclub`) |
 
 > [!IMPORTANT]
 > Los roles `encargado_limpieza`, `encargado_seguridad`, `staff_guardia`, `staff_seguridad`, `gerente`, y `manager` no están documentados en ningún notebook pero SÍ están en el código.
@@ -279,8 +279,8 @@ staff-caja-index.html ─── POS Caja/Boletería (venta de entradas)
 
 ### Member
 
-- Solo `my-qr.html` (público, para clientes)
-- Sin gaps — es autoservicio
+- Migrado a repo público `midnightclub` (`members-only.html`)
+- QR se genera en la propia página del member via edge function `generate-member-qr`
 
 ---
 
