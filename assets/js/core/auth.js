@@ -117,6 +117,8 @@ window.Auth = {
   },
 
   async guardOrRedirect(allowedRoles = []) {
+    document.body.style.visibility = 'hidden';
+
     const allowed = (allowedRoles || [])
       .map((r) => String(r).toLowerCase().trim())
       .filter(Boolean);
@@ -145,6 +147,7 @@ window.Auth = {
       return null;
     }
 
+    document.body.style.visibility = 'visible';
     return { user: session.user, profile: { ...profile, role } };
   },
 

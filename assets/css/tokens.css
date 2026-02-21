@@ -137,8 +137,19 @@
   --sidebar-width: 240px;
   --topbar-height: 56px;
   --header-height: 64px;
+
+  /* Spacing — CANONICAL (semantic scale, 8pt-based)
+     Canonical   │ Value │ Numeric Alias
+     ────────────┼───────┼─────────────
+     --space-xs  │  4px  │ --space-1
+     --space-sm  │  8px  │ --space-2
+     --space-3   │ 12px  │ (no semantic alias)
+     --space-md  │ 16px  │ --space-4
+     --space-lg  │ 24px  │ --space-6
+     --space-xl  │ 32px  │ --space-8   */
   --space-xs: 4px;
   --space-sm: 8px;
+  --space-3:  12px;  /* NEW — fills gap between sm(8) and md(16) */
   --space-md: 16px;
   --space-lg: 24px;
   --space-xl: 32px;
@@ -149,13 +160,12 @@
   --shadow-lg:   0 16px 48px rgba(0, 0, 0, 0.4);
 
   /* Primary Aliases (used across 5+ files)
-     --primary       → 15 refs | canonical shorthand for --brand-primary
+     --primary       → 12 refs | shorthand for --brand-primary
      --primary-hover → hover state for white buttons
      --primary-light → light accent for highlights */
   --primary:        var(--brand-primary);
   --primary-hover:  var(--neutral-900);
   --primary-light:  var(--neutral-950);
-  /* --primary-color: REMOVED — was identical to --primary (1 usage migrated) */
 
   /* Z-Index Hierarchy */
   --z-base:      1;
@@ -168,38 +178,63 @@
   --z-skip-link: 9999;
   --z-progress:  10000;
 
-  /* Shorthand Aliases — OFFICIAL (actively used across codebase)
-     DO NOT REMOVE — these are embedded in 300+ references.
-     Canonical     │ Shorthand   │ Usages
-     ──────────────┼─────────────┼───────
-     --bg-body     │ --bg-base   │   8
-     --bg-elevated │ --bg-elev   │  18
-     --white-α-05  │ --surface-1 │  24
-     --white-α-10  │ --surface-2 │  16
-     --text-primary│ --text-1    │  59
-     --text-second.│ --text-2    │  40
-     --text-tertia.│ --text-3    │  33
-     --border-subt.│ --border-1  │  88
-     --border-act. │ --border-2  │  20
-     --fs-sm       │ --text-sm   │   7
-     --neutral-300 │ --bg-tert.  │   3
-     --topbar-hei. │ --topbar-h  │   5
-     16px          │ --space-4   │  43
-     20px          │ --space-5   │   4  */
-  --bg-base:    var(--bg-body);
-  --bg-elev:    var(--bg-elevated);
-  --surface-1:  var(--white-alpha-05);
-  --surface-2:  var(--white-alpha-10);
-  --text-1:     var(--text-primary);
-  --text-2:     var(--text-secondary);
-  --text-3:     var(--text-tertiary);
-  --border-1:   var(--border-subtle);
-  --border-2:   var(--border-active);
-  --text-sm:    var(--fs-sm);
+  /* ─── RETROCOMPAT ALIASES ─────────────────────────────────────────────
+     DO NOT REMOVE — embedded in 400+ references across 20+ files.
+     New code should prefer the CANONICAL name (left column).
+     These aliases exist for backward compatibility only.
+
+     MIGRATION STATUS (2026-02-21):
+     Canonical       │ Alias       │ Refs  │ Action
+     ────────────────┼─────────────┼───────┼──────────────────
+     --bg-body       │ --bg-base   │    6  │ migrate later
+     --bg-elevated   │ --bg-elev   │   18  │ migrate later
+     --white-alpha-05│ --surface-1 │   24  │ migrate later
+     --white-alpha-10│ --surface-2 │   17  │ migrate later
+     --text-primary  │ --text-1    │   61  │ migrate later
+     --text-secondary│ --text-2    │   42  │ migrate later
+     --text-tertiary │ --text-3    │   34  │ migrate later
+     --border-subtle │ --border-1  │   86  │ migrate later
+     --border-active │ --border-2  │   21  │ migrate later
+     --fs-sm         │ --text-sm   │    7  │ migrate later
+     --neutral-300   │ --bg-tert.  │    3  │ migrate later
+     --topbar-height │ --topbar-h  │    6  │ migrate later
+     ────────────────────────────────────────────────────────── */
+  --bg-base:     var(--bg-body);
+  --bg-elev:     var(--bg-elevated);
+  --surface-1:   var(--white-alpha-05);
+  --surface-2:   var(--white-alpha-10);
+  --text-1:      var(--text-primary);
+  --text-2:      var(--text-secondary);
+  --text-3:      var(--text-tertiary);
+  --border-1:    var(--border-subtle);
+  --border-2:    var(--border-active);
+  --text-sm:     var(--fs-sm);
   --bg-tertiary: var(--neutral-300);
-  --topbar-h:   var(--topbar-height);
-  --space-4:    16px;
-  --space-5:    20px;
+  --topbar-h:    var(--topbar-height);
+
+  /* ─── SPACING NUMERIC ALIASES (retrocompat) ───────────────────────────
+     Canonical: --space-xs/sm/3/md/lg/xl (semantic)
+     Numeric aliases for backward compatibility with existing code.
+
+     Numeric   │ Value │ Semantic Equivalent
+     ──────────┼───────┼────────────────────
+     --space-1 │  4px  │ --space-xs
+     --space-2 │  8px  │ --space-sm
+     --space-4 │ 16px  │ --space-md
+     --space-5 │ 20px  │ (no equivalent)
+     --space-6 │ 24px  │ --space-lg
+     --space-8 │ 32px  │ --space-xl
+     --space-12│ 48px  │ (extended)
+     --space-16│ 64px  │ (extended)
+     ──────────────────────────────────────── */
+  --space-1:  var(--space-xs);
+  --space-2:  var(--space-sm);
+  --space-4:  var(--space-md);
+  --space-5:  20px;
+  --space-6:  var(--space-lg);
+  --space-8:  var(--space-xl);
+  --space-12: 48px;
+  --space-16: 64px;
 
   /* Brand: Midnight Club Gold */
   --brand-gold:      #e4d2a8;
@@ -229,10 +264,7 @@
   --input-lh:     var(--lh-normal); /* 1.4 */
   --input-h:      var(--control-h); /* 36px */
 
-  /* Legacy Aurora Red aliases (for gradual migration) */
-  --aurora-red: #ff3b30;
-  --accent-aurora: var(--aurora-red);
-  --btn-primary-aurora-bg: var(--aurora-red);
+  /* Legacy Aurora Red — REMOVED 2026-02-21 (0 usages in production) */
 }
 
 /* =========================================================================

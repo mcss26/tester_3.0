@@ -1,0 +1,205 @@
+﻿.actions-bar
+.actions-bar-right
+.anomaly-alert
+.anomaly-alert__dismiss
+.anomaly-alert__dismiss:hover
+.anomaly-alert__icon
+.anomaly-alert__text
+.anomaly-alert--danger
+.anomaly-alert--warning
+.avatar
+.avatar.avatar-sm
+.avatar:hover
+.badge
+.badge-danger
+.badge-dot
+.badge-info
+.badge-secondary
+.badge-success
+.badge-warning
+.brand
+.brand span
+.breadcrumb
+.breadcrumb-item
+.breadcrumb-item.current
+.breadcrumb-link
+.breadcrumb-link:hover
+.breadcrumb-sep
+.breakeven-fill
+.breakeven-label
+.breakeven-meta
+.breakeven-pct
+.breakeven-track
+.breakeven-track[data-threshold="above"] .breakeven-fill
+.breakeven-track[data-threshold="at"] .breakeven-fill
+.breakeven-track[data-threshold="below"] .breakeven-fill
+.btn
+.btn::after
+.btn::before
+.btn:disabled
+.btn:focus-visible
+.btn:hover::after
+.btn-danger
+.btn-danger:hover
+.btn-ghost
+.btn-ghost:hover
+.btn-gold
+.btn-gold:hover
+.btn-icon
+.btn-icon::before, .btn-icon::after
+.btn-icon:hover
+.btn-icon-flat
+.btn-icon-flat::before, .btn-icon-flat::after
+.btn-icon-flat:hover
+.btn-label
+.btn-lg
+.btn-primary
+.btn-primary:hover
+.btn-secondary
+.btn-secondary:hover
+.btn-sm
+.card
+.card-header
+.card-title
+.checkbox
+.checkbox:checked
+.checkbox:checked::after
+.checkbox:hover
+.custom-dropdown
+.custom-dropdown.is-disabled
+.custom-dropdown.is-open .custom-dropdown-icon
+.custom-dropdown.is-open .custom-dropdown-menu
+.custom-dropdown.is-open .custom-dropdown-trigger
+.custom-dropdown-icon
+.custom-dropdown-menu
+.custom-dropdown-native
+.custom-dropdown-option
+.custom-dropdown-option.selected
+.custom-dropdown-option:hover
+.custom-dropdown-text
+.custom-dropdown-trigger
+.custom-dropdown-trigger:hover
+.dashboard-grid
+.dashboard-header
+.dashboard-header.align-start
+.dashboard-header.cell-pad
+.dashboard-subtitle
+.dashboard-subtitle-soft
+.dashboard-title
+.dashboard-title-soft
+.d-flex
+.dropdown-container
+.dropdown-container .dropdown-menu
+.dropdown-container .dropdown-menu.hidden
+.dropdown-divider
+.dropdown-header
+.dropdown-item
+.dropdown-item:hover
+.dropdown-menu
+.dropdown-menu.hidden
+.ds-section
+.gap-2
+.gap-4
+.grid-2
+.grid-3
+.grid-4
+.grid-auto
+.header-search
+.header-search .input
+.header-search .input:focus
+.header-search-icon
+.header-shortcut
+.hidden
+.icon-btn
+.icon-btn:hover
+.icon-notification
+.input
+.input::placeholder
+.input:focus
+.input-group
+.input-label
+.items-center
+.justify-between
+.mb-4
+.modal-body
+.modal-demo
+.modal-footer
+.mt-4
+.nav-item
+.nav-item.active
+.nav-item:hover
+.nav-menu
+.notification-badge
+.page-card
+.page-card-wrap
+.page-item
+.page-item.active
+.page-item:hover
+.page-shell
+.page-shell.launcher-center
+.pagination
+.pill-item
+.pill-item.active
+.pill-item:hover
+.pill-nav
+.progress
+.progress-bar
+.progress-bar-error
+.progress-bar-success
+.progress-bar-warning
+.section-desc
+.section-header
+.section-title
+.skeleton
+.skeleton::after
+.status-dot
+.status-dot-danger
+.status-dot-neutral
+.status-dot-success
+.status-dot-warning
+.tab-item
+.tab-item.active
+.tab-item:hover
+.table
+.table td
+.table th
+.table tr:hover td
+.table tr:last-child td
+.table-wrap
+.tab-wrap
+.text-center
+.text-right
+.toast
+.toast strong
+.toast-container
+.toast-error strong
+.toast-info strong
+.toast-success strong
+.toast-warning strong
+.toggle-input:checked + .toggle-slider
+.toggle-input:checked + .toggle-slider:before
+.toggle-input:focus + .toggle-slider
+.toggle-slider
+.toggle-slider:before
+.toggle-switch
+.toggle-switch .toggle-input
+.tooltip
+.tooltip-wrap
+.tooltip-wrap:hover .tooltip
+.topbar
+.topbar-center
+.topbar-end
+.topbar-start
+.w-full
+.wrapper
+.wrapper.hide-grid
+.wrapper.show-grid
+:root
+100%
+body
+from
+html
+input, select, textarea, button
+select, input:not([type="checkbox"]):not([type="radio"])
+select.input
+to

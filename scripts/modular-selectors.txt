@@ -1,0 +1,1086 @@
+﻿#module-content
+#printArea
+#reader
+#reader video
+#sticky-date
+.action-bar
+.action-card
+.action-card.is-disabled
+.action-card:active
+.action-card:hover
+.action-label
+.actions-bar
+.actions-bar-right
+.action-section
+.actions-grid
+.actions-grid-2
+.admin-ajustes .dashboard-title
+.admin-ajustes .form-row
+.admin-ajustes .staff-dashboard
+.admin-ajustes .tab-chip.active
+.admin-categorias .dashboard-title
+.admin-categorias .staff-dashboard
+.admin-categorias .table-cell
+.admin-categorias .table-head .table-cell.is-header
+.admin-categorias .table-row:hover
+.admin-categorias .table-scroll
+.admin-container
+.admin-landing .center-content
+.admin-landing .label-welcome
+.admin-landing .module-card
+.admin-landing .module-card+.module-card
+.admin-landing .module-column
+.admin-landing .module-column h3
+.admin-landing .module-column+.module-column
+.admin-landing .module-grid
+.admin-landing .qr-count
+.admin-landing .qr-dot
+.admin-landing .qr-text
+.admin-landing .qr-widget
+.admin-landing .role-tabs
+.admin-landing .status-row
+.admin-landing .tab-btn
+.admin-pagos .dashboard-title
+.admin-pagos .minimalist-grid
+.admin-pagos .staff-dashboard
+.admin-pagos .tab.is-active
+.admin-pagos .table-cell
+.admin-pagos .table-head .table-cell.is-header
+.admin-pagos .table-row:hover
+.admin-pagos .table-scroll
+.admin-pos .dashboard-title
+.admin-pos .staff-dashboard
+.admin-pos .table-cell
+.admin-pos .table-head .table-cell.is-header
+.admin-pos .table-row:hover
+.admin-pos .table-scroll
+.admin-proveedores .app-topbar
+.admin-proveedores .btn-ghost
+.admin-proveedores .dashboard-header
+.admin-proveedores .dashboard-title
+.admin-proveedores .filter-bar-compact
+.admin-proveedores .filter-pill
+.admin-proveedores .input
+.admin-proveedores .prov-details.is-inactive
+.admin-proveedores .staff-dashboard
+.admin-proveedores .status-pill
+.admin-proveedores .table
+.admin-proveedores .table td
+.admin-proveedores .table td:nth-child(1)
+.admin-proveedores .table td:nth-child(2)
+.admin-proveedores .table td:nth-child(3)
+.admin-proveedores .table td:nth-child(4)
+.admin-proveedores .table td:nth-child(5)
+.admin-proveedores .table td:nth-child(6)
+.admin-proveedores .table-cell
+.admin-proveedores .table-head .table-cell.is-header
+.admin-proveedores .table-row:hover
+.admin-proveedores .table-scroll
+.admin-proveedores .topbar-left
+.admin-proveedores .topbar-nav-group.center
+.admin-proveedores .topbar-nav-group.left
+.admin-proveedores .topbar-nav-group.right
+.admin-proveedores .topbar-nav-split
+.admin-proveedores .topbar-right
+.admin-scroll .page-card
+.admin-scroll .staff-dashboard
+.admin-scroll .staff-list.table-viewport
+.admin-sku .dashboard-title
+.admin-sku .staff-dashboard
+.admin-sku .tab-chip.active
+.admin-sku .table-cell
+.admin-sku .table-head .table-cell.is-header
+.admin-sku .table-row:hover
+.admin-sku .table-scroll
+.admin-solicitudes .dashboard-title
+.admin-solicitudes .page-card
+.admin-solicitudes .staff-dashboard
+.admin-solicitudes .tab-chip.active
+.admin-solicitudes .table-cell
+.admin-solicitudes .table-head .table-cell.is-header
+.admin-solicitudes .table-row:hover
+.admin-solicitudes .table-scroll
+.admin-solicitudes .table-viewport.table-shell
+.admin-solicitudes .table-viewport.table-shell .table-scroll
+.admin-solicitudes .table-viewport.table-shell .table-scroll .table
+.admin-stock .dashboard-title
+.admin-stock .staff-dashboard
+.admin-stock .tab-chip.active
+.admin-stock .table-cell
+.admin-stock .table-head .table-cell.is-header
+.admin-stock .table-row:hover
+.admin-stock .table-scroll
+.admin-tarifario .dashboard-title
+.admin-tarifario .staff-dashboard
+.admin-tarifario .table-cell
+.admin-tarifario .table-head .table-cell.is-header
+.admin-tarifario .table-row:hover
+.admin-tarifario .table-scroll
+.alert
+.alert-danger
+.align-start
+.analysis-ideal
+.analysis-panel
+.analysis-preview
+.analysis-row
+.analysis-stat
+.analysis-stat-label
+.analysis-stat-value
+.analysis-summary
+.animate-pulse
+.anomaly-alert
+.anomaly-alert__dismiss
+.anomaly-alert__dismiss:hover
+.anomaly-alert__icon
+.anomaly-alert__text
+.anomaly-alert--danger
+.anomaly-alert--warning
+.app-shell .table-head .table-cell.is-header
+.app-topbar
+.app-topbar .breadcrumbs
+.app-topbar .breadcrumbs .breadcrumb-item
+.app-topbar .breadcrumbs .breadcrumb-item a
+.app-topbar .breadcrumbs .breadcrumb-item.active
+.app-topbar .breadcrumbs .breadcrumb-item::after
+.app-topbar .breadcrumbs .breadcrumb-item:last-child::after
+.area-brand
+.avatar
+.avatar.avatar-sm
+.avatar:hover
+.backdrop\:backdrop-blur-sm::backdrop
+.backdrop\:bg-black\/80::backdrop
+.backdrop-blur-md
+.back-link
+.badge
+.badge-danger
+.badge-info
+.badge-neutral
+.badge-success
+.badge-warning
+.bar-dashboard
+.batches-table
+.batches-table td
+.batches-table th
+.batches-table tr:hover
+.bg-surface
+.border-b
+.border-t
+.breadcrumb
+.breadcrumb-item
+.breadcrumb-item a
+.breadcrumb-item a:hover
+.breadcrumb-item.active
+.breadcrumb-item.current
+.breadcrumb-link
+.breadcrumb-link:hover
+.breadcrumbs
+.breadcrumb-sep
+.breadcrumb-separator
+.breakeven-fill
+.breakeven-label
+.breakeven-meta
+.breakeven-pct
+.breakeven-track
+.breakeven-track[data-threshold="above"] .breakeven-fill
+.breakeven-track[data-threshold="at"] .breakeven-fill
+.breakeven-track[data-threshold="below"] .breakeven-fill
+.btn
+.btn:active
+.btn:disabled
+.btn:focus-visible
+.btn-accent
+.btn-action-custom
+.btn-action-custom:hover
+.btn-cancel-custom
+.btn-cancel-custom:hover
+.btn-clear-sig
+.btn-clear-sig:hover
+.btn-close-panel
+.btn-convocate-small
+.btn-convocate-small:hover
+.btn-danger
+.btn-danger:hover
+.btn-ghost
+.btn-ghost.is-disabled
+.btn-ghost:hover
+.btn-green
+.btn-icon
+.btn-icon.btn-lg
+.btn-icon.btn-sm
+.btn-icon:hover
+.btn-icon-flat
+.btn-icon-flat:disabled
+.btn-icon-flat:focus-visible
+.btn-icon-flat:hover
+.btn-icon-plus
+.btn-icon-sm
+.btn-icon-sm:hover
+.btn-lg
+.btn-loading
+.btn-outline
+.btn-outline:hover
+.btn-primary
+.btn-primary:hover
+.btn-red
+.btn-remove-ing
+.btn-secondary
+.btn-secondary:hover
+.btn-sm
+.btn-success
+.btn-success:hover
+.btn-xs
+.calendar-placeholder
+.cal-mini-card
+.cal-mini-day
+.cal-mini-day.is-empty
+.cal-mini-day.is-selected
+.cal-mini-day.is-today
+.cal-mini-day:hover:not(.is-empty)
+.cal-mini-dot
+.cal-mini-grid
+.cal-mini-header
+.cal-mini-month
+.cal-mini-weekdays
+.cal-mini-weekdays span
+.cal-mini-wrap
+.card
+.card-content
+.card-header
+.card-title
+.cell-narrow
+.cell-pad
+.cell-pad-sm
+.cell-pl
+.cell-pr
+.cell-strong
+.cell-stronger
+.center-content
+.chart-canvas-max
+.chart-container
+.chart-container-lg
+.chart-header
+.chart-kpi-card
+.chart-kpi-card:last-child
+.chart-kpi-label
+.chart-kpi-label-row
+.chart-kpis-grid
+.chart-kpi-success
+.chart-kpi-trend
+.chart-kpi-trend.trend-down
+.chart-kpi-trend.trend-neutral
+.chart-kpi-trend.trend-up
+.chart-kpi-value
+.chart-kpi-warning
+.checkbox
+.checkbox:checked
+.checkbox:checked::after
+.checkbox:hover
+.checkbox-inline
+.cms-members .cms-bulk-row
+.cms-members .cms-dashboard
+.cms-members .cms-list
+.cms-members .cms-tabs
+.cms-members .filter-bar-compact
+.cms-members .tab-chip.active
+.cms-members .view-container
+.cms-members .view-container .staff-list
+.col-span-full
+.convocatoria-bar
+.convocatoria-count
+.convocatoria-grid
+.convocatoria-item
+.convocatoria-progress
+.convocatoria-progress-fill
+.convocatoria-progress-fill.error
+.convocatoria-progress-fill.warning
+.convocatoria-role
+.cursor-pointer
+.custom-dropdown
+.custom-dropdown.is-open .custom-dropdown-icon
+.custom-dropdown.is-open .custom-dropdown-menu
+.custom-dropdown-icon
+.custom-dropdown-menu
+.custom-dropdown-option
+.custom-dropdown-option:first-child
+.custom-dropdown-option:hover
+.custom-dropdown-option:last-child
+.custom-dropdown-text
+.custom-dropdown-trigger
+.custom-dropdown-trigger:hover
+.danger
+.dashboard-content
+.dashboard-grid
+.dashboard-header
+.dashboard-header.align-start
+.dashboard-subtitle
+.dashboard-subtitle-soft
+.dashboard-title
+.dashboard-title-soft
+.dashboard-toolbar
+.dashboard-view
+.detail-grid
+.detail-list
+.d-flex
+.d-grid
+.disabled\:opacity-50:disabled
+.disabled\:shadow-none:disabled
+.d-none
+.dropdown
+.dropdown.open .dropdown-menu
+.dropdown-container
+.dropdown-container .dropdown-divider
+.dropdown-container .dropdown-item
+.dropdown-container .dropdown-item:hover
+.dropdown-container .dropdown-menu
+.dropdown-container .dropdown-menu.hidden
+.dropdown-divider
+.dropdown-footer
+.dropdown-header
+.dropdown-icon
+.dropdown-item
+.dropdown-item:hover
+.dropdown-item-danger
+.dropdown-item-danger:hover
+.dropdown-link
+.dropdown-link:hover
+.dropdown-menu
+.dropdown-notifications
+.dropdown-user
+.duration-300
+.empty-state
+.empty-state-action
+.empty-state-desc
+.empty-state-icon
+.empty-state-title
+.error-msg
+.error-state
+.error-state-desc
+.error-state-icon
+.error-state-retry
+.error-state-title
+.fade-in
+.fade-in-delayed
+.field
+.field label
+.field textarea
+.file-drop-area
+.filter-actions
+.filter-bar
+.filter-bar-compact
+.filter-btn.active
+.filter-group
+.filter-group .filter-pill
+.filter-group .filter-pill.active
+.filter-input
+.filter-pill
+.filter-pill.active
+.flex
+.flex-1
+.flex-col
+.flex-none
+.focus\:border-accent:focus
+.focus\:border-white\/30:focus
+.focus\:border-white\/50:focus
+.focus-box
+.font-bold
+.font-medium
+.font-mono
+.font-semibold
+.footer
+.footer-actions
+.footer-link
+.footer-link:hover
+.footer-status
+.footer-status .status-pill
+.form-group
+.form-label
+.form-row
+.form-textarea
+.form-textarea:focus
+.form-textarea:focus-visible
+.fs-11
+.fs-sm
+.fs-xs
+.gap-1
+.gap-2
+.gap-3
+.gap-4
+.gap-8
+.gap-md
+.gap-sm
+.gap-xs
+.grid-2
+.h-code
+.header-search
+.header-search .input
+.header-search-icon
+.header-shortcut
+.health-badge
+.health-badge--danger
+.health-badge--good
+.health-badge--warn
+.h-full
+.hidden
+.h-info
+.hint
+.history-chip
+.history-chip.active
+.history-chip:hover
+.history-compact
+.history-item
+.history-list
+.history-section
+.hover\:bg-blue-600\/30:hover
+.hover\:bg-red-500:hover
+.hover\:bg-white\/10:hover
+.hover\:bg-white\/5:hover
+.hover\:bg-white\/90:hover
+.hover\:brightness-110:hover
+.hover\:text-white:hover
+.hover\:underline:hover
+.hr-divider
+.h-status
+.h-status.no
+.h-status.ok
+.h-time
+.icon
+.icon-btn
+.icon-btn:hover
+.icon-notification
+.info-block
+.info-row
+.ingredient-row
+.input
+.input::placeholder
+.input:disabled
+.input:focus
+.input:focus-visible
+.input:hover
+.input[aria-invalid="true"]
+.input-auto-width
+.input-compact
+.input-currency-field
+.input-currency-symbol
+.input-currency-wrap
+.input-full
+.input-group
+.input-group .input
+.input-group-addon
+.input-reconcile-compact
+.input-xs
+.item-controls
+.item-info
+.item-meta
+.item-name
+.items-center
+.items-end
+.item-supplier-select
+.justify-between
+.kpi-badge
+.kpi-badge.kpi-fixed
+.kpi-badge.kpi-total
+.kpi-grid
+.kpi-label
+.kpi-nc-card
+.kpi-nc-card--barra
+.kpi-nc-card--caja
+.kpi-nc-card--digital
+.kpi-nc-card--qr
+.kpi-nc-footer
+.kpi-nc-grid
+.kpi-nc-label
+.kpi-nc-spark
+.kpi-nc-trend
+.kpi-nc-trend__arrow
+.kpi-nc-trend--down
+.kpi-nc-trend--up
+.kpi-nc-value
+.kpi-strip
+.kpi-value
+.label
+.label-welcome
+.large-monitor
+.lg\\:grid-cols-3
+.link-row
+.link-row .footer-link
+.link-row .footer-link:hover
+.list-reset
+.list-stack
+.list-stack-row
+.list-stack-row .row-info
+.list-stack-row:hover
+.loading-spinner
+.loading-spinner::before
+.login-staff-divider
+.m-0
+.max-h-200
+.max-h-250
+.max-h-300
+.mb-0
+.mb-1
+.mb-2
+.mb-3
+.mb-4
+.mb-6
+.mb-8
+.mb-lg
+.mb-md
+.mb-sm
+.mb-xs
+.md\\:flex-row
+.md\\:grid-cols-2
+.md\\:grid-cols-3
+.minimalist-grid
+.ml-2
+.modal-actions
+.modal-body
+.modal-card
+.modal-card.modal-md
+.modal-card-sm
+.modal-close
+.modal-footer
+.modal-header
+.modal-overlay
+.modal-overlay.hidden
+.modal-overlay.is-visible
+.modal-panel-inner
+.modal-text
+.modal-title
+.mode-selection
+.module-card
+.module-card:hover
+.module-column
+.module-column h3
+.module-grid
+.module-grid.active
+.mt-0
+.mt-1
+.mt-2
+.mt-3
+.mt-4
+.mt-6
+.mt-auto
+.mt-lg
+.mt-md
+.mt-sm
+.mt-xs
+.muted
+.my-md
+.my-sm
+.nav-progress-bar
+.nav-progress-bar.active
+.nav-progress-bar.complete
+.night-close-info
+.night-modal
+.night-modal::backdrop
+.note
+.notes-actions
+.notes-input
+.notes-panel
+.notif-head
+.notification-badge
+.notification-desc
+.notification-item
+.notification-item:hover
+.notification-item:last-of-type
+.notification-time
+.notification-title
+.notif-item
+.notif-item:hover
+.notif-list
+.notif-panel-minimal
+.notif-sub
+.notif-text
+.notif-title
+.notif-value
+.no-underline
+.nowrap
+.opacity-60
+.open\:animate-fade-in[open]
+.operativo-header
+.operativo-user-mode
+.operativo-user-name
+.p-0
+.p-2
+.p-4
+.p-6
+.page-card
+.page-card-empty
+.page-card-empty.is-visible
+.page-card-wrap
+.page-header
+.page-header-controls
+.page-header-title h2
+.page-header-title p
+.page-shell
+.page-title
+.panel-body
+.panel-close
+.panel-close:hover
+.panel-error
+.panel-footer
+.panel-header
+.panel-header::before
+.panel-inline
+.panel-overlay
+.panel-overlay.open
+.panel-scroll
+.panel-staff
+.panel-title
+.panel-title-row
+.panel-title-row span
+.pill
+.pill.is-active
+.pill:hover
+.pill-count
+.placeholder-message
+.planner-canvas
+.planner-col
+.planner-dashboard
+.planner-extras
+.planner-footer
+.planner-grid
+.planner-item
+.planner-item.priority-high
+.planner-item:hover
+.planner-layout
+.planner-panel
+.planner-row
+.planner-section
+.planner-section .panel-title-row
+.planner-sidebar
+.pnl-breakeven-bar
+.pnl-breakeven-fill
+.pnl-breakeven-fill.be-over
+.pnl-breakeven-fill.be-under
+.pnl-card
+.pnl-card__title
+.pnl-cash-diff
+.pnl-column
+.pnl-column-title
+.pnl-divider
+.pnl-label
+.pnl-line
+.pnl-line-total
+.pnl-margin
+.pnl-margin.pnl-negative
+.pnl-margin.pnl-positive
+.pnl-negative
+.pnl-net
+.pnl-net-label
+.pnl-net-result
+.pnl-net-row
+.pnl-net-value
+.pnl-positive
+.pnl-row
+.pnl-row__value
+.pnl-summary-grid
+.pnl-value
+.precarga-delta
+.precarga-delta.text-error
+.precarga-delta.text-success
+.precarga-hint
+.preflight-card
+.preflight-card__title
+.preflight-detail
+.preflight-fail
+.preflight-footer
+.preflight-icon
+.preflight-info
+.preflight-item
+.preflight-item.is-fail
+.preflight-item.is-fail .preflight-item__icon
+.preflight-item.is-pass .preflight-item__icon
+.preflight-item:hover
+.preflight-item__icon
+.preflight-item__label
+.preflight-label
+.preflight-list
+.preflight-override
+.preflight-override.is-confirming
+.preflight-override:hover
+.preflight-pass
+.preflight-warn
+.preview-area
+.preview-card
+.preview-card-caption
+.preview-card-qr
+.preview-header
+.preview-title
+.profile-avatar
+.profile-card
+.profile-card:hover
+.profile-info
+.profile-item
+.profile-label
+.profile-name
+.profile-role
+.profiles-grid
+.profile-status
+.profile-value
+.progress
+.progress-bar
+.progress-bar-error
+.progress-bar-fill
+.progress-bar-success
+.progress-bar-warning
+.prov-row.is-open
+.prov-row.is-open .row-caret
+.pt-2
+.pt-4
+.py-2
+.py-3
+.py-4
+.qr-card
+.qr-count
+.qr-dot
+.qr-grid
+.qr-text
+.qr-widget
+.qr-widget.active
+.reconcile-card
+.reconcile-card .dashboard-header
+.reconcile-grid
+.role-card
+.role-info
+.role-subtitle
+.role-subtitle strong
+.role-tabs
+.row-caret
+.row-clickable
+.row-details
+.row-details.is-open
+.row-flex
+.row-subtle
+.sc-actions
+.scanner-overlay
+.scanner-section
+.sc-header
+.sc-info
+.sc-info span strong
+.scroll-cap-md
+.scroll-cap-sm
+.scroll-costs
+.scroll-staff
+.sc-status
+.sc-status.closed
+.sc-status.open
+.sc-subtitle
+.sc-title
+.search-box
+.section-header
+.section-header span
+.section-icon
+.section-title
+.section-title.muted
+.select
+.select:focus
+.select:hover
+.self-end
+.session-card
+.session-card:hover
+.session-grid
+.shadow-2xl
+.shadow-alert
+.shadow-lg
+.shimmer
+.shimmer::after
+.signature-pad-container
+.signature-placeholder
+.signature-placeholder span
+.skeleton
+.skeleton-card
+.skeleton-text
+.skeleton-text.long
+.skeleton-text.medium
+.skeleton-text.short
+.skip-link
+.skip-link:focus
+.slide-panel
+.slide-panel.open
+.slider
+.slider::before
+.sm\\:text-lg
+.spinner
+.spinner-lg
+.spinner-sm
+.split-view
+.stack-lg
+.staff-dashboard
+.staff-dashboard.auto-height
+.staff-list
+.staff-list.table-viewport
+.staff-row
+.staff-row+.staff-row
+.staff-sidebar
+.staff-status
+.staff-status-accepted
+.staff-status-pending
+.staff-status-rejected
+.stat-card
+.stat-delta
+.stat-delta.text-error
+.stat-delta.text-success
+.stat-delta.text-warning
+.state-block
+.state-block .dashboard-title
+.state-block.loading
+.state-desc
+.state-loader
+.state-spinner
+.state-title
+.stat-label
+.stat-row
+.stats-grid
+.status-card
+.status-card.error
+.status-card.idle
+.status-card.success
+.status-card.warning
+.status-container
+.status-details h3
+.status-details p
+.status-error
+.status-icon
+.status-info
+.status-line
+.status-line.is-bad
+.status-neutral
+.status-pill
+.status-success
+.status-tab
+.status-timeline
+.status-warning
+.stat-value
+.stat-value-hero
+.sticky-footer
+.sticky-footer .footer-actions
+.stock-input-wrap
+.stock-shell .staff-list:not(.table-viewport)
+.stock-shell .staff-list:not(.table-viewport)>.table-scroll
+.summary-metric-card
+.summary-metric-card:last-child
+.summary-metric-label
+.summary-metrics-container
+.summary-metrics-grid
+.summary-metric-value
+.switch
+.switch input
+.switch input:checked+.slider
+.switch input:checked+.slider::before
+.switch-sm
+.system-status-pill
+.system-status-pill.status-closed
+.system-status-pill.status-open
+.tab-btn
+.tab-btn.active
+.tab-btn.active::after
+.tab-btn:hover
+.tab-chip
+.tab-chip.active
+.tab-chip:hover
+.tab-content
+.tab-group-logic
+.tab-group-logic .topbar-link
+.tab-group-logic .topbar-link.active
+.table
+.table-cell
+.table-compact .table-cell
+.table-compact th.table-cell
+.table-foot-sticky
+.table-head .table-cell.is-header
+.table-input
+.table-input:disabled
+.table-input:focus
+.table-row:hover
+.table-scroll .table-head .table-cell.is-header
+.table-shell
+.table-shell .table
+.table-shell.table-wrap>.table-scroll
+.table-shell>.table-scroll
+.table-sticky thead th
+.table-viewport
+.table-viewport-60vh
+.table-viewport-limited
+.table-viewport-sm
+.table-wrap
+.t-code
+.text-\[10px\]
+.text-accent
+.text-center
+.text-error
+.text-label-sm
+.text-left
+.text-lg
+.text-md
+.text-mono-lg
+.text-primary
+.text-right
+.text-secondary
+.text-sm
+.text-success
+.text-tertiary
+.text-xs
+.ticket
+.ticket.qr-zone
+.ticket-inner
+.timeline
+.timeline::before
+.timeline-connector
+.timeline-connector.is-filled
+.timeline-content
+.timeline-dot
+.timeline-header
+.timeline-header .font-bold
+.timeline-header .text-xs
+.timeline-item
+.timeline-item.is-active .timeline-marker
+.timeline-item:last-child
+.timeline-label
+.timeline-marker
+.timeline-step
+.timeline-step.is-active .timeline-dot
+.timeline-step.is-active .timeline-label
+.timeline-step.is-completed .timeline-dot
+.timeline-step.is-completed .timeline-label
+.title-name
+.toast
+.toast.show
+.toast-close
+.toast-container
+.toast-error
+.toast-icon
+.toast-info
+.toast-message
+.toast-success
+.toast-warning
+.toggle
+.toggle::after
+.toggle:checked
+.toggle:checked::after
+.toggle-input:checked + .toggle-slider
+.toggle-input:checked + .toggle-slider:before
+.toggle-input:focus + .toggle-slider
+.toggle-slider
+.toggle-slider:before
+.toggle-switch
+.toggle-switch .toggle-input
+.tooltip
+.tooltip-wrap
+.tooltip-wrap:hover .tooltip
+.top-actions
+.topbar
+.top-bar
+.topbar-back
+.topbar-brand
+.topbar-center
+.topbar-end
+.topbar-left
+.topbar-link
+.topbar-link.active
+.topbar-link.is-center
+.topbar-link.is-center.active
+.topbar-link.is-fade-1
+.topbar-link.is-fade-2
+.topbar-link.is-fade-3
+.topbar-link.is-fade-3:hover
+.topbar-link:hover
+.topbar-nav-group
+.topbar-nav-group.center
+.topbar-nav-group.right
+.topbar-nav-split
+.topbar-pill
+.topbar-pill-quiet
+.topbar-right
+.topbar-right .system-status-pill
+.topbar-right::before
+.topbar-start
+.topbar-title
+.t-qr
+.t-qr canvas
+.transition-all
+.transition-colors
+.t-title
+.type-btn.active
+.u-hidden
+.u-mb-16
+.u-mt-24
+.user-info
+.user-name
+.user-profile
+.u-text-center
+.u-text-right
+.u-visible
+.visually-hidden
+.w-100
+.w-200
+.w-70
+.w-auto
+.welcome-section
+.w-fit
+.w-full
+.wk-tab
+.wk-tab.is-active
+.wk-tab:hover
+.wk-tab__icon
+.wk-tab--night.is-active
+.wk-tabs
+.workday-dot
+.workday-status
+.workday-status.status-closed
+.workday-status.status-open
+.workday-status.status-planning
+[tabindex="-1"]:focus-visible
+0%
+0%, 100%
+100%
+50%
+a
+a:hover
+body
+body.admin-shell .actions-bar
+body.admin-shell .actions-bar .tab-bar
+body.admin-shell .chart-section
+body.admin-shell .dashboard-header.align-start
+body.admin-shell .dashboard-subtitle
+body.admin-shell .dashboard-subtitle-soft
+body.admin-shell .page-card-empty
+body.admin-shell .page-card-empty.is-visible
+body.admin-shell .pill
+body.admin-shell .pill.is-active
+body.admin-shell .pill:hover
+body.admin-shell .staff-dashboard
+body.admin-shell .summary-metric-primary
+body.admin-shell .summary-metric-success
+body.admin-shell .summary-metric-tertiary
+body.admin-shell .summary-metric-warning
+body.app-shell
+body.initial-load
+body.is-leaving
+body.login
+body.login .auth-field
+body.login .btn-primary
+body.login .btn-primary:active
+body.login .btn-primary:hover
+body.login .card
+body.login .card::before
+body.login .error-message
+body.login .error-message:not(:empty)
+body.login .header
+body.login .header h1
+body.login .staff-hint
+body.login input
+body.login input::placeholder
+body.login input:focus
+body.login label
+body.qr-scanner
+dialog.modal
+dialog.modal .modal-content
+dialog.modal .modal-content-lg
+dialog.modal .modal-content-md
+dialog.modal .modal-content-sm
+dialog.modal::backdrop
+from
+select.form-select
+select.form-select option
+to

@@ -1,0 +1,139 @@
+﻿.actions-bar
+.actions-bar-right
+.anomaly-alert
+.anomaly-alert__dismiss
+.anomaly-alert__dismiss:hover
+.anomaly-alert__icon
+.anomaly-alert__text
+.anomaly-alert--danger
+.anomaly-alert--warning
+.avatar
+.avatar.avatar-sm
+.avatar:hover
+.badge
+.badge-danger
+.badge-info
+.badge-success
+.badge-warning
+.breadcrumb
+.breadcrumb-item
+.breadcrumb-item.current
+.breadcrumb-link
+.breadcrumb-link:hover
+.breadcrumb-sep
+.breakeven-fill
+.breakeven-label
+.breakeven-meta
+.breakeven-pct
+.breakeven-track
+.breakeven-track[data-threshold="above"] .breakeven-fill
+.breakeven-track[data-threshold="at"] .breakeven-fill
+.breakeven-track[data-threshold="below"] .breakeven-fill
+.btn
+.btn:disabled
+.btn:focus-visible
+.btn-danger
+.btn-danger:hover
+.btn-ghost
+.btn-ghost:hover
+.btn-icon
+.btn-icon:hover
+.btn-icon-flat
+.btn-icon-flat:hover
+.btn-lg
+.btn-primary
+.btn-primary:hover
+.btn-secondary
+.btn-secondary:hover
+.btn-sm
+.card
+.card-header
+.card-title
+.checkbox
+.checkbox:checked
+.checkbox:checked::after
+.checkbox:hover
+.custom-dropdown
+.custom-dropdown.is-open .custom-dropdown-icon
+.custom-dropdown.is-open .custom-dropdown-menu
+.custom-dropdown-icon
+.custom-dropdown-menu
+.custom-dropdown-option
+.custom-dropdown-option:hover
+.custom-dropdown-text
+.custom-dropdown-trigger
+.custom-dropdown-trigger:hover
+.dashboard-grid
+.dashboard-header
+.dashboard-header.align-start
+.dashboard-subtitle
+.dashboard-subtitle-soft
+.dashboard-title
+.dashboard-title-soft
+.d-flex
+.dropdown-container
+.dropdown-container .dropdown-menu
+.dropdown-container .dropdown-menu.hidden
+.dropdown-divider
+.dropdown-header
+.dropdown-item
+.dropdown-item:hover
+.dropdown-menu
+.gap-2
+.gap-4
+.grid-2
+.header-search
+.header-search .input
+.header-search-icon
+.header-shortcut
+.hidden
+.icon-btn
+.icon-btn:hover
+.icon-notification
+.input
+.input::placeholder
+.input:focus
+.input-group
+.items-center
+.justify-between
+.mb-4
+.modal-body
+.modal-footer
+.mt-4
+.notification-badge
+.page-card
+.page-card-wrap
+.page-shell
+.progress
+.progress-bar
+.progress-bar-error
+.progress-bar-success
+.progress-bar-warning
+.section-header
+.section-title
+.skeleton
+.table
+.table-wrap
+.text-center
+.text-right
+.toast
+.toast-container
+.toggle-input:checked + .toggle-slider
+.toggle-input:checked + .toggle-slider:before
+.toggle-input:focus + .toggle-slider
+.toggle-slider
+.toggle-slider:before
+.toggle-switch
+.toggle-switch .toggle-input
+.tooltip
+.tooltip-wrap
+.tooltip-wrap:hover .tooltip
+.topbar
+.topbar-center
+.topbar-end
+.topbar-start
+.w-full
+100%
+body
+from
+to

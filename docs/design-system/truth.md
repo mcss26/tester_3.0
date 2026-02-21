@@ -2,7 +2,7 @@
 
 > Plan vigente: [ROADMAP.md](../../ROADMAP.md)
 > CSS target: Arquitectura modular (ver ROADMAP §2)
-> Prompt orchestrador: [PROMPT-ds-redesign-v2.md](./PROMPT-ds-redesign-v2.md)
+> Prompt orchestrador: [PROMPT-ds-redesign-v2.md](./prompts/PROMPT-ds-redesign-v2.md)
 > Verificado por grep (PowerShell Select-String) el 2026-02-19.
 > Sin checks = sin evidencia. Scan: 49 HTML + 44 JS files.
 
@@ -145,12 +145,12 @@ Solo marcar `[x]` cuando `Select-String -Path swiss-style.css -Pattern "nombre-c
 
 ## Archivos de referencia
 
-| Archivo                   | Path                                                 | Rol                              |
-| ------------------------- | ---------------------------------------------------- | -------------------------------- |
-| tokens.css                | `assets/css/tokens.css`                              | Paleta canónica — INMUTABLE      |
-| MASTER.md                 | `.agent/design-system/MASTER.md`                     | Spec visual Swiss Style          |
-| swiss-style.css           | `assets/css/swiss-style.css`                         | Destino de producción            |
-| components.css            | `assets/css/components.css`                          | Ref funcional legacy (NO copiar) |
-| design-system-visual.html | `docs/_generated/frontend/design-system-visual.html` | Referencia visual                |
-| ROADMAP.md                | `ROADMAP.md`                                         | Plan maestro unificado           |
-| DS Rules                  | `.gemini/design-system.md`                           | R1-R9 para todo agente           |
+| Archivo                   | Path                             | Rol                              |
+| ------------------------- | -------------------------------- | -------------------------------- |
+| tokens.css                | `assets/css/tokens.css`          | Paleta canónica — INMUTABLE      |
+| MASTER.md                 | `docs/design-system/MASTER.md`   | Spec visual Swiss Style          |
+| swiss-style.css           | `assets/css/swiss-style.css`     | Destino de producción            |
+| components.css            | `assets/css/components.css`      | Ref funcional legacy (NO copiar) |
+| design-system-visual.html | `docs/design-system/visual.html` | Referencia visual                |
+| ROADMAP.md                | `ROADMAP.md`                     | Plan maestro unificado           |
+| DS Rules                  | `.gemini/design-system.md`       | R1-R9 para todo agente           |

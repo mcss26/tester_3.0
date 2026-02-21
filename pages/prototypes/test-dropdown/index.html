@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>CustomDropdown Test</title>
+  <link rel="stylesheet" href="../../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../../assets/css/forms.css">
+  <style>
+    body { background: #0a0a0a; color: #e5e5e5; font-family: system-ui, sans-serif; padding: 40px; }
+    h2 { margin: 24px 0 12px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em; color: #888; }
+    .test-row { display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-start; margin-bottom: 24px; }
+    .test-case { display: flex; flex-direction: column; gap: 8px; min-width: 200px; }
+    label { font-size: 12px; color: #666; }
+    #log { margin-top: 32px; padding: 16px; background: #111; border: 1px solid #333; border-radius: 8px; font-family: monospace; font-size: 12px; max-height: 200px; overflow-y: auto; }
+  </style>
+</head>
+<body>
+  <h1>🧪 CustomDropdown Test</h1>
+
+  <h2>Static selects with class="input"</h2>
+  <div class="test-row">
+    <div class="test-case">
+      <label>Terminal</label>
+      <select id="s1" class="input">
+        <option value="">Seleccionar...</option>
+        <option value="barra-1">Barra 1</option>
+        <option value="barra-2">Barra 2</option>
+        <option value="cocina">Cocina</option>
+      </select>
+    </div>
+    <div class="test-case">
+      <label>Método de pago</label>
+      <select id="s2" class="input">
+        <option value="efectivo">Efectivo</option>
+        <option value="tarjeta">Tarjeta</option>
+        <option value="transfer">Transferencia</option>
+      </select>
+    </div>
+    <div class="test-case">
+      <label>Rol (disabled)</label>
+      <select id="s3" class="input" disabled>
+        <option value="admin">Administrador</option>
+        <option value="enc">Encargado</option>
+      </select>
+    </div>
+  </div>
+
+  <h2>Select with class="select"</h2>
+  <div class="test-row">
+    <div class="test-case">
+      <label>Categoría</label>
+      <select id="s4" class="select">
+        <option value="all">Todas</option>
+        <option value="bebidas">Bebidas</option>
+        <option value="comidas">Comidas</option>
+        <option value="insumos">Insumos</option>
+      </select>
+    </div>
+  </div>
+
+  <h2>Should NOT enhance (u-hidden)</h2>
+  <div class="test-row">
+    <div class="test-case">
+      <label>Hidden select (u-hidden)</label>
+      <select id="s5" class="u-hidden">
+        <option value="a">A</option>
+        <option value="b">B</option>
+      </select>
+      <span style="font-size:12px;color:#555">(should stay native/hidden)</span>
+    </div>
+  </div>
+
+  <div id="log">📋 Event log:<br></div>
+
+  <script>
+    // Log change events to prove native select sync
+    document.querySelectorAll('select').forEach(s => {
+      s.addEventListener('change', e => {
+        const log = document.getElementById('log');
+        log.innerHTML += `✅ ${s.id} changed → "${s.value}"<br>`;
+        log.scrollTop = log.scrollHeight;
+      });
+    });
+  </script>
+  <script defer src="../../../assets/js/core/custom-dropdown.js"></script>
+</body>
+</html>
