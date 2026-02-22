@@ -1,6 +1,19 @@
+/**
+ * @fileoverview Work Day and Attendance Management Helper.
+ * Manages the "ACTIVE" work day state and staff planning/convocation statistics.
+ * 
+ * @module WorkDayHelper
+ */
+
+/**
+ * @namespace WorkDayHelper
+ */
 const WorkDayHelper = {
   /**
-   * Get the current active open work day or null.
+   * Fetches the current active open work day from Supabase.
+   * 
+   * @async
+   * @returns {Promise<Object|null>} The active work day record or null if none.
    */
   async getOpenWorkDay() {
     try {
@@ -19,7 +32,10 @@ const WorkDayHelper = {
   },
 
   /**
-   * Get summary view for admin dashboards.
+   * Fetches the summary view (vw_work_day_summary) for admin dashboards.
+   * 
+   * @async
+   * @returns {Promise<Object|null>} Summary record or null.
    */
   async getWorkDaySummary() {
     try {
@@ -36,6 +52,11 @@ const WorkDayHelper = {
     }
   },
 
+  /**
+   * Determines the redirection path if no open work day exists, based on current module.
+   * 
+   * @returns {string} The relative path for redirection.
+   */
   resolveRedirectPath() {
     const path = window.location.pathname || "";
     if (path.includes("/pages/admin/")) return "pages/admin/admin-index.html";
@@ -49,10 +70,12 @@ const WorkDayHelper = {
   },
 
   /**
-   * Require an open work day.
-   * If no open day exists, returns null. UI can handle redirection or messaging.
-   * @param {Object} opts - Options
-   * @param {boolean} opts.autoRedirect - Whether to redirect automatically (default false to handle in UI)
+   * Requires an open work day. If none exists, optionally redirects to a fallback page.
+   * 
+   * @async
+   * @param {Object} [opts={}] - Options.
+   * @param {boolean} [opts.autoRedirect=false] - Whether to automatically redirect.
+   * @returns {Promise<Object|null>} The open work day if found, otherwise null.
    */
   async requireOpenWorkDay({ autoRedirect = false } = {}) {
     const day = await this.getOpenWorkDay();
@@ -69,22 +92,33 @@ const WorkDayHelper = {
     return day;
   },
 
-  // Legacy support if used elsewhere, mapped to new method
+  /**
+   * Legacy support alias for requireOpenWorkDay with autoRedirect: true.
+   * @async
+   * @param {Object} opts - Options.
+   */
   async requireWorkDay(opts) {
     return this.requireOpenWorkDay({ ...opts, autoRedirect: true });
   },
 
   /**
-   * Format a work day for display.
+   * Formats a YYYY-MM-DD date string to DD/MM/YYYY.
+   * 
+   * @param {string} dateStr - Date string in ISO format.
+   * @returns {string} Formatted date or "-" if empty.
    */
   formatDate(dateStr) {
     if (!dateStr) return "-";
     const [y, m, d] = dateStr.split("-");
     return `${d}/${m}/${y}`;
   },
+
   /**
-   * Get attendance statistics for a list of work day IDs.
-   * Returns a map: { [workDayId]: { planned: number, confirmed: number } }
+   * Retrieves attendance statistics (planned vs confirmed) for multiple work day IDs.
+   * 
+   * @async
+   * @param {string[]} workDayIds - Array of UUIDs.
+   * @returns {Promise<Object>} Map of stats: { [id]: { planned, confirmed } }.
    */
   async getAttendanceStats(workDayIds) {
     if (!workDayIds || workDayIds.length === 0) return {};

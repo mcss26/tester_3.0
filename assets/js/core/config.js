@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Centralized application configuration.
+ * Contains API keys, Supabase URLs, and service IDs.
+ */
+
 window.APP_CONFIG = {
   SUPABASE_URL: "https://iyknbgmcnbpvalvsjxjz.supabase.co",
   SUPABASE_ANON_KEY:

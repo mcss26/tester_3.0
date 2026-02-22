@@ -1,10 +1,21 @@
 /**
- * Core Auth Module (base-path safe)
- * - Redirects funcionan aunque el proyecto esté en subcarpeta (ej: /FormulaMid/)
+ * @fileoverview Core Authentication & Authorization Module
+ * Handles path resolution, session management, and role-based access control (RBAC).
+ * Supports sub-folder deployments (e.g., /FormulaMid/) and local development environments.
+ * 
+ * @module Auth
  */
 
+/**
+ * @namespace Auth
+ */
 window.Auth = {
-  // Devuelve el "root" de tu app (ej: "/FormulaMid/") tanto desde /login.html como desde /pages/*
+  /**
+   * Resolves the application base path regardless of current depth.
+   * Useful for projects hosted in subdirectories.
+   * 
+   * @returns {string} The base path including trailing slash (e.g., "/" or "/FormulaMid/").
+   */
   appBasePath() {
     const p = window.location.pathname || "/";
     const i = p.indexOf("/pages/");
@@ -12,6 +23,13 @@ window.Auth = {
     return p.replace(/\/[^\/]*$/, "/"); // carpeta del archivo actual (login.html)
   },
 
+  /**
+   * Converts a relative path to an absolute application path.
+   * Automatically appends .html in local environments for cleaner code usage.
+   * 
+   * @param {string} relPath - Relative path (e.g., "pages/admin/index").
+   * @returns {string} The resolved application path.
+   */
   toAppPath(relPath) {
     let clean = String(relPath || "").replace(/^\/+/, "");
 
@@ -37,7 +55,12 @@ window.Auth = {
     return this.appBasePath() + clean;
   },
 
-  // Helper interno para verificar si existe el cliente
+  /**
+   * Internal helper to verify if the Supabase client (window.sb) is initialized.
+   * 
+   * @private
+   * @returns {boolean} True if initialized, false otherwise.
+   */
   checkSb() {
     if (!window.sb) {
       console.warn("[Auth] window.sb not initialized yet.");
@@ -46,6 +69,12 @@ window.Auth = {
     return true;
   },
 
+  /**
+   * Retrieves the current Supabase session.
+   * 
+   * @async
+   * @returns {Promise<Object|null>} The session object or null if none or error.
+   */
   async getSession() {
     if (!this.checkSb()) return null;
 
@@ -57,6 +86,12 @@ window.Auth = {
     return data.session;
   },
 
+  /**
+   * Retrieves the current authenticated user from Supabase.
+   * 
+   * @async
+   * @returns {Promise<Object|null>} The user object or null if none or error.
+   */
   async getUser() {
     if (!this.checkSb()) return null;
 
@@ -68,6 +103,12 @@ window.Auth = {
     return data.user;
   },
 
+  /**
+   * Fetches the profile associated with the current user from the 'profiles' table.
+   * 
+   * @async
+   * @returns {Promise<Object|null>} Profile data (id, full_name, role) or null.
+   */
   async getMyProfile() {
     const user = await this.getUser();
     if (!user) return null;
@@ -85,6 +126,12 @@ window.Auth = {
     return data;
   },
 
+  /**
+   * Determines the landing page path for a specific role.
+   * 
+   * @param {string} role - The user's role.
+   * @returns {string} The landing page path.
+   */
   roleLanding(role) {
     const r = String(role || "")
       .toLowerCase()
@@ -116,6 +163,15 @@ window.Auth = {
     return this.toAppPath("pages/operativo/operativo-index");
   },
 
+  /**
+   * Guards a page by checking session and role.
+   * Hides the body until validation is successful.
+   * Redirects to login if no session, or to role-specific landing if role is not allowed.
+   * 
+   * @async
+   * @param {string[]} [allowedRoles=[]] - Array of roles allowed to access the page. Empty means all authenticated users.
+   * @returns {Promise<Object|null>} Object containing user and profile, or null if redirected.
+   */
   async guardOrRedirect(allowedRoles = []) {
     document.body.style.visibility = 'hidden';
 
@@ -151,12 +207,21 @@ window.Auth = {
     return { user: session.user, profile: { ...profile, role } };
   },
 
+  /**
+   * Signs out the current user and redirects to the login page.
+   * 
+   * @async
+   */
   async signOutAndGoLogin() {
     await window.sb.auth.signOut();
     window.location.href = this.toAppPath("login");
   },
 
+  /**
+   * Alias for signOutAndGoLogin.
+   */
   logout() {
     return this.signOutAndGoLogin();
   },
 };
+

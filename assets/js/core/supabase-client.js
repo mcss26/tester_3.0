@@ -1,4 +1,7 @@
-// assets/js/core/supabase-client.js
+/**
+ * @fileoverview Supabase Client Initialization.
+ * Loads window.sb using window.APP_CONFIG and window.supabase.
+ */
 (function () {
   if (window.sb) return;
 

@@ -118,3 +118,18 @@ body {
   outline-offset: 2px;
 }
 
+/* =========================================================================
+   ANIMATIONS
+   ========================================================================= */
+
+@keyframes modal-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+

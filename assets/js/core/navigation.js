@@ -1,14 +1,23 @@
 /**
- * Universal Navigation Handler for FormulaMid 4
- * Handles data-go attribute navigation with optional transitions
+ * @fileoverview Universal Navigation Handler for FormulaMid 4
+ * Handles data-go attribute navigation with progress bars and transitions.
+ * 
+ * @module Navigation
  */
 (function () {
   "use strict";
 
+  /**
+   * @namespace Navigation
+   */
   const Navigation = {
     transitionDelay: 200, // Slightly increased for visibility
     progressBar: null,
 
+    /**
+     * Creates the top navigation progress bar if not exists.
+     * @private
+     */
     createProgressBar() {
       if (document.getElementById("nav-progress-bar")) return;
 
@@ -19,6 +28,9 @@
       this.progressBar = bar;
     },
 
+    /**
+     * Starts the navigation progress animation.
+     */
     startProgress() {
       if (!this.progressBar) this.createProgressBar();
       // Force reflow
@@ -27,6 +39,9 @@
       this.progressBar.classList.add("active");
     },
 
+    /**
+     * Completes the navigation progress animation.
+     */
     finishProgress() {
       if (!this.progressBar) return;
       this.progressBar.classList.add("complete");
@@ -36,9 +51,11 @@
     },
 
     /**
-     * Navigate to a page with optional transition effect
-     * @param {string} path - Relative path to navigate to
-     * @param {object} options - { transition: boolean }
+     * Navigate to a page with optional transition effect.
+     * 
+     * @param {string} path - Relative path (e.g., "pages/admin/index").
+     * @param {Object} [options={ transition: true }] - Navigation options.
+     * @param {boolean} [options.transition=true] - Whether to use a fade-out effect.
      */
     navigateTo(path, options = { transition: true }) {
       if (window.NavHistory) {

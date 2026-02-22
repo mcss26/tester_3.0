@@ -4,6 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self';
+      script-src 'self' https://cdn.jsdelivr.net;
+      style-src 'self' 'unsafe-inline';
+      connect-src 'self' https://iyknbgmcnbpvalvsjxjz.supabase.co;
+      img-src 'self' data:;
+      font-src 'self';
+      frame-src 'none';">
     <meta name="theme-color" content="#000000">
     <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
     <title>Jornadas — Midnight</title>
@@ -235,7 +243,7 @@
                                     </div>
                                 </div>
                                 <div class="wd-breakeven-bar-container">
-                                    <div class="wd-breakeven-bar" id="be-progress-bar" style="width: 0%"></div>
+                                    <div class="wd-breakeven-bar" id="be-progress-bar"></div>
                                     <span class="wd-breakeven-pct" id="be-progress-pct">0%</span>
                                 </div>
                                 <div class="wd-benchmark-pills" id="benchmark-pills">
@@ -957,7 +965,7 @@
                             </div>
 
                             <!-- ── BOTTOM: HISTORIAL (Enhanced) ── -->
-                            <div class="staff-dashboard" style="margin-top: 24px;">
+                            <div class="staff-dashboard mt-6">
                                 <div class="dashboard-header align-start">
                                     <div>
                                         <h2 class="dashboard-title dashboard-title-soft">Historial de Jornadas</h2>

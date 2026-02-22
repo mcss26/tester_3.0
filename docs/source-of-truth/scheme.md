@@ -1359,6 +1359,66 @@ _Estado de reconciliación de pagos por jornada._
 
 - **work_day_id**, **work_date**, **total_items**, **matched_count**, **mismatch_count**, **pending_count**, **total_diff**, **overall_status**
 
+## Políticas RLS (Row Level Security)
+
+**Estado:** RLS habilitado en todas las tablas públicas. 10 migraciones de refinamiento aplicadas (2026-02-22).  
+**Helper functions:** `is_admin()`, `has_role(role_text)`, `get_my_role()` — definidas en `public`.
+
+### Tablas con Políticas Role-Based (36)
+
+| Tabla                                                  | Write → Roles                       | Read → Roles               |
+| ------------------------------------------------------ | ----------------------------------- | -------------------------- |
+| `profiles`                                             | admin                               | own user (S), admin (CRUD) |
+| `work_days`                                            | admin+operativo                     | multi-rol                  |
+| `work_day_templates`                                   | admin+gerencia                      | —                          |
+| `master_sku` / `master_categories`                     | admin (`is_admin()`)                | authenticated              |
+| `master_proveedores`                                   | admin (`is_admin()`)                | authenticated              |
+| `cost_definitions`                                     | admin                               | admin+contable             |
+| `audit_config`                                         | admin+contable                      | authenticated              |
+| `site_config`                                          | admin+operativo                     | public                     |
+| `inventory_stock` / `inventory_ideal`                  | admin+contable                      | authenticated              |
+| `inventory_movements`                                  | enc_barra+admin+logística+operativo | authenticated              |
+| `inventory_stock_adjustments`                          | admin                               | admin                      |
+| `staff_accruals`                                       | admin+contable                      | own user                   |
+| `staff_functions` / `profile_functions`                | admin+operativo                     | authenticated/own          |
+| `sku_change_requests`                                  | own user (I), admin (U)             | own+admin                  |
+| `payment_categories` / `payment_methods`               | admin                               | authenticated              |
+| `replenishment_items` / `_receipts` / `_receipt_items` | operativo+logístico+encargado       | authenticated              |
+| `replenishment_supplier_orders`                        | operativo+logístico+admin+contable  | authenticated              |
+| `import_gbol_withdrawals`                              | —                                   | admin+superadmin           |
+| `cash_closings`                                        | enc_caja+admin                      | enc_caja+admin+contable    |
+| `closing_terminals`                                    | enc_caja+admin                      | enc_caja+admin+contable    |
+| `cash_movements`                                       | enc_caja+admin                      | enc_caja+admin+contable    |
+| `finance_payments`                                     | admin                               | admin+contable             |
+| `bar_sessions`                                         | enc_barra+admin                     | enc_barra+admin+contable   |
+| `bar_stock_snapshots`                                  | enc_barra+admin (INSERT only)       | enc_barra+admin+contable   |
+| `bar_session_sales`                                    | enc_barra+admin                     | enc_barra+admin+contable   |
+| `master_recipes`                                       | admin (`is_admin()`)                | authenticated              |
+| `replenishment_requests`                               | operativo+logístico+admin+contable  | authenticated              |
+| `events`                                               | admin+operativo                     | public                     |
+| `master_staff_roles`                                   | admin                               | authenticated              |
+| `pos_terminals`                                        | admin                               | authenticated              |
+| `staff_convocations`                                   | admin+operativo+encargados          | authenticated              |
+| `work_day_staff_planning`                              | admin+operativo+encargados          | authenticated              |
+| `qr_batches` / `qr_codes`                              | admin+operativo                     | authenticated              |
+| `qr_checkins`                                          | admin+operativo+staff_guardia       | authenticated              |
+| `import_gbol_comandas` / `import_gbol_facturacion`     | admin                               | admin+contable             |
+
+### Tablas con Acceso Público/Anon (by design)
+
+| Tabla                            | Tipo                           | Justificación                  |
+| -------------------------------- | ------------------------------ | ------------------------------ |
+| `members`                        | Anon INSERT (status=pendiente) | Formulario público de registro |
+| `menu_categories` / `menu_items` | Public read                    | Menú público del local         |
+| `site_config`                    | Anon+auth read                 | Configuración pública          |
+| `events`                         | Public read                    | Eventos del local              |
+
+### Tablas P2 (genéricas, bajo riesgo)
+
+`recipe_code_mappings`, `import_logs`, `replenishment_tracking`, `finance_weekly_closings`, `finance_opening_cost_defs`, `finance_payment_rules`, `consumption_reports`/`_details`, `accounts_payable`, `revenue_reports`/`_details`.
+
+---
+
 ## Mapa Módulo ↔ Tabla
 
 Dependencias de base de datos por módulo JavaScript, extraídas del código fuente (334+ llamadas Supabase).

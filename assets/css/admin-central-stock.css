@@ -1854,7 +1854,7 @@ body.admin-shell ::selection {
 }
 
 /* View all button */
-#btn-view-all-requests {
+.btn-view-all-requests-btn {
   margin-top: 4px;
   font-size: 11px;
   opacity: 0.7;

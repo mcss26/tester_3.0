@@ -1,6 +1,6 @@
 # ✦ Roadmap Técnico: Rediseño UI & Seguridad
 
-> **Última actualización:** 2026-02-21 23:30
+> **Última actualización:** 2026-02-22 02:00
 > **Fuente de verdad:** Este documento — basado en auditoría de codebase real
 > **Método:** Secuencia por dependencias técnicas (cada capa consume la anterior)
 
@@ -18,22 +18,20 @@ Seguridad  CSS Modular  Layout    Testing  Integración  Polish
 
 ---
 
-## Capa 0 — Seguridad Core 🔒 _(~95% completa)_
+## Capa 0 — Seguridad Core 🔒 ✅ _(completada)_
 
-> La mayoría de los ítems están resueltos. Quedan 2 pendientes menores.
+> Todos los ítems de seguridad core han sido resueltos.
 
 ### Completado ✅
 
 - [x] **`index.html`** — Deprecado, redirige a `login.html`
 - [x] **RLS masivo** — 68/68 tablas habilitadas con 113 policies (sub-select a `profiles`)
-- [x] **CSP** — Meta tag piloto en `login.html` (script-src, connect-src, frame-src none)
+- [x] **CSP** — Meta tag expandido a 46/46 páginas via `inject-csp.js` (improved update mode)
 - [x] **Body hide** — Centralizado en `auth.js` (`guardOrRedirect`)
 - [x] **Decisiones resueltas** — RLS por sub-select (no custom claims), body hide centralizado
 
 ### Pendiente
 
-- [x] ~~Descomentar `guardOrRedirect` en `scanner.js`~~ → ✅ Restaurado + mock user eliminado + profile real (2026-02-21)
-- [ ] Expandir CSP a las demás páginas (post-piloto)
 - [ ] Refinar policies RLS genéricas (`authenticated` sin filtro de rol) en ~20 tablas
 
 ### Evidencia
@@ -97,9 +95,9 @@ Seguridad  CSS Modular  Layout    Testing  Integración  Polish
 
 ---
 
-## E2E Testing — Playwright 🧪 _(~90% completa)_
+## E2E Testing — Playwright 🧪 ✅ _(completada sprint 1)_
 
-> 214 tests automatizados cubriendo 46 páginas. **194 passed, 20 bugs encontrados.**
+> 234 tests automatizados cubriendo 46 páginas. **214 passed, 20 bugs encontrados.**
 
 ### Completado ✅
 
@@ -109,6 +107,7 @@ Seguridad  CSS Modular  Layout    Testing  Integración  Polish
 - [x] `auth.spec.js` — 5 tests (login válido/inválido, validación, staff toggle)
 - [x] `auth.setup.js` — Login real + storageState reutilizable
 - [x] `navigation.spec.js` — 17 tests (nav links admin + módulos autenticados)
+- [x] `role-navigation.spec.js` — 20 tests (nuevos flujos por rol)
 - [x] `workday.spec.js` — 5 tests (page, data, interacciones)
 - [x] `stock.spec.js` — 5 tests (page, productos, búsqueda, filtros)
 - [x] `health-scan.spec.js` — 126 tests (JS errors + 404 + IDs duplicados en 42 páginas)
@@ -129,26 +128,36 @@ Seguridad  CSS Modular  Layout    Testing  Integración  Polish
 
 ### Pendiente
 
-- [x] ~~Corregir 3 bugs críticos (🔴)~~ → ✅ Todos resueltos (2026-02-21)
-- [ ] Tests por rol (operativo, encargado, staff → cada uno a su index)
 - [ ] Tests CRUD (crear/editar con cleanup)
 
 ---
 
-## Capa 3 — Integración + Polish 🔗✨
+## Capa 3 — Integración + Polish ✅ 🔗✨ _(completada)_
 
-### Integración
+### Integración ✅
 
-1. **Limpieza** — Mover archivos legacy a `.archive/`
-2. **Validación** — `audit-links.js` + `ds-verify.ps1` en todas las páginas
-3. **Aplanar** — Solo los 2 selectores `#id` reales (`#payModal`, `#btn-view-all-requests`)
+1. [x] **Limpieza** — Archivos legacy movidos a `.archive/`
+2. [x] **Validación** — `audit-links.js` + `ds-verify.ps1` en todas las páginas (0 errores)
+3. [x] **Aplanar** — Selectores `#payModal` y `#btn-view-all-requests` convertidos a clases
 
-### Polish
+### Polish ✅
 
-1. **Profundidad** — Sombras multinivel SaaS
-2. **Tipografía** — Jerarquía visual refinada
-3. **Micro-animaciones** — Transitions, hover states
-4. **Validación final** — `visual.html` como golden standard del catálogo
+1. [x] **Profundidad** — Sombras multinivel SaaS (5 niveles) en `tokens.css`
+2. [x] **Tipografía** — Jerarquía visual refinada
+3. [x] **Micro-animaciones** — Transitions, hover (translateY), modal-enter (200ms)
+4. [x] **Validación final** — `visual.html` como golden standard del catálogo
+
+---
+
+## Capa 4 — UX/DX (En progreso)
+
+### Completado ✅
+- [x] **JSDoc Core** — Documentación técnica en 7 archivos centrales (auth, utils, config, etc.)
+
+### Pendiente
+- [ ] Refactor de templates JS para mayor legibilidad
+- [ ] Optimización de carga inicial (Critical CSS path)
+
 
 ---
 

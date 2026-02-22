@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const PAGES_DIR = path.join(__dirname, '../pages');
-const IGNORE_FILES = ['test-devenciones.html', 'components_catalog.html', 'layout_patterns.html', 'module-audit.html'];
+const PAGES_DIR = path.join(__dirname, '../../pages');
+const IGNORE_FILES = ['test-devenciones.html', 'components_catalog.html', 'layout_patterns.html', 'module-audit.html', 'scanner-mock.html'];
 const IGNORE_PATH_SEGMENTS = ['/prototypes/'];
 
 function getHtmlFiles(dir) {

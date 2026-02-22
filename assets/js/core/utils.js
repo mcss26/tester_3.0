@@ -1,4 +1,9 @@
-// Shared helpers for modules (browser-safe)
+/**
+ * @fileoverview Shared utilities for FormulaMid modules.
+ * Includes DOM helpers, math/formatting tools, and common modal dialogs.
+ * 
+ * @see {@link .agent/workflows/backups/track-module.md} for module tracking conventions.
+ */
 (function () {
   if (window.Utils) return;
 

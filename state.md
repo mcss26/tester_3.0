@@ -1,7 +1,7 @@
 # Estado del Proyecto: Tester 3.0 — Midnight Club
 
-**Última actualización:** 2026-02-22 01:12  
-**Método:** Indexado recursivo completo
+**Última actualización:** 2026-02-22 02:27  
+**Método:** Visual Polish + Security Hardening + JSDoc Sprint
 
 ---
 
@@ -9,11 +9,11 @@
 
 > Referencia: [`ROADMAP.md`](ROADMAP.md) — 4 capas por dependencia técnica.
 
-- **Capa activa:** Capa 2 (completada) → Capa 3
-- **Capa 0 (Seguridad):** ~90% completa — 3 ítems menores pendientes
+- **Capa activa:** Capa 3 — Integración + Polish (En cierre)
+- **Capa 0 (Seguridad):** ✅ Completada — CSP expanded + RLS P0+P1 refined (19 tablas: cash, bar, QR, GBOL, config, replenishment)
 - **Capa 1 (Modularización CSS):** ✅ Completada — 5 archivos modulares + theme-swiss.css
 - **Capa 2 (Tokens + Layout):** ✅ Completada — GS compliance avg 59→81, 32/45 páginas compliant
-- **Siguiente capa:** Capa 3 — Integración + Polish
+- **Siguiente capa:** Capa 4 — UX/DX (JSDoc & E2E Expansion)
 
 ## 2. Stack Tecnológico
 
@@ -38,7 +38,7 @@ tester_3.0/
 │       └── importers/ 6 importadores (GBOL, AFIP, Passline)
 ├── scripts/        17 herramientas operativas (fix, extract, backup, context)
 ├── docs/           design-system/ (consolidado ✅), source-of-truth/, operaciones/
-├── supabase/       29 migraciones + 1 edge function
+├── supabase/       39 migraciones + 1 edge function
 ├── .agent/         4 agentes, 12 workflows, 22 skills (component-builder absorbida → css-architect v3.0)
 └── tests/          8 subdirs: sql/ audits/ scanners/ watchdogs/ runners/ collectors/ fixtures/ e2e/ (9 specs, 214 tests)
 ```
@@ -141,23 +141,26 @@ _El agente lee esto para no replanificar trabajo existente._
 - [x] **Scanner relevancia v2** — 10 reglas contextuales: Nav/Buttons/Forms/FilterBar excluyen launchers, Sidebar requiere `sidebar-*` classes, Panels usa exact GS class match (no regex), Stats usa `^stat[-s]`, zero-denominator → N/A. 5 launchers correctamente excluidos.
 - [x] **GS Batch 4+5 remediation** — `operativo-workday` (actions-bar, cell-pad). Scanner fixes generaron mejoras indirectas: `generator` 72→94, `admin-workdays` 78→86, `encargado-barra-personal` 81→90. **Score avg 59→81 (+22pts), compliant 2→32 (16×).**
 - [x] **DT-01: scanner.js auth guard** — Restaurado `guardOrRedirect`, eliminado mock user, profile conectado a DB real
+- [x] **Track 1: Security + Cleanup** — CSP expandida en 46/46 páginas (script `inject-csp.js` mejorado con update mode, fallback head, excluye dirs, escanea root), archivos `.bak` movidos a `.archive/`, IDs `#payModal` y `#btn-view-all-requests` aplanados a clases en CSS, audit CSS con 0 errores (3 fixes aplicados).
 - [x] **Migración Member QR** — `my-qr.js` + `my-qr.html` eliminados de ERP, lógica vive en `midnightclub/members-only.js`. Edge function `generate-member-qr` v9 fix (`'open'`→`'ACTIVE'`)
 - [x] **Deuda técnica audit** — 18 ítems documentados (3 críticos, 4 altos, 7 medios, 4 bajos). Reporte en brain artifacts.
 - [x] **Orchestrator workflow** — `.agent/workflows/orchestrate.md` creado. Modo planificación invocable con `/orchestrate`
 - [x] **Skills-First rule** — Agregada a `GEMINI.md` §4 Filosofía de Ingeniería
-- [x] **Playwright E2E setup** — 9 test specs (214 tests), 4 proyectos (setup/smoke/auth/authenticated). Cobertura: 46 páginas × 3 health checks + 9 páginas a11y + 14 páginas forms. 194 pass, 20 bugs encontrados.
+- [x] **Playwright E2E setup** — 9 test specs (234 tests), 4 proyectos (setup/smoke/auth/authenticated). Cobertura: 46 páginas × 3 health checks + 9 páginas a11y + 14 páginas forms. 214 pass, 20 bugs encontrados. Agregado `role-navigation.spec.js` con 20 tests nuevos.
+- [x] **🎨 TRACK 2 — Visual Polish** — Implementación de sombras multinivel SaaS (5 niveles: xs/sm/md/lg/xl + card/modal/dropdown en `tokens.css`) y micro-interacciones. `.page-card` con hover lifting y card-shadow. `dialog.modal` con modal-shadow y animación `modal-enter` 200ms. `.btn-primary` con hover transform (translateY) y shadow-sm. Dropdowns unificados con `dropdown-shadow`. Keyframes centralizados en `base.css`.
+- [x] **📚 Documentation Sprint (JSDoc)** — JSDoc agregado en 7 core files (`auth.js`, `utils.js`, `config.js`, `supabase-client.js`, `navigation.js`, `work-day-helper.js`, `custom-dropdown.js`).
 
 ## 8. Pendiente (To Do)
 
 _Trabajo que el agente debe estructurar y delegar, en orden de dependencia._
 
-### Capa 0 — Seguridad Core (en cierre)
+### Capa 0 — Seguridad Core (completada)
 
 - [x] ~~`index.html` — redirect a admin sin auth~~ → Deprecado, redirige a `login.html`
 - [x] ~~RLS masivo~~ → Ya habilitado en 68/68 tablas con 113 policies (corregido diagnóstico)
 - [x] ~~CSP~~ → Meta tag piloto en `login.html`
 - [x] ~~Descomentar `guardOrRedirect` en `scanner.js`~~ → ✅ Restaurado + mock user eliminado (2026-02-21)
-- [ ] Expandir CSP a las demás páginas (post-piloto)
+- [x] Expandir CSP a las demás páginas (post-piloto)
 - [ ] Refinar policies RLS genéricas (`authenticated` sin filtro de rol) en ~20 tablas
 
 ### ✅ Migración CSS — Modularización (completada)

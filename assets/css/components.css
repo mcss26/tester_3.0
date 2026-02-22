@@ -40,10 +40,13 @@
   background: var(--btn-primary-bg);
   color: var(--btn-primary-text);
   border-color: transparent;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
 }
 
 .btn-primary:hover {
   background: var(--neutral-900);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
 }
 
 /* Secondary Button */
@@ -792,7 +795,7 @@
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   padding: 6px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--dropdown-shadow);
   z-index: 100;
   opacity: 0;
   visibility: hidden;
@@ -2478,6 +2481,13 @@ body.app-shell {
   width: 100%;
   min-height: 70vh;
   position: relative;
+  box-shadow: var(--card-shadow);
+  transition: box-shadow var(--transition-base), transform var(--transition-base);
+}
+
+.page-card:hover {
+  box-shadow: var(--card-shadow-hover);
+  transform: translateY(-2px);
 }
 
 .page-card-loading,
@@ -6086,6 +6096,8 @@ dialog.modal {
   padding: 0;
   max-width: min(95vw, 800px);
   max-height: 90vh;
+  box-shadow: var(--modal-shadow);
+  animation: modal-enter 200ms ease-out;
 }
 
 dialog.modal::backdrop {
