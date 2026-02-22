@@ -12,9 +12,9 @@
       img-src 'self' data:;
       font-src 'self';
       frame-src 'none';">
- <meta name="description" content="Balance Semanal — Midnight Club Systems">
+ <meta name="description" content="Balance Semanal â€” Midnight Club Systems">
  <meta name="theme-color" content="#000000">
- <title>Balance Semanal — Gerencia</title>
+ <title>Balance Semanal â€” Gerencia</title>
  <link rel="preconnect" href="https://fonts.googleapis.com">
  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -33,7 +33,7 @@
  <!-- ===== TOPBAR ===== -->
  <header class="topbar" role="banner">
   <div class="topbar-start">
-   <nav class="breadcrumb" aria-label="Navegación de ruta">
+   <nav class="breadcrumb" aria-label="NavegaciÃ³n de ruta">
     <span class="breadcrumb-item"><a class="breadcrumb-link" href="#">Gerencia</a></span>
     <span class="breadcrumb-sep">/</span>
     <span class="breadcrumb-item current">Balance Semanal</span>
@@ -51,7 +51,7 @@
      <line x1="12" y1="15" x2="12" y2="3" />
     </svg>
    </button>
-   <button class="avatar avatar-sm" type="button" aria-label="Menú de usuario">MC</button>
+   <button class="avatar avatar-sm" type="button" aria-label="MenÃº de usuario">MC</button>
   </div>
  </header>
 
@@ -62,16 +62,16 @@
   <section class="kpi-strip" aria-label="Indicadores clave">
    <div class="kpi-hero">
     <span class="kpi-hero__label">Resultado Final</span>
-    <span class="kpi-hero__value" id="kpiResultado">—</span>
-    <span class="kpi-hero__sub" id="kpiMargen">—</span>
+    <span class="kpi-hero__value" id="kpiResultado">â€”</span>
+    <span class="kpi-hero__sub" id="kpiMargen">â€”</span>
    </div>
    <div class="kpi-hero">
     <span class="kpi-hero__label">Ingreso Bruto</span>
-    <span class="kpi-hero__value text-success" id="kpiIncomeBruto">—</span>
+    <span class="kpi-hero__value text-success" id="kpiIncomeBruto">â€”</span>
    </div>
    <div class="kpi-hero">
     <span class="kpi-hero__label">Egreso Neto</span>
-    <span class="kpi-hero__value text-error" id="kpiEgresoNeto">—</span>
+    <span class="kpi-hero__value text-error" id="kpiEgresoNeto">â€”</span>
    </div>
   </section>
 
@@ -92,40 +92,40 @@
      </div>
      <div class="sidebar-field">
       <span class="sidebar-field__label">Asistencia</span>
-      <span class="sidebar-field__value" id="kpiAttendance">—</span>
+      <span class="sidebar-field__value" id="kpiAttendance">â€”</span>
      </div>
     </div>
 
     <div class="bal-sidebar__section">
      <span class="sidebar-label">Cruce Stock</span>
      <div class="sidebar-field">
-      <span class="sidebar-field__label">CMV Teórico</span>
-      <span class="sidebar-field__value text-info" id="cmvTeorico">—</span>
+      <span class="sidebar-field__label">CMV Teâ€”rico</span>
+      <span class="sidebar-field__value text-info" id="cmvTeorico">â€”</span>
      </div>
      <div class="sidebar-field">
       <span class="sidebar-field__label">CMV Real</span>
-      <span class="sidebar-field__value" id="cmvReal">—</span>
+      <span class="sidebar-field__value" id="cmvReal">â€”</span>
      </div>
      <div class="sidebar-field">
       <span class="sidebar-field__label">Merma</span>
-      <span class="sidebar-field__value" id="mermaValue">—</span>
+      <span class="sidebar-field__value" id="mermaValue">â€”</span>
      </div>
      <div class="sidebar-field">
       <span class="sidebar-field__label">Free Drinks</span>
-      <span class="sidebar-field__value text-warning" id="freeDrinks">—</span>
+      <span class="sidebar-field__value text-warning" id="freeDrinks">â€”</span>
      </div>
     </div>
 
     <div class="bal-sidebar__section">
-     <span class="sidebar-label">Estadísticas</span>
+     <span class="sidebar-label">EstadÃ­sticas</span>
      <div class="sidebar-stats">
       <div class="stat-pair">
-       <span class="stat-pair__label">Per Cápita</span>
-       <span class="stat-pair__value" id="perCapita">—</span>
+       <span class="stat-pair__label">Per Câ€”pita</span>
+       <span class="stat-pair__value" id="perCapita">â€”</span>
       </div>
       <div class="stat-pair">
        <span class="stat-pair__label">Margen</span>
-       <span class="stat-pair__value" id="margenStat">—</span>
+       <span class="stat-pair__value" id="margenStat">â€”</span>
       </div>
      </div>
     </div>
@@ -139,9 +139,9 @@
    <!-- Center: Chart -->
    <div class="bal-chart">
     <div class="bal-chart__header">
-     <select class="chart-mode-select" id="chartMode" aria-label="Modo del gráfico">
+     <select class="chart-mode-select" id="chartMode" aria-label="Modo del grâ€”fico">
       <option value="income-expense">Ingreso vs Egreso</option>
-      <option value="stock">Stock: Teórico vs Real</option>
+      <option value="stock">Stock: Teâ€”rico vs Real</option>
      </select>
      <div class="bal-chart__pills" id="chartPills" role="tablist">
       <button class="pill" data-range="4" role="tab">1M</button>
@@ -151,7 +151,7 @@
      </div>
     </div>
     <div class="bal-chart__canvas-wrap">
-     <canvas id="trendChart" aria-label="Gráfico de tendencia semanal"></canvas>
+     <canvas id="trendChart" aria-label="Grâ€”fico de tendencia semanal"></canvas>
     </div>
    </div>
   </section>

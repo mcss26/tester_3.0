@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -14,7 +14,7 @@
       frame-src 'none';">
     <meta name="theme-color" content="#000000">
     <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
-    <title>Stock Central � Midnight</title>
+    <title>Stock Central — Midnight</title>
     <link rel="stylesheet" href="../../assets/css/tokens.css">
     <link rel="stylesheet" href="../../assets/css/base.css">
     <link rel="stylesheet" href="../../assets/css/layout.css">
@@ -36,7 +36,7 @@
         <!-- Left: Breadcrumb -->
         <nav class="breadcrumb topbar-start">
             <span class="breadcrumb-item">
-                <a href="./admin-index.html" class="breadcrumb-link">Administraci�n</a>
+                <a href="./admin-index.html" class="breadcrumb-link">Administraci—n</a>
             </span>
             <span class="breadcrumb-sep">/</span>
             <span class="breadcrumb-item current">Stock Central</span>
@@ -44,7 +44,7 @@
 
         <!-- Center: Search -->
         <div class="topbar-center header-search">
-            <input type="text" id="global-search" class="input" placeholder="Ir a..." aria-label="Navegaci�n r�pida">
+            <input type="text" id="global-search" class="input" placeholder="Ir a..." aria-label="Navegación rápida">
             <svg class="header-search-icon" viewBox="0 0 24 24">
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -57,9 +57,9 @@
 
             <!-- User Menu Dropdown -->
             <div class="dropdown-container">
-                <button class="avatar avatar-sm" id="user-avatar" aria-label="Men� de usuario">JS</button>
+                <button class="avatar avatar-sm" id="user-avatar" aria-label="Menú de usuario">JS</button>
                 <div class="dropdown-menu dropdown-user hidden" id="user-menu">
-                    <div class="dropdown-header" id="user-name-display">Juan S�nchez</div>
+                    <div class="dropdown-header" id="user-name-display">Juan S—nchez</div>
                     <div class="dropdown-divider"></div>
                     <a href="./admin-config.html" class="dropdown-item">
                         <svg class="dropdown-icon" viewBox="0 0 24 24">
@@ -75,7 +75,7 @@
                                 d="M12 1v6m0 6v6M5.64 5.64l4.24 4.24m6.36 6.36l4.24 4.24M1 12h6m6 0h6M5.64 18.36l4.24-4.24m6.36-6.36l4.24-4.24">
                             </path>
                         </svg>
-                        Configuraci�n
+                        Configuración
                     </a>
                     <div class="dropdown-divider"></div>
                     <a href="#" id="btn-logout" class="dropdown-item dropdown-item-danger">
@@ -84,7 +84,7 @@
                             <polyline points="16 17 21 12 16 7"></polyline>
                             <line x1="21" y1="12" x2="9" y2="12"></line>
                         </svg>
-                        Cerrar Sesi�n
+                        Cerrar Sesión
                     </a>
                 </div>
             </div>
@@ -175,10 +175,10 @@
                                 <!-- Aforo Compact -->
                                 <div class="aforo-row">
                                     <input type="number" id="people-count" class="input" value="500" min="50" max="2000"
-                                        step="50" aria-label="N�mero de personas (aforo)">
+                                        step="50" aria-label="Número de personas (aforo)">
                                     <span class="aforo-label">personas</span>
                                     <span class="tooltip-trigger"
-                                        data-tooltip="Stock ideal se ajustar� para este n�mero">?</span>
+                                        data-tooltip="Stock ideal se ajustar— para este número">?</span>
                                 </div>
 
                                 <!-- Import Dropboxes Grid -->
@@ -203,7 +203,7 @@
                                                 <polyline points="17 8 12 3 7 8"></polyline>
                                                 <line x1="12" y1="3" x2="12" y2="15"></line>
                                             </svg>
-                                            <span class="dropbox-title">Recaudaci�n</span>
+                                            <span class="dropbox-title">Recaudaci—n</span>
                                         </div>
                                     </div>
                                     <!-- Inline Import Preview -->
@@ -215,7 +215,7 @@
                                 <!-- Stats Collapsible -->
                                 <div class="sidebar-section">
                                     <div class="stats-header" id="stats-toggle">
-                                        <h3 class="sidebar-section-title">Estad�sticas</h3>
+                                        <h3 class="sidebar-section-title">Estadísticas</h3>
                                         <svg class="toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                             stroke-width="2">
                                             <polyline points="6 9 12 15 18 9"></polyline>
@@ -275,7 +275,7 @@
                                     <div class="chart-header">
                                         <div class="custom-dropdown" id="chart-mode-dropdown">
                                             <div class="custom-dropdown-trigger" id="dropdown-trigger">
-                                                <span class="custom-dropdown-text">Consumo vs Recaudaci�n</span>
+                                                <span class="custom-dropdown-text">Consumo vs Recaudaci—n</span>
                                                 <svg class="custom-dropdown-icon" viewBox="0 0 24 24" fill="none"
                                                     stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                                     stroke-linejoin="round">
@@ -284,19 +284,19 @@
                                             </div>
                                             <div class="custom-dropdown-menu" id="dropdown-menu">
                                                 <div class="custom-dropdown-option" data-value="consumption-vs-revenue">
-                                                    Consumo vs Recaudaci�n</div>
+                                                    Consumo vs Recaudaci—n</div>
                                                 <div class="custom-dropdown-option" data-value="top5-consumption">TOP 5
                                                     Consumo</div>
                                                 <div class="custom-dropdown-option" data-value="top5-revenue">TOP 5
-                                                    Recaudaci�n</div>
+                                                    Recaudaci—n</div>
                                             </div>
                                         </div>
                                         <!-- Hidden select for backward compatibility -->
                                         <select id="chart-mode" class="u-hidden" aria-label="Modo de grafico">
-                                            <option value="consumption-vs-revenue" selected>Consumo vs Recaudaci�n
+                                            <option value="consumption-vs-revenue" selected>Consumo vs Recaudaci—n
                                             </option>
                                             <option value="top5-consumption">TOP 5 Consumo</option>
-                                            <option value="top5-revenue">TOP 5 Recaudaci�n</option>
+                                            <option value="top5-revenue">TOP 5 Recaudaci—n</option>
                                         </select>
                                     </div>
 
@@ -312,7 +312,7 @@
                                         </div>
                                         <div class="chart-kpi-card">
                                             <div class="chart-kpi-label-row">
-                                                <p class="chart-kpi-label">Recaudaci�n</p>
+                                                <p class="chart-kpi-label">Recaudaci—n</p>
                                                 <span id="kpi-revenue-pct" class="chart-kpi-trend"></span>
                                             </div>
                                             <p id="kpi-revenue-total" class="chart-kpi-value chart-kpi-success">$0</p>
@@ -343,7 +343,7 @@
                                     <div class="category-select-wrap">
                                         <div class="custom-dropdown category-dropdown-custom" id="category-dropdown">
                                             <div class="custom-dropdown-trigger" id="category-trigger">
-                                                <span class="custom-dropdown-text">Todas las Categor�as</span>
+                                                <span class="custom-dropdown-text">Todas las Categorías</span>
                                                 <svg class="custom-dropdown-icon" viewBox="0 0 24 24" fill="none"
                                                     stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                                     stroke-linejoin="round">
@@ -352,12 +352,12 @@
                                             </div>
                                             <div class="custom-dropdown-menu" id="category-menu">
                                                 <div class="custom-dropdown-option selected" data-value="all">Todas las
-                                                    Categor�as</div>
+                                                    Categorías</div>
                                                 <!-- Dynamic Options -->
                                             </div>
                                         </div>
                                         <select id="category-filter" class="u-hidden" aria-label="Filtrar por categoria">
-                                            <option value="all">Todas las Categor�as</option>
+                                            <option value="all">Todas las Categorías</option>
                                         </select>
                                     </div>
 
@@ -452,7 +452,7 @@
 
                         <!-- SIDEBAR RECETAS -->
                         <aside class="sidebar-filters">
-                            <h3 class="sidebar-section-title">B�squeda</h3>
+                            <h3 class="sidebar-section-title">Búsqueda</h3>
 
                             <div class="form-group">
                                 <label class="form-label">Nombre</label>
@@ -461,13 +461,13 @@
 
                             <div class="sidebar-actions">
                                 <button id="btn-new-recipe" class="btn-primary w-full">+ Nueva Receta</button>
-                                <button id="btn-manage-codes" class="btn-secondary w-full">Gestionar C�digos
+                                <button id="btn-manage-codes" class="btn-secondary w-full">Gestionar Códigos
                                     POS</button>
                             </div>
 
                             <!-- Stats Section -->
                             <div class="sidebar-section">
-                                <h3 class="sidebar-section-title">Estad�sticas</h3>
+                                <h3 class="sidebar-section-title">Estadísticas</h3>
                                 <div class="stats-compact">
                                     <div class="stat-item">
                                         <span class="stat-label">Recetas</span>
@@ -567,7 +567,7 @@
                         role="region" aria-label="Tabla de Rentabilidad">
                         <div class="table-scroll" id="profitability-table-container">
                             <table class="table table-sticky table-compact" role="table"
-                                aria-label="An�lisis de Rentabilidad">
+                                aria-label="Análisis de Rentabilidad">
                                 <thead>
                                     <tr class="table-head" role="row">
                                         <th class="table-cell is-header cell-pad" scope="col" role="columnheader">Receta
@@ -606,7 +606,7 @@
         <div class="modal-card modal-content-recipe">
             <div class="modal-header">
                 <h3 class="modal-title" id="recipe-modal-title">Nueva Receta</h3>
-                <button class="btn-icon-flat" id="btn-close-recipe-modal" aria-label="Cerrar">�</button>
+                <button class="btn-icon-flat" id="btn-close-recipe-modal" aria-label="Cerrar">—</button>
             </div>
 
             <div class="modal-body custom-scroll">
@@ -616,7 +616,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label" for="recipe-external-id">ID Externo (C�digo POS)</label>
+                    <label class="form-label" for="recipe-external-id">ID Externo (Código POS)</label>
                     <input type="text" id="recipe-external-id" class="input" placeholder="Ej: 1005 (Opcional)">
                 </div>
 
@@ -646,7 +646,7 @@
                 <option value="">Seleccionar SKU...</option>
             </select>
             <input type="number" step="0.01" class="input input-amount" placeholder="0.00" aria-label="Cantidad de ingrediente">
-            <button class="btn-icon-flat text-error btn-remove-ing" aria-label="Eliminar">�</button>
+            <button class="btn-icon-flat text-error btn-remove-ing" aria-label="Eliminar">—</button>
         </div>
     </template>
 
@@ -655,7 +655,7 @@
     <aside class="slide-panel" id="slide-panel">
         <div class="panel-header">
             <h3 class="panel-title" id="panel-title">Nuevo SKU</h3>
-            <button class="panel-close" id="btn-close-panel" aria-label="Cerrar panel">�</button>
+            <button class="panel-close" id="btn-close-panel" aria-label="Cerrar panel">—</button>
         </div>
         <div class="panel-body" id="panel-form-container">
             <div id="panel-error" class="panel-error"></div>
@@ -666,9 +666,9 @@
             </div>
 
             <div class="form-group">
-                <label for="sku-categoria" class="form-label">Categor�a</label>
+                <label for="sku-categoria" class="form-label">Categoría</label>
                 <select id="sku-categoria" class="input">
-                    <option value="">Seleccionar categor�a</option>
+                    <option value="">Seleccionar categoría</option>
                 </select>
             </div>
 
@@ -701,7 +701,7 @@
 
             <div class="form-group">
                 <label for="sku-external-id" class="form-label">ID externo</label>
-                <input type="text" id="sku-external-id" class="input" placeholder="C�digo de integraci�n / POS">
+                <input type="text" id="sku-external-id" class="input" placeholder="Código de integraci—n / POS">
             </div>
 
             <div class="form-group">
@@ -727,7 +727,7 @@
             </div>
             <div class="modal-body modal-body-scroll">
                 <canvas id="history-chart"></canvas>
-                <p class="chart-modal-hint">Consumo de los productos con mayor rotaci�n en los �ltimos reportes.</p>
+                <p class="chart-modal-hint">Consumo de los productos con mayor rotaci—n en los —ltimos reportes.</p>
             </div>
         </div>
     </dialog>
@@ -746,7 +746,7 @@
                         Consumo
                     </button>
                     <button id="import-tab-revenue" class="modal-tab-btn">
-                        Recaudaci�n
+                        Recaudaci—n
                     </button>
                 </div>
 
@@ -802,7 +802,7 @@
         <div class="modal-card modal-compact">
             <div class="modal-header">
                 <h3 class="modal-title">Ajuste Manual de Stock</h3>
-                <button class="btn-icon-flat" id="btn-close-adjustment">�</button>
+                <button class="btn-icon-flat" id="btn-close-adjustment">—</button>
             </div>
             <form id="adjustment-form-modal">
                 <div class="modal-body">
@@ -821,10 +821,10 @@
                     <div class="form-group">
                         <label class="form-label">Tipo de Ajuste</label>
                         <div class="segmented-control">
-                            <button type="button" class="type-btn active" data-type="loss">Merma / P�rdida</button>
-                            <button type="button" class="type-btn" data-type="correction">Correcci�n / Inventario
-                                F�sico</button>
-                            <button type="button" class="type-btn" data-type="gift">Regalo / Cortes�a</button>
+                            <button type="button" class="type-btn active" data-type="loss">Merma / P—rdida</button>
+                            <button type="button" class="type-btn" data-type="correction">Correcci—n / Inventario
+                                F—sico</button>
+                            <button type="button" class="type-btn" data-type="gift">Regalo / Cortes—a</button>
                         </div>
                         <input type="hidden" id="input-type-modal" value="loss">
                     </div>
@@ -854,12 +854,12 @@
     <div id="modal-code-mappings" class="modal-overlay hidden">
         <div class="modal-card">
             <div class="modal-header">
-                <h3 class="modal-title">Gestionar C�digos POS</h3>
-                <button class="btn-icon-flat" id="btn-close-code-mappings">�</button>
+                <h3 class="modal-title">Gestionar Códigos POS</h3>
+                <button class="btn-icon-flat" id="btn-close-code-mappings">—</button>
             </div>
             <div class="modal-body">
                 <div class="mapping-form-row">
-                    <input type="text" id="input-pos-code" class="input" placeholder="C�digo POS (Ej: 1025)" aria-label="Codigo POS">
+                    <input type="text" id="input-pos-code" class="input" placeholder="Código POS (Ej: 1025)" aria-label="Codigo POS">
                     <select id="select-recipe" class="input" aria-label="Seleccionar receta">
                         <option value="">Asignar a Receta...</option>
                     </select>
@@ -869,10 +869,10 @@
                     <table class="table table-compact">
                         <thead>
                             <tr>
-                                <th>C�digo POS</th>
+                                <th>Código POS</th>
                                 <th>Receta Asignada</th>
                                 <th>Venta Total</th>
-                                <th>Acci�n</th>
+                                <th>Acción</th>
                             </tr>
                         </thead>
                         <tbody id="code-mappings-table-body">

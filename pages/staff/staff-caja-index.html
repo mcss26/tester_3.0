@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -15,10 +15,10 @@
     <meta name="theme-color" content="#000000">
     <meta
       name="description"
-      content="Terminal de caja � punto de venta y registro de transacciones"
+      content="Terminal de caja — punto de venta y registro de transacciones"
     />
     <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
-    <title>Staff Caja � Midnight</title>
+    <title>Staff Caja — Midnight</title>
     <link rel="stylesheet" href="../../assets/css/tokens.css">
     <link rel="stylesheet" href="../../assets/css/base.css">
     <link rel="stylesheet" href="../../assets/css/layout.css">
@@ -34,7 +34,7 @@
     <!-- TOPBAR (Golden Standard) -->
     <header class="topbar">
         <!-- Left: Breadcrumb -->
-        <nav class="breadcrumb topbar-start" aria-label="Navegaci�n">
+        <nav class="breadcrumb topbar-start" aria-label="Navegación">
             <span class="breadcrumb-item current">STAFF CAJA</span>
         </nav>
 
@@ -49,7 +49,7 @@
         <!-- Right: Avatar + Dropdown -->
         <div class="topbar-end">
             <div class="dropdown-container">
-                <button class="avatar avatar-sm" id="user-avatar" aria-label="Men� de usuario">...</button>
+                <button class="avatar avatar-sm" id="user-avatar" aria-label="Menú de usuario">...</button>
                 <div class="dropdown-menu dropdown-user hidden" id="user-menu">
                     <div class="dropdown-header" id="user-name-display">Usuario</div>
                     <div class="dropdown-divider"></div>
@@ -59,14 +59,14 @@
                             <polyline points="16 17 21 12 16 7"></polyline>
                             <line x1="21" y1="12" x2="9" y2="12"></line>
                         </svg>
-                        Cerrar Sesi�n
+                        Cerrar Sesión
                     </a>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Main Content (operational � preserved) -->
+    <!-- Main Content (operational — preserved) -->
     <main class="page-shell">
         <div class="page-card-wrap">
             <div class="page-card">
@@ -74,7 +74,7 @@
                 <!-- Dashboard Header -->
                 <header class="dashboard-header">
                     <h2 class="dashboard-title dashboard-title-soft">Staff Caja</h2>
-                    <p class="dashboard-subtitle-soft">Panel de declaraci�n y cierre de turno</p>
+                    <p class="dashboard-subtitle-soft">Panel de declaración y cierre de turno</p>
                 </header>
 
                 <section class="action-section container-narrow">
@@ -143,7 +143,7 @@
 
                         <!-- Closing Form -->
                         <form id="closing-form" class="w-full">
-                            <p class="label-welcome text-center mb-md">Declaraci�n</p>
+                            <p class="label-welcome text-center mb-md">Declaración</p>
 
                             <div class="card-section form-group">
                                 <label for="input-cash" class="form-label">Total Efectivo</label>
@@ -170,7 +170,7 @@
                                     <canvas id="signature-canvas" class="w-full h-full cursor-crosshair"></canvas>
                                     <div id="signature-placeholder"
                                         class="signature-placeholder absolute inset-0 flex items-center justify-center text-white/20 pointer-events-none">
-                                        Firmar aqu�
+                                        Firmar aquí
                                     </div>
                                     <button type="button" id="btn-clear-signature"
                                         class="absolute top-2 right-2 btn-icon btn-ghost btn-sm" title="Borrar firma"
@@ -180,7 +180,7 @@
 
                             <button type="submit" id="btn-submit-close"
                                 class="btn btn-primary w-full py-4 text-sm tracking-widest mt-4"
-                                aria-label="Cerrar turno y enviar declaraci�n">
+                                aria-label="Cerrar turno y enviar declaración">
                                 CERRAR TURNO
                             </button>
                         </form>

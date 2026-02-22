@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -15,10 +15,10 @@
     <meta name="theme-color" content="#000000">
     <meta
       name="description"
-      content="Cierre nocturno de barra � verificacion de caja y stock para Encargado"
+      content="Cierre nocturno de barra — verificacion de caja y stock para Encargado"
     />
     <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
-    <title>Stock Barra � Midnight</title>
+    <title>Stock Barra — Midnight</title>
     <link rel="stylesheet" href="../../assets/css/tokens.css">
     <link rel="stylesheet" href="../../assets/css/base.css">
     <link rel="stylesheet" href="../../assets/css/layout.css">
@@ -34,7 +34,7 @@
         <div class="topbar-start">
             <button class="btn-icon btn-icon-flat" data-go="pages/encargados/encargado-barra-index.html"
                 aria-label="Volver a Inicio">?</button>
-            <nav class="breadcrumb" aria-label="Navegaci�n">
+            <nav class="breadcrumb" aria-label="Navegación">
                 <span class="breadcrumb-item"><a class="breadcrumb-link"
                         href="encargado-barra-index.html">ENCARGADO BARRA</a></span>
                 <span class="breadcrumb-sep">/</span>
@@ -55,7 +55,7 @@
         <!-- Loading State -->
         <div class="noche-state" id="pageLoading">
             <div class="noche-spinner"></div>
-            <span class="noche-loading-text">Cargando informaci�n...</span>
+            <span class="noche-loading-text">Cargando información...</span>
         </div>
 
         <!-- Empty State: No Work Day -->
@@ -125,7 +125,7 @@
                         <h2 class="dashboard-title">Cierre de Barra</h2>
                     </div>
                     <p class="muted mb-md">Ingresa el stock final (Sobrante
-                        f�sico).</p>
+                        f—sico).</p>
 
                     <div id="closingStockList" class="staff-list">
                         <!-- JS Injected SKU rows -->
@@ -150,11 +150,11 @@
     <dialog class="modal" id="confirmModal">
         <div class="modal-content modal-content-sm">
             <div class="modal-header">
-                <h2 id="confirmTitle">Confirmar Acci�n</h2>
-                <button class="modal-close" id="btn-close-confirm" aria-label="Cerrar modal">�</button>
+                <h2 id="confirmTitle">Confirmar Acción</h2>
+                <button class="modal-close" id="btn-close-confirm" aria-label="Cerrar modal">—</button>
             </div>
             <div class="modal-body">
-                <p id="confirmMessage">�Est�s seguro de continuar?</p>
+                <p id="confirmMessage">—Est—s seguro de continuar?</p>
             </div>
             <div class="modal-footer">
                 <button class="btn-secondary" id="btnCancelConfirm">Cancelar</button>

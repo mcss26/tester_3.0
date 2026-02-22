@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -14,7 +14,7 @@
       frame-src 'none';">
     <meta name="theme-color" content="#000000">
     <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
-    <title>N�mina � Midnight</title>
+    <title>Nómina — Midnight</title>
     <!-- Design Tokens & Global Components -->
     <link rel="stylesheet" href="../../assets/css/tokens.css">
     <link rel="stylesheet" href="../../assets/css/base.css">
@@ -31,14 +31,14 @@
     <!-- Topbar: Golden Standard -->
     <header class="topbar">
         <!-- Left: Breadcrumb -->
-        <nav class="breadcrumb topbar-start" aria-label="Navegaci�n">
+        <nav class="breadcrumb topbar-start" aria-label="Navegación">
             <span class="breadcrumb-item">
-                <a class="breadcrumb-link" href="admin-index.html">Administraci�n</a>
+                <a class="breadcrumb-link" href="admin-index.html">Administraci—n</a>
             </span>
             <span class="breadcrumb-sep">/</span>
             <span class="breadcrumb-item">RRHH</span>
             <span class="breadcrumb-sep">/</span>
-            <span class="breadcrumb-item current">N�mina</span>
+            <span class="breadcrumb-item current">Nómina</span>
         </nav>
 
         <!-- Center: Empty -->
@@ -48,7 +48,7 @@
         <div class="topbar-end">
             <span class="status-pill status-neutral">?? STAFF</span>
             <div class="dropdown-container">
-                <button class="avatar avatar-sm" id="user-avatar" aria-label="Men� de usuario">AD</button>
+                <button class="avatar avatar-sm" id="user-avatar" aria-label="Menú de usuario">AD</button>
                 <div class="dropdown-menu dropdown-user hidden" id="user-menu">
                     <div class="dropdown-header" id="user-name-display">Usuario</div>
                     <div class="dropdown-divider"></div>
@@ -58,7 +58,7 @@
                             <polyline points="16 17 21 12 16 7"></polyline>
                             <line x1="21" y1="12" x2="9" y2="12"></line>
                         </svg>
-                        Cerrar Sesi�n
+                        Cerrar Sesión
                     </a>
                 </div>
             </div>
@@ -73,8 +73,8 @@
                 <nav class="master-nav">
                     <a href="admin-central-stock.html" class="master-nav-link">SKU & Recetas</a>
                     <a href="admin-master-proveedores.html" class="master-nav-link">Proveedores</a>
-                    <a href="admin-master-categorias.html" class="master-nav-link">Categor�as</a>
-                    <a href="admin-master-nomina.html" class="master-nav-link active">N�mina</a>
+                    <a href="admin-master-categorias.html" class="master-nav-link">Categorías</a>
+                    <a href="admin-master-nomina.html" class="master-nav-link active">Nómina</a>
                     <a href="admin-pagos.html" class="master-nav-link">Pagos</a>
                     <a href="admin-master-tarifario.html" class="master-nav-link">Tarifario</a>
                     <a href="admin-master-pos.html" class="master-nav-link">POS</a>
@@ -84,7 +84,7 @@
                 <div id="page-card-loading" class="page-card-loading is-visible">
                     <div class="state-block loading">
                         <div class="state-spinner"></div>
-                        <p class="state-title">Cargando n�mina...</p>
+                        <p class="state-title">Cargando nómina...</p>
                         <p class="state-desc">Esto puede tardar unos segundos</p>
                     </div>
                 </div>
@@ -93,8 +93,8 @@
                 <div id="page-card-empty" class="page-card-empty">
                     <div class="state-block">
                         <p class="state-title">Sin resultados</p>
-                        <p class="state-desc">Prueba con otro t�rmino de b�squeda.</p>
-                        <button id="btn-clear-search" class="btn btn-ghost btn-sm mt-2">Limpiar b�squeda</button>
+                        <p class="state-desc">Prueba con otro t—rmino de búsqueda.</p>
+                        <button id="btn-clear-search" class="btn btn-ghost btn-sm mt-2">Limpiar búsqueda</button>
                     </div>
                 </div>
 
@@ -103,22 +103,22 @@
 
                     <!-- Internal Tabs (Nomina vs Perfiles) -->
                     <div class="tab-bar mb-4">
-                        <button class="tab-chip active" id="tab-nomina">?? Listado N�mina</button>
+                        <button class="tab-chip active" id="tab-nomina">?? Listado Nómina</button>
                         <button type="button" class="tab-chip" id="tab-perfiles">?? Perfiles de Usuario</button>
                     </div>
 
-                    <!-- Vista N�mina (Tabla Est�ndar) -->
+                    <!-- Vista Nómina (Tabla Est—ndar) -->
                     <div id="view-nomina" class="staff-dashboard">
                         <div class="dashboard-header align-start">
                             <div>
-                                <h2 class="dashboard-title">Gesti�n de N�mina</h2>
+                                <h2 class="dashboard-title">Gestión de Nómina</h2>
                                 <p class="dashboard-subtitle dashboard-subtitle-soft">Listado y control de staff y
                                     personal</p>
                             </div>
                             <button id="btn-new" class="btn-icon btn-icon-plus" aria-label="Nuevo personal">+</button>
                         </div>
 
-                        <div class="filter-bar filter-bar-compact" aria-label="Filtros de n�mina">
+                        <div class="filter-bar filter-bar-compact" aria-label="Filtros de nómina">
                             <div class="filter-group">
                                 <button class="status-pill status-neutral filter-pill active" data-status="all">
                                     Total <span class="pill-count" id="staff-total">0</span>
@@ -169,14 +169,14 @@
     <div class="slide-panel" id="slide-panel">
         <div class="panel-header">
             <h3 class="panel-title" id="panel-title">Nuevo Personal</h3>
-            <button class="panel-close" id="btn-close-panel" aria-label="Cerrar panel">�</button>
+            <button class="panel-close" id="btn-close-panel" aria-label="Cerrar panel">—</button>
         </div>
         <div class="panel-body" id="panel-form-container">
             <div id="panel-error" class="panel-error"></div>
 
             <div class="form-group">
                 <label for="staff-name" class="form-label">Nombre Completo *</label>
-                <input type="text" id="staff-name" class="input" placeholder="Ej: Juan P�rez" required>
+                <input type="text" id="staff-name" class="input" placeholder="Ej: Juan P—rez" required>
             </div>
 
             <div class="form-group">
@@ -187,14 +187,14 @@
             </div>
 
             <div class="form-group">
-                <label for="staff-phone" class="form-label">Tel�fono</label>
+                <label for="staff-phone" class="form-label">Tel—fono</label>
                 <input type="text" id="staff-phone" class="input" placeholder="Ej: 11 1234 5678">
             </div>
 
             <div class="form-group">
                 <label for="staff-email" class="form-label">Email (Usuario)</label>
                 <input type="email" id="staff-email" class="input" placeholder="usuario@midnight.tmp">
-                <span class="note text-xs text-muted">Dejar vac�o para autogenerar un email temporal.</span>
+                <span class="note text-xs text-muted">Dejar vac—o para autogenerar un email temporal.</span>
             </div>
 
             <div class="form-group">

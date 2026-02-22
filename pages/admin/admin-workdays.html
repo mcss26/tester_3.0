@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
@@ -16,10 +16,10 @@
     <meta name="theme-color" content="#000000" />
     <meta
       name="description"
-      content="Jornadas de trabajo � asignacion y control de turnos del equipo"
+      content="Jornadas de trabajo — asignación y control de turnos del equipo"
     />
     <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg" />
-    <title>Jornadas � Midnight</title>
+    <title>Jornadas — Midnight</title>
     <link rel="stylesheet" href="../../assets/css/tokens.css" />
     <link rel="stylesheet" href="../../assets/css/base.css" />
     <link rel="stylesheet" href="../../assets/css/layout.css" />
@@ -38,7 +38,7 @@
     <header class="topbar">
       <nav class="breadcrumb topbar-start">
         <a href="./admin-index.html" class="breadcrumb-item breadcrumb-link"
-          >Administraci�n</a
+          >Administraci—n</a
         >
         <span class="breadcrumb-sep">/</span>
         <span class="breadcrumb-item current">Jornadas</span>
@@ -51,7 +51,7 @@
           id="global-search"
           class="input"
           placeholder="Ir a..."
-          aria-label="Navegaci�n r�pida"
+          aria-label="Navegación rápida"
         />
         <svg class="header-search-icon" viewBox="0 0 24 24">
           <circle cx="11" cy="11" r="8"></circle>
@@ -87,7 +87,7 @@
               <div class="notification-time">Hace 2h</div>
             </div>
             <div class="notification-item">
-              <div class="notification-title">Importaci�n exitosa</div>
+              <div class="notification-title">Importaci—n exitosa</div>
               <div class="notification-desc">Consumo del 03/02 procesado</div>
               <div class="notification-time">Hace 5h</div>
             </div>
@@ -109,7 +109,7 @@
             type="button"
             class="avatar avatar-sm"
             id="user-avatar"
-            aria-label="Men� de usuario"
+            aria-label="Menú de usuario"
           >
             AD
           </button>
@@ -130,7 +130,7 @@
                   d="M12 1v6m0 6v6M5.64 5.64l4.24 4.24m6.36 6.36l4.24 4.24M1 12h6m6 0h6M5.64 18.36l4.24-4.24m6.36-6.36l4.24-4.24"
                 ></path>
               </svg>
-              Configuraci�n
+              Configuración
             </a>
             <div class="dropdown-divider"></div>
             <a
@@ -143,7 +143,7 @@
                 <polyline points="16 17 21 12 16 7"></polyline>
                 <line x1="21" y1="12" x2="9" y2="12"></line>
               </svg>
-              Cerrar Sesi�n
+              Cerrar Sesión
             </a>
           </div>
         </div>
@@ -186,7 +186,7 @@
               <div class="dashboard-header align-start">
                 <div>
                   <h2 class="dashboard-title dashboard-title-soft">
-                    Gesti�n de Jornada
+                    Gestión de Jornada
                     <span
                       class="status-pill-header staff-status-pending"
                       id="workday-status-header"
@@ -207,7 +207,7 @@
                       type="button"
                       class="btn-icon btn-sm"
                       id="btn-prev-day"
-                      title="D�a Anterior"
+                      title="D—a Anterior"
                     >
                       <svg
                         width="16"
@@ -267,7 +267,7 @@
                       type="button"
                       class="btn-icon btn-sm"
                       id="btn-next-day"
-                      title="D�a Siguiente"
+                      title="D—a Siguiente"
                     >
                       <svg
                         width="16"
@@ -310,7 +310,7 @@
                     aria-selected="true"
                     aria-controls="panelPlanner"
                   >
-                    Planificaci�n
+                    Planificación
                   </button>
                   <button
                     type="button"
@@ -341,11 +341,11 @@
               </div>
 
               <!-- ------------------------------------------- -->
-              <!-- TAB 1: PLANNER (Planificaci�n)             -->
+              <!-- TAB 1: PLANNER (Planificación)             -->
               <!-- ------------------------------------------- -->
               <section id="panelPlanner" class="tab-content" role="tabpanel">
                 <!-- Stats Grid (4 KPIs) -->
-                <!-- Summary Metrics (Golden Standard � 4-col variant) -->
+                <!-- Summary Metrics (Golden Standard — 4-col variant) -->
                 <div class="summary-metrics-container">
                   <div class="summary-metrics-grid summary-metrics-4col">
                     <div class="summary-metric-card border-l-staff">
@@ -370,7 +370,7 @@
                     <div class="summary-metric-card border-l-promo">
                       <div class="summary-metric-label">Convocatoria</div>
                       <div class="summary-metric-value" id="kpi-staff-status">
-                        �/�
+                        —/—
                       </div>
                       <div
                         class="stat-delta text-warning"
@@ -407,12 +407,12 @@
                 </div>
 
                 <div class="planner-layout">
-                  <!-- SIDEBAR: Configuraci�n y Costos -->
+                  <!-- SIDEBAR: Configuración y Costos -->
                   <aside class="planner-sidebar">
-                    <!-- PANEL A: Definici�n -->
+                    <!-- PANEL A: Definici—n -->
                     <section class="planner-section">
                       <div class="panel-title-row">
-                        <span>A. Definici�n</span>
+                        <span>A. Definici—n</span>
                         <button
                           type="button"
                           class="btn-secondary btn-sm"
@@ -425,7 +425,7 @@
 
                       <div class="planner-col mt-4">
                         <label class="form-label">Fecha Operativa</label>
-                        <span id="input-date-mirror" class="input" style="display:inline-block;opacity:0.7;">�</span>
+                        <span id="input-date-mirror" class="input" style="display:inline-block;opacity:0.7;">—</span>
                       </div>
 
                       <div class="planner-col mt-4">
@@ -476,7 +476,7 @@
                             type="button"
                             class="btn-secondary btn-sm"
                             id="btn-save-template"
-                            title="Guardar configuraci�n actual como plantilla"
+                            title="Guardar configuración actual como plantilla"
                           >
                             ??
                           </button>
@@ -542,17 +542,17 @@
                 class="tab-content hidden"
                 role="tabpanel"
               >
-                <!-- LIVE Status Chip (Sprint 5 � shows polling state) -->
+                <!-- LIVE Status Chip (Sprint 5 — shows polling state) -->
                 <div class="live-chip hidden" id="live-chip">
                   <span class="live-chip-dot"></span>
                   <span class="live-chip-label">LIVE</span>
-                  <span class="live-chip-time" id="live-chip-time">�</span>
+                  <span class="live-chip-time" id="live-chip-time">—</span>
                 </div>
 
                 <!-- Anomaly Alerts (populated by JS polling) -->
                 <div id="anomaly-alerts" class="hidden"></div>
 
-                <!-- Secci�n de Planificaci�n -->
+                <!-- Secci—n de Planificación -->
                 <div class="planning-grid">
                   <div class="stat-card">
                     <div class="stat-label">Total Sistema</div>
@@ -572,15 +572,15 @@
                   </div>
                 </div>
 
-                <!-- -- Sub-secci�n: CAJA -- -->
+                <!-- -- Sub-secci—n: CAJA -- -->
                 <div class="staff-dashboard" id="section-caja">
                   <div class="dashboard-header align-start">
                     <div>
                       <h2 class="dashboard-title dashboard-title-soft">
-                        Rendici�n de Caja
+                        Rendici—n de Caja
                       </h2>
                       <p class="dashboard-subtitle dashboard-subtitle-soft">
-                        Conciliaci�n diaria por terminal
+                        Conciliaci—n diaria por terminal
                       </p>
                     </div>
                     <div class="filter-actions">
@@ -706,10 +706,10 @@
                     <div class="staff-dashboard reconcile-card">
                       <div class="dashboard-header cell-pad">
                         <h3 class="dashboard-subtitle muted">
-                          Conciliaci�n Entradas QR
+                          Conciliaci—n Entradas QR
                         </h3>
                         <span class="dashboard-subtitle muted"
-                          >Ingresos x Acreditaci�n</span
+                          >Ingresos x Acreditaci—n</span
                         >
                       </div>
                       <div class="table-wrap">
@@ -766,7 +766,7 @@
                             </tr>
                             <tr class="table-row">
                               <td class="table-cell font-bold text-success">
-                                Boleter�a
+                                Boleter—a
                               </td>
                               <td
                                 class="table-cell text-center"
@@ -798,7 +798,7 @@
                             </tr>
                             <tr class="table-row">
                               <td class="table-cell font-bold muted">
-                                RRPP / Cortes�a
+                                RRPP / Cortes—a
                               </td>
                               <td
                                 class="table-cell text-center"
@@ -917,7 +917,7 @@
                           <tfoot class="table-head">
                             <tr>
                               <td class="table-cell muted text-xs" colspan="4">
-                                * Datos calculados autom�ticamente desde
+                                * Datos calculados automáticamente desde
                                 vw_daily_sales
                               </td>
                             </tr>
@@ -935,23 +935,23 @@
                     <div class="stat-card">
                       <div class="stat-label">Facturado (GBOL)</div>
                       <div class="stat-value font-mono" id="fiscal-total-bruto">
-                        �
+                        —
                       </div>
                     </div>
                     <div class="stat-card">
                       <div class="stat-label">% Blanqueado</div>
                       <div class="stat-value font-mono" id="fiscal-pct-blanco">
-                        �
+                        —
                       </div>
                     </div>
                     <div class="stat-card">
                       <div class="stat-label">IVA Total</div>
-                      <div class="stat-value font-mono" id="fiscal-iva">�</div>
+                      <div class="stat-value font-mono" id="fiscal-iva">—</div>
                     </div>
                     <div class="stat-card">
                       <div class="stat-label">Tickets</div>
                       <div class="stat-value font-mono" id="fiscal-tickets">
-                        �
+                        —
                       </div>
                     </div>
                   </div>
@@ -979,12 +979,12 @@
                   </div>
                 </div>
 
-                <!-- -- Sub-secci�n: DEVENCIONES (N�mina Devengada) -- -->
+                <!-- -- Sub-secci—n: DEVENCIONES (Nómina Devengada) -- -->
                 <div class="staff-dashboard mt-4" id="section-devenciones">
                   <div class="dashboard-header align-start">
                     <div>
                       <h2 class="dashboard-title dashboard-title-soft">
-                        Devenciones de N�mina
+                        Devenciones de Nómina
                       </h2>
                       <p class="dashboard-subtitle dashboard-subtitle-soft">
                         Devengado por staff convocado esta noche
@@ -1032,7 +1032,7 @@
                         <tbody id="devenciones-table-body">
                           <tr>
                             <td colspan="6" class="cell-pad text-center muted">
-                              Genera devenciones para ver el detalle de n�mina.
+                              Genera devenciones para ver el detalle de nómina.
                             </td>
                           </tr>
                         </tbody>
@@ -1055,7 +1055,7 @@
                   </div>
                 </div>
 
-                <!-- Acci�n principal -->
+                <!-- Acción principal -->
                 <div class="footer-actions-right">
                   <button
                     type="button"
@@ -1073,25 +1073,25 @@
                 <!-- Stock Audit Section (inside Night Chief) -->
                 <div class="stats-grid stats-grid-4col">
                   <div class="stat-card">
-                    <div class="stat-label">Costo F�sico</div>
+                    <div class="stat-label">Costo F—sico</div>
                     <div class="stat-value font-mono" id="sa-kpi-physical">
-                      �
+                      —
                     </div>
                   </div>
                   <div class="stat-card">
-                    <div class="stat-label">Costo Te�rico</div>
+                    <div class="stat-label">Costo Te—rico</div>
                     <div class="stat-value font-mono" id="sa-kpi-theoretical">
-                      �
+                      —
                     </div>
                   </div>
                   <div class="stat-card">
-                    <div class="stat-label">P�rdida Estimada</div>
-                    <div class="stat-value font-mono" id="sa-kpi-loss">�</div>
+                    <div class="stat-label">P—rdida Estimada</div>
+                    <div class="stat-value font-mono" id="sa-kpi-loss">—</div>
                     <div class="stat-delta" id="sa-kpi-loss-delta"></div>
                   </div>
                   <div class="stat-card">
                     <div class="stat-label">Eficiencia</div>
-                    <div class="stat-value" id="sa-kpi-rating">�</div>
+                    <div class="stat-value" id="sa-kpi-rating">—</div>
                   </div>
                 </div>
 
@@ -1103,7 +1103,7 @@
                         Sesiones de Barra
                       </h2>
                       <p class="dashboard-subtitle dashboard-subtitle-soft">
-                        Eficiencia por ubicaci�n esta noche
+                        Eficiencia por ubicaci—n esta noche
                       </p>
                     </div>
                   </div>
@@ -1114,19 +1114,19 @@
                       <table class="table table-sticky table-compact">
                         <thead>
                           <tr class="table-head">
-                            <th class="table-cell is-header">Ubicaci�n</th>
+                            <th class="table-cell is-header">Ubicaci—n</th>
                             <th class="table-cell is-header">Barman</th>
                             <th class="table-cell is-header text-right">
                               Revenue
                             </th>
                             <th class="table-cell is-header text-right">
-                              C. F�sico
+                              C. F—sico
                             </th>
                             <th class="table-cell is-header text-right">
-                              C. Te�rico
+                              C. Te—rico
                             </th>
                             <th class="table-cell is-header text-right">
-                              P�rdida
+                              P—rdida
                             </th>
                             <th class="table-cell is-header text-right">
                               Varianza %
@@ -1156,18 +1156,18 @@
                         Varianza por Producto
                       </h2>
                       <p class="dashboard-subtitle dashboard-subtitle-soft">
-                        Detalle: consumo real vs te�rico por SKU
+                        Detalle: consumo real vs te—rico por SKU
                       </p>
                     </div>
                     <div class="dashboard-actions">
                       <select
                         id="sa-filter-clasif"
                         class="input input-sm"
-                        aria-label="Filtrar clasificaci�n de varianza"
+                        aria-label="Filtrar clasificaci—n de varianza"
                       >
                         <option value="">Todas</option>
                         <option value="ALERTA_PERDIDA">
-                          ?? Alerta P�rdida
+                          ?? Alerta P—rdida
                         </option>
                         <option value="ERROR_REGISTRO">
                           ?? Error Registro
@@ -1187,7 +1187,7 @@
                         <thead>
                           <tr class="table-head">
                             <th class="table-cell is-header">SKU</th>
-                            <th class="table-cell is-header">Categor�a</th>
+                            <th class="table-cell is-header">Categoría</th>
                             <th class="table-cell is-header text-right">
                               Apertura
                             </th>
@@ -1223,15 +1223,15 @@
                   </div>
                 </div>
 
-                <!-- Consumo Te�rico GBOL -->
+                <!-- Consumo Te—rico GBOL -->
                 <div class="staff-dashboard mt-4">
                   <div class="dashboard-header align-start">
                     <div>
                       <h2 class="dashboard-title dashboard-title-soft">
-                        Consumo Te�rico (GBOL)
+                        Consumo Te—rico (GBOL)
                       </h2>
                       <p class="dashboard-subtitle dashboard-subtitle-soft">
-                        Ingredientes consumidos seg�n comandas facturadas
+                        Ingredientes consumidos seg—n comandas facturadas
                       </p>
                     </div>
                   </div>
@@ -1268,7 +1268,7 @@
               </section>
 
               <!-- ------------------------------------------- -->
-              <!-- TAB 3: REPORT (Dashboard Diagn�stico)     -->
+              <!-- TAB 3: REPORT (Dashboard Diagn—stico)     -->
               <!-- ------------------------------------------- -->
               <section
                 id="panelReport"
@@ -1285,11 +1285,11 @@
                       Reporte de Noche
                     </h2>
                     <p class="dashboard-subtitle dashboard-subtitle-soft">
-                      <span id="rpt-date" class="font-mono">�</span>
-                      <span class="muted">�</span>
-                      <span id="rpt-event">�</span>
-                      <span class="muted">�</span>
-                      <span id="rpt-health-badge" class="status-pill">�</span>
+                      <span id="rpt-date" class="font-mono">—</span>
+                      <span class="muted">—</span>
+                      <span id="rpt-event">—</span>
+                      <span class="muted">—</span>
+                      <span id="rpt-health-badge" class="status-pill">—</span>
                     </p>
                   </div>
                   <div class="rpt-header-right">
@@ -1310,26 +1310,26 @@
                     <div class="summary-metric-card">
                       <div class="summary-metric-label">Revenue</div>
                       <div class="summary-metric-value" id="rpt-kpi-revenue">
-                        �
+                        —
                       </div>
                       <div class="stat-delta" id="rpt-kpi-revenue-delta"></div>
                     </div>
                     <div class="summary-metric-card">
                       <div class="summary-metric-label">Neto</div>
-                      <div class="summary-metric-value" id="rpt-kpi-net">�</div>
+                      <div class="summary-metric-value" id="rpt-kpi-net">—</div>
                       <div class="stat-delta" id="rpt-kpi-net-delta"></div>
                     </div>
                     <div class="summary-metric-card">
                       <div class="summary-metric-label">Margen</div>
                       <div class="summary-metric-value" id="rpt-kpi-margin">
-                        �
+                        —
                       </div>
                       <div class="stat-delta" id="rpt-kpi-margin-delta"></div>
                     </div>
                     <div class="summary-metric-card">
-                      <div class="summary-metric-label">Per C�pita</div>
+                      <div class="summary-metric-label">Per C—pita</div>
                       <div class="summary-metric-value" id="rpt-kpi-percapita">
-                        �
+                        —
                       </div>
                       <div
                         class="stat-delta"
@@ -1339,7 +1339,7 @@
                     <div class="summary-metric-card">
                       <div class="summary-metric-label">Score</div>
                       <div class="summary-metric-value" id="rpt-kpi-score">
-                        �
+                        —
                       </div>
                       <div class="stat-delta" id="rpt-kpi-score-delta"></div>
                     </div>
@@ -1359,7 +1359,7 @@
                           class="input input-sm rpt-chart-select"
                           aria-label="Modo de grafico de reportes"
                         >
-                          <option value="area">�rea</option>
+                          <option value="area">—rea</option>
                           <option value="waterfall">Waterfall</option>
                           <option value="doughnut">Doughnut</option>
                         </select>
@@ -1370,19 +1370,19 @@
                       <div class="rpt-chart-kpis">
                         <span class="rpt-chart-kpi">
                           <span class="muted">Margen Op.</span>
-                          <strong id="rpt-chart-margin">�</strong>
+                          <strong id="rpt-chart-margin">—</strong>
                         </span>
                         <span class="rpt-chart-kpi">
                           <span class="muted">Break-even</span>
-                          <strong id="rpt-chart-breakeven">�</strong>
+                          <strong id="rpt-chart-breakeven">—</strong>
                         </span>
                       </div>
                     </div>
 
-                    <!-- Facturaci�n Fiscal Table -->
+                    <!-- Facturaci—n Fiscal Table -->
                     <div class="rpt-fiscal-section">
                       <div class="rpt-chart-header">
-                        <h3 class="rpt-section-title">Facturaci�n Fiscal</h3>
+                        <h3 class="rpt-section-title">Facturaci—n Fiscal</h3>
                       </div>
                       <div class="table-viewport table-shell">
                         <table class="table table-compact">
@@ -1415,12 +1415,12 @@
 
                   <!-- RIGHT PANEL (45%) -->
                   <div class="rpt-panel-right">
-                    <!-- Anomal�as Accionables -->
+                    <!-- Anomal—as Accionables -->
                     <div class="rpt-anomalies-section">
-                      <h3 class="rpt-section-title">Anomal�as</h3>
+                      <h3 class="rpt-section-title">Anomal—as</h3>
                       <div id="rpt-anomalies-list" class="rpt-anomalies-list">
                         <div class="rpt-anomaly-empty muted italic">
-                          Sin anomal�as detectadas ?
+                          Sin anomal—as detectadas ?
                         </div>
                       </div>
                     </div>
@@ -1436,18 +1436,18 @@
                           <div class="rpt-ops-label">Stock Audit</div>
                           <div class="rpt-ops-metrics">
                             <span
-                              >Precisi�n:
+                              >Precisi—n:
                               <strong id="rpt-ops-stock-precision"
-                                >�</strong
+                                >—</strong
                               ></span
                             >
                             <span
                               >Merma:
-                              <strong id="rpt-ops-stock-loss">�</strong></span
+                              <strong id="rpt-ops-stock-loss">—</strong></span
                             >
                             <span
                               >SKUs c/diff:
-                              <strong id="rpt-ops-stock-skus">�</strong></span
+                              <strong id="rpt-ops-stock-skus">—</strong></span
                             >
                           </div>
                         </div>
@@ -1461,31 +1461,31 @@
                           <div class="rpt-ops-metrics">
                             <span
                               >Diff:
-                              <strong id="rpt-ops-caja-diff">�</strong></span
+                              <strong id="rpt-ops-caja-diff">—</strong></span
                             >
                             <span
                               >Terminales OK:
                               <strong id="rpt-ops-caja-terminals"
-                                >�</strong
+                                >—</strong
                               ></span
                             >
                           </div>
                         </div>
                       </div>
 
-                      <!-- N�mina -->
+                      <!-- Nómina -->
                       <div class="rpt-ops-card">
                         <div class="rpt-ops-icon">??</div>
                         <div class="rpt-ops-content">
-                          <div class="rpt-ops-label">N�mina</div>
+                          <div class="rpt-ops-label">Nómina</div>
                           <div class="rpt-ops-metrics">
                             <span
                               >Staff:
-                              <strong id="rpt-ops-nomina-count">�</strong></span
+                              <strong id="rpt-ops-nomina-count">—</strong></span
                             >
                             <span
                               >Costo:
-                              <strong id="rpt-ops-nomina-cost">�</strong></span
+                              <strong id="rpt-ops-nomina-cost">—</strong></span
                             >
                           </div>
                         </div>
@@ -1502,7 +1502,7 @@
                         Historial de Jornadas
                       </h2>
                       <p class="dashboard-subtitle dashboard-subtitle-soft">
-                        Conciliaci�n nocturna � click para cargar una fecha
+                        Conciliaci—n nocturna — click para cargar una fecha
                       </p>
                     </div>
                   </div>
@@ -1529,13 +1529,13 @@
                               Declarado
                             </th>
                             <th class="table-cell is-header text-right">
-                              Conciliaci�n
+                              Conciliaci—n
                             </th>
                             <th class="table-cell is-header text-right">
                               Loss Stock
                             </th>
                             <th class="table-cell is-header text-right">
-                              N�mina
+                              Nómina
                             </th>
                             <th class="table-cell is-header text-right">
                               Resultado
@@ -1620,7 +1620,7 @@
       </div>
     </footer>
 
-    <!-- Slide Panel (List View para Historial � legacy, se mantiene por JS) -->
+    <!-- Slide Panel (List View para Historial — legacy, se mantiene por JS) -->
     <div class="panel-overlay" id="panel-overlay"></div>
     <div class="slide-panel" id="slide-panel">
       <div class="panel-header">
@@ -1636,7 +1636,7 @@
       </div>
       <div class="panel-body">
         <div class="table-shell" id="history-container">
-          <!-- Se inyectar� el listado existente aqu� -->
+          <!-- Se inyectar— el listado existente aquí -->
         </div>
       </div>
     </div>
@@ -1650,10 +1650,10 @@
     >
       <div class="modal-card modal-sm">
         <div class="modal-header">
-          <h2 id="modal-title" class="modal-title">Confirmar Acci�n</h2>
+          <h2 id="modal-title" class="modal-title">Confirmar Acción</h2>
         </div>
         <div class="modal-body">
-          <p id="modal-message">�Est�s seguro de continuar?</p>
+          <p id="modal-message">—Est—s seguro de continuar?</p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn-secondary" id="btnCancelModal">
@@ -1666,7 +1666,7 @@
       </div>
     </div>
 
-    <!-- Close Night Confirm Modal (Sprint 3 � P&L extended) -->
+    <!-- Close Night Confirm Modal (Sprint 3 — P&L extended) -->
     <div
       class="modal-overlay hidden"
       role="dialog"
@@ -1677,7 +1677,7 @@
         <div class="modal-header">
           <h2 class="modal-title">Resumen de Cierre</h2>
           <span class="status-pill" id="pnl-health-badge" title="Health Score"
-            >�</span
+            >—</span
           >
         </div>
         <div class="modal-body">
@@ -1688,22 +1688,22 @@
               <h3 class="pnl-column-title text-success">Ingresos</h3>
               <div class="pnl-line">
                 <span class="pnl-label">Efectivo</span>
-                <span class="pnl-value font-mono" id="pnl-income-cash">�</span>
+                <span class="pnl-value font-mono" id="pnl-income-cash">—</span>
               </div>
               <div class="pnl-line">
                 <span class="pnl-label">QR / Entradas</span>
-                <span class="pnl-value font-mono" id="pnl-income-qr">�</span>
+                <span class="pnl-value font-mono" id="pnl-income-qr">—</span>
               </div>
               <div class="pnl-line">
                 <span class="pnl-label">Barra</span>
-                <span class="pnl-value font-mono" id="pnl-income-bar">�</span>
+                <span class="pnl-value font-mono" id="pnl-income-bar">—</span>
               </div>
               <div class="pnl-line pnl-line-total">
                 <span class="pnl-label font-bold">Total Ingresos</span>
                 <span
                   class="pnl-value font-mono font-bold"
                   id="pnl-total-income"
-                  >�</span
+                  >—</span
                 >
               </div>
             </div>
@@ -1713,19 +1713,19 @@
               <div class="pnl-line">
                 <span class="pnl-label">Staff</span>
                 <span class="pnl-value font-mono" id="pnl-expense-staff"
-                  >�</span
+                  >—</span
                 >
               </div>
               <div class="pnl-line">
                 <span class="pnl-label">Stock</span>
                 <span class="pnl-value font-mono" id="pnl-expense-stock"
-                  >�</span
+                  >—</span
                 >
               </div>
               <div class="pnl-line">
                 <span class="pnl-label">Extras</span>
                 <span class="pnl-value font-mono" id="pnl-expense-extras"
-                  >�</span
+                  >—</span
                 >
               </div>
               <div class="pnl-line pnl-line-total">
@@ -1733,7 +1733,7 @@
                 <span
                   class="pnl-value font-mono font-bold"
                   id="pnl-total-expense"
-                  >�</span
+                  >—</span
                 >
               </div>
             </div>
@@ -1746,19 +1746,19 @@
               <span
                 class="pnl-net-value font-mono font-bold"
                 id="pnl-net-result"
-                >�</span
+                >—</span
               >
             </div>
             <div class="pnl-net-row muted">
               <span class="pnl-net-label">Margen</span>
-              <span class="pnl-net-value font-mono" id="pnl-margin-pct">�</span>
+              <span class="pnl-net-value font-mono" id="pnl-margin-pct">—</span>
             </div>
             <!-- Break-even progress -->
             <div class="pnl-breakeven-bar">
               <div class="pnl-breakeven-fill" id="pnl-breakeven-fill"></div>
             </div>
             <p class="text-xs muted text-center mt-1" id="pnl-breakeven-label">
-              Break-even: �
+              Break-even: —
             </p>
           </div>
 
@@ -1771,7 +1771,7 @@
           </div>
 
           <p class="text-center text-xs muted mt-4">
-            �Confirmar cierre permanente de la noche?
+            —Confirmar cierre permanente de la noche?
           </p>
         </div>
         <div class="modal-footer">
@@ -1839,7 +1839,7 @@
               placeholder="0 = sin QRs"
             />
             <p class="text-hint">
-              Dejar en 0 para no generar entradas autom�ticamente.
+              Dejar en 0 para no generar entradas automáticamente.
             </p>
           </div>
         </div>
@@ -1919,7 +1919,7 @@
         </div>
         <div class="modal-body">
           <p class="text-xs muted mb-4">
-            Verificaci�n antes de abrir operaciones
+            Verificaci—n antes de abrir operaciones
           </p>
           <div id="preflight-checks" class="preflight-list">
             <!-- Populated by JS -->
@@ -1960,12 +1960,12 @@
               id="input-template-name"
               class="input"
               aria-label="Nombre de la plantilla"
-              placeholder="Ej: S�bado regular"
+              placeholder="Ej: S—bado regular"
               required
             />
           </div>
           <p class="text-xs muted mt-4">
-            Se guardar� la configuraci�n actual de staff y costos.
+            Se guardar— la configuración actual de staff y costos.
           </p>
           <input type="hidden" id="input-template-id" value="" />
         </div>

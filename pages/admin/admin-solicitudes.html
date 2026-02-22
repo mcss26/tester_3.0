@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -14,7 +14,7 @@
       frame-src 'none';">
     <meta name="theme-color" content="#000000">
     <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
-    <title>Solicitudes � Midnight</title>
+    <title>Solicitudes — Midnight</title>
     <link rel="stylesheet" href="../../assets/css/tokens.css">
     <link rel="stylesheet" href="../../assets/css/base.css">
     <link rel="stylesheet" href="../../assets/css/layout.css">
@@ -30,15 +30,15 @@
 
     <header class="topbar">
         <!-- Left: Breadcrumb -->
-        <nav class="breadcrumb topbar-start" aria-label="Navegaci�n">
-            <a href="./admin-index.html" class="breadcrumb-item breadcrumb-link">Administraci�n</a>
+        <nav class="breadcrumb topbar-start" aria-label="Navegación">
+            <a href="./admin-index.html" class="breadcrumb-item breadcrumb-link">Administraci—n</a>
             <span class="breadcrumb-sep">/</span>
             <span class="breadcrumb-item current">Solicitudes</span>
         </nav>
 
         <!-- Center: Search -->
         <div class="topbar-center header-search">
-            <input type="text" id="global-search" class="input" placeholder="Ir a..." aria-label="Navegaci�n r�pida">
+            <input type="text" id="global-search" class="input" placeholder="Ir a..." aria-label="Navegación rápida">
             <svg class="header-search-icon" viewBox="0 0 24 24">
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -65,7 +65,7 @@
                         <div class="notification-time">Hace 2h</div>
                     </div>
                     <div class="notification-item">
-                        <div class="notification-title">Importaci�n exitosa</div>
+                        <div class="notification-title">Importaci—n exitosa</div>
                         <div class="notification-desc">Consumo del 03/02 procesado</div>
                         <div class="notification-time">Hace 5h</div>
                     </div>
@@ -82,9 +82,9 @@
 
             <!-- User Menu Dropdown -->
             <div class="dropdown-container">
-                <button class="avatar avatar-sm" id="user-avatar" aria-label="Men� de usuario">JS</button>
+                <button class="avatar avatar-sm" id="user-avatar" aria-label="Menú de usuario">JS</button>
                 <div class="dropdown-menu dropdown-user hidden" id="user-menu">
-                    <div class="dropdown-header" id="user-name-display">Juan S�nchez</div>
+                    <div class="dropdown-header" id="user-name-display">Juan S—nchez</div>
                     <div class="dropdown-divider"></div>
                     <a href="./admin-config.html" class="dropdown-item">
                         <svg class="dropdown-icon" viewBox="0 0 24 24">
@@ -100,7 +100,7 @@
                                 d="M12 1v6m0 6v6M5.64 5.64l4.24 4.24m6.36 6.36l4.24 4.24M1 12h6m6 0h6M5.64 18.36l4.24-4.24m6.36-6.36l4.24-4.24">
                             </path>
                         </svg>
-                        Configuraci�n
+                        Configuración
                     </a>
                     <div class="dropdown-divider"></div>
                     <a href="#" id="btn-logout" class="dropdown-item dropdown-item-danger">
@@ -109,7 +109,7 @@
                             <polyline points="16 17 21 12 16 7"></polyline>
                             <line x1="21" y1="12" x2="9" y2="12"></line>
                         </svg>
-                        Cerrar Sesi�n
+                        Cerrar Sesión
                     </a>
                 </div>
             </div>
@@ -132,7 +132,7 @@
                 <div class="page-card-empty" id="page-card-empty">
                     <div class="state-block loading">
                         <p class="state-title">Sin Datos</p>
-                        <p class="state-desc">No se encontraron solicitudes ni d�ficits de stock.</p>
+                        <p class="state-desc">No se encontraron solicitudes ni d—ficits de stock.</p>
                         <button id="btn-reload-empty" class="btn btn-primary btn-sm">Reintentar</button>
                     </div>
                 </div>
@@ -144,14 +144,14 @@
                         <!-- Dashboard Header (Golden Standard: tab-chip in actions-bar) -->
                         <div class="dashboard-header align-start">
                             <div>
-                                <h2 class="dashboard-title dashboard-title-soft">Gesti�n de Reposici�n</h2>
-                                <p class="dashboard-subtitle dashboard-subtitle-soft">Control de pre-aprobaci�n y
-                                    �rdenes de compra</p>
+                                <h2 class="dashboard-title dashboard-title-soft">Gestión de Reposición</h2>
+                                <p class="dashboard-subtitle dashboard-subtitle-soft">Control de pre-aprobación y
+                                    órdenes de compra</p>
                             </div>
                             <div class="actions-bar">
                                 <div class="tab-bar" id="solicitudes-tabs">
-                                    <button class="tab-chip active" data-tab="pre-aprobacion">Pre-Aprobaci�n</button>
-                                    <button type="button" class="tab-chip" data-tab="pendientes">Aprobaci�n Final</button>
+                                    <button class="tab-chip active" data-tab="pre-aprobacion">Pre-Aprobaci—n</button>
+                                    <button type="button" class="tab-chip" data-tab="pendientes">Aprobaci—n Final</button>
                                 </div>
                             </div>
                         </div>
@@ -160,7 +160,7 @@
                         <div class="summary-metrics-container" id="preapproval-metrics">
                             <div class="summary-metrics-grid">
                                 <div class="summary-metric-card">
-                                    <div class="summary-metric-label">SKUs con D�ficit</div>
+                                    <div class="summary-metric-label">SKUs con D—ficit</div>
                                     <div class="summary-metric-value summary-metric-primary" id="stat-deficit-count">-
                                     </div>
                                 </div>
@@ -193,7 +193,7 @@
                                         <div class="custom-dropdown-option" data-value="pedido-vs-consumo">
                                             Pedido vs Consumo</div>
                                         <div class="custom-dropdown-option" data-value="deficit-recurrente">
-                                            D�ficit Recurrente</div>
+                                            D—ficit Recurrente</div>
                                         <div class="custom-dropdown-option" data-value="tendencia-gasto">
                                             Tendencia de Gasto</div>
                                     </div>
@@ -237,7 +237,7 @@
                             <canvas id="audit-chart-canvas" class="chart-canvas-max"></canvas>
                         </div>
 
-                        <!-- View: Pre-Aprobaci�n -->
+                        <!-- View: Pre-Aprobaci—n -->
                         <div id="view-pre-aprobacion" class="tab-content">
                             <!-- Sub-filter bar -->
                             <div class="sku-filter-bar">
@@ -265,7 +265,7 @@
                             </div>
                         </div>
 
-                        <!-- View: Pendientes (Aprobaci�n Final) -->
+                        <!-- View: Pendientes (Aprobaci—n Final) -->
                         <div id="view-pendientes" class="tab-content hidden">
                             <div class="table-viewport table-shell" id="list-container">
                                 <!-- Injected by JS -->
@@ -286,7 +286,7 @@
     <aside id="slide-panel" class="slide-panel">
         <div class="panel-header">
             <h3 class="panel-title" id="panel-title">Detalle de Pedido</h3>
-            <button class="panel-close" id="btn-close-panel" aria-label="Cerrar">�</button>
+            <button class="panel-close" id="btn-close-panel" aria-label="Cerrar">—</button>
         </div>
         <div class="panel-body" id="panel-body">
             <div id="order-detail-content">
@@ -297,7 +297,7 @@
             <div id="reject-reason-container" class="state-block hidden mt-4">
                 <label class="form-label">Motivo de Rechazo</label>
                 <textarea id="reject-reason" class="input w-full" rows="3" aria-label="Motivo de rechazo"
-                    placeholder="Indica la raz�n del rechazo..."></textarea>
+                    placeholder="Indica la raz—n del rechazo..."></textarea>
             </div>
         </div>
 
@@ -309,17 +309,17 @@
         </div>
     </aside>
 
-    <!-- Modal: Rechazo Pre-Aprobaci�n -->
+    <!-- Modal: Rechazo Pre-Aprobaci—n -->
     <dialog id="modal-prereject" class="modal">
         <div class="modal-content modal-content-md">
             <div class="modal-header">
                 <h3 class="modal-title">Rechazar Items</h3>
-                <button class="modal-close" id="btn-close-prereject" aria-label="Cerrar modal">�</button>
+                <button class="modal-close" id="btn-close-prereject" aria-label="Cerrar modal">—</button>
             </div>
             <form id="form-prereject">
                 <div class="modal-body">
-                    <p class="text-sm muted mb-4">Se rechazar�n <strong id="prereject-count">0</strong> items de la
-                        planificaci�n.</p>
+                    <p class="text-sm muted mb-4">Se rechazar—n <strong id="prereject-count">0</strong> items de la
+                        planificación.</p>
                     <div class="form-group">
                         <label class="form-label">Motivo de Rechazo</label>
                         <textarea id="prereject-reason" class="input w-full" rows="3"
