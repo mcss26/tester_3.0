@@ -7,7 +7,7 @@
 
 ## Overview
 
-Este documento define los **patrones HTML/JS de referencia** para componentes de UI. Para **tokens de diseÃ±o** (colores, tipografÃ­a, spacing, z-index, motion), consultar [`MASTER.md`](../design-system/MASTER.md).
+Este documento define los **patrones HTML/JS de referencia** para componentes de UI. Para **tokens de diseÃ±o** (colores, tipografÃ­a, spacing, z-index, motion), consultar [`master-design-spec.md`](../01-design-system/master-design-spec.md).
 
 ---
 
@@ -812,7 +812,7 @@ Use these semantic state classes:
 
 ---
 
-> **Accessibility, Motion & Responsive:** Ver [`MASTER.md`](../design-system/MASTER.md) Â§11 (Stack Guidelines), Â§5 (Transitions), Pre-Delivery Checklist.
+> **Accessibility, Motion & Responsive:** Ver [`master-design-spec.md`](../01-design-system/master-design-spec.md) Â§11 (Stack Guidelines), Â§5 (Transitions), Pre-Delivery Checklist.
 
 ---
 
@@ -1099,13 +1099,13 @@ To apply golden standard to an existing page:
 
 ## Implementation History
 
-| Phase   | Date       | Summary                                                                                              |
-| ------- | ---------- | ---------------------------------------------------------------------------------------------------- |
+| Phase   | Date       | Summary                                                                                                    |
+| ------- | ---------- | ---------------------------------------------------------------------------------------------------------- |
 | Phase 2 | 2026-02-04 | Tab consistency (sidebar â†’ sidebar-filters, stat-card â†’ summary-metric, filter-bar â†’ sku-filter-bar) |
-| Phase 4 | 2026-02-05 | CSS architecture cleanup (FASE sections in admin-central-stock.css)                                  |
-| Phase 5 | 2026-02-05 | Accessibility & responsive testing (WCAG AA, 4 breakpoints verified)                                 |
-| Phase 6 | 2026-02-07 | Topbar/Breadcrumb/Dropdown consolidated to components.css                                            |
-| Dedup   | 2026-02-21 | Tokens, accessibility, animation sections moved to MASTER.md                                         |
+| Phase 4 | 2026-02-05 | CSS architecture cleanup (FASE sections in admin-central-stock.css)                                        |
+| Phase 5 | 2026-02-05 | Accessibility & responsive testing (WCAG AA, 4 breakpoints verified)                                       |
+| Phase 6 | 2026-02-07 | Topbar/Breadcrumb/Dropdown consolidated to components.css                                                  |
+| Dedup   | 2026-02-21 | Tokens, accessibility, animation sections moved to MASTER.md                                               |
 
 The following standardizations were applied in Phase 2 to ensure all tabs follow the golden standard:
 
@@ -1208,23 +1208,23 @@ These components are specific to `admin-herramientas` and extend the global Gold
 
 ### Accessibility Fixes Applied
 
-| Fix                    | Status | Details                                                           |
-| :--------------------- | :----: | :---------------------------------------------------------------- |
-| **Heading Hierarchy**  |   âœ…   | H4â†’H3 for Filtros, Importar, EstadÃ­sticas (proper H2â†’H3 sequence) |
-| **Date Inputs ARIA**   |   âœ…   | `aria-label="Fecha de inicio"` / `aria-label="Fecha de fin"`      |
-| **Aforo Input ARIA**   |   âœ…   | `aria-label="NÃºmero de personas (aforo)"`                         |
-| **Semantic Landmarks** |   âœ…   | Proper use of `<main>`, `<nav>`, `<aside>`                        |
-| **Table Semantics**    |   âœ…   | All tables use `<thead>`, `<th>`, `role="columnheader"`           |
-| **Focus Indicators**   |   âœ…   | Visible focus states on all interactive elements                  |
+| Fix                    | Status | Details                                                                |
+| :--------------------- | :----: | :--------------------------------------------------------------------- |
+| **Heading Hierarchy**  |  âœ…   | H4â†’H3 for Filtros, Importar, EstadÃ­sticas (proper H2â†’H3 sequence) |
+| **Date Inputs ARIA**   |  âœ…   | `aria-label="Fecha de inicio"` / `aria-label="Fecha de fin"`           |
+| **Aforo Input ARIA**   |  âœ…   | `aria-label="NÃºmero de personas (aforo)"`                             |
+| **Semantic Landmarks** |  âœ…   | Proper use of `<main>`, `<nav>`, `<aside>`                             |
+| **Table Semantics**    |  âœ…   | All tables use `<thead>`, `<th>`, `role="columnheader"`                |
+| **Focus Indicators**   |  âœ…   | Visible focus states on all interactive elements                       |
 
 ### Responsive Breakpoints Verified
 
 | Breakpoint  | Resolution | Status | Layout Behavior                 |
 | :---------- | :--------- | :----: | :------------------------------ |
-| **Desktop** | 1920Ã—1080  |   âœ…   | Full sidebar + main content     |
-| **Laptop**  | 1366Ã—768   |   âœ…   | Layout adapts proportionally    |
-| **Tablet**  | 1024Ã—768   |   âœ…   | Grid collapses to single column |
-| **Mobile**  | 768Ã—1024   |   âœ…   | Sidebar stacks, pills wrap      |
+| **Desktop** | 1920Ã—1080 |  âœ…   | Full sidebar + main content     |
+| **Laptop**  | 1366Ã—768  |  âœ…   | Layout adapts proportionally    |
+| **Tablet**  | 1024Ã—768  |  âœ…   | Grid collapses to single column |
+| **Mobile**  | 768Ã—1024  |  âœ…   | Sidebar stacks, pills wrap      |
 
 ---
 
@@ -1253,6 +1253,7 @@ El proyecto tiene **44 pantallas** y **5 roles**. Sin una base comÃºn de layou
 ## Requirements
 
 ### Must (imprescindible)
+
 - **Sistema de layout base**: grid (columnas), breakpoints, espaciados, contenedores y reglas de alineaciÃ³n (p. ej., `Container`, `Stack`, `Grid`, `Section`).
 - **Tokens de diseÃ±o**: escala de spacing, tipografÃ­as, tamaÃ±os, radios, sombras, z-index y colores (modo claro/oscuro si aplica).
 - **Templates de pantalla**: 3â€“6 plantillas reutilizables (p. ej. `AppShell + Sidebar`, `TopNav`, `Master-Detail`, `Form Wizard`, `Dashboard`, `List+Filters`).
@@ -1263,65 +1264,74 @@ El proyecto tiene **44 pantallas** y **5 roles**. Sin una base comÃºn de layou
 - **DocumentaciÃ³n + governance**: guÃ­a de uso, â€œdo/donâ€™tâ€, checklist de revisiÃ³n de UI, y proceso para introducir excepciones.
 
 ### Should (deberÃ­a)
+
 - **GuÃ­as de responsive**: reglas claras para reflow (p. ej., cuÃ¡ndo colapsar sidebar, cÃ³mo apilar filtros, truncado/line-clamp).
 - **Soporte i18n**: layouts tolerantes a textos largos, monedas/fechas.
 - **Herramientas de control**: linters/CI para tokens, convenciones de naming y verificaciÃ³n de uso de componentes.
 
 ### Could (podrÃ­a)
+
 - **Theming multi-marca** (si hay white-label).
 - **CatÃ¡logo interactivo** (Storybook / equivalente) con ejemplos por template.
 
 ### Wonâ€™t (por ahora)
+
 - Pixel-perfect por pantalla sin usar templates (se acepta solo como excepciÃ³n documentada).
 
 ## Method
 
 ### 1) EstÃ¡ndar de â€œLayout Systemâ€ (CSS-first)
+
 **Objetivo:** que las 45 pantallas se construyan con el mismo set de piezas, evitando CSS â€œpor pantallaâ€.
 
 **Capas (recomendado con CSS Layers):**
+
 1. **tokens.css** (Design Tokens): variables CSS en `:root`.
 2. **reset.css** / base tipogrÃ¡fica.
 3. **layout.css** (primitives): container, grid, stack, sidebar, header, footer, panels.
 4. **components.css** (UI reutilizable): buttons, inputs, table, card, modal, toast, tabs.
-5. **pages/*.css** (excepciones justificadas): reglas mÃ­nimas y siempre â€œencimaâ€.
+5. **pages/\*.css** (excepciones justificadas): reglas mÃ­nimas y siempre â€œencimaâ€.
 
 > Esto encaja con lo que ya tienen (tokens.css + components.css + mÃ³dulos), pero agrega **layout.css** como contrato comÃºn + orden fijo de carga.
 
 ### 2) Design Tokens mÃ­nimos (contrato)
 
 #### AuditorÃ­a rÃ¡pida del CSS que pegaste (riesgos de inconsistencia)
+
 En tu snippet ya hay una base fuerte, pero hoy estÃ¡ â€œmezcladoâ€ (tokens + componentes + layout + utilidades) y aparecen varios **tokens referenciados que no estÃ¡n definidos** y **duplicaciones**:
+
 - Variables usadas pero no definidas en `:root`: `--input-font`, `--input-fs`, `--input-lh`, `--input-h`, `--fs-lg`, `--lh-relaxed`, `--z-sticky`, `--z-panel`, `--z-toast`, `--z-dropdown`, `--topbar-h`, `--space-lg`, `--space-md`, `--space-sm`, `--space-xs`, `--radius-*`, `--control-h(-sm)`, `--transition-*`, `--accent-info-bg`, `--white-alpha-05`, `--white-alpha-10`, `--border-active`, `--shadow-*`, `--neutral-*`, `--purple-500`, `--yellow-400`.
 - **Inconsistencia de naming**: definÃ­s `--topbar-height` pero usÃ¡s `--topbar-h`; `--container-width` ok, pero `--space-*` a veces numÃ©rico (`--space-6`) y a veces semÃ¡ntico (`--space-lg`).
 - **Conflictos por duplicaciÃ³n de clases**: `.card` y `.toast` aparecen **dos veces** con definiciones distintas (la Ãºltima gana, y eso rompe coherencia entre pantallas).
 
 #### Refactor recomendado (sin frameworks, compatible con tu estructura)
-1) **Unificar naming de tokens** (elegir 1 estilo):
+
+1. **Unificar naming de tokens** (elegir 1 estilo):
    - OpciÃ³n A (recomendada): **numÃ©rico** tipo `--space-1/2/3/4/6/8...` y crear aliases semÃ¡nticos opcionales (`--space-sm: var(--space-2)` etc.).
    - Estandarizar: `--topbar-h` (y eliminar `--topbar-height`) o viceversa.
-2) **Definir el set mÃ­nimo faltante** (para evitar â€œvariables huÃ©rfanasâ€):
+2. **Definir el set mÃ­nimo faltante** (para evitar â€œvariables huÃ©rfanasâ€):
    - Tipos: `--fs-*`, `--lh-*`, `--fw-*`.
    - Radios: `--radius-sm/md/lg/full`.
    - Z: `--z-header`, `--z-dropdown`, `--z-modal`, `--z-toast`, `--z-overlay`.
    - Transiciones: `--transition-fast/base`.
    - Sombras: `--shadow-soft/md/lg`.
    - Alphas: `--white-alpha-05/10`.
-3) **Separar por capas** para que no haya colisiones:
+3. **Separar por capas** para que no haya colisiones:
    - `tokens.css` (solo variables)
    - `layout.css` (solo `.l-*`)
    - `components.css` (solo `.c-*`)
    - `utilities.css` (solo `.u-*`)
    - `pages/*.css` (solo excepciones)
-4) **Renombrar clases a prefijos** (cambia poco HTML, pero ordena muchÃ­simo):
+4. **Renombrar clases a prefijos** (cambia poco HTML, pero ordena muchÃ­simo):
    - Layout: `.l-container`, `.l-shell`, `.l-grid`, `.l-stack`
    - Componentes: `.c-card`, `.c-toast`, `.c-table`, `.c-input`, `.c-topbar`
    - Estados: `.is-loading`, `.is-open`, `.is-disabled`
-5) **Regla anti-duplicaciÃ³n**: una clase base, un lugar. Si querÃ©s variantes, usar modificadores:
+5. **Regla anti-duplicaciÃ³n**: una clase base, un lugar. Si querÃ©s variantes, usar modificadores:
    - `.c-card` + `.c-card--transparent`
    - `.c-toast` + `.c-toast--success`
 
 **Tokens obligatorios** (todos en `:root`):
+
 - Spacing scale: `--s0, --s1, --s2...` (ej. 0/4/8/12/16/24/32/48)
 - TipografÃ­a: `--font-sans`, `--fs-1..`, `--lh-1..`
 - Radios: `--r1..`
@@ -1331,6 +1341,7 @@ En tu snippet ya hay una base fuerte, pero hoy estÃ¡ â€œmezcladoâ€ (t
 - Layout: `--container-max`, `--sidebar-w`, `--header-h`, `--safe-bottom` (para mÃ³viles)
 
 **Tokens obligatorios** (todos en `:root`):
+
 - Spacing scale: `--s0, --s1, --s2...` (ej. 0/4/8/12/16/24/32/48)
 - TipografÃ­a: `--font-sans`, `--fs-1..`, `--lh-1..`
 - Radios: `--r1..`
@@ -1340,39 +1351,50 @@ En tu snippet ya hay una base fuerte, pero hoy estÃ¡ â€œmezcladoâ€ (t
 - Layout: `--container-max`, `--sidebar-w`, `--header-h`, `--safe-bottom` (para mÃ³viles)
 
 ### 3) Breakpoints (alineado al uso real)
+
 - **Admin (desktop-first):** optimizar para â‰¥ 1024px; mantener degradaciÃ³n aceptable a 768px.
 - **Staff/Encargados (mobile-first):** optimizar 360â€“430px; soportar landscape.
 
 RecomendaciÃ³n: definir breakpoints por variable y usarlos consistentemente:
+
 - `--bp-sm: 640px; --bp-md: 768px; --bp-lg: 1024px; --bp-xl: 1280px;`
 
 ### 4) Templates de pantalla (4 + 2 patrones)
+
 Con tu mapa, alcanza con **4 shells** y **2 patrones** para cubrir casi todo:
 
 **Shell A â€” Desktop Admin (Sidebar + Topbar)**
+
 - Usado por: `pages/admin/*`, `pages/operativo/*` (si corre en desktop), `pages/logistica/*`, `pages/gerencia/*`.
 - Estructura: sidebar fija + topbar + main con scroll interno.
 
 **Shell B â€” Desktop â€œData Managementâ€ (List + Filters + Detail)**
+
 - Usado por maestros: proveedores, categorÃ­as, tarifario, nÃ³mina, pos, sku.
 - PatrÃ³n: columna izquierda filtros/lista, derecha detalle/ediciÃ³n.
 
 **Shell C â€” Mobile Operativo (Top App Bar + Content + Sticky Action Bar)**
+
 - Usado por: `pages/encargados/*`, `pages/staff/*`, `scanner.html`.
 - PatrÃ³n: header compacto + contenido scroll + acciones primarias siempre accesibles.
 
 **Shell D â€” Mobile Member (Una sola acciÃ³n principal)**
+
 - Usado por: `my-qr.html`.
 - PatrÃ³n: vista â€œheroâ€ centrada, sin navegaciÃ³n compleja.
 
 **PatrÃ³n 1 â€” Dashboard Tiles**
+
 - Cards con KPIs + acciones rÃ¡pidas (admin/operativo/logÃ­stica/encargados).
 
 **PatrÃ³n 2 â€” Wizard / Cierre (stepper)**
+
 - Para cierres de noche (barra/caja) y workday: pasos con validaciÃ³n y CTA fijo.
 
 ### 5) Primitives de layout (reutilizables, sin framework)
+
 Implementar como clases â€œde composiciÃ³nâ€ (estilo CUBE):
+
 - `.l-container` (mÃ¡ximo ancho + padding)
 - `.l-stack` (apila con gap)
 - `.l-cluster` (fila con wrap + gap)
@@ -1384,7 +1406,9 @@ Implementar como clases â€œde composiciÃ³nâ€ (estilo CUBE):
 Regla clave: **las pÃ¡ginas no definen mÃ¡rgenes globales**, solo usan primitives + componentes.
 
 ### 6) Contrato HTML (para estandarizar todas las pantallas)
+
 Todas las pÃ¡ginas deberÃ­an seguir un esqueleto uniforme (aunque cambie el shell):
+
 - `body[data-context][data-shell][data-allowed-roles]`
 - `header.app-header` (tÃ­tulo, breadcrumbs, acciones)
 - `nav.app-nav` (segÃºn contexto/rol)
@@ -1392,11 +1416,14 @@ Todas las pÃ¡ginas deberÃ­an seguir un esqueleto uniforme (aunque cambie el 
 - `footer.app-footer` (solo si aplica)
 
 **Render del shell:**
+
 - OpciÃ³n simple: cada HTML incluye el mismo markup.
 - OpciÃ³n mÃ¡s mantenible: `layout.js` inyecta header/nav desde `partials/*.html` o templates string, usando tu `admin-navigation.js`/`data-go`.
 
 ### 7) Estados estÃ¡ndar (QA-friendly)
+
 Basado en `window.Utils.setPageState()`:
+
 - `loading` â†’ skeleton
 - `empty` â†’ empty state con CTA
 - `error` â†’ mensaje + retry
@@ -1405,13 +1432,16 @@ Basado en `window.Utils.setPageState()`:
 Definir un set Ãºnico de componentes: `<div class="c-state c-state--empty">â€¦`.
 
 ### 8) RBAC y navegaciÃ³n consistente (sin duplicar layout)
+
 Ya usan `data-allowed-roles + Auth.guardOrRedirect()`.
 Completar el estÃ¡ndar:
+
 - `navigation.config.js`: menÃº por `context` + flags por rol.
 - `layout.js`: construye nav + resalta activo + breadcrumbs.
 - ProhibiciÃ³n: links hardcodeados dispersos; usar `data-go="admin-solicitudes"` siempre.
 
 ### PlantUML â€” Componentes principales
+
 ```plantuml
 @startuml
 skinparam componentStyle rectangle
@@ -1451,12 +1481,14 @@ Sb --> DB
 ### 9) Tools y Resources (con links)
 
 #### Referencias de diseÃ±o (para patrones y consistencia)
+
 - GOV.UK Design System (patrones + accesibilidad): https://design-system.service.gov.uk/
 - Shopify Polaris (incluye Web Components, Ãºtil para vanilla): https://polaris-react.shopify.com/ y https://shopify.dev/docs/api/app-home/polaris-web-components
 - IBM Carbon Design System (guÃ­as + componentes): https://carbondesignsystem.com/
 - Material Design (layout/adaptive): https://m3.material.io/
 
 #### CSS / arquitectura (para estandarizar sin â€œpelearteâ€ con especificidad)
+
 - CSS Cascade Layers `@layer` (para ordenar tokens/layout/components):
   - https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/%40layer
   - https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics/Cascade_layers
@@ -1464,17 +1496,21 @@ Sb --> DB
 - BEM (si preferÃ­s naming por componentes): https://getbem.com/
 
 #### Tokens (si quieren formalizar intercambio / build de tokens)
+
 - Design Tokens Community Group (W3C CG): https://www.w3.org/community/design-tokens/
 - Design Tokens Format Module (spec): https://www.designtokens.org/tr/drafts/format/
 - Style Dictionary (build/generaciÃ³n de tokens): https://styledictionary.com/ (repo: https://github.com/style-dictionary/style-dictionary)
 
 #### Tooling recomendado (Vanilla + HTML)
+
 **Dev/build**
+
 - Vite (dev server + build): https://vite.dev/
 - PostCSS (plugins como autoprefixer, etc.): https://postcss.org/
 - Lightning CSS (minify/transform rÃ¡pido, opcional): https://lightningcss.dev/ (npm: https://www.npmjs.com/package/lightningcss)
 
 **Calidad de cÃ³digo**
+
 - Stylelint (CSS): https://stylelint.io/ (VS Code: https://marketplace.visualstudio.com/items?itemName=stylelint.vscode-stylelint)
 - ESLint (JS): https://eslint.org/ (VS Code: https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
 - Prettier (format): https://prettier.io/
@@ -1483,34 +1519,41 @@ Sb --> DB
   - Alternativa simple: HTMLHint: https://htmlhint.com/
 
 **Testing (regresiones de layout incluidas)**
+
 - Playwright (E2E + mobile emulation): https://playwright.dev/
 - Storybook (catÃ¡logo para componentes/layouts; usar `@storybook/html`): https://storybook.js.org/docs/api/new-frameworks
 - Visual regression opcional: Chromatic: https://www.chromatic.com/
 
 **Accesibilidad / performance**
+
 - axe-core (motor a11y): https://github.com/dequelabs/axe-core
 - axe DevTools (extensiÃ³n): https://chromewebstore.google.com/detail/axe-devtools-web-accessib/lhdoppojpmngadmnindnejefpokejbdd
 - Pa11y (CI a11y): https://pa11y.org/
 - Lighthouse (perf/a11y): https://developer.chrome.com/docs/lighthouse/overview
 
 #### Opcional: Web Components como â€œcomponent modelâ€ sin frameworks
+
 - GuÃ­as MDN Web Components: https://developer.mozilla.org/en-US/docs/Web/API/Web_components
 
 ## Implementation
 
 ### Fase 0 â€” Inventario y clasificaciÃ³n (rÃ¡pido)
+
 - Crear una lista: **pantalla â†’ template (A/B/C/D) + patrÃ³n (dashboard/wizard/list)**.
 - Definir â€œexcepcionesâ€ permitidas (mÃ¡x. 1â€“2 por mÃ³dulo).
 
 ### Fase 0.5 â€” Tooling (opcional pero recomendado)
+
 Si hoy todo es â€œstatic + supabaseâ€ igual podÃ©s agregar tooling sin cambiar runtime.
 
 **Dependencias sugeridas (Node):**
+
 - Lint/format: ESLint + Prettier + Stylelint + (HTML lint opcional)
 - Tests: Playwright + axe-core (o Pa11y)
 - Dev/build: Vite (opcional)
 
 **Scripts ejemplo (package.json):**
+
 ```json
 {
   "scripts": {
@@ -1527,6 +1570,7 @@ Si hoy todo es â€œstatic + supabaseâ€ igual podÃ©s agregar tooling si
 ```
 
 **Configs mÃ­nimos (referencia):**
+
 - Stylelint: https://stylelint.io/user-guide/get-started/
 - ESLint: https://eslint.org/
 - Prettier: https://prettier.io/docs/
@@ -1535,12 +1579,14 @@ Si hoy todo es â€œstatic + supabaseâ€ igual podÃ©s agregar tooling si
 > Nota: `lint:html` puede implementarse con el plugin oficial de ESLint para HTML.
 
 ### Fase 1 â€” Base del sistema (1 vez)
+
 1. Consolidar `tokens.css` (si ya existe, normalizar nombres y escalas).
 2. Crear `layout.css` con primitives (`l-container`, `l-stack`, `l-grid`, `l-sidebar`, etc.).
 3. Establecer **orden estÃ¡ndar** de `<link>` CSS en todas las pÃ¡ginas.
 4. Definir el contrato HTML mÃ­nimo (`data-context`, `data-shell`, `app-header/nav/main`).
 
 **Estructura de carpetas sugerida (robusta para 45 pantallas):**
+
 ```text
 assets/
   css/
@@ -1577,19 +1623,33 @@ pages/
 ```
 
 **CSS Layers (opcional, recomendado para evitar guerras de especificidad):**
+
 ```css
 /* en un entrypoint (o al inicio de cada archivo si no tenÃ©s bundler) */
 @layer tokens, reset, layout, components, utilities, pages;
 
-@layer tokens { /* tokens.css */ }
-@layer reset { /* reset.css */ }
-@layer layout { /* layout.css */ }
-@layer components { /* components.css */ }
-@layer utilities { /* utilities.css */ }
-@layer pages { /* pages/*.css */ }
+@layer tokens {
+  /* tokens.css */
+}
+@layer reset {
+  /* reset.css */
+}
+@layer layout {
+  /* layout.css */
+}
+@layer components {
+  /* components.css */
+}
+@layer utilities {
+  /* utilities.css */
+}
+@layer pages {
+  /* pages/*.css */
+}
 ```
 
 ### Fase 2 â€” Shells
+
 - Implementar **Shell A** (desktop) y **Shell C** (mobile) primero.
 - `layout.js`:
   - Lee `data-context` + `data-shell`
@@ -1597,17 +1657,21 @@ pages/
   - Aplica active state y breadcrumbs
 
 ### Fase 3 â€” MigraciÃ³n por â€œrutas crÃ­ticasâ€
+
 Orden recomendado:
-1) Encargados + Staff (mobile)
-2) Admin Operaciones (workdays/solicitudes/semanal)
-3) LogÃ­stica
-4) Maestros (Shell B)
-5) QR + Members
+
+1. Encargados + Staff (mobile)
+2. Admin Operaciones (workdays/solicitudes/semanal)
+3. LogÃ­stica
+4. Maestros (Shell B)
+5. QR + Members
 
 ### Fase 4 â€” Calidad + Gobernanza
+
 **Objetivo:** que el estÃ¡ndar se sostenga con el tiempo (no solo â€œmigrar y listoâ€).
 
 **Checklist obligatorio de PR (UI/Layout):**
+
 - Usa primitives `.l-*` (no â€œpadding/margin globalâ€ en `.page-shell` por pantalla)
 - Header consistente (tÃ­tulo + subtitle opcional + actions)
 - Estados: `loading/empty/error/ready` con componentes estÃ¡ndar
@@ -1616,11 +1680,13 @@ Orden recomendado:
 - A11y base: focus visible, labels, aria en icon buttons, orden de tab correcto
 
 **Reglas de exceptions (para evitar â€œCSS spaghettiâ€):**
+
 - Si una pantalla necesita un layout especial:
-  1) se crea un **nuevo primitive** o **nuevo patrÃ³n** reutilizable, o
-  2) se documenta como excepciÃ³n con un mini-ADR (`docs/adr/ADR-xxx-layout-exception.md`).
+  1. se crea un **nuevo primitive** o **nuevo patrÃ³n** reutilizable, o
+  2. se documenta como excepciÃ³n con un mini-ADR (`docs/adr/ADR-xxx-layout-exception.md`).
 
 **CI recomendado (mÃ­nimo viable):**
+
 - `lint:css` + `lint:js` + `format --check`
 - `playwright test` en 2 viewports:
   - Desktop: 1440Ã—900 (admin)
@@ -1628,6 +1694,7 @@ Orden recomendado:
 - A11y gate (una muestra de pantallas crÃ­ticas) con Pa11y o axe
 
 **DocumentaciÃ³n viva (para acelerar onboarding):**
+
 - Un catÃ¡logo (Storybook HTML o `/docs/ui.html`) que incluya:
   - Shells A/B/C/D
   - Patrones (dashboard / list+filters / wizard)
@@ -1646,6 +1713,7 @@ Orden recomendado:
 ## Gathering Results
 
 Medir antes/despuÃ©s (2â€“4 semanas):
+
 - **Tiempo para crear una pantalla nueva** (desde HTML vacÃ­o hasta lista/form funcionando).
 - **Bugs UI por sprint** (inconsistencias, scrolls rotos, padding, etc.).
 - **Cobertura de estados**: % pantallas con loading/empty/error estÃ¡ndar.
@@ -1668,6 +1736,7 @@ _TBD en la siguiente iteraciÃ³n: pasos concretos de implementaciÃ³n, migraci
 ## Gathering Results
 
 Medir antes/despuÃ©s (2â€“4 semanas):
+
 - **Lead time de UI:** tiempo para crear una pantalla nueva usando templates.
 - **Retrabajo UI:** cantidad de PRs de â€œajuste visualâ€ por sprint.
 - **Bugs de layout:** issues de scroll, padding, sticky bars, tablas, overlays.
@@ -1678,7 +1747,6 @@ Medir antes/despuÃ©s (2â€“4 semanas):
 ## Need Professional Help in Developing Your Architecture?
 
 Please contact me at [sammuti.com](https://sammuti.com) :)
- in Developing Your Architecture?
+in Developing Your Architecture?
 
 Please contact me at [sammuti.com](https://sammuti.com) :)
-

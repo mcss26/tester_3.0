@@ -1,4 +1,4 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -6,15 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Security-Policy"
     content="default-src 'self';
-      script-src 'self' https://cdn.jsdelivr.net;
+      script-src 'self' https://cdn.jsdelivr.net https://cdn.sheetjs.com;
       style-src 'self' 'unsafe-inline';
-      connect-src 'self' https://iyknbgmcnbpvalvsjxjz.supabase.co;
+      connect-src 'self' https://iyknbgmcnbpvalvsjxjz.supabase.co https://cdn.jsdelivr.net;
       img-src 'self' data:;
       font-src 'self';
       frame-src 'none';">
     <meta name="theme-color" content="#000000">
     <link rel="icon" type="image/svg+xml" href="../../../assets/img/favicon.svg">
-    <title>QR Generador â€” Midnight</title>
+    <title>QR Generador — Midnight</title>
     <link rel="stylesheet" href="../../../assets/css/tokens.css">
     <link rel="stylesheet" href="../../../assets/css/base.css">
     <link rel="stylesheet" href="../../../assets/css/layout.css">
@@ -50,7 +50,7 @@
         <!-- Right: Avatar + Dropdown -->
         <div class="topbar-end">
             <div class="dropdown-container">
-                <button class="avatar avatar-sm" id="user-avatar" aria-label="MenÃº de usuario">...</button>
+                <button class="avatar avatar-sm" id="user-avatar" aria-label="Menú de usuario">...</button>
                 <div class="dropdown-menu dropdown-user hidden" id="user-menu">
                     <div class="dropdown-header" id="user-name-display">Usuario</div>
                     <div class="dropdown-divider"></div>
@@ -60,7 +60,7 @@
                             <polyline points="16 17 21 12 16 7"></polyline>
                             <line x1="21" y1="12" x2="9" y2="12"></line>
                         </svg>
-                        Cerrar SesiÃ³n
+                        Cerrar Sesión
                     </a>
                 </div>
             </div>
@@ -75,7 +75,7 @@
                 <div>
                     <h1 class="dashboard-title dashboard-title-soft">Generador QR</h1>
                     <p class="dashboard-subtitle dashboard-subtitle-soft">
-                        Crear lotes de cÃ³digos QR para entradas y accesos
+                        Crear lotes de códigos QR para entradas y accesos
                     </p>
                 </div>
                 <div class="actions-bar">
@@ -99,7 +99,7 @@
 
                     <!-- LEFT: Config Sidebar -->
                     <aside class="qr-gen-config">
-                        <h2 class="section-label">InformaciÃ³n del Lote</h2>
+                        <h2 class="section-label">Información del Lote</h2>
 
                         <div class="field">
                             <label for="batchName">Nombre del Lote</label>
@@ -110,9 +110,9 @@
                         <div class="field">
                             <label for="financialType">Tipo Financiero</label>
                             <select id="financialType" class="w-full" aria-label="Tipo financiero">
-                                <option value="INVITACION">InvitaciÃ³n (Gratis)</option>
+                                <option value="INVITACION">Invitación (Gratis)</option>
                                 <option value="VENTA">Venta (Entrada Paga)</option>
-                                <option value="CORTESIA">CortesÃ­a (RRPP)</option>
+                                <option value="CORTESIA">Cortesía (RRPP)</option>
                             </select>
                         </div>
 
@@ -121,10 +121,10 @@
                             <select id="marketSource" class="w-full" aria-label="Origen de mercado">
                                 <option value="" disabled selected>Seleccionar Origen</option>
                                 <option value="PASSLINE">Passline</option>
-                                <option value="BOLETERIA">BoleterÃ­a FÃ­sica</option>
+                                <option value="BOLETERIA">Boletería Física</option>
                                 <option value="RRPP">Promotores / RRPP</option>
                             </select>
-                            <p class="hint">Usado para la conciliaciÃ³n de caja.</p>
+                            <p class="hint">Usado para la conciliación de caja.</p>
                         </div>
 
                         <div class="field hidden" id="priceField">
@@ -134,7 +134,7 @@
 
                         <hr class="qr-gen-divider">
 
-                        <h2 class="section-label">GeneraciÃ³n</h2>
+                        <h2 class="section-label">Generación</h2>
                         <div class="field">
                             <label for="qty">Cantidad</label>
                             <input id="qty" type="number" min="1" max="500" value="20">
@@ -144,12 +144,12 @@
                             <label for="baseText">URL / Prefijo (Opcional)</label>
                             <input id="baseText" type="text" placeholder="https://..."
                                 value="https://midnightclub.com.ar/checkin">
-                            <p class="hint">Se anexa el UUID Ãºnico al final.</p>
+                            <p class="hint">Se anexa el UUID único al final.</p>
                         </div>
 
                         <hr class="qr-gen-divider">
 
-                        <h2 class="section-label">ImpresiÃ³n</h2>
+                        <h2 class="section-label">Impresión</h2>
                         <div class="qr-gen-print-row">
                             <div class="field">
                                 <label for="paper">Papel</label>
@@ -167,7 +167,7 @@
                                 </select>
                             </div>
                             <div class="field">
-                                <label for="titleText">TÃ­tulo</label>
+                                <label for="titleText">Título</label>
                                 <input id="titleText" type="text" value="MIDNIGHT">
                             </div>
                         </div>
@@ -197,7 +197,7 @@
                                     <rect x="3" y="14" width="7" height="7"></rect>
                                     <rect x="14" y="14" width="7" height="7"></rect>
                                 </svg>
-                                <span class="qr-gen-empty-text">ConfigurÃ¡ y hacÃ© clic en Previsualizar</span>
+                                <span class="qr-gen-empty-text">Configurá y hacé clic en Previsualizar</span>
                             </div>
                         </div>
 

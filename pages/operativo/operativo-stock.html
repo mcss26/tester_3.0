@@ -1,4 +1,4 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -6,15 +6,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Security-Policy"
     content="default-src 'self';
-      script-src 'self' https://cdn.jsdelivr.net;
+      script-src 'self' https://cdn.jsdelivr.net https://cdn.sheetjs.com;
       style-src 'self' 'unsafe-inline';
-      connect-src 'self' https://iyknbgmcnbpvalvsjxjz.supabase.co;
+      connect-src 'self' https://iyknbgmcnbpvalvsjxjz.supabase.co https://cdn.jsdelivr.net;
       img-src 'self' data:;
       font-src 'self';
       frame-src 'none';">
   <meta name="theme-color" content="#000000">
   <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
-  <title>Stock Operativo â€” Midnight</title>
+  <title>Stock Operativo — Midnight</title>
   <link rel="stylesheet" href="../../assets/css/tokens.css">
   <link rel="stylesheet" href="../../assets/css/base.css">
     <link rel="stylesheet" href="../../assets/css/layout.css">
@@ -29,7 +29,7 @@
 
   <!-- Topbar: Golden Standard -->
   <header class="topbar">
-    <nav class="breadcrumb topbar-start" aria-label="NavegaciÃ³n">
+    <nav class="breadcrumb topbar-start" aria-label="Navegación">
       <span class="breadcrumb-item">
         <a class="breadcrumb-link" href="operativo-index.html">Operativo</a>
       </span>
@@ -38,13 +38,13 @@
     </nav>
 
     <div class="topbar-center header-search">
-      <input type="text" id="global-search" class="input" placeholder="Ir a..." aria-label="NavegaciÃ³n rÃ¡pida">
-      <span class="header-shortcut">âŒ˜K</span>
+      <input type="text" id="global-search" class="input" placeholder="Ir a..." aria-label="Navegación rápida">
+      <span class="header-shortcut">?K</span>
     </div>
 
     <div class="topbar-end">
       <div class="dropdown-container">
-        <button class="avatar avatar-sm" id="user-avatar" aria-label="MenÃº de usuario">OP</button>
+        <button class="avatar avatar-sm" id="user-avatar" aria-label="Menú de usuario">OP</button>
         <div class="dropdown-menu dropdown-user hidden" id="user-menu">
           <div class="dropdown-header" id="user-name-display">Usuario</div>
           <div class="dropdown-divider"></div>
@@ -54,7 +54,7 @@
               <polyline points="16 17 21 12 16 7"></polyline>
               <line x1="21" y1="12" x2="9" y2="12"></line>
             </svg>
-            Cerrar SesiÃ³n
+            Cerrar Sesión
           </a>
         </div>
       </div>

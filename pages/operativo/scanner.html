@@ -1,4 +1,4 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -6,15 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta http-equiv="Content-Security-Policy"
     content="default-src 'self';
-      script-src 'self' https://cdn.jsdelivr.net;
+      script-src 'self' https://cdn.jsdelivr.net https://cdn.sheetjs.com;
       style-src 'self' 'unsafe-inline';
-      connect-src 'self' https://iyknbgmcnbpvalvsjxjz.supabase.co;
+      connect-src 'self' https://iyknbgmcnbpvalvsjxjz.supabase.co https://cdn.jsdelivr.net;
       img-src 'self' data:;
       font-src 'self';
       frame-src 'none';">
     <meta name="theme-color" content="#000000">
     <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
-    <title>Scanner QR â€” Midnight</title>
+    <title>Scanner QR — Midnight</title>
 
     <link rel="stylesheet" href="../../assets/css/tokens.css">
     <link rel="stylesheet" href="../../assets/css/base.css">
@@ -33,7 +33,7 @@
 
     <header class="topbar">
         <div class="topbar-start">
-            <nav class="breadcrumb" aria-label="NavegaciÃ³n">
+            <nav class="breadcrumb" aria-label="Navegación">
                 <span class="breadcrumb-item">
                     <a class="breadcrumb-link" href="operativo-index.html">OPERACIONES</a>
                 </span>
@@ -50,7 +50,7 @@
                     <span id="userRole" class="text-[10px] uppercase text-white/50 leading-tight">...</span>
                 </div>
             </div>
-            <button id="btnLogout" class="btn-danger btn-sm" aria-label="Cerrar sesiÃ³n">Salir</button>
+            <button id="btnLogout" class="btn-danger btn-sm" aria-label="Cerrar sesión">Salir</button>
         </div>
     </header>
 
@@ -76,10 +76,10 @@
 
         <!-- Status Card (Enhanced) -->
         <div id="statusCard" class="status-card idle">
-            <div class="status-icon">ðŸ“·</div>
+            <div class="status-icon">??</div>
             <div class="status-details">
                 <h3 id="statusTitle">Listo</h3>
-                <p id="statusMsg">EscaneÃ¡ un cÃ³digo QR</p>
+                <p id="statusMsg">Escaneá un código QR</p>
             </div>
             <!-- Member Info (Hidden by default) -->
             <div id="memberInfo" class="member-info hidden">
@@ -91,7 +91,7 @@
         <!-- Fullscreen Overlay for Success/Error -->
         <div id="scanOverlay" class="scan-overlay hidden">
             <div class="overlay-content">
-                <div id="overlayIcon" class="overlay-icon">âœ“</div>
+                <div id="overlayIcon" class="overlay-icon">?</div>
                 <h2 id="overlayTitle">ACCESO OK</h2>
                 <p id="overlayMsg">Bienvenido</p>
             </div>
@@ -102,9 +102,9 @@
             <button id="btnManualInput" class="btn-secondary w-full" aria-label="Alternar ingreso manual">Ingreso
                 Manual</button>
             <div id="manualInputBox" class="hidden row-flex gap-sm">
-                <input type="text" id="manualCode" placeholder="CÃ³digo..." aria-label="CÃ³digo manual"
+                <input type="text" id="manualCode" placeholder="Código..." aria-label="Código manual"
                     class="input flex-1">
-                <button id="btnCheckManual" class="btn-primary" aria-label="Verificar cÃ³digo">OK</button>
+                <button id="btnCheckManual" class="btn-primary" aria-label="Verificar código">OK</button>
             </div>
         </div>
 

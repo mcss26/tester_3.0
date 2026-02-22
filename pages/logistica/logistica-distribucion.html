@@ -1,4 +1,4 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -6,15 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Security-Policy"
     content="default-src 'self';
-      script-src 'self' https://cdn.jsdelivr.net;
+      script-src 'self' https://cdn.jsdelivr.net https://cdn.sheetjs.com;
       style-src 'self' 'unsafe-inline';
-      connect-src 'self' https://iyknbgmcnbpvalvsjxjz.supabase.co;
+      connect-src 'self' https://iyknbgmcnbpvalvsjxjz.supabase.co https://cdn.jsdelivr.net;
       img-src 'self' data:;
       font-src 'self';
       frame-src 'none';">
     <meta name="theme-color" content="#000000">
     <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
-    <title>DistribuciÃ³n â€” Midnight</title>
+    <title>Distribución — Midnight</title>
     <link rel="stylesheet" href="../../assets/css/tokens.css">
     <link rel="stylesheet" href="../../assets/css/base.css">
     <link rel="stylesheet" href="../../assets/css/layout.css">
@@ -28,30 +28,30 @@
 
     <!-- Topbar: Golden Standard -->
     <header class="topbar">
-        <nav class="breadcrumb topbar-start" aria-label="NavegaciÃ³n">
+        <nav class="breadcrumb topbar-start" aria-label="Navegación">
             <span class="breadcrumb-item">
-                <a class="breadcrumb-link" href="logistica-index.html">LogÃ­stica</a>
+                <a class="breadcrumb-link" href="logistica-index.html">Logística</a>
             </span>
             <span class="breadcrumb-sep">/</span>
-            <span class="breadcrumb-item current">DistribuciÃ³n</span>
+            <span class="breadcrumb-item current">Distribución</span>
         </nav>
 
         <div class="topbar-center header-search">
-            <input type="text" id="global-search" class="input" placeholder="Ir a..." aria-label="NavegaciÃ³n rÃ¡pida">
+            <input type="text" id="global-search" class="input" placeholder="Ir a..." aria-label="Navegación rápida">
             <svg class="header-search-icon" viewBox="0 0 24 24">
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
-            <span class="header-shortcut">âŒ˜K</span>
+            <span class="header-shortcut">?K</span>
         </div>
 
         <div class="topbar-end">
             <div class="dropdown-container">
-                <button class="avatar avatar-sm" id="user-avatar" aria-label="MenÃº de usuario">LG</button>
+                <button class="avatar avatar-sm" id="user-avatar" aria-label="Menú de usuario">LG</button>
                 <div class="dropdown-menu dropdown-user hidden" id="user-menu">
-                    <div class="dropdown-header" id="user-name-display">LogÃ­stico</div>
+                    <div class="dropdown-header" id="user-name-display">Logístico</div>
                     <div class="dropdown-divider"></div>
-                    <a href="#" id="btn-logout" class="dropdown-item dropdown-item-danger">Cerrar SesiÃ³n</a>
+                    <a href="#" id="btn-logout" class="dropdown-item dropdown-item-danger">Cerrar Sesión</a>
                 </div>
             </div>
         </div>
@@ -64,8 +64,8 @@
                 <!-- Master Navigation -->
                 <nav class="master-nav">
                     <a href="logistica-stock.html" class="master-nav-link">Stock</a>
-                    <a href="logistica-distribucion.html" class="master-nav-link active">DistribuciÃ³n</a>
-                    <a href="logistica-recepcion.html" class="master-nav-link">RecepciÃ³n</a>
+                    <a href="logistica-distribucion.html" class="master-nav-link active">Distribución</a>
+                    <a href="logistica-recepcion.html" class="master-nav-link">Recepción</a>
                     <a href="logistica-seguimiento.html" class="master-nav-link">Seguimiento</a>
                 </nav>
 
@@ -73,8 +73,8 @@
                     <div class="staff-dashboard">
                         <div class="dashboard-header align-start">
                             <div>
-                                <h2 class="dashboard-title dashboard-title-soft">DistribuciÃ³n a Barras</h2>
-                                <p class="dashboard-subtitle-soft">GestiÃ³n de pedidos internos y despachos a sucursales.
+                                <h2 class="dashboard-title dashboard-title-soft">Distribución a Barras</h2>
+                                <p class="dashboard-subtitle-soft">Gestión de pedidos internos y despachos a sucursales.
                                 </p>
                             </div>
                             <button class="btn btn-ghost btn-sm" id="btn-refresh"
@@ -105,7 +105,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2 class="modal-title">Despachar Pedido</h2>
-                <button class="modal-close btn-icon" id="close-modal" aria-label="Cerrar modal">âœ•</button>
+                <button class="modal-close btn-icon" id="close-modal" aria-label="Cerrar modal">?</button>
             </div>
             <div class="modal-body">
                 <div class="mb-4 bg-surface p-4 rounded text-sm">

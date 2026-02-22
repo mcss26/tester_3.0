@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -6,15 +6,15 @@
  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Security-Policy"
     content="default-src 'self';
-      script-src 'self' https://cdn.jsdelivr.net;
+      script-src 'self' https://cdn.jsdelivr.net https://cdn.sheetjs.com;
       style-src 'self' 'unsafe-inline';
-      connect-src 'self' https://iyknbgmcnbpvalvsjxjz.supabase.co;
+      connect-src 'self' https://iyknbgmcnbpvalvsjxjz.supabase.co https://cdn.jsdelivr.net;
       img-src 'self' data:;
       font-src 'self';
       frame-src 'none';">
- <meta name="description" content="Balance Semanal — Midnight Club Systems">
+ <meta name="description" content="Balance Semanal � Midnight Club Systems">
  <meta name="theme-color" content="#000000">
- <title>Balance Semanal — Gerencia</title>
+ <title>Balance Semanal � Gerencia</title>
  <link rel="preconnect" href="https://fonts.googleapis.com">
  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -33,7 +33,7 @@
  <!-- ===== TOPBAR ===== -->
  <header class="topbar" role="banner">
   <div class="topbar-start">
-   <nav class="breadcrumb" aria-label="Navegación de ruta">
+   <nav class="breadcrumb" aria-label="Navegaci�n de ruta">
     <span class="breadcrumb-item"><a class="breadcrumb-link" href="#">Gerencia</a></span>
     <span class="breadcrumb-sep">/</span>
     <span class="breadcrumb-item current">Balance Semanal</span>
@@ -51,31 +51,31 @@
      <line x1="12" y1="15" x2="12" y2="3" />
     </svg>
    </button>
-   <button class="avatar avatar-sm" type="button" aria-label="Menú de usuario">MC</button>
+   <button class="avatar avatar-sm" type="button" aria-label="Men� de usuario">MC</button>
   </div>
  </header>
 
  <!-- ===== MAIN ===== -->
  <main id="main-content" class="page-shell lab-content">
 
-  <!-- ─── KPI STRIP (Stock Central style) ──────────────── -->
+  <!-- --- KPI STRIP (Stock Central style) ---------------- -->
   <section class="kpi-strip" aria-label="Indicadores clave">
    <div class="kpi-hero">
     <span class="kpi-hero__label">Resultado Final</span>
-    <span class="kpi-hero__value" id="kpiResultado">—</span>
-    <span class="kpi-hero__sub" id="kpiMargen">—</span>
+    <span class="kpi-hero__value" id="kpiResultado">�</span>
+    <span class="kpi-hero__sub" id="kpiMargen">�</span>
    </div>
    <div class="kpi-hero">
     <span class="kpi-hero__label">Ingreso Bruto</span>
-    <span class="kpi-hero__value text-success" id="kpiIncomeBruto">—</span>
+    <span class="kpi-hero__value text-success" id="kpiIncomeBruto">�</span>
    </div>
    <div class="kpi-hero">
     <span class="kpi-hero__label">Egreso Neto</span>
-    <span class="kpi-hero__value text-error" id="kpiEgresoNeto">—</span>
+    <span class="kpi-hero__value text-error" id="kpiEgresoNeto">�</span>
    </div>
   </section>
 
-  <!-- ─── CHART + SIDEBAR ──────────────────────────────── -->
+  <!-- --- CHART + SIDEBAR -------------------------------- -->
   <section class="bal-main-grid">
 
    <!-- Left: Filters & stats -->
@@ -92,40 +92,40 @@
      </div>
      <div class="sidebar-field">
       <span class="sidebar-field__label">Asistencia</span>
-      <span class="sidebar-field__value" id="kpiAttendance">—</span>
+      <span class="sidebar-field__value" id="kpiAttendance">�</span>
      </div>
     </div>
 
     <div class="bal-sidebar__section">
      <span class="sidebar-label">Cruce Stock</span>
      <div class="sidebar-field">
-      <span class="sidebar-field__label">CMV Teórico</span>
-      <span class="sidebar-field__value text-info" id="cmvTeorico">—</span>
+      <span class="sidebar-field__label">CMV Te�rico</span>
+      <span class="sidebar-field__value text-info" id="cmvTeorico">�</span>
      </div>
      <div class="sidebar-field">
       <span class="sidebar-field__label">CMV Real</span>
-      <span class="sidebar-field__value" id="cmvReal">—</span>
+      <span class="sidebar-field__value" id="cmvReal">�</span>
      </div>
      <div class="sidebar-field">
       <span class="sidebar-field__label">Merma</span>
-      <span class="sidebar-field__value" id="mermaValue">—</span>
+      <span class="sidebar-field__value" id="mermaValue">�</span>
      </div>
      <div class="sidebar-field">
       <span class="sidebar-field__label">Free Drinks</span>
-      <span class="sidebar-field__value text-warning" id="freeDrinks">—</span>
+      <span class="sidebar-field__value text-warning" id="freeDrinks">�</span>
      </div>
     </div>
 
     <div class="bal-sidebar__section">
-     <span class="sidebar-label">Estadísticas</span>
+     <span class="sidebar-label">Estad�sticas</span>
      <div class="sidebar-stats">
       <div class="stat-pair">
-       <span class="stat-pair__label">Per Cápita</span>
-       <span class="stat-pair__value" id="perCapita">—</span>
+       <span class="stat-pair__label">Per C�pita</span>
+       <span class="stat-pair__value" id="perCapita">�</span>
       </div>
       <div class="stat-pair">
        <span class="stat-pair__label">Margen</span>
-       <span class="stat-pair__value" id="margenStat">—</span>
+       <span class="stat-pair__value" id="margenStat">�</span>
       </div>
      </div>
     </div>
@@ -139,9 +139,9 @@
    <!-- Center: Chart -->
    <div class="bal-chart">
     <div class="bal-chart__header">
-     <select class="chart-mode-select" id="chartMode" aria-label="Modo del gráfico">
+     <select class="chart-mode-select" id="chartMode" aria-label="Modo del gr�fico">
       <option value="income-expense">Ingreso vs Egreso</option>
-      <option value="stock">Stock: Teórico vs Real</option>
+      <option value="stock">Stock: Te�rico vs Real</option>
      </select>
      <div class="bal-chart__pills" id="chartPills" role="tablist">
       <button class="pill" data-range="4" role="tab">1M</button>
@@ -151,12 +151,12 @@
      </div>
     </div>
     <div class="bal-chart__canvas-wrap">
-     <canvas id="trendChart" aria-label="Gráfico de tendencia semanal"></canvas>
+     <canvas id="trendChart" aria-label="Gr�fico de tendencia semanal"></canvas>
     </div>
    </div>
   </section>
 
-  <!-- ─── DETAIL GRID: 4 columns compact ───────────────── -->
+  <!-- --- DETAIL GRID: 4 columns compact ----------------- -->
   <section class="bal-detail-grid" id="balColumns">
    <div class="detail-col" id="colIngresos">
     <h3 class="detail-col__title">Ingresos</h3>
@@ -176,13 +176,13 @@
    </div>
   </section>
 
-  <!-- ─── DISCREPANCIES (conditional) ──────────────────── -->
+  <!-- --- DISCREPANCIES (conditional) -------------------- -->
   <section class="bal-disc" id="balDiscrepancies" hidden>
    <h3 class="bal-disc__title">Discrepancias</h3>
    <div id="discrepanciesBody"></div>
   </section>
 
-  <!-- ─── DOCUMENTS ────────────────────────────────────── -->
+  <!-- --- DOCUMENTS -------------------------------------- -->
   <section class="bal-docs" id="balDocuments">
    <div class="bal-docs__header">
     <h3 class="bal-disc__title">Documentos</h3>
@@ -193,7 +193,7 @@
 
  </main>
 
- <!-- ─── STICKY STATUS BAR ──────────────────────────────── -->
+ <!-- --- STICKY STATUS BAR -------------------------------- -->
  <footer class="bal-status-bar" id="actionBar">
   <span class="bal-status-bar__dot"></span>
   <span class="bal-status-bar__text" id="weekStatus">Borrador</span>

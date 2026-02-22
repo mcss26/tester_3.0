@@ -1,4 +1,4 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -6,15 +6,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Security-Policy"
     content="default-src 'self';
-      script-src 'self' https://cdn.jsdelivr.net;
+      script-src 'self' https://cdn.jsdelivr.net https://cdn.sheetjs.com;
       style-src 'self' 'unsafe-inline';
-      connect-src 'self' https://iyknbgmcnbpvalvsjxjz.supabase.co;
+      connect-src 'self' https://iyknbgmcnbpvalvsjxjz.supabase.co https://cdn.jsdelivr.net;
       img-src 'self' data:;
       font-src 'self';
       frame-src 'none';">
   <meta name="theme-color" content="#000000">
   <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
-  <title>Seguimiento â€” Midnight</title>
+  <title>Seguimiento — Midnight</title>
   <link rel="stylesheet" href="../../assets/css/tokens.css">
   <link rel="stylesheet" href="../../assets/css/base.css">
     <link rel="stylesheet" href="../../assets/css/layout.css">
@@ -28,22 +28,22 @@
 
   <!-- Topbar: Golden Standard -->
   <header class="topbar">
-    <nav class="breadcrumb topbar-start" aria-label="NavegaciÃ³n">
+    <nav class="breadcrumb topbar-start" aria-label="Navegación">
       <span class="breadcrumb-item">
-        <a class="breadcrumb-link" href="logistica-index.html">LogÃ­stica</a>
+        <a class="breadcrumb-link" href="logistica-index.html">Logística</a>
       </span>
       <span class="breadcrumb-sep">/</span>
       <span class="breadcrumb-item current">Seguimiento</span>
     </nav>
 
     <div class="topbar-center header-search">
-      <input type="text" id="global-search" class="input" placeholder="Ir a..." aria-label="NavegaciÃ³n rÃ¡pida">
-      <span class="header-shortcut">âŒ˜K</span>
+      <input type="text" id="global-search" class="input" placeholder="Ir a..." aria-label="Navegación rápida">
+      <span class="header-shortcut">?K</span>
     </div>
 
     <div class="topbar-end">
       <div class="dropdown-container">
-        <button class="avatar avatar-sm" id="user-avatar" aria-label="MenÃº de usuario">LG</button>
+        <button class="avatar avatar-sm" id="user-avatar" aria-label="Menú de usuario">LG</button>
         <div class="dropdown-menu dropdown-user hidden" id="user-menu">
           <div class="dropdown-header" id="user-name-display">Usuario</div>
           <div class="dropdown-divider"></div>
@@ -53,7 +53,7 @@
               <polyline points="16 17 21 12 16 7"></polyline>
               <line x1="21" y1="12" x2="9" y2="12"></line>
             </svg>
-            Cerrar SesiÃ³n
+            Cerrar Sesión
           </a>
         </div>
       </div>
@@ -66,8 +66,8 @@
 
         <nav class="master-nav">
           <a href="logistica-stock.html" class="master-nav-link">Stock</a>
-          <a href="logistica-distribucion.html" class="master-nav-link">DistribuciÃ³n</a>
-          <a href="logistica-recepcion.html" class="master-nav-link">RecepciÃ³n</a>
+          <a href="logistica-distribucion.html" class="master-nav-link">Distribución</a>
+          <a href="logistica-recepcion.html" class="master-nav-link">Recepción</a>
           <a href="logistica-seguimiento.html" class="master-nav-link active">Seguimiento</a>
         </nav>
 
@@ -75,7 +75,7 @@
           <div class="dashboard-header align-start">
             <div>
               <h2 class="dashboard-title dashboard-title-soft">Seguimiento de Pedidos</h2>
-              <p class="dashboard-subtitle-soft">Tracking de Ã³rdenes de compra hasta entrega.</p>
+              <p class="dashboard-subtitle-soft">Tracking de órdenes de compra hasta entrega.</p>
             </div>
             <button class="btn btn-ghost btn-sm" id="btn-refresh" aria-label="Refrescar pedidos">Refrescar</button>
           </div>
@@ -84,7 +84,7 @@
             <div id="status-tabs" class="pill-group">
               <button class="filter-pill active" data-status="">Todos</button>
               <button class="filter-pill" data-status="ordered">Ordenados</button>
-              <button class="filter-pill" data-status="in_transit">En TrÃ¡nsito</button>
+              <button class="filter-pill" data-status="in_transit">En Tránsito</button>
               <button class="filter-pill" data-status="arrived">Llegados</button>
               <button class="filter-pill" data-status="delivered">Entregados</button>
             </div>
@@ -105,7 +105,7 @@
         <h2 class="panel-title" id="panel-title">Detalle de Orden</h2>
         <p class="panel-subtitle">Timeline de seguimiento</p>
       </div>
-      <button class="btn-icon btn-close-panel" aria-label="Cerrar">Ã—</button>
+      <button class="btn-icon btn-close-panel" aria-label="Cerrar">×</button>
     </div>
 
     <div class="panel-body custom-scroll" id="panel-body">
@@ -124,15 +124,15 @@
 
       <!-- Add Event Form -->
       <div class="mt-6 p-4 bg-surface card" id="add-event-form">
-        <h3 class="text-sm font-bold mb-3">Agregar ActualizaciÃ³n</h3>
+        <h3 class="text-sm font-bold mb-3">Agregar Actualización</h3>
         <div class="form-group mb-3">
           <label class="form-label" for="new-status">Nuevo Estado</label>
           <select id="new-status" class="input select w-full" aria-label="Nuevo estado del pedido">
             <option value="">Seleccionar...</option>
-            <option value="ordered">ðŸ“‹ Ordenado</option>
-            <option value="in_transit">ðŸšš En TrÃ¡nsito</option>
-            <option value="arrived">ðŸ“¦ Llegado a DepÃ³sito</option>
-            <option value="delivered">âœ… Entregado</option>
+            <option value="ordered">?? Ordenado</option>
+            <option value="in_transit">?? En Tránsito</option>
+            <option value="arrived">?? Llegado a Depósito</option>
+            <option value="delivered">? Entregado</option>
           </select>
         </div>
         <div class="form-group mb-3">

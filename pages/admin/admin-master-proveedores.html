@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -6,15 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Security-Policy"
     content="default-src 'self';
-      script-src 'self' https://cdn.jsdelivr.net;
+      script-src 'self' https://cdn.jsdelivr.net https://cdn.sheetjs.com;
       style-src 'self' 'unsafe-inline';
-      connect-src 'self' https://iyknbgmcnbpvalvsjxjz.supabase.co;
+      connect-src 'self' https://iyknbgmcnbpvalvsjxjz.supabase.co https://cdn.jsdelivr.net;
       img-src 'self' data:;
       font-src 'self';
       frame-src 'none';">
     <meta name="theme-color" content="#000000">
     <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
-    <title>Proveedores — Midnight</title>
+    <title>Proveedores � Midnight</title>
     <!-- Design Tokens & Global Components -->
     <link rel="stylesheet" href="../../assets/css/tokens.css">
     <link rel="stylesheet" href="../../assets/css/base.css">
@@ -31,9 +31,9 @@
     <!-- Topbar: Golden Standard -->
     <header class="topbar">
         <!-- Left: Breadcrumb -->
-        <nav class="breadcrumb topbar-start" aria-label="Navegación">
+        <nav class="breadcrumb topbar-start" aria-label="Navegaci�n">
             <span class="breadcrumb-item">
-                <a class="breadcrumb-link" href="admin-index.html">Administración</a>
+                <a class="breadcrumb-link" href="admin-index.html">Administraci�n</a>
             </span>
             <span class="breadcrumb-sep">/</span>
             <span class="breadcrumb-item current">Proveedores</span>
@@ -44,9 +44,9 @@
 
         <!-- Right: Status + User -->
         <div class="topbar-end">
-            <span class="status-pill status-neutral">📦 DATA</span>
+            <span class="status-pill status-neutral">?? DATA</span>
             <div class="dropdown-container">
-                <button class="avatar avatar-sm" id="user-avatar" aria-label="Menú de usuario">AD</button>
+                <button class="avatar avatar-sm" id="user-avatar" aria-label="Men� de usuario">AD</button>
                 <div class="dropdown-menu dropdown-user hidden" id="user-menu">
                     <div class="dropdown-header" id="user-name-display">Usuario</div>
                     <div class="dropdown-divider"></div>
@@ -56,7 +56,7 @@
                             <polyline points="16 17 21 12 16 7"></polyline>
                             <line x1="21" y1="12" x2="9" y2="12"></line>
                         </svg>
-                        Cerrar Sesión
+                        Cerrar Sesi�n
                     </a>
                 </div>
             </div>
@@ -71,8 +71,8 @@
                 <nav class="master-nav">
                     <a href="admin-central-stock.html" class="master-nav-link">SKU & Recetas</a>
                     <a href="admin-master-proveedores.html" class="master-nav-link active">Proveedores</a>
-                    <a href="admin-master-categorias.html" class="master-nav-link">Categorías</a>
-                    <a href="admin-master-nomina.html" class="master-nav-link">Nómina</a>
+                    <a href="admin-master-categorias.html" class="master-nav-link">Categor�as</a>
+                    <a href="admin-master-nomina.html" class="master-nav-link">N�mina</a>
                     <a href="admin-pagos.html" class="master-nav-link">Pagos</a>
                     <a href="admin-master-tarifario.html" class="master-nav-link">Tarifario</a>
                     <a href="admin-master-pos.html" class="master-nav-link">POS</a>
@@ -91,8 +91,8 @@
                 <div id="page-card-empty" class="page-card-empty">
                     <div class="state-block">
                         <p class="state-title">Sin resultados</p>
-                        <p class="state-desc">Prueba con otro término de búsqueda.</p>
-                        <button id="btn-clear-search" class="btn btn-ghost btn-sm mt-2">Limpiar búsqueda</button>
+                        <p class="state-desc">Prueba con otro t�rmino de b�squeda.</p>
+                        <button id="btn-clear-search" class="btn btn-ghost btn-sm mt-2">Limpiar b�squeda</button>
                     </div>
                 </div>
 
@@ -101,7 +101,7 @@
                     <div class="staff-dashboard">
                         <div class="dashboard-header align-start">
                             <div>
-                                <h2 class="dashboard-title">Gestión de proveedores</h2>
+                                <h2 class="dashboard-title">Gesti�n de proveedores</h2>
                                 <p class="dashboard-subtitle dashboard-subtitle-soft">Listado y control de proveedores
                                 </p>
                             </div>
@@ -122,7 +122,7 @@
                             </div>
                             <div class="filter-actions">
                                 <input type="search" id="providers-search" class="input input-compact filter-input"
-                                    placeholder="Buscar por nombre, CUIT o rubro..." />
+                                    placeholder="Buscar por nombre, CUIT o rubro..." aria-label="Buscar proveedores" />
                             </div>
                         </div>
 
@@ -141,18 +141,18 @@
     <div class="slide-panel" id="slide-panel">
         <div class="panel-header">
             <h3 class="panel-title" id="panel-title">Nuevo Proveedor</h3>
-            <button class="panel-close" id="btn-close-panel" aria-label="Cerrar panel">×</button>
+            <button class="panel-close" id="btn-close-panel" aria-label="Cerrar panel">�</button>
         </div>
         <div class="panel-body" id="panel-form-container">
             <div id="panel-error" class="panel-error"></div>
 
             <div class="form-group">
-                <label for="prov-nombre" class="form-label">Nombre Fantasía *</label>
+                <label for="prov-nombre" class="form-label">Nombre Fantas�a *</label>
                 <input type="text" id="prov-nombre" class="input" placeholder="Ej: Distribuidora Central" required>
             </div>
 
             <div class="form-group">
-                <label for="prov-razon-social" class="form-label">Razón Social</label>
+                <label for="prov-razon-social" class="form-label">Raz�n Social</label>
                 <input type="text" id="prov-razon-social" class="input" placeholder="Ej: Distribuidora Central S.A.">
             </div>
 
@@ -162,15 +162,15 @@
             </div>
 
             <div class="form-group">
-                <label for="prov-category" class="form-label">Categoría/Rubro</label>
-                <select id="prov-category" class="input" aria-label="Categoría o rubro del proveedor">
+                <label for="prov-category" class="form-label">Categor�a/Rubro</label>
+                <select id="prov-category" class="input" aria-label="Categor�a o rubro del proveedor">
                     <option value="">Seleccionar rubro</option>
                 </select>
-                <span class="note text-xs text-muted">Gestionar rubros desde Categorías.</span>
+                <span class="note text-xs text-muted">Gestionar rubros desde Categor�as.</span>
             </div>
 
             <div class="form-group">
-                <label for="prov-telefono" class="form-label">Teléfono de contacto</label>
+                <label for="prov-telefono" class="form-label">Tel�fono de contacto</label>
                 <input type="text" id="prov-telefono" class="input" placeholder="Ej: +54 11 4444 5555">
             </div>
 
@@ -191,12 +191,12 @@
 
             <div class="form-group">
                 <label for="prov-contacto-nombre" class="form-label">Nombre de contacto</label>
-                <input type="text" id="prov-contacto-nombre" class="input" placeholder="Ej: Juan Pérez">
+                <input type="text" id="prov-contacto-nombre" class="input" placeholder="Ej: Juan P�rez">
             </div>
 
             <div class="form-group">
                 <label for="prov-notas" class="form-label">Notas</label>
-                <textarea id="prov-notas" class="input" rows="3" placeholder="Información adicional..."></textarea>
+                <textarea id="prov-notas" class="input" rows="3" placeholder="Informaci�n adicional..."></textarea>
             </div>
 
             <div class="form-group">

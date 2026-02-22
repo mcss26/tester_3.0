@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -6,15 +6,15 @@
  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Security-Policy"
     content="default-src 'self';
-      script-src 'self' https://cdn.jsdelivr.net;
+      script-src 'self' https://cdn.jsdelivr.net https://cdn.sheetjs.com;
       style-src 'self' 'unsafe-inline';
-      connect-src 'self' https://iyknbgmcnbpvalvsjxjz.supabase.co;
+      connect-src 'self' https://iyknbgmcnbpvalvsjxjz.supabase.co https://cdn.jsdelivr.net;
       img-src 'self' data:;
       font-src 'self';
       frame-src 'none';">
     <meta name="theme-color" content="#000000">
     <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
- <title>Test Devenciones — Midnight</title>
+ <title>Test Devenciones � Midnight</title>
  <link rel="stylesheet" href="../../assets/css/tokens.css">
  <link rel="stylesheet" href="../../assets/css/base.css">
     <link rel="stylesheet" href="../../assets/css/layout.css">
@@ -119,14 +119,14 @@
 </head>
 
 <body>
- <h1 style="font-size:var(--text-xl); font-weight:800;">🧪 Test: Devenciones Engine</h1>
+ <h1 style="font-size:var(--text-xl); font-weight:800;">?? Test: Devenciones Engine</h1>
  <p id="test-status">Inicializando...</p>
 
  <div class="summary-bar" id="summary-bar" style="display:none;">
-  <span>✅ <span id="count-pass">0</span> passed</span>
-  <span>❌ <span id="count-fail">0</span> failed</span>
-  <span>⏩ <span id="count-skip">0</span> skipped</span>
-  <span style="margin-left:auto;">⏱ <span id="elapsed">0</span>ms</span>
+  <span>? <span id="count-pass">0</span> passed</span>
+  <span>? <span id="count-fail">0</span> failed</span>
+  <span>? <span id="count-skip">0</span> skipped</span>
+  <span style="margin-left:auto;">? <span id="elapsed">0</span>ms</span>
  </div>
 
  <div class="test-suite" id="test-container"></div>
@@ -148,7 +148,7 @@
    let passed = 0, failed = 0, skipped = 0;
    let currentSuite = '';
 
-   // ── Test Helpers ──
+   // -- Test Helpers --
    function suite(name) {
     currentSuite = name;
     const h = document.createElement('h2');
@@ -161,7 +161,7 @@
     const row = document.createElement('div');
     row.className = `test-case test-${status}`;
     row.id = `test-${name.replace(/\s+/g, '-').toLowerCase()}`;
-    const icons = { pass: '✅', fail: '❌', skip: '⏩', running: '⏳' };
+    const icons = { pass: '?', fail: '?', skip: '?', running: '?' };
     row.innerHTML = `
                 <span class="test-icon">${icons[status]}</span>
                 <span class="test-name">${name}</span>
@@ -176,12 +176,12 @@
     try {
      const result = await fn();
      row.className = 'test-case test-pass';
-     row.querySelector('.test-icon').textContent = '✅';
+     row.querySelector('.test-icon').textContent = '?';
      row.querySelector('.test-detail').textContent = result || 'OK';
      passed++;
     } catch (err) {
      row.className = 'test-case test-fail';
-     row.querySelector('.test-icon').textContent = '❌';
+     row.querySelector('.test-icon').textContent = '?';
      row.querySelector('.test-detail').textContent = err.message || String(err);
      failed++;
      console.error(`[FAIL] ${name}:`, err);
@@ -213,19 +213,19 @@
     summaryBar.style.display = 'flex';
    }
 
-   // ══════════════════════════════════════════════
-   // SUITE 1: Conexión & Auth
-   // ══════════════════════════════════════════════
-   suite('1. Conexión & Autenticación');
+   // ----------------------------------------------
+   // SUITE 1: Conexi�n & Auth
+   // ----------------------------------------------
+   suite('1. Conexi�n & Autenticaci�n');
 
    await test('Supabase client inicializado', () => {
     assert(window.sb, 'window.sb no existe');
     return 'window.sb OK';
    });
 
-   await test('Sesión activa (necesaria para RLS)', async () => {
+   await test('Sesi�n activa (necesaria para RLS)', async () => {
     const session = await window.Auth.getSession();
-    assert(session, 'No hay sesión activa. Logueate primero en login.html');
+    assert(session, 'No hay sesi�n activa. Logueate primero en login.html');
     return `uid: ${session.user.id.slice(0, 8)}...`;
    });
 
@@ -236,10 +236,10 @@
     return `${profile.full_name} (${profile.role})`;
    });
 
-   // ══════════════════════════════════════════════
+   // ----------------------------------------------
    // SUITE 2: Schema Verification
-   // ══════════════════════════════════════════════
-   suite('2. Esquema — staff_accruals');
+   // ----------------------------------------------
+   suite('2. Esquema � staff_accruals');
 
    await test('Tabla staff_accruals existe y es accesible', async () => {
     const { data, error } = await window.sb.from('staff_accruals').select('id').limit(1);
@@ -257,7 +257,7 @@
      adjustments: 0,
      status: 'accrued',
     };
-    // Try insert — it will fail on FK but the error tells us if columns exist
+    // Try insert � it will fail on FK but the error tells us if columns exist
     const { error } = await window.sb.from('staff_accruals').insert(testPayload);
     // Expected: FK violation (not "column does not exist")
     assert(error, 'Insert should fail on FK');
@@ -283,10 +283,10 @@
     return 'GENERATED ALWAYS AS (base_amount + adjustments)';
    });
 
-   // ══════════════════════════════════════════════
+   // ----------------------------------------------
    // SUITE 3: Vista
-   // ══════════════════════════════════════════════
-   suite('3. Vista — vw_staff_accruals_summary');
+   // ----------------------------------------------
+   suite('3. Vista � vw_staff_accruals_summary');
 
    await test('Vista accesible y consultable', async () => {
     const { data, error } = await window.sb.from('vw_staff_accruals_summary').select('*').limit(5);
@@ -300,13 +300,13 @@
     return 'Todas las columnas presentes';
    });
 
-   // ══════════════════════════════════════════════
+   // ----------------------------------------------
    // SUITE 4: RPC Functions
-   // ══════════════════════════════════════════════
-   suite('4. RPC — admin_generate_workday_accruals');
+   // ----------------------------------------------
+   suite('4. RPC � admin_generate_workday_accruals');
 
    await test('RPC existe y es callable', async () => {
-    // Call with a fake UUID — should fail with 'Jornada no encontrada', not 'function does not exist'
+    // Call with a fake UUID � should fail with 'Jornada no encontrada', not 'function does not exist'
     const { data, error } = await window.sb.rpc('admin_generate_workday_accruals', {
      p_work_day_id: '00000000-0000-0000-0000-000000000001'
     });
@@ -361,7 +361,7 @@
      return `${data.length} accrual(s), first total: $${first.total_amount}`;
     });
 
-    await test('Idempotencia: segunda ejecución no genera duplicados', async () => {
+    await test('Idempotencia: segunda ejecuci�n no genera duplicados', async () => {
      const { data: before } = await window.sb
       .from('staff_accruals')
       .select('id')
@@ -379,7 +379,7 @@
       .eq('work_day_id', testWorkDayId);
      const afterCount = after?.length || 0;
 
-     assertEqual(afterCount, beforeCount, 'Count mismatch — duplicates created');
+     assertEqual(afterCount, beforeCount, 'Count mismatch � duplicates created');
      assertEqual(data.new_accruals, 0, 'Should report 0 new accruals');
      return `Before: ${beforeCount}, After: ${afterCount} (0 new)`;
     });
@@ -415,7 +415,7 @@
      // Restore original
      await window.sb.from('staff_accruals').update({ adjustments: row.adjustments }).eq('id', row.id);
 
-     return `Adj $${testAdj} → total $${updated.total_amount} (restored)`;
+     return `Adj $${testAdj} ? total $${updated.total_amount} (restored)`;
     });
    } else {
     skip('Generar devenciones para jornada real', 'No hay convocatorias confirmadas');
@@ -424,10 +424,10 @@
     skip('Ajuste manual', 'Depende del test anterior');
    }
 
-   // ══════════════════════════════════════════════
+   // ----------------------------------------------
    // SUITE 5: RPC Export
-   // ══════════════════════════════════════════════
-   suite('5. RPC — admin_export_accruals_to_payments');
+   // ----------------------------------------------
+   suite('5. RPC � admin_export_accruals_to_payments');
 
    await test('RPC export existe y es callable', async () => {
     const { data, error } = await window.sb.rpc('admin_export_accruals_to_payments', {
@@ -444,13 +444,13 @@
      return `Callable (error: ${error.message.slice(0, 50)})`;
     }
     assert(data, 'Null response');
-    return `success=${data.success} — ${data.message || 'OK'}`;
+    return `success=${data.success} � ${data.message || 'OK'}`;
    });
 
-   // ══════════════════════════════════════════════
+   // ----------------------------------------------
    // SUITE 6: RLS Policies
-   // ══════════════════════════════════════════════
-   suite('6. RLS — Políticas de Acceso');
+   // ----------------------------------------------
+   suite('6. RLS � Pol�ticas de Acceso');
 
    await test('Admin puede leer staff_accruals', async () => {
     const { error } = await window.sb.from('staff_accruals').select('id').limit(1);
@@ -458,7 +458,7 @@
     return 'SELECT OK';
    });
 
-   await test('Admin puede insertar (con FK válido)', async () => {
+   await test('Admin puede insertar (con FK v�lido)', async () => {
     // This test is already covered by suite 4 (RPC generates)
     // We just verify no RLS block on the insert attempt
     const { error } = await window.sb.from('staff_accruals').insert({
@@ -474,26 +474,26 @@
     return 'INSERT allowed (FK stops it, not RLS)';
    });
 
-   // ══════════════════════════════════════════════
+   // ----------------------------------------------
    // SUITE 7: UI Elements (DOM check)
-   // ══════════════════════════════════════════════
-   suite('7. UI — Verificación de Elementos');
+   // ----------------------------------------------
+   suite('7. UI � Verificaci�n de Elementos');
 
    skip('Panel devenciones en admin-workdays', 'Requiere cargar admin-workdays.html (probado separadamente)');
-   skip('Botón Generar Devenciones', 'Requiere cargar admin-workdays.html');
+   skip('Bot�n Generar Devenciones', 'Requiere cargar admin-workdays.html');
 
-   // ── Final Summary ──
+   // -- Final Summary --
    const elapsed = Math.round(performance.now() - t0);
    document.getElementById('elapsed').textContent = elapsed;
 
    const totalTests = passed + failed + skipped;
 
    if (failed === 0) {
-    statusEl.textContent = `✅ ALL ${passed} TESTS PASSED (${skipped} skipped) — ${elapsed}ms`;
+    statusEl.textContent = `? ALL ${passed} TESTS PASSED (${skipped} skipped) � ${elapsed}ms`;
     statusEl.style.color = 'var(--color-success)';
     statusEl.style.fontWeight = '700';
    } else {
-    statusEl.textContent = `❌ ${failed} FAILED / ${passed} passed / ${skipped} skipped — ${elapsed}ms`;
+    statusEl.textContent = `? ${failed} FAILED / ${passed} passed / ${skipped} skipped � ${elapsed}ms`;
     statusEl.style.color = 'var(--color-danger)';
     statusEl.style.fontWeight = '700';
    }

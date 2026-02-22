@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -6,15 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Security-Policy"
     content="default-src 'self';
-      script-src 'self' https://cdn.jsdelivr.net;
+      script-src 'self' https://cdn.jsdelivr.net https://cdn.sheetjs.com;
       style-src 'self' 'unsafe-inline';
-      connect-src 'self' https://iyknbgmcnbpvalvsjxjz.supabase.co;
+      connect-src 'self' https://iyknbgmcnbpvalvsjxjz.supabase.co https://cdn.jsdelivr.net;
       img-src 'self' data:;
       font-src 'self';
       frame-src 'none';">
     <meta name="theme-color" content="#000000">
+    <meta
+      name="description"
+      content="Cierre nocturno de caja � arqueo y conciliacion para Encargado"
+    />
     <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
-    <title>Supervisión Cajas — Midnight</title>
+    <title>Supervisi�n Cajas � Midnight</title>
     <link rel="stylesheet" href="../../assets/css/tokens.css">
     <link rel="stylesheet" href="../../assets/css/base.css">
     <link rel="stylesheet" href="../../assets/css/layout.css">
@@ -28,7 +32,7 @@
 
     <header class="topbar">
         <div class="topbar-start">
-            <nav class="breadcrumb" aria-label="Navegación">
+            <nav class="breadcrumb" aria-label="Navegaci�n">
                 <span class="breadcrumb-item">
                     <a class="breadcrumb-link" href="encargado-caja-index.html">ENCARGADO CAJA</a>
                 </span>
@@ -59,7 +63,7 @@
 
             <!-- Empty State: No workday -->
             <div id="page-card-empty" class="page-card">
-                <div class="empty-state-icon">📅</div>
+                <div class="empty-state-icon">??</div>
                 <p class="label-lg">Sin jornada abierta</p>
                 <p class="label-sm">Abra una jornada desde Admin Workdays para continuar.</p>
             </div>
@@ -164,7 +168,7 @@
                     <div class="input-currency-wrap">
                         <span class="input-currency-symbol">$</span>
                         <input type="number" id="open-amount" class="input input-currency-field" value="0" min="0"
-                            step="100">
+                            step="100" aria-label="Monto de apertura de caja">
                     </div>
                 </div>
 
@@ -181,7 +185,7 @@
         <div class="modal-shell">
             <div class="modal-header">
                 <h3 class="modal-title">Solicitar Retiro / Egreso</h3>
-                <p class="modal-subtitle">El staff deberá confirmar la entrega del dinero.</p>
+                <p class="modal-subtitle">El staff deber� confirmar la entrega del dinero.</p>
             </div>
 
             <form id="form-withdrawal" class="modal-body">
@@ -197,14 +201,14 @@
                     <div class="input-currency-wrap">
                         <span class="input-currency-symbol">$</span>
                         <input type="number" id="input-amount" class="input input-currency-field" required min="1"
-                            step="100">
+                            step="100" aria-label="Monto de movimiento">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Motivo</label>
                     <input type="text" id="input-reason" class="input" placeholder="Ej: Pago Proveedor, Saturation..."
-                        required>
+                        required aria-label="Motivo del movimiento">
                 </div>
 
                 <div class="modal-actions">
@@ -231,7 +235,7 @@
                     <div class="input-currency-wrap">
                         <span class="input-currency-symbol">$</span>
                         <input type="number" id="close-cash-amount" class="input input-currency-field" required min="0"
-                            step="100">
+                            step="100" aria-label="Monto efectivo al cierre">
                     </div>
                 </div>
 
@@ -240,13 +244,13 @@
                     <div class="input-currency-wrap">
                         <span class="input-currency-symbol">$</span>
                         <input type="number" id="close-zoco-amount" class="input input-currency-field" required min="0"
-                            step="100">
+                            step="100" aria-label="Monto Zoco al cierre">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Notas</label>
-                    <input type="text" id="close-notes" class="input" placeholder="Opcional...">
+                    <input type="text" id="close-notes" class="input" placeholder="Opcional..." aria-label="Notas de cierre de caja">
                 </div>
 
                 <!-- Signature Pad -->
@@ -254,7 +258,7 @@
                     <label class="form-label">Firma de Conformidad</label>
                     <div class="signature-pad-container">
                         <canvas id="signature-canvas"></canvas>
-                        <button type="button" id="btn-clear-signature" class="btn-clear-sig" title="Borrar Firma">
+                        <button type="button" id="btn-clear-signature" class="btn-clear-sig" title="Borrar Firma" aria-label="Borrar firma">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                 stroke-linejoin="round">
@@ -266,7 +270,7 @@
                             </svg>
                         </button>
                         <div id="signature-placeholder" class="signature-placeholder">
-                            <span>Firmar Aquí</span>
+                            <span>Firmar Aqu�</span>
                         </div>
                     </div>
                 </div>
@@ -284,19 +288,19 @@
         <div class="modal-shell modal-danger">
             <div class="modal-header">
                 <h3 class="modal-title text-danger">Cierre General de Caja</h3>
-                <p class="modal-subtitle">Se finalizará la jornada operativa de caja.</p>
+                <p class="modal-subtitle">Se finalizar� la jornada operativa de caja.</p>
             </div>
 
             <div class="modal-alert">
-                <p>Asegúrate de haber cerrado todas las terminales.</p>
-                <p class="text-warning">Esta acción es irreversible.</p>
+                <p>Aseg�rate de haber cerrado todas las terminales.</p>
+                <p class="text-warning">Esta acci�n es irreversible.</p>
             </div>
 
             <form id="form-close-night" class="modal-body">
                 <div class="form-group">
                     <label class="form-label">Notas del Cierre</label>
                     <textarea id="night-close-notes" class="input" rows="3"
-                        placeholder="Comentarios generales..."></textarea>
+                        placeholder="Comentarios generales..." aria-label="Notas de cierre nocturno"></textarea>
                 </div>
 
                 <div class="modal-actions">

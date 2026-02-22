@@ -1,4 +1,4 @@
-Ôªø<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -6,15 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Security-Policy"
     content="default-src 'self';
-      script-src 'self' https://cdn.jsdelivr.net;
+      script-src 'self' https://cdn.jsdelivr.net https://cdn.sheetjs.com;
       style-src 'self' 'unsafe-inline';
-      connect-src 'self' https://iyknbgmcnbpvalvsjxjz.supabase.co;
+      connect-src 'self' https://iyknbgmcnbpvalvsjxjz.supabase.co https://cdn.jsdelivr.net;
       img-src 'self' data:;
       font-src 'self';
       frame-src 'none';">
     <meta name="theme-color" content="#000000">
+    <meta
+      name="description"
+      content="Recepcion de pedidos ó verificacion de entregas de proveedores"
+    />
     <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
-    <title>Recepci√≥n ‚Äî Midnight</title>
+    <title>RecepciÛn ó Midnight</title>
     <link rel="stylesheet" href="../../assets/css/tokens.css">
     <link rel="stylesheet" href="../../assets/css/base.css">
     <link rel="stylesheet" href="../../assets/css/layout.css">
@@ -28,19 +32,19 @@
     <header class="topbar">
         <div class="topbar-start">
             <button class="btn-icon btn-icon-flat" data-go="pages/encargados/encargado-barra-index.html"
-                aria-label="Volver a Inicio">‚Üê</button>
-            <nav class="breadcrumb" aria-label="Navegaci√≥n">
+                aria-label="Volver a Inicio">?</button>
+            <nav class="breadcrumb" aria-label="NavegaciÛn">
                 <span class="breadcrumb-item"><a class="breadcrumb-link"
                         href="encargado-barra-index.html">ENCARGADO BARRA</a></span>
                 <span class="breadcrumb-sep">/</span>
-                <span class="breadcrumb-item current">RECEPCI√ìN</span>
+                <span class="breadcrumb-item current">RECEPCI”N</span>
             </nav>
         </div>
         <div class="topbar-center">
-            <span class="topbar-title">RECEPCI√ìN</span>
+            <span class="topbar-title">RECEPCI”N</span>
         </div>
         <div class="topbar-end">
-            <button id="btn-refresh" class="btn-icon btn-icon-flat" aria-label="Refrescar">‚Üª</button>
+            <button id="btn-refresh" class="btn-icon btn-icon-flat" aria-label="Refrescar">?</button>
         </div>
     </header>
 
@@ -56,7 +60,7 @@
 
             <!-- Empty State -->
             <div class="page-card-empty hidden" id="pageEmpty">
-                <p>No hay pedidos pendientes de recepci√≥n.</p>
+                <p>No hay pedidos pendientes de recepciÛn.</p>
             </div>
 
             <!-- Orders Table -->
@@ -89,14 +93,14 @@
         <div class="modal-content modal-content-lg">
             <div class="modal-header">
                 <h3 class="modal-title" id="modal-title">Recibir Pedido</h3>
-                <button class="modal-close" id="modal-close" aria-label="Cerrar modal">√ó</button>
+                <button class="modal-close" id="modal-close" aria-label="Cerrar modal">◊</button>
             </div>
             <div class="modal-body" id="modal-body">
                 <!-- Items table injected by JS -->
             </div>
             <div class="modal-footer">
                 <button class="btn-secondary" id="modal-cancel">Cancelar</button>
-                <button class="btn-primary" id="modal-confirm">Confirmar Recepci√≥n</button>
+                <button class="btn-primary" id="modal-confirm">Confirmar RecepciÛn</button>
             </div>
         </div>
     </dialog>

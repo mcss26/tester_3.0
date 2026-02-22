@@ -175,36 +175,54 @@ window.Auth = {
   async guardOrRedirect(allowedRoles = []) {
     document.body.style.visibility = 'hidden';
 
-    const allowed = (allowedRoles || [])
-      .map((r) => String(r).toLowerCase().trim())
-      .filter(Boolean);
+    // Safety timeout: restore visibility after 5s to prevent permanent black screen
+    const safetyTimer = setTimeout(() => {
+      document.body.style.visibility = 'visible';
+      console.warn('[Auth] Safety timeout: restoring body visibility after 5s');
+    }, 5000);
 
-    const session = await this.getSession();
+    try {
+      const allowed = (allowedRoles || [])
+        .map((r) => String(r).toLowerCase().trim())
+        .filter(Boolean);
 
-    if (!session) {
-      window.location.href = this.toAppPath("login");
-      return null;
-    }
+      const session = await this.getSession();
 
-    const profile = await this.getMyProfile();
-
-    if (!profile) {
-      console.error("Session exists but no profile found.");
-      return null;
-    }
-
-    const role = String(profile.role || "").toLowerCase().trim();
-
-    if (allowed.length > 0 && !allowed.includes(role)) {
-      const landingPath = this.roleLanding(role);
-      if (window.location.pathname !== landingPath) {
-        window.location.href = landingPath;
+      if (!session) {
+        clearTimeout(safetyTimer);
+        window.location.href = this.toAppPath("login");
+        return null;
       }
+
+      const profile = await this.getMyProfile();
+
+      if (!profile) {
+        clearTimeout(safetyTimer);
+        console.error("Session exists but no profile found.");
+        document.body.style.visibility = 'visible';
+        return null;
+      }
+
+      const role = String(profile.role || "").toLowerCase().trim();
+
+      if (allowed.length > 0 && !allowed.includes(role)) {
+        clearTimeout(safetyTimer);
+        const landingPath = this.roleLanding(role);
+        if (window.location.pathname !== landingPath) {
+          window.location.href = landingPath;
+        }
+        return null;
+      }
+
+      clearTimeout(safetyTimer);
+      document.body.style.visibility = 'visible';
+      return { user: session.user, profile: { ...profile, role } };
+    } catch (err) {
+      clearTimeout(safetyTimer);
+      document.body.style.visibility = 'visible';
+      console.error('[Auth] guardOrRedirect failed:', err);
       return null;
     }
-
-    document.body.style.visibility = 'visible';
-    return { user: session.user, profile: { ...profile, role } };
   },
 
   /**

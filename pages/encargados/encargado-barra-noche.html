@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -6,15 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Security-Policy"
     content="default-src 'self';
-      script-src 'self' https://cdn.jsdelivr.net;
+      script-src 'self' https://cdn.jsdelivr.net https://cdn.sheetjs.com;
       style-src 'self' 'unsafe-inline';
-      connect-src 'self' https://iyknbgmcnbpvalvsjxjz.supabase.co;
+      connect-src 'self' https://iyknbgmcnbpvalvsjxjz.supabase.co https://cdn.jsdelivr.net;
       img-src 'self' data:;
       font-src 'self';
       frame-src 'none';">
     <meta name="theme-color" content="#000000">
+    <meta
+      name="description"
+      content="Cierre nocturno de barra � verificacion de caja y stock para Encargado"
+    />
     <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
-    <title>Stock Barra — Midnight</title>
+    <title>Stock Barra � Midnight</title>
     <link rel="stylesheet" href="../../assets/css/tokens.css">
     <link rel="stylesheet" href="../../assets/css/base.css">
     <link rel="stylesheet" href="../../assets/css/layout.css">
@@ -29,8 +33,8 @@
     <header class="topbar">
         <div class="topbar-start">
             <button class="btn-icon btn-icon-flat" data-go="pages/encargados/encargado-barra-index.html"
-                aria-label="Volver a Inicio">←</button>
-            <nav class="breadcrumb" aria-label="Navegación">
+                aria-label="Volver a Inicio">?</button>
+            <nav class="breadcrumb" aria-label="Navegaci�n">
                 <span class="breadcrumb-item"><a class="breadcrumb-link"
                         href="encargado-barra-index.html">ENCARGADO BARRA</a></span>
                 <span class="breadcrumb-sep">/</span>
@@ -41,7 +45,7 @@
             <span class="topbar-title">CONTROL DE STOCK</span>
         </div>
         <div class="topbar-end">
-            <button id="btn-refresh" class="btn-icon btn-icon-flat" aria-label="Refrescar">↻</button>
+            <button id="btn-refresh" class="btn-icon btn-icon-flat" aria-label="Refrescar">?</button>
         </div>
     </header>
 
@@ -51,7 +55,7 @@
         <!-- Loading State -->
         <div class="noche-state" id="pageLoading">
             <div class="noche-spinner"></div>
-            <span class="noche-loading-text">Cargando información...</span>
+            <span class="noche-loading-text">Cargando informaci�n...</span>
         </div>
 
         <!-- Empty State: No Work Day -->
@@ -70,7 +74,7 @@
         <div class="noche-state hidden" id="pageSessionClosed">
             <div class="staff-dashboard">
                 <div class="dashboard-header">
-                    <h2 class="dashboard-title">✅ Barra Cerrada</h2>
+                    <h2 class="dashboard-title">? Barra Cerrada</h2>
                 </div>
                 <p class="muted" id="closedTime">Has finalizado tu turno correctamente.</p>
                 <button class="btn-secondary mt-md"
@@ -93,7 +97,7 @@
                 <div class="form-group mt-md">
                     <label class="form-label">Notas de Apertura (Opcional)</label>
                     <textarea id="openingNotes" class="input" rows="2"
-                        placeholder="Ej: Faltan hielos, vaso roto..."></textarea>
+                        placeholder="Ej: Faltan hielos, vaso roto..." aria-label="Notas de apertura"></textarea>
                 </div>
 
                 <button id="btnSubmitOpen" class="btn-primary w-full mt-md">Confirmar
@@ -121,7 +125,7 @@
                         <h2 class="dashboard-title">Cierre de Barra</h2>
                     </div>
                     <p class="muted mb-md">Ingresa el stock final (Sobrante
-                        físico).</p>
+                        f�sico).</p>
 
                     <div id="closingStockList" class="staff-list">
                         <!-- JS Injected SKU rows -->
@@ -129,7 +133,7 @@
 
                     <div class="form-group mt-md">
                         <label class="form-label">Notas de Cierre</label>
-                        <textarea id="closingNotes" class="input" rows="2"></textarea>
+                        <textarea id="closingNotes" class="input" rows="2" aria-label="Notas de cierre"></textarea>
                     </div>
 
                     <div class="flex gap-sm mt-md">
@@ -146,11 +150,11 @@
     <dialog class="modal" id="confirmModal">
         <div class="modal-content modal-content-sm">
             <div class="modal-header">
-                <h2 id="confirmTitle">Confirmar Acción</h2>
-                <button class="modal-close" id="btn-close-confirm" aria-label="Cerrar modal">×</button>
+                <h2 id="confirmTitle">Confirmar Acci�n</h2>
+                <button class="modal-close" id="btn-close-confirm" aria-label="Cerrar modal">�</button>
             </div>
             <div class="modal-body">
-                <p id="confirmMessage">¿Estás seguro de continuar?</p>
+                <p id="confirmMessage">�Est�s seguro de continuar?</p>
             </div>
             <div class="modal-footer">
                 <button class="btn-secondary" id="btnCancelConfirm">Cancelar</button>

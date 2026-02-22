@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -6,15 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="Content-Security-Policy"
     content="default-src 'self';
-      script-src 'self' https://cdn.jsdelivr.net;
+      script-src 'self' https://cdn.jsdelivr.net https://cdn.sheetjs.com;
       style-src 'self' 'unsafe-inline';
-      connect-src 'self' https://iyknbgmcnbpvalvsjxjz.supabase.co;
+      connect-src 'self' https://iyknbgmcnbpvalvsjxjz.supabase.co https://cdn.jsdelivr.net;
       img-src 'self' data:;
       font-src 'self';
       frame-src 'none';">
     <meta name="theme-color" content="#000000">
     <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
-    <title>Pagos — Midnight</title>
+    <title>Pagos � Midnight</title>
     <link rel="stylesheet" href="../../assets/css/tokens.css" />
     <link rel="stylesheet" href="../../assets/css/base.css" />
     <link rel="stylesheet" href="../../assets/css/layout.css" />
@@ -27,23 +27,23 @@
 <body class="app-shell admin-shell admin-scroll admin-pagos" data-allowed-roles="admin,contable">
     <a href="#module-content" class="skip-link">Saltar al contenido principal</a>
 
-    <!-- Topbar — Golden Standard 3-column grid -->
+    <!-- Topbar � Golden Standard 3-column grid -->
     <header class="topbar">
         <!-- Left: Breadcrumb -->
-        <nav class="breadcrumb topbar-start" aria-label="Navegación">
-            <a href="./admin-index.html" class="breadcrumb-item breadcrumb-link">Administración</a>
+        <nav class="breadcrumb topbar-start" aria-label="Navegaci�n">
+            <a href="./admin-index.html" class="breadcrumb-item breadcrumb-link">Administraci�n</a>
             <span class="breadcrumb-sep">/</span>
             <span class="breadcrumb-item current">Pagos</span>
         </nav>
 
         <!-- Center: Search -->
         <div class="topbar-center header-search">
-            <input type="text" id="global-search" class="input" placeholder="Ir a..." aria-label="Navegación rápida">
+            <input type="text" id="global-search" class="input" placeholder="Ir a..." aria-label="Navegaci�n r�pida">
             <svg class="header-search-icon" viewBox="0 0 24 24">
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
-            <span class="header-shortcut">⌘K</span>
+            <span class="header-shortcut">?K</span>
         </div>
 
         <!-- Right: Notifications + Avatar -->
@@ -51,7 +51,7 @@
 
             <!-- User Menu Dropdown -->
             <div class="dropdown-container">
-                <button class="avatar avatar-sm" id="user-avatar" aria-label="Menú de usuario">AD</button>
+                <button class="avatar avatar-sm" id="user-avatar" aria-label="Men� de usuario">AD</button>
                 <div class="dropdown-menu dropdown-user hidden" id="user-menu">
                     <div class="dropdown-header" id="user-name-display">Admin</div>
                     <div class="dropdown-divider"></div>
@@ -69,7 +69,7 @@
                                 d="M12 1v6m0 6v6M5.64 5.64l4.24 4.24m6.36 6.36l4.24 4.24M1 12h6m6 0h6M5.64 18.36l4.24-4.24m6.36-6.36l4.24-4.24">
                             </path>
                         </svg>
-                        Configuración
+                        Configuraci�n
                     </a>
                     <div class="dropdown-divider"></div>
                     <a href="#" id="btn-logout" class="dropdown-item dropdown-item-danger">
@@ -78,7 +78,7 @@
                             <polyline points="16 17 21 12 16 7"></polyline>
                             <line x1="21" y1="12" x2="9" y2="12"></line>
                         </svg>
-                        Cerrar Sesión
+                        Cerrar Sesi�n
                     </a>
                 </div>
             </div>
@@ -101,7 +101,7 @@
                 <!-- STATE: EMPTY -->
                 <div id="page-card-empty" class="page-card-empty">
                     <div class="state-block">
-                        <div class="state-icon">📭</div>
+                        <div class="state-icon">??</div>
                         <h3 class="state-title">Sin Pagos Pendientes</h3>
                         <p class="state-desc">No se encontraron registros para el filtro seleccionado.</p>
                         <button class="btn btn-ghost btn-sm" id="btn-reload-empty">Refrescar</button>
@@ -115,7 +115,7 @@
                         <!-- Dashboard Header -->
                         <div class="dashboard-header align-start">
                             <div>
-                                <h2 class="dashboard-title dashboard-title-soft">Tesorería & Pagos</h2>
+                                <h2 class="dashboard-title dashboard-title-soft">Tesorer�a & Pagos</h2>
                                 <p class="dashboard-subtitle dashboard-subtitle-soft">Egresos, costos fijos, operativos
                                     y proveedores.</p>
                             </div>
@@ -124,26 +124,26 @@
                                     <button class="tab-chip active" data-tab="DASHBOARD">Dashboard</button>
                                     <button type="button" class="tab-chip" data-tab="COLA">Cola de Pagos</button>
                                     <button type="button" class="tab-chip" data-tab="PROVEEDORES">Proveedores</button>
-                                    <button type="button" class="tab-chip" data-tab="CONFIG">⚙ Config</button>
+                                    <button type="button" class="tab-chip" data-tab="CONFIG">? Config</button>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- ═══════════════════════════════════════ -->
+                        <!-- --------------------------------------- -->
                         <!-- TAB 1: DASHBOARD                      -->
-                        <!-- ═══════════════════════════════════════ -->
+                        <!-- --------------------------------------- -->
                         <section id="panelDashboard" class="tab-content">
 
                             <!-- KPI Strip -->
                             <div class="kpi-strip" id="kpiStrip">
                                 <div class="kpi-card">
                                     <span class="kpi-label">Pendientes esta semana</span>
-                                    <span class="kpi-value" id="kpiPendingWeek">—</span>
+                                    <span class="kpi-value" id="kpiPendingWeek">�</span>
                                     <span class="kpi-sub" id="kpiPendingWeekAmount"></span>
                                 </div>
                                 <div class="kpi-card">
                                     <span class="kpi-label">Pagado este mes</span>
-                                    <span class="kpi-value" id="kpiPaidMonth">—</span>
+                                    <span class="kpi-value" id="kpiPaidMonth">�</span>
                                     <span class="kpi-sub" id="kpiPaidMonthAmount"></span>
                                 </div>
                                 <div class="kpi-card kpi-card-danger">
@@ -152,8 +152,8 @@
                                     <span class="kpi-sub" id="kpiOverdueAmount"></span>
                                 </div>
                                 <div class="kpi-card">
-                                    <span class="kpi-label">Próximo vencimiento</span>
-                                    <span class="kpi-value kpi-value-sm" id="kpiNextDue">—</span>
+                                    <span class="kpi-label">Pr�ximo vencimiento</span>
+                                    <span class="kpi-value kpi-value-sm" id="kpiNextDue">�</span>
                                     <span class="kpi-sub" id="kpiNextDueLabel"></span>
                                 </div>
                             </div>
@@ -173,7 +173,7 @@
                                         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                                     </svg>
                                     <input id="queueSearch" type="search" class="input search-input"
-                                        placeholder="Buscar pago / proveedor..." />
+                                        placeholder="Buscar pago / proveedor..." aria-label="Buscar en cola de pagos" />
                                 </div>
 
                                 <div class="filter-spacer"></div>
@@ -188,7 +188,7 @@
                                     Pago</button>
                             </div>
 
-                            <!-- Pending Table (with semáforo rows) -->
+                            <!-- Pending Table (with sem�foro rows) -->
                             <div class="table-viewport table-shell" id="pendingQueueWrap">
                                 <div class="table-scroll">
                                     <table class="table table-sticky table-compact" id="pendingQueueTable" role="table"
@@ -217,7 +217,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <!-- Injected with semáforo indicator -->
+                                            <!-- Injected with sem�foro indicator -->
                                         </tbody>
                                     </table>
                                 </div>
@@ -241,7 +241,7 @@
                                                 <th class="table-cell is-header text-center" role="columnheader"
                                                     scope="col">COMPROBANTE</th>
                                                 <th class="table-cell is-header text-center" role="columnheader"
-                                                    scope="col">MÉTODO</th>
+                                                    scope="col">M�TODO</th>
                                                 <th class="table-cell is-header text-center cell-pad"
                                                     role="columnheader" scope="col">ACCIONES</th>
                                             </tr>
@@ -254,9 +254,9 @@
                             </div>
                         </section>
 
-                        <!-- ═══════════════════════════════════════ -->
+                        <!-- --------------------------------------- -->
                         <!-- TAB 2: COLA DE PAGOS (ex Pedidos)     -->
-                        <!-- ═══════════════════════════════════════ -->
+                        <!-- --------------------------------------- -->
                         <section id="panelCola" class="tab-content hidden">
                             <div class="sku-filter-bar">
                                 <span class="dashboard-subtitle muted">Pagos aprobados listos para ejecutar</span>
@@ -292,9 +292,9 @@
                             </div>
                         </section>
 
-                        <!-- ═══════════════════════════════════════ -->
+                        <!-- --------------------------------------- -->
                         <!-- TAB 3: PROVEEDORES                    -->
-                        <!-- ═══════════════════════════════════════ -->
+                        <!-- --------------------------------------- -->
                         <section id="panelProveedores" class="tab-content hidden">
                             <div class="sku-filter-bar">
                                 <div class="search-input-wrap search-input-grow">
@@ -303,7 +303,7 @@
                                         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                                     </svg>
                                     <input id="supplierSearch" type="search" class="input search-input"
-                                        placeholder="Buscar proveedor, CUIT, alias..." />
+                                        placeholder="Buscar proveedor, CUIT, alias..." aria-label="Buscar proveedor" />
                                 </div>
                                 <div class="filter-spacer"></div>
                                 <button type="button" class="btn btn-primary btn-sm" id="btnNewSupplier">+ Nuevo
@@ -319,9 +319,9 @@
                                                 <th class="table-cell is-header cell-pad" role="columnheader"
                                                     scope="col">PROVEEDOR</th>
                                                 <th class="table-cell is-header text-center" role="columnheader"
-                                                    scope="col">CATEGORÍA</th>
+                                                    scope="col">CATEGOR�A</th>
                                                 <th class="table-cell is-header text-center" role="columnheader"
-                                                    scope="col">TELÉFONO</th>
+                                                    scope="col">TEL�FONO</th>
                                                 <th class="table-cell is-header text-center" role="columnheader"
                                                     scope="col">BANCO</th>
                                                 <th class="table-cell is-header" role="columnheader" scope="col">CUIT
@@ -340,9 +340,9 @@
                             </div>
                         </section>
 
-                        <!-- ═══════════════════════════════════════ -->
+                        <!-- --------------------------------------- -->
                         <!-- TAB 4: CONFIG (Mega-Panel)             -->
-                        <!-- ═══════════════════════════════════════ -->
+                        <!-- --------------------------------------- -->
                         <section id="panelConfig" class="tab-content hidden">
 
                             <!-- Config Sub-tab Bar -->
@@ -351,16 +351,16 @@
                                     <button class="tab-chip tab-chip-sm active"
                                         data-configtab="RECURRENTES">Recurrentes</button>
                                     <button class="tab-chip tab-chip-sm" data-configtab="FIJOS">Fijos</button>
-                                    <button class="tab-chip tab-chip-sm" data-configtab="NOMINA">Nómina
+                                    <button class="tab-chip tab-chip-sm" data-configtab="NOMINA">N�mina
                                         Operativa</button>
-                                    <button class="tab-chip tab-chip-sm" data-configtab="PARAMETROS">Parámetros</button>
+                                    <button class="tab-chip tab-chip-sm" data-configtab="PARAMETROS">Par�metros</button>
                                 </div>
                             </div>
 
-                            <!-- ── SUB-TAB: RECURRENTES ── -->
+                            <!-- -- SUB-TAB: RECURRENTES -- -->
                             <div id="configRecurrentes" class="config-sub-panel">
                                 <div class="sku-filter-bar">
-                                    <span class="dashboard-subtitle muted">Costos operativos por evento (automáticos por
+                                    <span class="dashboard-subtitle muted">Costos operativos por evento (autom�ticos por
                                         noche)</span>
                                     <div class="filter-spacer"></div>
                                     <label class="row-flex align-center gap-1 text-xs muted pointer">
@@ -383,7 +383,7 @@
                                                     <th class="table-cell is-header text-center" role="columnheader"
                                                         scope="col">PROVEEDOR</th>
                                                     <th class="table-cell is-header text-center" role="columnheader"
-                                                        scope="col">MÉTODO</th>
+                                                        scope="col">M�TODO</th>
                                                     <th class="table-cell is-header text-center cell-pad"
                                                         role="columnheader" scope="col">ACCIONES</th>
                                                 </tr>
@@ -396,7 +396,7 @@
                                 </div>
                             </div>
 
-                            <!-- ── SUB-TAB: FIJOS ── -->
+                            <!-- -- SUB-TAB: FIJOS -- -->
                             <div id="configFijos" class="config-sub-panel hidden">
                                 <div class="sku-filter-bar">
                                     <span class="dashboard-subtitle muted">Costos fijos mensuales, trimestrales y
@@ -420,13 +420,13 @@
                                                     <th class="table-cell is-header text-right" role="columnheader"
                                                         scope="col">MONTO s/IVA</th>
                                                     <th class="table-cell is-header text-center" role="columnheader"
-                                                        scope="col">ALÍCUOTA</th>
+                                                        scope="col">AL�CUOTA</th>
                                                     <th class="table-cell is-header text-right" role="columnheader"
                                                         scope="col">TOTAL c/IVA</th>
                                                     <th class="table-cell is-header text-center" role="columnheader"
                                                         scope="col">PROVEEDOR</th>
                                                     <th class="table-cell is-header text-center" role="columnheader"
-                                                        scope="col">MÉTODO</th>
+                                                        scope="col">M�TODO</th>
                                                     <th class="table-cell is-header text-center cell-pad"
                                                         role="columnheader" scope="col">ACCIONES</th>
                                                 </tr>
@@ -439,25 +439,25 @@
                                 </div>
                             </div>
 
-                            <!-- ── SUB-TAB: NÓMINA OPERATIVA ── -->
+                            <!-- -- SUB-TAB: N�MINA OPERATIVA -- -->
                             <div id="configNomina" class="config-sub-panel hidden">
                                 <div class="sku-filter-bar">
                                     <span class="dashboard-subtitle muted">Tarifario de cargos operativos (desde Master
                                         Tarifario)</span>
                                     <div class="filter-spacer"></div>
-                                    <span class="badge badge-info" id="nominaTotalBadge">Total: —</span>
+                                    <span class="badge badge-info" id="nominaTotalBadge">Total: �</span>
                                 </div>
 
                                 <div class="table-viewport table-shell">
                                     <div class="table-scroll">
                                         <table class="table table-sticky table-compact" id="nominaTable" role="table"
-                                            aria-label="Nómina operativa por cargo">
+                                            aria-label="N�mina operativa por cargo">
                                             <thead>
                                                 <tr class="table-head" role="row">
                                                     <th class="table-cell is-header cell-pad" role="columnheader"
                                                         scope="col">CARGO</th>
                                                     <th class="table-cell is-header text-center" role="columnheader"
-                                                        scope="col">ÁREA</th>
+                                                        scope="col">�REA</th>
                                                     <th class="table-cell is-header text-right" role="columnheader"
                                                         scope="col">TARIFA BASE ($)</th>
                                                 </tr>
@@ -467,9 +467,9 @@
                                             </tbody>
                                             <tfoot>
                                                 <tr class="table-foot">
-                                                    <td class="table-cell cell-pad font-bold" colspan="2">TOTAL NÓMINA x
+                                                    <td class="table-cell cell-pad font-bold" colspan="2">TOTAL N�MINA x
                                                         NOCHE</td>
-                                                    <td class="table-cell text-right font-bold" id="nominaTotalAmount">—
+                                                    <td class="table-cell text-right font-bold" id="nominaTotalAmount">�
                                                     </td>
                                                 </tr>
                                             </tfoot>
@@ -478,7 +478,7 @@
                                 </div>
                             </div>
 
-                            <!-- ── SUB-TAB: PARÁMETROS ── -->
+                            <!-- -- SUB-TAB: PAR�METROS -- -->
                             <div id="configParametros" class="config-sub-panel hidden">
                                 <div class="config-params-grid">
 
@@ -498,9 +498,9 @@
                                         </div>
                                     </div>
 
-                                    <!-- Card: Alícuotas IVA -->
+                                    <!-- Card: Al�cuotas IVA -->
                                     <div class="config-card">
-                                        <h3 class="config-card-title">Alícuotas IVA</h3>
+                                        <h3 class="config-card-title">Al�cuotas IVA</h3>
                                         <div class="config-list" id="paramTaxRates">
                                             <!-- Injected -->
                                         </div>
@@ -536,13 +536,13 @@
     <aside class="slide-panel" id="rulePanel">
         <div class="panel-header">
             <h3 class="panel-title">Regla Recurrente</h3>
-            <button class="panel-close" id="btnCloseRulePanel" aria-label="Cerrar">×</button>
+            <button class="panel-close" id="btnCloseRulePanel" aria-label="Cerrar">�</button>
         </div>
         <div class="panel-body custom-scroll">
             <form id="ruleForm">
                 <input type="hidden" id="ruleId" />
                 <div class="form-group">
-                    <label class="form-label" for="ruleTitle">Título *</label>
+                    <label class="form-label" for="ruleTitle">T�tulo *</label>
                     <input id="ruleTitle" class="input" placeholder="Ej: Pago de Alquiler" required />
                 </div>
                 <div class="form-group">
@@ -554,30 +554,30 @@
                     </select>
                 </div>
                 <div class="form-group hidden" id="weeklyWrap">
-                    <label class="form-label" for="ruleWeekday">Día de la semana</label>
+                    <label class="form-label" for="ruleWeekday">D�a de la semana</label>
                     <select id="ruleWeekday" class="input">
                         <option value="" disabled>Seleccionar...</option>
                         <option value="0" selected>Lunes</option>
                         <option value="1">Martes</option>
-                        <option value="2">Miércoles</option>
+                        <option value="2">Mi�rcoles</option>
                         <option value="3">Jueves</option>
                         <option value="4">Viernes</option>
-                        <option value="5">Sábado</option>
+                        <option value="5">S�bado</option>
                         <option value="6">Domingo</option>
                     </select>
                 </div>
                 <div class="form-group hidden" id="monthlyWrap">
-                    <label class="form-label" for="ruleDayOfMonth">Día del mes</label>
+                    <label class="form-label" for="ruleDayOfMonth">D�a del mes</label>
                     <input id="ruleDayOfMonth" type="number" class="input" min="1" max="31" value="1" />
                 </div>
                 <!-- Smart Rule Logic -->
                 <div class="form-group">
-                    <label class="form-label" for="ruleOnHoliday">Si cae feriado / no hábil:</label>
+                    <label class="form-label" for="ruleOnHoliday">Si cae feriado / no h�bil:</label>
                     <select id="ruleOnHoliday" class="input">
                         <option value="" disabled>Seleccionar...</option>
                         <option value="IGNORE" selected>Mantener fecha original</option>
-                        <option value="PREV">Mover al día hábil anterior</option>
-                        <option value="NEXT">Mover al día hábil siguiente</option>
+                        <option value="PREV">Mover al d�a h�bil anterior</option>
+                        <option value="NEXT">Mover al d�a h�bil siguiente</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -594,7 +594,7 @@
                             <option value="FIXED" selected>Fijo</option>
                             <option value="VARIABLE">Variable</option>
                         </select>
-                        <input id="ruleFixedAmount" type="number" class="input" step="0.01" placeholder="0.00" />
+                        <input id="ruleFixedAmount" type="number" class="input" step="0.01" placeholder="0.00" aria-label="Monto fijo de regla" />
                     </div>
                 </div>
                 <div class="form-group">
@@ -614,13 +614,13 @@
     <aside class="slide-panel" id="openingPanel">
         <div class="panel-header">
             <h3 class="panel-title">Costo Apertura</h3>
-            <button class="panel-close" id="btnCloseOpeningPanel" aria-label="Cerrar">×</button>
+            <button class="panel-close" id="btnCloseOpeningPanel" aria-label="Cerrar">�</button>
         </div>
         <div class="panel-body custom-scroll">
             <form id="openingForm">
                 <input type="hidden" id="openingId" />
                 <div class="form-group">
-                    <label class="form-label" for="openingTitle">Título *</label>
+                    <label class="form-label" for="openingTitle">T�tulo *</label>
                     <input id="openingTitle" class="input" placeholder="Ej: Personal de Limpieza" required />
                 </div>
                 <div class="form-group">
@@ -633,7 +633,7 @@
                     <input id="openingDefaultAmount" type="number" class="input" step="0.01" placeholder="0.00" />
                 </div>
                 <div class="form-group">
-                    <label class="form-label" for="openingDueDays">Vencimiento (Días antes de jornada)</label>
+                    <label class="form-label" for="openingDueDays">Vencimiento (D�as antes de jornada)</label>
                     <input id="openingDueDays" type="number" class="input" value="0" />
                 </div>
                 <div class="form-group">
@@ -653,13 +653,13 @@
     <aside class="slide-panel" id="extraPanel">
         <div class="panel-header">
             <h3 class="panel-title">Extra Manual</h3>
-            <button class="panel-close" id="btnCloseExtraPanel" aria-label="Cerrar">×</button>
+            <button class="panel-close" id="btnCloseExtraPanel" aria-label="Cerrar">�</button>
         </div>
         <div class="panel-body custom-scroll">
             <form id="extraForm">
                 <input type="hidden" id="extraId" />
                 <div class="form-group">
-                    <label class="form-label" for="extraTitle">Título *</label>
+                    <label class="form-label" for="extraTitle">T�tulo *</label>
                     <input id="extraTitle" class="input" placeholder="Ej: Arreglo de Heladera" required />
                 </div>
                 <div class="form-group">
@@ -683,19 +683,19 @@
         </div>
     </aside>
 
-    <!-- Modal Pay — Native <dialog> (Golden Standard) -->
+    <!-- Modal Pay � Native <dialog> (Golden Standard) -->
     <dialog id="payModal" class="modal pay-modal-backdrop">
         <div class="modal-content modal-content-md">
             <div class="modal-header">
                 <h3 class="modal-title">Confirmar Pago</h3>
-                <button class="modal-close" id="btnClosePayModal">×</button>
+                <button class="modal-close" id="btnClosePayModal">�</button>
             </div>
 
             <div class="modal-body custom-scroll">
                 <input type="hidden" id="payPaymentId" />
                 <div class="mb-4">
-                    <h3 id="payTitle" class="m-0 font-bold">—</h3>
-                    <p id="payDue" class="muted text-sm">—</p>
+                    <h3 id="payTitle" class="m-0 font-bold">�</h3>
+                    <p id="payDue" class="muted text-sm">�</p>
                 </div>
 
                 <div class="form-group">
@@ -717,20 +717,20 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="payMethod">Método</label>
+                        <label class="form-label" for="payMethod">M�todo</label>
                         <select id="payMethod" class="input">
                             <option value="">Seleccionar...</option>
                             <option value="Efectivo">Efectivo</option>
                             <option value="Transferencia">Transferencia</option>
-                            <option value="Débito">Débito</option>
-                            <option value="Crédito">Crédito</option>
+                            <option value="D�bito">D�bito</option>
+                            <option value="Cr�dito">Cr�dito</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label" for="payNote">Nota observacional (opcional)</label>
-                    <input id="payNote" class="input" placeholder="Ej: Pago parcial, observación..." />
+                    <input id="payNote" class="input" placeholder="Ej: Pago parcial, observaci�n..." />
                 </div>
             </div>
 
