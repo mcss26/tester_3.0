@@ -353,21 +353,5 @@ body.admin-shell .chart-section {
   box-shadow: none;
 }
 
-/* Loading Overlay — Fullscreen */
-body.admin-shell .page-card-loading,
-body.admin-shell .page-card-empty {
-  position: fixed;
-  inset: 0;
-  z-index: 999;
-  background: var(--bg-body);
-  border-radius: 0;
-  backdrop-filter: none;
-  display: none;
-  align-items: center;
-  justify-content: center;
-}
 
-body.admin-shell .page-card-loading.is-visible,
-body.admin-shell .page-card-empty.is-visible {
-  display: flex !important;
-}
+

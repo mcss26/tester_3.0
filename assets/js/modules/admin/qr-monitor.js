@@ -13,6 +13,7 @@
 
     // Global state
     let refreshInterval;
+    let isFetching = false;
 
     const el = (id) => document.getElementById(id);
 
@@ -20,10 +21,20 @@
         el('btnRefresh').addEventListener('click', () => {
             const btn = el('btnRefresh');
             btn.textContent = 'Cargando...';
-            loadData().finally(() => btn.textContent = 'Actualizar');
+            safeLoad().finally(() => btn.textContent = 'Actualizar');
         });
 
         loadData();
+    }
+
+    async function safeLoad() {
+        if (isFetching) return;
+        isFetching = true;
+        try {
+            await loadData();
+        } finally {
+            isFetching = false;
+        }
     }
 
     async function loadData() {
@@ -49,6 +60,7 @@
 
         } catch (err) {
             console.error("Error loading monitor stats:", err);
+            window.Toast?.error("Error actualizando monitor QR");
         }
     }
 
@@ -109,6 +121,7 @@
     init();
 
     // 3. Auto Refresh every 30s
-    refreshInterval = setInterval(loadData, 30000);
+    refreshInterval = setInterval(safeLoad, 30000);
+    window.addEventListener('beforeunload', () => clearInterval(refreshInterval));
 
 })();

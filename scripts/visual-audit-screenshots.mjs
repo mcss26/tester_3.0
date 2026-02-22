@@ -1,10 +1,10 @@
-import { chromium } from '@playwright/test';
+﻿import { chromium } from '@playwright/test';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import fs from 'fs';
 
 const BASE = 'http://localhost:3000';
-const OUT = path.resolve('docs/output/visual-audit');
+const OUT = path.resolve('docs/80-ephemeral/agent-logs/visual-audit');
 
 const PAGES = [
   // Admin
@@ -92,14 +92,14 @@ async function run() {
       const redirected = !finalUrl.includes(p.replace('.html', ''));
 
       if (redirected) {
-        console.log(`[${name}] REDIRECTED to ${finalUrl} — skipping screenshot`);
+        console.log(`[${name}] REDIRECTED to ${finalUrl} â€” skipping screenshot`);
         continue;
       }
 
       await page.screenshot({ path: path.join(OUT, `${name}.png`), fullPage: false });
-      console.log(`[${name}] OK — saved`);
+      console.log(`[${name}] OK â€” saved`);
     } catch (err) {
-      console.log(`[${name}] ERROR — ${err.message}`);
+      console.log(`[${name}] ERROR â€” ${err.message}`);
     }
   }
 

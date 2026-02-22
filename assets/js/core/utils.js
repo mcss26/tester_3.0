@@ -190,31 +190,102 @@
   };
 
   /**
-   * Set page state (Loading, Empty, Content)
-   * Standard for FormulaMid 4 modules
+   * Unified page state manager.
+   * Toggles between loading, content, empty, and error states.
+   * Backward-compatible: existing `setPageState(ui, { loading, empty })` calls work unchanged.
+   *
+   * @param {Object} ui - { loadingState, moduleContent, emptyState, errorState? }
+   * @param {Object} [opts] - { loading, empty, error, timeoutMs }
+   * @returns {{ cancel: Function }} controller for timeout cleanup
    */
-  const setPageState = (ui, { loading = false, empty = false }) => {
-    if (!ui) return;
-    
+  const setPageState = (ui, { loading = false, empty = false, error = false, timeoutMs = 15000 } = {}) => {
+    if (!ui) return { cancel() {} };
+
     const loader = ui.loadingState || ui.pageCardLoading;
     const content = ui.moduleContent || ui.contentWrap;
-    const emptyState = ui.emptyState || ui.pageCardEmpty;
+    const emptyEl = ui.emptyState || ui.pageCardEmpty;
+    const errorEl = ui.errorState;
 
-    // Toggle containers
-    if (loading) {
-      if (loader) loader.classList.add('is-visible');
-      if (content) content.classList.add('hidden');
-      if (emptyState) emptyState.classList.remove('is-visible');
-    } else if (empty) {
-      if (loader) loader.classList.remove('is-visible');
-      if (content) content.classList.add('hidden');
-      if (emptyState) emptyState.classList.add('is-visible');
-    } else {
-      if (loader) loader.classList.remove('is-visible');
-      if (content) content.classList.remove('hidden');
-      if (emptyState) emptyState.classList.remove('is-visible');
+    // Toggle BOTH is-visible AND hidden for compat with all patterns
+    const showEl = (el) => {
+      if (!el) return;
+      el.classList.add('is-visible');
+      el.classList.remove('hidden');
+    };
+    const hideEl = (el) => {
+      if (!el) return;
+      el.classList.remove('is-visible');
+      el.classList.add('hidden');
+    };
+
+    // Loading
+    loading ? showEl(loader) : hideEl(loader);
+
+    // Content — visible only when none of loading/empty/error
+    (loading || empty || error) ? hideEl(content) : showEl(content);
+
+    // Empty — visible only when empty AND not loading/error
+    if (emptyEl) {
+      (empty && !loading && !error) ? showEl(emptyEl) : hideEl(emptyEl);
+      emptyEl.classList.toggle('is-error', error && !errorEl);
     }
+
+    // Error — dedicated element or fallback to emptyState with is-error class
+    if (errorEl) {
+      (error && !loading) ? showEl(errorEl) : hideEl(errorEl);
+    }
+
+    // Auto-timeout safety net
+    let timer = null;
+    if (loading && timeoutMs > 0) {
+      timer = setTimeout(() => {
+        setPageState(ui, { error: true });
+      }, timeoutMs);
+    }
+
+    return {
+      cancel() { if (timer) clearTimeout(timer); }
+    };
   };
+
+  /**
+   * Wraps an async function with automatic loading/content/empty/error transitions.
+   * Includes generation counter for race protection (stale calls are discarded).
+   *
+   * @param {Object} ui - { loadingState, moduleContent, emptyState, errorState? }
+   * @param {Function} fn - async (signal) => 'empty' | void. Throw → error state.
+   * @param {Object} [opts] - { timeoutMs? }
+   */
+  const withLoader = (() => {
+    const generationMap = new WeakMap();
+
+    return async function withLoader(ui, fn, { timeoutMs = 15000 } = {}) {
+      if (!ui) return;
+      const gen = (generationMap.get(ui) || 0) + 1;
+      generationMap.set(ui, gen);
+
+      const ctrl = setPageState(ui, { loading: true, timeoutMs });
+      const ac = new AbortController();
+
+      try {
+        const result = await fn(ac.signal);
+        if (generationMap.get(ui) !== gen) return; // stale
+        ctrl.cancel();
+        if (result === 'empty') {
+          setPageState(ui, { empty: true });
+        } else {
+          setPageState(ui, {});
+        }
+      } catch (err) {
+        if (generationMap.get(ui) !== gen) return;
+        ctrl.cancel();
+        if (err.name === 'AbortError') return;
+        console.error('[withLoader]', err);
+        setPageState(ui, { error: true });
+        window.Toast?.error?.(err.message || 'Error cargando datos');
+      }
+    };
+  })();
 
   const renderStatusBadge = (statusUI) => {
     const styling = window.Constants?.STYLING?.STATUS_CLASSES || {
@@ -401,6 +472,7 @@
     promptModal,                   // Text input dialog
     renderStatusBadge,
     setPageState,
+    withLoader,
     openModal,
     getThemeColor,
     CHART_COLORS,

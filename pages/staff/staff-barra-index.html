@@ -92,6 +92,26 @@
   <script defer src="../../assets/js/core/work-day-helper.js"></script>
   <script src="../../assets/js/core/navigation.js"></script>
 
+  <!-- Workday status resolver (placeholder page — no dedicated module) -->
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        await new Promise(r => setTimeout(r, 600)); // Wait for core scripts
+        if (!window.WorkDayHelper || !window.sb) return;
+        const wd = await window.WorkDayHelper.getOpenWorkDay();
+        const el = document.getElementById('workday-text');
+        const dot = document.getElementById('workday-status');
+        if (!el) return;
+        if (wd) {
+          el.textContent = 'Jornada Abierta';
+          dot?.classList.replace('status-closed', 'status-open');
+        } else {
+          el.textContent = 'Sin Jornada';
+        }
+      } catch { /* silent */ }
+    });
+  </script>
+
 </body>
 
 </html>

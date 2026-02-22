@@ -119,22 +119,6 @@
     },
   });
 
-  function setPageState(state) {
-    if (!window.Utils?.setPageState) return;
-    const uiRefs = {
-      loadingState: ui.loadingState,
-      moduleContent: ui.moduleContent,
-      emptyState: ui.emptyState,
-    };
-    if (state === "loading") {
-      window.Utils.setPageState(uiRefs, { loading: true, empty: false });
-    } else if (state === "empty") {
-      window.Utils.setPageState(uiRefs, { loading: false, empty: true });
-    } else {
-      window.Utils.setPageState(uiRefs, { loading: false, empty: false });
-    }
-  }
-
   // 6. Tab Logic (Custom implementation for is-active support)
   function initTabs() {
     ui.tabs.forEach(tab => {
@@ -197,7 +181,7 @@
   // 7. Data Fetching (Pre-Aprobación) — Auto-detección con ideal dinámico
   async function loadPreApprovalItems() {
     if (activeTab !== "pre-aprobacion") return;
-    if (firstLoad) setPageState("loading");
+    if (firstLoad) Utils.setPageState(ui, { loading: true });
     else ui.viewPreAprobacion?.classList.add("tab-loading");
 
     try {
@@ -230,7 +214,7 @@
         preapprovalItems = [];
         renderPreApprovalByItem([]);
         updatePreApprovalStats([]);
-        setPageState("empty");
+        Utils.setPageState(ui, { empty: true });
         return;
       }
 
@@ -338,7 +322,7 @@
       window.Toast?.error("Error cargando datos de stock");
     } finally {
       if (firstLoad) {
-        setPageState(preapprovalItems.length === 0 ? "empty" : "ready");
+        Utils.setPageState(ui, preapprovalItems.length === 0 ? { empty: true } : {});
         firstLoad = false;
       }
       ui.viewPreAprobacion?.classList.remove("tab-loading");
@@ -499,7 +483,7 @@
   // 9. Data Fetching (Pendientes/Orders)
   async function loadOrders() {
     if (activeTab !== "pendientes") return;
-    if (firstLoad) setPageState("loading");
+    if (firstLoad) Utils.setPageState(ui, { loading: true });
     else ui.viewPendientes?.classList.add("tab-loading");
 
     try {
@@ -518,7 +502,7 @@
 
       if (requestIds.length === 0) {
         renderOrders([]);
-        setPageState("empty");
+        Utils.setPageState(ui, { empty: true });
         return;
       }
 
@@ -580,7 +564,7 @@
       window.Toast?.error("Error cargando pedidos");
     } finally {
       if (firstLoad) {
-        setPageState(orders.length === 0 ? "empty" : "ready");
+        Utils.setPageState(ui, orders.length === 0 ? { empty: true } : {});
         firstLoad = false;
       }
       ui.viewPendientes?.classList.remove("tab-loading");
@@ -1133,6 +1117,11 @@
       actionsHtml += `<button id="btn-reject" class="btn-ghost text-error">Rechazar</button>`;
     }
 
+    // Cancel/Rollback — available for any non-cancelled/non-rejected order
+    if (!["cancelled", "rejected"].includes(order.status)) {
+      actionsHtml += `<button id="btn-cancel-order" class="btn-ghost text-error" style="margin-left:auto;">Cancelar Pedido</button>`;
+    }
+
     ui.panelActions.innerHTML = actionsHtml;
     panelCtrl.open();
 
@@ -1155,6 +1144,9 @@
         openPanel(order); // Re-bind events hack
       };
     });
+    document
+      .getElementById("btn-cancel-order")
+      ?.addEventListener("click", () => cancelOrder(order.id));
   }
 
   async function confirmReject(id) {
@@ -1218,6 +1210,61 @@
     } catch (err) {
       window.Toast.error(err.message);
     }
+  }
+
+  // Cancel/Rollback Order — with mandatory reason + finance_payment cascade
+  async function cancelOrder(orderId) {
+    // Show inline reason input
+    ui.rejectContainer?.classList.remove("hidden");
+    if (ui.rejectInput) ui.rejectInput.placeholder = "Motivo de cancelación (obligatorio)";
+
+    ui.panelActions.innerHTML = `
+      <button class="btn-secondary" id="btn-cancel-rollback">Volver</button>
+      <button id="btn-confirm-cancel" class="btn-primary" style="background: var(--error-color);">Confirmar Cancelación</button>
+    `;
+
+    document.getElementById("btn-cancel-rollback").onclick = () => {
+      ui.rejectContainer?.classList.add("hidden");
+      const order = orders.find(o => o.id === orderId);
+      if (order) openPanel(order);
+    };
+
+    document.getElementById("btn-confirm-cancel").onclick = async () => {
+      const reason = ui.rejectInput?.value?.trim();
+      if (!reason) {
+        window.Toast.warning("Motivo de cancelación requerido");
+        return;
+      }
+      if (!(await window.Utils.confirmAction("¿Cancelar este pedido? Esta acción dejará constancia."))) return;
+
+      try {
+        // 1. Cancel the supplier order
+        const { error: orderErr } = await window.sb
+          .from("replenishment_supplier_orders")
+          .update({
+            status: "cancelled",
+            rejection_reason: reason,
+            approved_by: session.user.id,
+            approved_at: new Date().toISOString(),
+          })
+          .eq("id", orderId);
+        if (orderErr) throw orderErr;
+
+        // 2. Cancel associated finance_payment if exists
+        const { error: payErr } = await window.sb
+          .from("finance_payments")
+          .update({ status: "CANCELLED", notes: `Cancelado: ${reason}` })
+          .eq("supplier_order_id", orderId);
+        if (payErr) console.warn("No se pudo cancelar pago asociado:", payErr);
+
+        window.Toast.success("Pedido cancelado con constancia");
+        panelCtrl.close();
+        loadOrders();
+      } catch (err) {
+        console.error("Cancel error:", err);
+        window.Toast.error("Error: " + err.message);
+      }
+    };
   }
 
   // 12. Event Delegation

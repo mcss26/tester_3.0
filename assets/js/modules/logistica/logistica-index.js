@@ -83,9 +83,7 @@
   // 6. Logout
   logoutBtn?.addEventListener("click", async (e) => {
     e.preventDefault();
-    const confirmed = window.Utils?.confirmModal
-      ? await window.Utils.confirmModal("Cerrar sesión?")
-      : window.confirm("Cerrar sesión?");
+    const confirmed = await window.Utils.confirmModal("Cerrar sesión?");
     if (!confirmed) return;
     try {
       await window.Auth.logout();

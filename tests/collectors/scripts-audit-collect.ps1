@@ -1,7 +1,7 @@
-<#
+﻿<#
   Repo Audit -- Scripts Health Collector
   Validates scripts/, cross-references package.json, maps outputs, checks supabase.
-  Output: docs/output/repo-audit/scripts-health.json
+  Output: docs/80-ephemeral/agent-logs/repo-audit/scripts-health.json
   Usage: .\scripts\scripts-audit-collect.ps1 [-TempDir <path>]
 #>
 param(

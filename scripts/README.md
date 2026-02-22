@@ -1,8 +1,8 @@
-# Scripts — FormulaMid 4
+﻿# Scripts â€” FormulaMid 4
 
 Indice completo de scripts de automatizacion. Todos se corren desde la raiz del proyecto.
 
-> **Reorganización 2026-02-21:** Scripts de testing, auditoría, scanners, watchdogs y collectors fueron movidos a `tests/`. Ver [`tests/` README](#tests-directory) al final.
+> **ReorganizaciÃ³n 2026-02-21:** Scripts de testing, auditorÃ­a, scanners, watchdogs y collectors fueron movidos a `tests/`. Ver [`tests/` README](#tests-directory) al final.
 
 **17 scripts operativos** en `scripts/` | **22 scripts de QA** en `tests/`
 
@@ -47,7 +47,7 @@ powershell -ExecutionPolicy Bypass -File scripts/flow-tracer.ps1
 powershell -ExecutionPolicy Bypass -File scripts/flow-tracer.ps1 -WithAnalysis
 ```
 
-Output: `docs/output/qa/{fecha}_audit_flow-trace.md`
+Output: `docs/80-ephemeral/agent-logs/qa/{fecha}_audit_flow-trace.md`
 
 ### context-loader.ps1
 
@@ -59,7 +59,7 @@ powershell -ExecutionPolicy Bypass -File scripts/context-loader.ps1 -Topic "stoc
 powershell -ExecutionPolicy Bypass -File scripts/context-loader.ps1 -Topic "cashflow" -Analyze
 ```
 
-Output: `docs/output/qa/context-{topic}.md`
+Output: `docs/80-ephemeral/agent-logs/qa/context-{topic}.md`
 
 ### doc-mapper.ps1
 
@@ -72,7 +72,7 @@ powershell -ExecutionPolicy Bypass -File scripts/doc-mapper.ps1
 powershell -ExecutionPolicy Bypass -File scripts/doc-mapper.ps1 -OnlyCategory modules
 ```
 
-Output: `docs/output/qa/doc-map.json`, `doc-map-report.md`, `doc-map-actions.md`
+Output: `docs/80-ephemeral/agent-logs/qa/doc-map.json`, `doc-map-report.md`, `doc-map-actions.md`
 
 ---
 
@@ -86,7 +86,7 @@ Fase A: reemplaza `#0a0a0f` por `#000000` en meta theme-color. Fase B: genera ma
 powershell -ExecutionPolicy Bypass -File scripts/ds-fix-hex.ps1
 ```
 
-Output: `docs/_generated/frontend/hex-to-token-map.md`
+Output: `docs/80-ephemeral/agent-logs/frontend/hex-to-token-map.md`
 
 ### ds-parallel-launch.ps1
 
@@ -106,7 +106,7 @@ powershell -ExecutionPolicy Bypass -File scripts/batch-remediation.ps1 -DryRun
 powershell -ExecutionPolicy Bypass -File scripts/batch-remediation.ps1 -Workers 5
 ```
 
-Output: `docs/output/ui-scan/{page}/remediation-plan.md`
+Output: `docs/80-ephemeral/agent-logs/ui-scan/{page}/remediation-plan.md`
 
 ### db-batch-remediation.ps1
 
@@ -132,7 +132,7 @@ powershell -ExecutionPolicy Bypass -File scripts/repo-optimize.ps1
 powershell -ExecutionPolicy Bypass -File scripts/repo-optimize.ps1 -DryRun
 ```
 
-Output: `docs/output/repo-audit/optimization-report.md`
+Output: `docs/80-ephemeral/agent-logs/repo-audit/optimization-report.md`
 
 ### repo-parallel-optimize.ps1
 
@@ -160,7 +160,7 @@ powershell -ExecutionPolicy Bypass -File scripts/workdays-verifier.ps1 -Watch -F
 powershell -ExecutionPolicy Bypass -File scripts/workdays-verifier.ps1 -Reset
 ```
 
-Output: `docs/output/workdays-progressive.md`
+Output: `docs/80-ephemeral/agent-logs/workdays-progressive.md`
 
 ---
 
@@ -233,14 +233,14 @@ CIERRO VS CODE
 | Script               | Output              | Ubicacion                                       |
 | :------------------- | :------------------ | :---------------------------------------------- |
 | security-watchdog    | Log diario          | `tests/watchdogs/logs/watchdog-{fecha}.log`     |
-| flow-tracer          | Reporte de flujo    | `docs/output/qa/{fecha}_audit_flow-trace.md`    |
-| workdays-verifier    | Reporte progresivo  | `docs/output/qa/workdays-progressive.md`        |
+| flow-tracer          | Reporte de flujo    | `docs/80-ephemeral/agent-logs/qa/{fecha}_audit_flow-trace.md`    |
+| workdays-verifier    | Reporte progresivo  | `docs/80-ephemeral/agent-logs/qa/workdays-progressive.md`        |
 | backup-configs       | ZIP de configs      | `scripts/backups/config-backup-{timestamp}.zip` |
-| doc-mapper           | Mapa + acciones     | `docs/output/qa/doc-map-*.{json,md}`            |
-| ui-component-scanner | Compliance matrix   | `docs/output/ui-scan/compliance-matrix.md`      |
-| ds-verify            | Diff report         | `docs/output/ui-scan/verify-diff.md`            |
-| repo collectors      | JSON reports        | `docs/output/repo-audit/*.json`                 |
-| repo-optimize        | Optimization report | `docs/output/repo-audit/optimization-report.md` |
+| doc-mapper           | Mapa + acciones     | `docs/80-ephemeral/agent-logs/qa/doc-map-*.{json,md}`            |
+| ui-component-scanner | Compliance matrix   | `docs/80-ephemeral/agent-logs/ui-scan/compliance-matrix.md`      |
+| ds-verify            | Diff report         | `docs/80-ephemeral/agent-logs/ui-scan/verify-diff.md`            |
+| repo collectors      | JSON reports        | `docs/80-ephemeral/agent-logs/repo-audit/*.json`                 |
+| repo-optimize        | Optimization report | `docs/80-ephemeral/agent-logs/repo-audit/optimization-report.md` |
 
 > `scripts/backups/` esta en `.gitignore`.
 
@@ -248,18 +248,18 @@ CIERRO VS CODE
 
 ## Tests Directory
 
-Scripts de QA movidos a `tests/` — ver estructura completa:
+Scripts de QA movidos a `tests/` â€” ver estructura completa:
 
 ```text
 tests/
-├── sql/          3 SQL audits (cash, payments, stock)
-├── audits/       5 JS audits (css, jsdoc, links, modules, audit.mjs)
-├── scanners/     4 PS1 (ui-component-scanner, ds-verify, ds-pre-audit, select-risk-analyzer)
-├── watchdogs/    3 PS1 (ds, ops, security) + logs/
-├── runners/      2 (run-audits.mjs, testing-tracker.js)
-├── collectors/   3 PS1 (docs, repo, scripts)
-├── fixtures/     3 CSVs de test (gbol, extracciones, passline)
-└── .env.example
+â”œâ”€â”€ sql/          3 SQL audits (cash, payments, stock)
+â”œâ”€â”€ audits/       5 JS audits (css, jsdoc, links, modules, audit.mjs)
+â”œâ”€â”€ scanners/     4 PS1 (ui-component-scanner, ds-verify, ds-pre-audit, select-risk-analyzer)
+â”œâ”€â”€ watchdogs/    3 PS1 (ds, ops, security) + logs/
+â”œâ”€â”€ runners/      2 (run-audits.mjs, testing-tracker.js)
+â”œâ”€â”€ collectors/   3 PS1 (docs, repo, scripts)
+â”œâ”€â”€ fixtures/     3 CSVs de test (gbol, extracciones, passline)
+â””â”€â”€ .env.example
 ```
 
 ### Comandos rapidos

@@ -29,6 +29,9 @@
     };
 
     // 4. State & Logic
+    const intervals = [];
+    let qrFetching = false;
+    let mcoFetching = false;
     
     /**
      * Loads and displays the current user's name and avatar initials.
@@ -100,6 +103,8 @@
         window.Utils.show(refs.qrWidget);
 
         const fetchQrCount = async () => {
+            if (qrFetching) return;
+            qrFetching = true;
             try {
                 const { count, error } = await window.sb
                     .from('qr_codes')
@@ -114,12 +119,14 @@
                 }
             } catch (err) {
                 console.error('Error fetching QR count:', err);
+            } finally {
+                qrFetching = false;
             }
         };
 
         // Initial Load & Polling
         fetchQrCount();
-        setInterval(fetchQrCount, 30000);
+        intervals.push(setInterval(fetchQrCount, 30000));
     }
 
     /**
@@ -135,6 +142,8 @@
         const MCO_BATCH_ID = window.APP_CONFIG.MCO_BATCH_ID;
 
         const fetchMcoStats = async () => {
+            if (mcoFetching) return;
+            mcoFetching = true;
             try {
                 // Get generated count
                 const { count: generated } = await window.sb
@@ -155,20 +164,16 @@
                 window.Utils.show(widget);
             } catch (err) {
                 console.error('Error fetching MCO QR stats:', err);
+            } finally {
+                mcoFetching = false;
             }
         };
 
         // Initial Load & Polling
         fetchMcoStats();
-        setInterval(fetchMcoStats, 60000);
+        intervals.push(setInterval(fetchMcoStats, 60000));
     }
 
-    /**
-     * Initializes the Tab switching for different roles.
-     */
-    /**
-     * Updates the visibility of modules based on selected role.
-     */
     /**
      * Updates the visibility of modules based on selected role.
      */
@@ -225,9 +230,7 @@
     // 6. Logout
     refs.logoutBtn?.addEventListener('click', async (e) => {
         e.preventDefault();
-        const confirmed = window.Utils?.confirmModal
-            ? await window.Utils.confirmModal('Cerrar sesión?')
-            : window.confirm('Cerrar sesión?');
+        const confirmed = await window.Utils.confirmModal('Cerrar sesión?');
         if (!confirmed) return;
         try {
             await window.Auth.logout();
@@ -253,5 +256,8 @@
     
     // Always init MCO widget (not dependent on current workday)
     initMcoQrWidget();
+
+    // Cleanup on navigation
+    window.addEventListener('beforeunload', () => intervals.forEach(clearInterval));
 
 })();

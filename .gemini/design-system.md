@@ -1,7 +1,7 @@
----
+﻿---
 trigger: always
 glob: "assets/css/**"
-description: Design system boundaries — tokens, CSS hierarchy, and component migration rules
+description: Design system boundaries â€” tokens, CSS hierarchy, and component migration rules
 ---
 
 # Design System Rules
@@ -12,16 +12,16 @@ description: Design system boundaries — tokens, CSS hierarchy, and component m
 
 | #   | Rule                          | Detail                                                                                                                    |
 | --- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| R1  | **`tokens.css` is IMMUTABLE** | No agent may edit `assets/css/tokens.css` without explicit user approval. Propose change → wait for approval → then edit. |
+| R1  | **`tokens.css` is IMMUTABLE** | No agent may edit `assets/css/tokens.css` without explicit user approval. Propose change â†’ wait for approval â†’ then edit. |
 | R2  | **Source hierarchy**          | `tokens.css` > `MASTER.md` > `swiss-style.css` > `design-system-visual.html`. When values conflict, higher priority wins. |
 
 ## Workflow
 
 | #   | Rule                            | Detail                                                                                                               |
 | --- | ------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| R3  | **Channel by task type**        | Grep/inventories → CLI. Visual HTML generation → Chat. Token edits → approval only. Design decisions → orchestrator. |
+| R3  | **Channel by task type**        | Grep/inventories â†’ CLI. Visual HTML generation â†’ Chat. Token edits â†’ approval only. Design decisions â†’ orchestrator. |
 | R4  | **One step at a time**          | Executor receives ONE workflow step per instruction. Orchestrator reviews between steps.                             |
-| R5  | **Verify before claiming done** | Run `grep_search` against target file. 0 results = task NOT done. Never mark ✅ on intention alone.                  |
+| R5  | **Verify before claiming done** | Run `grep_search` against target file. 0 results = task NOT done. Never mark âœ… on intention alone.                  |
 
 ## Architecture
 
@@ -34,9 +34,9 @@ description: Design system boundaries — tokens, CSS hierarchy, and component m
 
 ## Output
 
-Reports go to `docs/_generated/frontend/`:
+Reports go to `docs/80-ephemeral/agent-logs/frontend/`:
 
-- `design-system-audit.md` — Audit report
-- `design-system-visual.html` — Visual showcase
-- `tokens-inventory.md` — Token inventory
-- `token-diff.md` — Divergences
+- `design-system-audit.md` â€” Audit report
+- `design-system-visual.html` â€” Visual showcase
+- `tokens-inventory.md` â€” Token inventory
+- `token-diff.md` â€” Divergences

@@ -181,6 +181,45 @@
   border-color: var(--border-subtle);
 }
 
+/* Counter badge: compact numeric pill (e.g., request counts, selection counts) */
+.badge-counter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 6px;
+  font-size: 10px;
+  font-weight: 600;
+  border-radius: var(--radius-lg);
+  min-width: 18px;
+  line-height: 1;
+}
+
+.badge-counter:empty {
+  display: none;
+}
+
+/* Secondary badge: muted contextual information */
+.badge-secondary {
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  border-color: var(--border-default, var(--border-subtle));
+}
+
+/* Accent badge: highlight/special match indicators */
+.badge-accent {
+  background: rgba(192, 132, 252, 0.15);
+  color: var(--purple-400, #c084fc);
+  border-color: rgba(192, 132, 252, 0.3);
+}
+
+/* Quiet badge: subdued inline label */
+.badge-quiet {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-tertiary);
+  border-color: transparent;
+  font-weight: 500;
+}
+
 /* =========================================================================
    HEALTH SCORE BADGE (Workdays / Night Chief)
    Pill component: 🟢 80-100 / 🟡 60-79 / 🔴 0-59
@@ -2492,22 +2531,21 @@ body.app-shell {
 
 .page-card-loading,
 .page-card-empty {
-  position: absolute;
+  position: fixed;
   inset: 0;
-  z-index: 5;
-  display: flex;
+  z-index: 999;
+  display: none;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(circle at 50% 40%, rgba(12, 12, 14, 0.65), rgba(6, 6, 8, 0.85));
-  backdrop-filter: blur(8px);
-  border-radius: var(--radius-xl);
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.35s ease, visibility 0.35s ease;
-  pointer-events: none;
+  background: var(--bg-body);
+  pointer-events: auto;
 }
 
-/* Page transition (lightweight) */
+.page-card-loading.is-visible,
+.page-card-empty.is-visible {
+  display: flex !important;
+}
+
 /* Page transition (lightweight) */
 body.is-leaving {
   opacity: 0;
@@ -2595,6 +2633,36 @@ body.initial-load {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
+}
+
+/* Error state — matches loading/empty pattern */
+.page-card-error {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 40%, rgba(12, 12, 14, 0.65), rgba(6, 6, 8, 0.85));
+  backdrop-filter: blur(8px);
+  border-radius: var(--radius-xl);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s ease, visibility 0.35s ease;
+  pointer-events: none;
+}
+.page-card-error.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* Fallback: emptyState styled as error when no dedicated errorState element */
+.page-card-empty.is-error .empty-state {
+  color: var(--error-color, #ef4444);
+}
+.page-card-empty.is-error .empty-state::before {
+  content: "⚠ ";
 }
 
 .staff-dashboard {

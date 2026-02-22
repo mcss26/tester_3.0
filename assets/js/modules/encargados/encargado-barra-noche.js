@@ -432,13 +432,13 @@
             } else if (barSession.status === 'closed') {
                 // Already closed
                 currentSession = barSession;
-                ui.closedTime.textContent = `Turno finalizado a las ${new Date(barSession.closed_at).toLocaleTimeString()}`;
+                ui.closedTime.textContent = `Turno finalizado a las ${new Date(barSession.closed_at).toLocaleTimeString('es-AR')}`;
                 setPageState('sessionClosed');
 
             } else {
                 // Active session
                 currentSession = barSession;
-                ui.activeSessionTime.textContent = `Desde ${new Date(barSession.opened_at).toLocaleTimeString()}`;
+                ui.activeSessionTime.textContent = `Desde ${new Date(barSession.opened_at).toLocaleTimeString('es-AR')}`;
                 ui.closingView.classList.add('hidden');
                 ui.btnCloseSession.disabled = false;
                 setPageState('active');

@@ -17,6 +17,8 @@ nul
 
 # Agent/AI
 .agent/
+!.agent/workflows/
+!.agent/workflows/*.md
 mcp.json
 
 # Security — Credentials & Secrets

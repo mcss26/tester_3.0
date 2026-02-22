@@ -1,4 +1,4 @@
-# Domain Agent: Scripts
+﻿# Domain Agent: Scripts
 
 > Reglas para cualquier agente que trabaje con scripts de tooling dentro de `scripts/`.
 
@@ -6,41 +6,41 @@
 
 ```text
 tester_3.0/
-├── AGENTS.md            # Router principal
-├── login.html           # Entry point
-├── assets/              # CSS, JS, imágenes → assets/agent.md
-├── pages/               # HTML por rol → pages/agent.md
-├── scripts/             # ★ ESTE DOMINIO — Tooling
-├── supabase/            # Migrations SQL
-├── docs/                # Documentación
-├── tests/               # Tests
-├── .agent/              # Rules, skills, workflows
-└── .config/             # Configuraciones locales
+â”œâ”€â”€ AGENTS.md            # Router principal
+â”œâ”€â”€ login.html           # Entry point
+â”œâ”€â”€ assets/              # CSS, JS, imÃ¡genes â†’ assets/agent.md
+â”œâ”€â”€ pages/               # HTML por rol â†’ pages/agent.md
+â”œâ”€â”€ scripts/             # â˜… ESTE DOMINIO â€” Tooling
+â”œâ”€â”€ supabase/            # Migrations SQL
+â”œâ”€â”€ docs/                # DocumentaciÃ³n
+â”œâ”€â”€ tests/               # Tests
+â”œâ”€â”€ .agent/              # Rules, skills, workflows
+â””â”€â”€ .config/             # Configuraciones locales
 ```
 
 ## Estructura
 
 ```text
 scripts/
-├── backups/           # Directorio de backups generados (.gitignore)
-├── logs/              # Logs de ejecución (.gitignore)
-├── *.ps1              # Scripts PowerShell (seguridad, auditoría, UI, repo)
-├── *.js / *.mjs       # Scripts Node.js (auditorías de código)
-└── *.py               # Scripts Python (generadores)
+â”œâ”€â”€ backups/           # Directorio de backups generados (.gitignore)
+â”œâ”€â”€ logs/              # Logs de ejecuciÃ³n (.gitignore)
+â”œâ”€â”€ *.ps1              # Scripts PowerShell (seguridad, auditorÃ­a, UI, repo)
+â”œâ”€â”€ *.js / *.mjs       # Scripts Node.js (auditorÃ­as de cÃ³digo)
+â””â”€â”€ *.py               # Scripts Python (generadores)
 ```
 
 ## Reglas de Dominio
 
-1. **No ejecutar sin confirmación**: Los scripts que modifican estado (backups, security-shutdown, repo-optimize) requieren confirmación explícita del usuario.
-2. **Scripts críticos (Tier0)**: `security-watchdog.ps1`, `security-shutdown.ps1`, `security-startup.ps1` — No modificar sin plan de regresión.
+1. **No ejecutar sin confirmaciÃ³n**: Los scripts que modifican estado (backups, security-shutdown, repo-optimize) requieren confirmaciÃ³n explÃ­cita del usuario.
+2. **Scripts crÃ­ticos (Tier0)**: `security-watchdog.ps1`, `security-shutdown.ps1`, `security-startup.ps1` â€” No modificar sin plan de regresiÃ³n.
 3. **Logs**: Los scripts que generan output deben escribir en `scripts/logs/`.
 4. **README**: El [README.md](README.md) documenta cada script en detalle. Mantenerlo sincronizado.
-5. **PowerShell rules**: Ver `.gemini/powershell.md` para reglas de ejecución.
+5. **PowerShell rules**: Ver `.gemini/powershell.md` para reglas de ejecuciÃ³n.
 
 ## Skills Disponibles
 
-- `security-ops` — Seguridad operativa y compliance
-- `auditing-workspace` — Auditoría de workspace e higiene
+- `security-ops` â€” Seguridad operativa y compliance
+- `auditing-workspace` â€” AuditorÃ­a de workspace e higiene
 
 ## COMMANDS
 
@@ -60,7 +60,7 @@ powershell -ExecutionPolicy Bypass -File scripts/ops-watchdog.ps1
 powershell -ExecutionPolicy Bypass -File scripts/auto-prompter.ps1 [-IntervalMinutes 10]
 ```
 
-### Auditoría de Código
+### AuditorÃ­a de CÃ³digo
 
 ```powershell
 node scripts/audit.mjs
@@ -69,7 +69,7 @@ node scripts/audit-links.js
 node scripts/audit-modules.js [--json reports/module-audit.json]
 ```
 
-### Análisis Estático y Flujo
+### AnÃ¡lisis EstÃ¡tico y Flujo
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts/flow-tracer.ps1 [-WithAnalysis]
@@ -101,7 +101,7 @@ powershell -ExecutionPolicy Bypass -File scripts/repo-optimize.ps1 [-DryRun]
 powershell -ExecutionPolicy Bypass -File scripts/repo-parallel-optimize.ps1 [-DryRun]
 ```
 
-### QA y Verificación
+### QA y VerificaciÃ³n
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts/workdays-verifier.ps1 [-Watch] [-FullScan] [-Reset]
@@ -118,25 +118,25 @@ powershell -ExecutionPolicy Bypass -File scripts/_path-check.ps1
 
 ## NAMING CONVENTIONS
 
-| Elemento      | Patrón                                 | Ejemplo                          |
+| Elemento      | PatrÃ³n                                 | Ejemplo                          |
 | :------------ | :------------------------------------- | :------------------------------- |
 | Script PS1    | `{verbo}-{sustantivo}.ps1` kebab-case  | `backup-configs.ps1`             |
-| Script JS     | `{módulo}.js` o `{acción}-{target}.js` | `audit-css.js`                   |
-| Script Python | `{función}_generator.py` snake_case    | `persona_generator.py`           |
+| Script JS     | `{mÃ³dulo}.js` o `{acciÃ³n}-{target}.js` | `audit-css.js`                   |
+| Script Python | `{funciÃ³n}_generator.py` snake_case    | `persona_generator.py`           |
 | Logs          | Escribir en `scripts/logs/`            | `scripts/logs/audit-2026-02.log` |
 | Backups       | Escribir en `scripts/backups/`         | `scripts/backups/config-*.json`  |
 
 ## OUTPUT
 
-| Tipo de output        | Ubicación                       |
+| Tipo de output        | UbicaciÃ³n                       |
 | :-------------------- | :------------------------------ |
-| Logs de ejecución     | `scripts/logs/`                 |
+| Logs de ejecuciÃ³n     | `scripts/logs/`                 |
 | Backups generados     | `scripts/backups/`              |
-| Reportes de auditoría | `docs/output/qa/`               |
-| Reportes UI scan      | `docs/output/ui-scan/`          |
-| Reportes repo audit   | `docs/output/repo-audit/`       |
-| Reportes frontend gen | `docs/_generated/frontend/`     |
-| Reportes security     | `docs/_generated/security-ops/` |
+| Reportes de auditorÃ­a | `docs/80-ephemeral/agent-logs/qa/`               |
+| Reportes UI scan      | `docs/80-ephemeral/agent-logs/ui-scan/`          |
+| Reportes repo audit   | `docs/80-ephemeral/agent-logs/repo-audit/`       |
+| Reportes frontend gen | `docs/80-ephemeral/agent-logs/frontend/`     |
+| Reportes security     | `docs/80-ephemeral/agent-logs/security-ops/` |
 
 ## Referencia
 

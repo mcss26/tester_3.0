@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="../../assets/css/forms.css">
     <link rel="stylesheet" href="../../assets/css/utilities.css">
   <link rel="stylesheet" href="../../assets/css/admin-master.css">
+  <link rel="stylesheet" href="../../assets/css/admin-central-stock.css">
 </head>
 
 <body class="app-shell admin-shell admin-scroll" data-allowed-roles="operativo,logistico,admin">
@@ -115,6 +116,9 @@
               </div>
             </div>
 
+            <!-- Alert Banner -->
+            <div id="stock-alert-banner" class="hidden"></div>
+
             <!-- List Container -->
             <div class="table-viewport table-shell" id="list-container">
               <!-- JS Injected Content -->
@@ -128,6 +132,7 @@
   <!-- Scripts -->
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script defer src="../../assets/js/core/config.js"></script>
+  <script defer src="../../assets/js/core/constants.js"></script>
   <script defer src="../../assets/js/core/supabase-client.js"></script>
   <script defer src="../../assets/js/core/auth.js"></script>
   <script defer src="../../assets/js/core/utils.js"></script>

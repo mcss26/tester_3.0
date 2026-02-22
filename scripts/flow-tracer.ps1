@@ -1,4 +1,4 @@
-# =============================================================================
+﻿# =============================================================================
 # Flow Tracer v2 - FormulaMid 4
 # Usage: powershell -ExecutionPolicy Bypass -File scripts/flow-tracer.ps1
 #        powershell -ExecutionPolicy Bypass -File scripts/flow-tracer.ps1 -WithAnalysis
@@ -11,7 +11,7 @@
 # - Schema: cruza con docs/scheme.md para tablas sin documentar
 # - Cross-Module: muestra que modulo ESCRIBE y cual LEE cada tabla
 #
-# Genera un reporte en docs/output/qa/ y opcionalmente invoca Gemini CLI.
+# Genera un reporte en docs/80-ephemeral/agent-logs/qa/ y opcionalmente invoca Gemini CLI.
 #
 # Pensalo como un detective que sigue el rastro de los datos
 # a traves de tu sistema y te dice donde se pierde la pista.
@@ -21,7 +21,7 @@ param(
     [switch]$WithAnalysis  # Invocar Gemini CLI al final
 )
 
-# ── Paths ──
+# â”€â”€ Paths â”€â”€
 $ProjectRoot = Split-Path -Parent $PSScriptRoot
 if (-not $ProjectRoot -or -not (Test-Path $ProjectRoot)) {
     $ProjectRoot = (Get-Location).Path
@@ -34,7 +34,7 @@ $ReportFile  = Join-Path $OutputDir "$(Get-Date -Format 'yyyy-MM-dd')_audit_flow
 
 $startTime   = Get-Date
 
-# ── State ──
+# â”€â”€ State â”€â”€
 $navMap       = @{}    # pagina -> [destinos]
 $tableUsage   = @{}    # tabla -> @{ Reads = @(); Writes = @() }
 $rpcUsage     = @{}    # funcion_rpc -> [archivos]
@@ -47,7 +47,7 @@ $scriptRefs   = @{}    # HTML -> [JS refs]
 $schemaTables = @()    # tablas del schema
 $htmlToJs     = @{}    # HTML -> JS module (1:1 mapping by naming convention)
 
-# ── Colores ──
+# â”€â”€ Colores â”€â”€
 function Write-OK   ($msg) { Write-Host "  [OK] $msg" -ForegroundColor Green }
 function Write-Info ($msg) { Write-Host "  [i]  $msg" -ForegroundColor DarkGray }
 function Write-Warn ($msg) { Write-Host "  [!]  $msg" -ForegroundColor Yellow }
@@ -465,7 +465,7 @@ function Generate-Report {
         $report += "Ninguna.`n"
     }
 
-    # ── Tablas con R/W ──
+    # â”€â”€ Tablas con R/W â”€â”€
     $report += "`n---`n`n## 2. Tablas Supabase (Read/Write)`n`n"
     $report += "### Tablas usadas en codigo pero NO en scheme.md`n`n"
     if ($brokenTables.Count -gt 0) {
@@ -498,7 +498,7 @@ function Generate-Report {
         }
     }
 
-    # ── Cross-Module ──
+    # â”€â”€ Cross-Module â”€â”€
     $report += "`n---`n`n## 3. Cross-Module Data Flows`n`n"
     $report += "### Resumen por modulo`n`n"
     $report += "| Modulo | Tablas leidas | Tablas escritas |`n"
@@ -546,7 +546,7 @@ function Generate-Report {
         }
     }
 
-    # ── JS Huerfanos ──
+    # â”€â”€ JS Huerfanos â”€â”€
     $report += "`n---`n`n## 4. JS huerfanos (sin referencia HTML)`n`n"
     if ($orphanJs.Count -gt 0) {
         foreach ($oj in $orphanJs) {
@@ -556,7 +556,7 @@ function Generate-Report {
         $report += "Ninguno.`n"
     }
 
-    # ── Schema unused ──
+    # â”€â”€ Schema unused â”€â”€
     if ($schemaTables.Count -gt 0) {
         $unused = $schemaTables | Where-Object { $_ -notin ($tableUsage.Keys) }
         if ($unused.Count -gt 0) {
@@ -579,7 +579,7 @@ function Generate-Report {
     return $ReportFile
 }
 
-# ── Main ─────────────────────────────────────────────────────────────────────
+# â”€â”€ Main â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 Clear-Host
 Write-Host ""
 Write-Host "  ========================================" -ForegroundColor Blue
@@ -643,7 +643,7 @@ $reportContent
         gemini -p $prompt
     } else {
         Write-Host "  Gemini CLI no detectado." -ForegroundColor Yellow
-        $clipText = "Lee docs/output/qa/$(Split-Path $reportPath -Leaf) y analiza los gaps del flujo. Propone flujo ideal por modulo y acciones por prioridad."
+        $clipText = "Lee docs/80-ephemeral/agent-logs/qa/$(Split-Path $reportPath -Leaf) y analiza los gaps del flujo. Propone flujo ideal por modulo y acciones por prioridad."
         $clipText | Set-Clipboard
         Write-Host "  (Prompt copiado al clipboard)" -ForegroundColor Green
     }

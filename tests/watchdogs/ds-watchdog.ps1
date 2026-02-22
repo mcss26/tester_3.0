@@ -1,4 +1,4 @@
-# =============================================================================
+﻿# =============================================================================
 # DS Watchdog - Continuous Contract Monitor
 # Corre en background mientras los agentes trabajan.
 # Usage: powershell -ExecutionPolicy Bypass -File scripts/ds-watchdog.ps1
@@ -9,7 +9,7 @@
 # 2. JS contracts:  IDs/names en HTML no fueron cambiados vs snapshot
 # 3. Token integrity: detecta hardcoded hex colors en swiss-style.css
 # 4. File integrity: tokens.css no fue modificado (R1)
-# 5. Genera reporte en docs/output/watchdog-report.md
+# 5. Genera reporte en docs/80-ephemeral/agent-logs/watchdog-report.md
 #
 # =============================================================================
 

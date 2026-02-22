@@ -14,7 +14,6 @@
     // 1. DOM References
     // ─────────────────────────────────────────────────────────────
     const ui = {
-        // States
         pageLoading: document.getElementById('pageLoading'),
         pageEmpty: document.getElementById('pageEmpty'),
         pageContent: document.getElementById('pageContent'),
@@ -49,20 +48,16 @@
 
     if (!window.Utils.assertSbOrShowBlockingError()) return;
 
-    // ─────────────────────────────────────────────────────────────
-    // 4. Page State Management
-    // ─────────────────────────────────────────────────────────────
-    function setPageState(stateName) {
-        ui.pageLoading.classList.toggle('hidden', stateName !== 'loading');
-        ui.pageEmpty.classList.toggle('hidden', stateName !== 'empty');
-        ui.pageContent.classList.toggle('hidden', stateName !== 'content');
-    }
+    // Aliases for Utils.setPageState compat (DRY: reuse existing refs)
+    ui.loadingState = ui.pageLoading;
+    ui.emptyState = ui.pageEmpty;
+    ui.moduleContent = ui.pageContent;
 
     // ─────────────────────────────────────────────────────────────
-    // 5. Data Loading
+    // 4. Data Loading
     // ─────────────────────────────────────────────────────────────
     async function loadOrders() {
-        setPageState('loading');
+        Utils.setPageState(ui, { loading: true });
 
         try {
             const { data, error } = await window.sb
@@ -77,17 +72,17 @@
             currentOrders = data || [];
 
             if (currentOrders.length === 0) {
-                setPageState('empty');
+                Utils.setPageState(ui, { empty: true });
                 return;
             }
 
             renderOrders(currentOrders);
-            setPageState('content');
+            Utils.setPageState(ui, {});
 
         } catch (err) {
             console.error('[encargado-recepcion] Error loading orders:', err);
             window.Toast.error('Error cargando pedidos');
-            setPageState('empty');
+            Utils.setPageState(ui, { empty: true });
         }
     }
 

@@ -196,7 +196,7 @@
     // --- INICIALIZACIÓN ---
 
     async function init() {
-        setPageState('loading');
+        Utils.setPageState(ui, { loading: true });
         try {
             setupDefaultDates();
             panelCtrl = window.initSlidePanel ? window.initSlidePanel() : null;
@@ -233,20 +233,12 @@
             // Load pending SKU change requests for sidebar widget
             await loadPendingRequests();
             
-            setPageState('ready');
+            Utils.setPageState(ui, {});
         } catch (e) {
             console.error('Init error:', e);
             window.Toast?.error('Error inicializando análisis');
-            setPageState('empty');
+            Utils.setPageState(ui, { empty: true });
         }
-    }
-
-    function setPageState(s) {
-        if (!window.Utils?.setPageState) return;
-        window.Utils.setPageState(ui, {
-            loading: s === 'loading',
-            empty: s === 'empty'
-        });
     }
 
     function setupDefaultDates() {

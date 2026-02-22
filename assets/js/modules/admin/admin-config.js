@@ -48,20 +48,9 @@
 
     // --- INICIALIZACIÓN ---
     async function init() {
-        setPageState('loading');
+        Utils.setPageState(ui, { loading: true });
         bindEvents();
         await loadAllData();
-    }
-
-    function setPageState(s) {
-        ui.loadingState.classList.toggle('is-visible', s === 'loading');
-        ui.emptyState.classList.toggle('is-visible', s === 'empty');
-        // Standard "hidden" class usage
-        if (s === 'ready') {
-            ui.moduleContent.classList.remove('hidden');
-        } else {
-            ui.moduleContent.classList.add('hidden');
-        }
     }
 
     function bindEvents() {
@@ -128,10 +117,10 @@
             renderChannelsTable();
             renderSkuTable();
             
-            setPageState('ready');
+            Utils.setPageState(ui, {});
         } catch (err) {
             console.error('Error loading config:', err);
-            setPageState('empty');
+            Utils.setPageState(ui, { empty: true });
         }
     }
 

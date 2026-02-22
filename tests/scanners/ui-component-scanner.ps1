@@ -1,4 +1,4 @@
-# =============================================================================
+﻿# =============================================================================
 # UI Component Scanner v1 - FormulaMid 4
 # Usage: powershell -ExecutionPolicy Bypass -File scripts/ui-component-scanner.ps1
 #        powershell -ExecutionPolicy Bypass -File scripts/ui-component-scanner.ps1 -TargetPage admin-workdays.html
@@ -15,9 +15,9 @@
 # - Hints de remediacion priorizados
 #
 # Genera:
-#   1. JSON por pagina en docs/output/ui-scan/pages/
-#   2. Matriz de compliance en docs/output/ui-scan/compliance-matrix.md
-#   3. Prompts listos para CLI en docs/output/ui-scan/cli-prompts/
+#   1. JSON por pagina en docs/80-ephemeral/agent-logs/ui-scan/pages/
+#   2. Matriz de compliance en docs/80-ephemeral/agent-logs/ui-scan/compliance-matrix.md
+#   3. Prompts listos para CLI en docs/80-ephemeral/agent-logs/ui-scan/cli-prompts/
 #
 # Pensalo como un radiografo: escanea cada pagina y te dice
 # exactamente que tiene y que le falta para cumplir el Golden Standard.
@@ -170,7 +170,7 @@ function Scan-Page {
     $fileName = $File.Name
     $relPath = $File.FullName.Replace("$ProjectRoot\", "").Replace("\", "/")
 
-    # ── 1. Extract ALL CSS classes ──
+    # â”€â”€ 1. Extract ALL CSS classes â”€â”€
     $classMatches = [regex]::Matches($content, 'class\s*=\s*"([^"]*)"')
     $allClasses = @()
     foreach ($m in $classMatches) {
@@ -181,7 +181,7 @@ function Scan-Page {
     }
     $uniqueClasses = $allClasses | Sort-Object -Unique
 
-    # ── 2. Linked CSS/JS ──
+    # â”€â”€ 2. Linked CSS/JS â”€â”€
     $linkedCSS = @()
     $cssMatches = [regex]::Matches($content, 'href\s*=\s*"([^"]*\.css)"')
     foreach ($m in $cssMatches) { $linkedCSS += $m.Groups[1].Value }
@@ -190,7 +190,7 @@ function Scan-Page {
     $jsMatches = [regex]::Matches($content, 'src\s*=\s*"([^"]*\.js)"')
     foreach ($m in $jsMatches) { $linkedJS += $m.Groups[1].Value }
 
-    # ── 3. Inline styles (anti-pattern) ──
+    # â”€â”€ 3. Inline styles (anti-pattern) â”€â”€
     $inlineStyles = @()
     for ($i = 0; $i -lt $lines.Count; $i++) {
         $line = $lines[$i]
@@ -205,7 +205,7 @@ function Scan-Page {
         }
     }
 
-    # ── 4. Element inventory ──
+    # â”€â”€ 4. Element inventory â”€â”€
     $headings = [ordered]@{}
     for ($h = 1; $h -le 6; $h++) {
         $count = ([regex]::Matches($content, "<h$h[\s>]")).Count
@@ -225,7 +225,7 @@ function Scan-Page {
         aside        = ([regex]::Matches($content, '<aside[\s>]')).Count
     }
 
-    # ── 5. ARIA coverage ──
+    # â”€â”€ 5. ARIA coverage â”€â”€
     $aria = [ordered]@{
         ariaLabel   = ([regex]::Matches($content, 'aria-label\s*=')).Count
         ariaLabelBy = ([regex]::Matches($content, 'aria-labelledby\s*=')).Count
@@ -235,13 +235,13 @@ function Scan-Page {
     }
     $ariaTotal = ($aria.Values | Measure-Object -Sum).Sum
 
-    # ── 6. Data attributes (behavior markers) ──
+    # â”€â”€ 6. Data attributes (behavior markers) â”€â”€
     $dataAttrs = @()
     $dataMatches = [regex]::Matches($content, '(data-[a-zA-Z-]+)\s*=')
     foreach ($m in $dataMatches) { $dataAttrs += $m.Groups[1].Value }
     $dataAttrs = $dataAttrs | Sort-Object -Unique
 
-    # ── 7. Golden Standard compliance ──
+    # â”€â”€ 7. Golden Standard compliance â”€â”€
     $gsCompliance = [ordered]@{}
     $totalScore = 0
     $maxScore = 0
@@ -353,7 +353,7 @@ function Scan-Page {
             }
         }
 
-        # Phase 3: Fallback — categories WITHOUT a contextual rule use partial-presence
+        # Phase 3: Fallback â€” categories WITHOUT a contextual rule use partial-presence
         if (-not $hasContextualRule -and -not $isRelevant -and $present.Count -gt 0) {
             $isRelevant = $true
         }
@@ -405,7 +405,7 @@ function Scan-Page {
     # Overall score (-1 = no relevant categories for this page)
     $overallPct = if ($maxScore -gt 0) { [math]::Round(($totalScore / $maxScore) * 100) } else { -1 }
 
-    # ── Build result ──
+    # â”€â”€ Build result â”€â”€
     return [ordered]@{
         meta             = [ordered]@{
             page       = $fileName
@@ -526,7 +526,7 @@ function Generate-CliPrompt {
     $lines += ""
     $lines += "### Reglas"
     $lines += ""
-    $lines += "1. Consulta docs/UI-UX/ui-golden-standard.md como referencia absoluta"
+    $lines += "1. Consulta docs/02-ui-ux/ui-golden-standard.md como referencia absoluta"
     $lines += "2. Referencia de implementacion: pages/admin/admin-central-stock.html"
     $lines += "3. Solo modifica HTML y CSS. NO toques logica JS (Supabase, state, event handlers)"
     $lines += "4. Usa clases de los archivos modulares (base.css, layout.css, components.css, forms.css, utilities.css), no inventes clases nuevas"
@@ -579,7 +579,7 @@ function Generate-Matrix {
     $md += "# UI Component Scan -- Golden Standard Compliance Matrix"
     $md += ""
     $md += "Generado: ${date} | Duracion: ${elapsed}s | Paginas: $($AllResults.Count)"
-    $md += "Referencia: docs/UI-UX/ui-golden-standard.md"
+    $md += "Referencia: docs/02-ui-ux/ui-golden-standard.md"
     $md += ""
     $md += "---"
     $md += ""
@@ -657,7 +657,7 @@ function Generate-Matrix {
     $md += ""
     $md += "## Proximos pasos"
     $md += ""
-    $md += "1. Ejecutar CLIs en paralelo con los prompts de docs/output/ui-scan/cli-prompts/"
+    $md += "1. Ejecutar CLIs en paralelo con los prompts de docs/80-ephemeral/agent-logs/ui-scan/cli-prompts/"
     $md += "2. Cada CLI genera un plan de implementacion para su pagina asignada"
     $md += "3. Antigravity ingesta todos los planes y ejecuta la pasada coordinada"
     $md += "4. Re-ejecutar este scanner para verificar compliance post-remediacion"

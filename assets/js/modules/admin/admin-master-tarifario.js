@@ -107,7 +107,7 @@
                 <tr class="table-row">
                     <td class="table-cell cell-pad cell-strong font-medium">${role.name || "-"}</td>
                     <td class="table-cell cell-pad muted">${role.area || "-"}</td>
-                    <td class="table-cell cell-pad accent nowrap font-medium">$${parseInt(role.base_rate || 0).toLocaleString()}</td>
+                    <td class="table-cell cell-pad accent nowrap font-medium">$${parseInt(role.base_rate || 0).toLocaleString('es-AR')}</td>
                     <td class="table-cell cell-pad">
                         <button class="footer-link btn-edit btn-ghost btn-sm" data-id="${role.id}" title="Editar">Editar</button>
                     </td>

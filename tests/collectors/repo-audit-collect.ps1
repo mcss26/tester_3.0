@@ -1,7 +1,7 @@
-<#
+﻿<#
   Repo Audit -- Agent Infrastructure Collector
   Cross-references REGISTRY.yml, AGENT.md, agent.md, workflows, rules.
-  Output: docs/output/repo-audit/agent-crossref.json
+  Output: docs/80-ephemeral/agent-logs/repo-audit/agent-crossref.json
   Usage: .\scripts\repo-audit-collect.ps1 [-TempDir <path>]
 #>
 param(
@@ -172,7 +172,7 @@ foreach ($da in $domainAgents) {
 }
 
 # ====================================================
-# 5) Check workflows — are they referenced anywhere?
+# 5) Check workflows â€” are they referenced anywhere?
 # ====================================================
 Write-Host "  [5/7] Checking workflow references..." -ForegroundColor White
 
@@ -212,7 +212,7 @@ if (Test-Path $workflowDir) {
 Write-Host "    $($workflows.Count) workflows, $($report.orphan_workflows.Count) orphans" -ForegroundColor Green
 
 # ====================================================
-# 6) Check rules — do referenced paths exist?
+# 6) Check rules â€” do referenced paths exist?
 # ====================================================
 Write-Host "  [6/7] Validating rule file paths..." -ForegroundColor White
 

@@ -34,6 +34,7 @@
         pageCardLoading: document.getElementById('page-card-loading'),
         pageCardEmpty: document.getElementById('page-card-empty'),
         pageCardContent: document.getElementById('page-card-content'),
+        moduleContent: document.getElementById('page-card-content'),
 
         // Stats
         statTerminals: document.getElementById('stat-terminals'),
@@ -110,26 +111,7 @@
         isDrawing: false
     };
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // 4. Page State Management
-    // ─────────────────────────────────────────────────────────────────────────
-    function setPageState(stateName) {
-        ui.pageCardLoading?.classList.remove('is-visible');
-        ui.pageCardEmpty?.classList.add('hidden');
-        ui.pageCardContent?.classList.add('hidden');
 
-        switch (stateName) {
-            case 'loading':
-                ui.pageCardLoading?.classList.add('is-visible');
-                break;
-            case 'empty':
-                ui.pageCardEmpty?.classList.remove('hidden');
-                break;
-            case 'content':
-                ui.pageCardContent?.classList.remove('hidden');
-                break;
-        }
-    }
 
     // ─────────────────────────────────────────────────────────────────────────
     // 5. Modal Helpers
@@ -238,7 +220,7 @@
         if (!state.currentWorkDayId) {
             const hasWorkday = await loadCurrentClosing();
             if (!hasWorkday) {
-                setPageState('empty');
+                Utils.setPageState(ui, { empty: true });
                 return;
             }
         }
@@ -287,7 +269,7 @@
         }
 
         renderDashboard();
-        setPageState('content');
+        Utils.setPageState(ui, {});
     }
 
     async function ensureClosingExists() {
@@ -446,7 +428,7 @@
     }
 
     function renderClosedState(closingData) {
-        setPageState('empty');
+        Utils.setPageState(ui, { empty: true });
         if (ui.pageCardEmpty) {
             ui.pageCardEmpty.innerHTML = `
                 <div class="text-center">
@@ -891,12 +873,12 @@
     // 12. Initialization
     // ─────────────────────────────────────────────────────────────────────────
     async function init() {
-        setPageState('loading');
+        Utils.setPageState(ui, { loading: true });
         bindEvents();
 
         const hasWorkday = await loadCurrentClosing();
         if (!hasWorkday) {
-            setPageState('empty');
+            Utils.setPageState(ui, { empty: true });
             return;
         }
 

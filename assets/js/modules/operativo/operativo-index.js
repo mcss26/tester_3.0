@@ -83,9 +83,7 @@
   // 6. Logout
   logoutBtn?.addEventListener("click", async (e) => {
     e.preventDefault();
-    const confirmed = window.Utils?.confirmModal
-      ? await window.Utils.confirmModal("Cerrar sesion?")
-      : window.confirm("Cerrar sesion?");
+    const confirmed = await window.Utils.confirmModal("Cerrar sesión?");
     if (!confirmed) return;
     try {
       await window.Auth.logout();
@@ -96,6 +94,7 @@
   });
 
   // 7. MCO QR Widget
+  let mcoInterval = null;
   function initMcoQrWidget() {
     const widget = document.getElementById("mco-widget");
     const elValidated = document.getElementById("mco-qr-validated");
@@ -126,9 +125,12 @@
     };
 
     fetchMcoStats();
-    setInterval(fetchMcoStats, 60000);
+    mcoInterval = setInterval(fetchMcoStats, 60000);
   }
 
   initMcoQrWidget();
+
+  // Cleanup on navigation
+  window.addEventListener('beforeunload', () => clearInterval(mcoInterval));
 })();
 

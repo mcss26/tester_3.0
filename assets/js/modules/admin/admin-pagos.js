@@ -91,13 +91,6 @@
         isLoading: false
     };
 
-    // 5. Page State Management
-    function setPageState({ loading = false, empty = false } = {}) {
-        ui.loadingState?.classList.toggle('is-visible', loading);
-        ui.emptyState?.classList.toggle('is-visible', empty);
-        ui.moduleContent?.classList.toggle('hidden', loading || empty);
-    }
-
     // ============================================================
     // HELPERS
     // ============================================================
@@ -124,7 +117,7 @@
     // ============================================================
     async function init() {
         bindEvents();
-        setPageState({ loading: true });
+        Utils.setPageState(ui, { loading: true });
         try {
             await loadLegacySuppliers();
             switchTab(state.currentTab);
@@ -132,7 +125,7 @@
             console.error('Init error:', e);
             window.Toast?.error('Error inicializando módulo: ' + e.message);
         } finally {
-            setPageState({ loading: false });
+            Utils.setPageState(ui, {});
         }
     }
 
@@ -797,13 +790,13 @@
                     <tr class="table-row" role="row">
                         <td class="table-cell cell-pad cell-strong font-medium">${esc(r.name)}</td>
                         <td class="table-cell text-center text-xs muted">${esc(r.area || '—')}</td>
-                        <td class="table-cell text-right font-mono text-sm font-bold">$${parseInt(rate).toLocaleString()}</td>
+                        <td class="table-cell text-right font-mono text-sm font-bold">$${parseInt(rate).toLocaleString('es-AR')}</td>
                     </tr>
                 `;
             }).join('');
 
             if (ui.nominaTotalAmount) ui.nominaTotalAmount.textContent = fmt(totalNomina);
-            if (ui.nominaTotalBadge) ui.nominaTotalBadge.textContent = `Total: $${parseInt(totalNomina).toLocaleString()}`;
+            if (ui.nominaTotalBadge) ui.nominaTotalBadge.textContent = `Total: $${parseInt(totalNomina).toLocaleString('es-AR')}`;
         } catch (err) {
             console.error('Load nomina error:', err);
             ui.nominaTableBody.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-danger">Error: ${err.message}</td></tr>`;

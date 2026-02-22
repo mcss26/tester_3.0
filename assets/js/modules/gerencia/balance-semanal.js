@@ -9,6 +9,7 @@
         tableBody: document.getElementById('weekly-table-body'),
         tableContainer: document.getElementById('table-container'),
         loadingState: document.getElementById('loading-state'),
+        moduleContent: document.getElementById('table-container'),
         kpiIncome: document.getElementById('kpi-income'),
         kpiExpenses: document.getElementById('kpi-expenses'),
         kpiProfit: document.getElementById('kpi-profit'),
@@ -35,7 +36,7 @@
 
     // 2. Load Data
     async function loadData() {
-        setLoading(true);
+        Utils.setPageState(ui, { loading: true });
         try {
             let query = window.sb
                 .from('vw_finance_weekly')
@@ -58,7 +59,7 @@
             console.error(error);
             window.Toast?.error('Error cargando balance: ' + error.message);
         } finally {
-            setLoading(false);
+            Utils.setPageState(ui, { loading: false });
         }
     }
 
@@ -70,14 +71,22 @@
         }
 
         ui.tableBody.innerHTML = state.weeklyData.map(row => {
-            const startDate = new Date(row.week_start).toLocaleDateString('es-AR', { day: '2-digit', month: 'short' });
-            const endDate = new Date(row.week_end).toLocaleDateString('es-AR', { day: '2-digit', month: 'short' });
+            const safeDateStr = (val) => {
+                if (!val) return '—';
+                const d = new Date(val);
+                return isNaN(d.getTime()) ? '—' : d.toLocaleDateString('es-AR', { day: '2-digit', month: 'short' });
+            };
+            const startDate = safeDateStr(row.week_start);
+            const endDate = safeDateStr(row.week_end);
             
             // Calc profit class
             const profitClass = row.operating_profit > 0 ? 'text-success' : (row.operating_profit < 0 ? 'text-error' : 'muted');
             
-            // Format Currency
-            const fmt = (n) => `$${parseFloat(n).toLocaleString('es-AR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+            // Format Currency — null/undefined/NaN-safe
+            const fmt = (n) => {
+                const num = parseFloat(n);
+                return isNaN(num) ? '$0' : `$${num.toLocaleString('es-AR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+            };
 
             return `
                 <tr class="table-row">
@@ -106,7 +115,10 @@
 
         const margin = totalIncome > 0 ? ((totalProfit / totalIncome) * 100).toFixed(1) : 0;
 
-        const fmt = (n) => `$${parseFloat(n).toLocaleString('es-AR', { minimumFractionDigits: 2 })}`;
+        const fmt = (n) => {
+            const num = parseFloat(n);
+            return isNaN(num) ? '$0.00' : `$${num.toLocaleString('es-AR', { minimumFractionDigits: 2 })}`;
+        };
 
         ui.kpiIncome.textContent = fmt(totalIncome);
         ui.kpiExpenses.textContent = fmt(totalExpenses);
@@ -117,15 +129,7 @@
         ui.kpiProfit.className = `stat-value ${totalProfit >= 0 ? 'text-success' : 'text-error'}`;
     }
 
-    function setLoading(isLoading) {
-        if (isLoading) {
-            ui.loadingState.classList.remove('hidden');
-            ui.tableContainer.classList.add('hidden');
-        } else {
-            ui.loadingState.classList.add('hidden');
-            ui.tableContainer.classList.remove('hidden');
-        }
-    }
+
 
     // 5. Chart (lazy-loaded)
     async function renderChart() {

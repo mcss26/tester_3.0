@@ -54,9 +54,7 @@
     return window.Utils.formatARS(amount);
   }
 
-  function setLoading(isLoading) {
-    window.Utils.setPageState(ui, { loading: isLoading });
-  }
+
 
   // ── Init ───────────────────────────────────────────────────────────────
   function initDates() {
@@ -94,7 +92,7 @@
   // ── Data Loading ───────────────────────────────────────────────────────
   async function loadData() {
     if (window.Toast) window.Toast.info("Actualizando reportes...", 1000);
-    setLoading(true);
+    Utils.setPageState(ui, { loading: true });
 
     const start = inputs.start?.value;
     const end = inputs.end?.value;
@@ -181,7 +179,7 @@
           '<tr><td colspan="6" class="text-center py-4 text-red-400">Error cargando datos de barra.</td></tr>';
     }
 
-    setLoading(false);
+    Utils.setPageState(ui, { loading: false });
     if (window.Toast && state.salesData.length > 0)
       window.Toast.success("Reportes actualizados.");
   }

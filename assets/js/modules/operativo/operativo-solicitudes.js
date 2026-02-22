@@ -180,7 +180,7 @@
                     master_proveedores (id, nombre_fantasia)
                 `,
         )
-        .eq("pre_approval_status", "pre_approved")
+        .in("pre_approval_status", ["pending", "pre_approved"])
         .order("created_at", { ascending: true })
         .limit(5000);
 
@@ -255,7 +255,7 @@
       const order = item.supplier_order_id
         ? state.orderMap[item.supplier_order_id]
         : null;
-      const etaDate = order ? order.eta_date : "";
+      const etaDate = order && order.eta_date ? order.eta_date : "";
       const orderStatus = order ? order.status : "draft";
 
       // Status UI (Item 4: renderStatusBadge)
@@ -303,6 +303,7 @@
                 
                 <td class="table-cell cell-pad">
                     ${statusBadge}
+                    ${item.pre_approval_status === "pending" ? '<span class="status-pill status-neutral" style="margin-left:4px;font-size:10px;opacity:.7">Sin aprobar</span>' : ''}
                 </td>
             </tr>`;
     });
@@ -478,8 +479,8 @@
 
     groupsArr.forEach((grp) => {
       const order = grp.orderId ? ordersDataMap[grp.orderId] : null;
-      const costVal = order ? order.final_cost : "";
-      const dateVal = order ? order.eta_date || "" : "";
+      const costVal = order && order.final_cost != null ? order.final_cost : "";
+      const dateVal = order && order.eta_date ? order.eta_date : "";
       const internalStatus = order ? order.status : "draft";
 
       const statusUI = window.Utils.mapSolicitudEstadoUI({

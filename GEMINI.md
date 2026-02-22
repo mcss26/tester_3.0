@@ -37,8 +37,16 @@ Este proyecto prioriza la mantenibilidad y la claridad sobre el código intelige
 
 ## 6. Flujos de Trabajo
 
+- Antes de comenzar una tarea lista las skills dispnibles en .agent\skills y elige la que mas se ajuste a la tarea. Si no hay una skill que se ajuste a la tarea, crea una o propone una adaptacion de una skill existente.
+
 - Siempre verifica los cambios localmente antes de pedir una revisión.
 
 - Sigue los flujos de trabajo definidos en [.agent/workflows/](C:\Users\siste\Documents\GitHub\tester_3.0\state.md)
 
 - Documenta todos los cambios que realices en el repo en [state.md](C:\Users\siste\Documents\GitHub\tester_3.0\state.md)
+
+## 7. Browser Subagent (Anti-Loop)
+
+- **Prompts acotados**: Nunca pedir "scrollea hasta encontrar X" ni "cuenta todas las filas". El subagente no tiene criterio de parada y entra en loop infinito.
+- **Patrón correcto**: 1 screenshot + 1 `browser_get_dom` + reportar. Si necesitás verificar un selector específico, pedirlo explícitamente por CSS selector, no por scroll visual.
+- **Máximo de acciones**: Limitar a ~5-8 pasos por invocación. Si la tarea requiere más, dividir en múltiples llamadas.

@@ -32,7 +32,6 @@
 
     // 4. DOM References
     const ui = {
-        // Page states
         pageCardLoading: document.getElementById('page-card-loading'),
         pageCardEmpty: document.getElementById('page-card-empty'),
         moduleContent: document.getElementById('module-content'),
@@ -72,14 +71,11 @@
         btnConfirmAction: document.getElementById('btn-confirm-action')
     };
 
-    // 5. State Management
-    function setPageState({ loading = false, empty = false } = {}) {
-        if (ui.pageCardLoading) ui.pageCardLoading.classList.toggle('is-visible', loading);
-        if (ui.pageCardEmpty) ui.pageCardEmpty.classList.toggle('is-visible', empty);
-        if (ui.moduleContent) ui.moduleContent.classList.toggle('hidden', loading || empty);
-    }
+    // Aliases for Utils.setPageState compat (DRY: reuse existing refs)
+    ui.loadingState = ui.pageCardLoading;
+    ui.emptyState = ui.pageCardEmpty;
 
-    // 6. Panel Functions
+    // 5. Panel Functions
     function openPanel() {
         ui.panelOverlay?.classList.add('open');
         ui.staffPanel?.classList.add('open');
@@ -519,7 +515,7 @@
 
     // 12. Initialization
     async function init() {
-        setPageState({ loading: true });
+        Utils.setPageState(ui, { loading: true });
 
         try {
             bindEvents();
@@ -537,7 +533,7 @@
             console.error('[EncargadoCajaPersonal] Initialization error:', e);
             window.Toast?.error('Error al inicializar');
         } finally {
-            setPageState({ loading: false });
+            Utils.setPageState(ui, {});
         }
     }
 

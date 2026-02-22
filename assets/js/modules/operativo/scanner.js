@@ -282,12 +282,13 @@
 
         // Log Checkin
         if (qrcodeObj) {
-            sb.from('qr_checkins').insert({
+            const { error: logErr } = await sb.from('qr_checkins').insert({
                 code_id: qrcodeObj.id,
                 operator_id: user.id,
                 success: success,
                 message: `${title}: ${msg}`
-            }).then();
+            });
+            if (logErr) console.warn('Error logging checkin:', logErr);
         }
 
         // History
@@ -371,7 +372,7 @@
         div.innerHTML = `
             <div class="h-info">
                 <span class="h-code">${code.slice(0, 12)}...</span>
-                <span class="h-time">${time.toLocaleTimeString()}</span>
+                <span class="h-time">${time.toLocaleTimeString('es-AR')}</span>
             </div>
             <span class="h-status ${success ? 'ok' : 'no'}">${title}</span>
         `;

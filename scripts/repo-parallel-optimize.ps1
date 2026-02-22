@@ -1,4 +1,4 @@
-<#
+﻿<#
   Repo Audit -- Parallel Orchestrator
   Launches collectors in Windows Terminal tabs, monitors, then runs optimizer.
   Usage: .\scripts\repo-parallel-optimize.ps1 [-DryRun]
@@ -204,10 +204,10 @@ Write-Host ("  REPO OPTIMIZATION COMPLETE  -  " + $finalMin + " min") -Foregroun
 Write-Host ("=" * 60) -ForegroundColor Green
 Write-Host ""
 Write-Host "  Reports:" -ForegroundColor White
-Write-Host "    docs/output/repo-audit/agent-crossref.json" -ForegroundColor DarkGray
-Write-Host "    docs/output/repo-audit/docs-waste.json" -ForegroundColor DarkGray
-Write-Host "    docs/output/repo-audit/scripts-health.json" -ForegroundColor DarkGray
-Write-Host "    docs/output/repo-audit/optimization-report.md" -ForegroundColor DarkGray
+Write-Host "    docs/80-ephemeral/agent-logs/repo-audit/agent-crossref.json" -ForegroundColor DarkGray
+Write-Host "    docs/80-ephemeral/agent-logs/repo-audit/docs-waste.json" -ForegroundColor DarkGray
+Write-Host "    docs/80-ephemeral/agent-logs/repo-audit/scripts-health.json" -ForegroundColor DarkGray
+Write-Host "    docs/80-ephemeral/agent-logs/repo-audit/optimization-report.md" -ForegroundColor DarkGray
 Write-Host ""
 Write-Host "  Next: review optimization-report.md and run 'git add -p'" -ForegroundColor Cyan
 Write-Host ""

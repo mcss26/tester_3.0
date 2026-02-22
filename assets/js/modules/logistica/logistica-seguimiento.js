@@ -42,18 +42,9 @@
     }
   });
 
-  // 5. Page State Helper
-  function setPageState({ loading = false, empty = false } = {}) {
-    if (ui.loadingState) ui.loadingState.classList.toggle('is-visible', loading);
-    if (ui.emptyState) ui.emptyState.classList.toggle('is-visible', !loading && empty);
-    if (ui.moduleContent) {
-      ui.moduleContent.classList.toggle('hidden', loading || empty);
-    }
-  }
-
   // 6. Data Loading
   async function loadOrders() {
-    setPageState({ loading: true });
+    Utils.setPageState(ui, { loading: true });
 
     try {
       // Get orders with latest tracking status
@@ -90,16 +81,15 @@
         : orders;
 
       if (filtered.length === 0) {
-        setPageState({ empty: true });
+        Utils.setPageState(ui, { empty: true });
       } else {
-        setPageState({ loading: false, empty: false });
+        Utils.setPageState(ui, {});
         renderOrders(filtered);
       }
 
     } catch (err) {
       console.error('Error loading orders:', err);
-      setPageState({ loading: false, empty: false });
-      ui.listContainer.innerHTML = `<div class="empty-state text-error">Error: ${err.message}</div>`;
+      Utils.setPageState(ui, { error: true });
       window.Toast?.error('Error cargando pedidos');
     }
   }

@@ -16,7 +16,6 @@
     // 1. DOM References
     // ─────────────────────────────────────────────────────────────
     const ui = {
-        // States
         pageCardLoading: document.getElementById('page-card-loading'),
         pageCardEmpty: document.getElementById('page-card-empty'),
         moduleContent: document.getElementById('module-content'),
@@ -86,17 +85,12 @@
 
     if (!window.Utils.assertSbOrShowBlockingError()) return;
 
-    // ─────────────────────────────────────────────────────────────
-    // 4. Page State Management
-    // ─────────────────────────────────────────────────────────────
-    function setPageState(stateName) {
-        if (ui.pageCardLoading) ui.pageCardLoading.classList.toggle('hidden', stateName !== 'loading');
-        if (ui.pageCardEmpty) ui.pageCardEmpty.classList.toggle('hidden', stateName !== 'empty');
-        if (ui.moduleContent) ui.moduleContent.classList.toggle('hidden', stateName !== 'content');
-    }
+    // Aliases for Utils.setPageState compat (DRY: reuse existing refs)
+    ui.loadingState = ui.pageCardLoading;
+    ui.emptyState = ui.pageCardEmpty;
 
     // ─────────────────────────────────────────────────────────────
-    // 5. Tab Management
+    // 4. Tab Management
     // ─────────────────────────────────────────────────────────────
     function initTabs() {
         ui.tabPills.forEach(pill => {
@@ -147,7 +141,7 @@
             const { data, error } = await window.sb
                 .from('profiles')
                 .select('*')
-                .ilike('role', '%staff%')
+                .eq('is_auth_user', false)
                 .order('full_name');
 
             if (error) throw error;
@@ -320,7 +314,7 @@
             return;
         }
 
-        setPageState('loading');
+        Utils.setPageState(ui, { loading: true });
 
         try {
             const { data: wd, error } = await window.sb
@@ -342,12 +336,12 @@
 
             renderRequirements();
             renderConvocations();
-            setPageState('content');
+            Utils.setPageState(ui, {});
 
         } catch (err) {
             console.error('[encargado-barra-personal] Error:', err);
             window.Toast.error('Error al cargar datos de jornada');
-            setPageState('empty');
+            Utils.setPageState(ui, { empty: true });
         }
     }
 
@@ -484,7 +478,8 @@
                 .insert({
                     full_name: name,
                     role: 'staff_barra',
-                    active: true
+                    active: true,
+                    is_auth_user: false
                 });
 
             if (error) throw error;
@@ -572,7 +567,7 @@
     // 11. Initialization
     // ─────────────────────────────────────────────────────────────
     async function init() {
-        setPageState('loading');
+        Utils.setPageState(ui, { loading: true });
         initTabs();
         bindEvents();
 
@@ -586,7 +581,7 @@
             ui.selectWorkday.selectedIndex = 1;
             await handleWorkDayChange(ui.selectWorkday.value);
         } else {
-            setPageState('empty');
+            Utils.setPageState(ui, { empty: true });
         }
     }
 

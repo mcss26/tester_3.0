@@ -1,7 +1,7 @@
-<#
+﻿<#
   Repo Audit -- Optimizer (Consolidator)
   Reads the 3 collector JSONs and executes safe cleanup operations.
-  Output: docs/output/repo-audit/optimization-report.md
+  Output: docs/80-ephemeral/agent-logs/repo-audit/optimization-report.md
   Usage: .\scripts\repo-optimize.ps1 [-TempDir <path>] [-DryRun]
 #>
 param(
@@ -241,7 +241,7 @@ if ($agentReport -and $agentReport.keyword_overlaps) {
 
 # --- Naming violations ---
 if ($docsReport -and $docsReport.naming_violations -and $docsReport.naming_violations.Count -gt 0) {
-  Log-Warning "$($docsReport.naming_violations.Count) naming violations in docs/_generated (see docs-waste.json)"
+  Log-Warning "$($docsReport.naming_violations.Count) naming violations in docs/80-ephemeral/agent-logs (see docs-waste.json)"
 }
 
 # --- Stubs ---
@@ -313,9 +313,9 @@ $reportMd += @"
 
 ## Source Reports
 
-- Agent cross-ref: ``docs/output/repo-audit/agent-crossref.json``
-- Docs waste: ``docs/output/repo-audit/docs-waste.json``
-- Scripts health: ``docs/output/repo-audit/scripts-health.json``
+- Agent cross-ref: ``docs/80-ephemeral/agent-logs/repo-audit/agent-crossref.json``
+- Docs waste: ``docs/80-ephemeral/agent-logs/repo-audit/docs-waste.json``
+- Scripts health: ``docs/80-ephemeral/agent-logs/repo-audit/scripts-health.json``
 
 ## Summary
 

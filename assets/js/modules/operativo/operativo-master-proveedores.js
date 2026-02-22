@@ -13,7 +13,8 @@
     const moduleContent = document.getElementById('module-content');
     const pageCardLoading = document.getElementById('page-card-loading');
     const pageCardEmpty = document.getElementById('page-card-empty');
-    const inpNombre = document.getElementById('prov-nombre');
+
+    const ui = { loadingState: pageCardLoading, moduleContent, emptyState: pageCardEmpty };    const inpNombre = document.getElementById('prov-nombre');
     const inpRazonSocial = document.getElementById('prov-razon-social');
     const inpCuit = document.getElementById('prov-cuit');
     const inpTelefono = document.getElementById('prov-telefono');
@@ -35,30 +36,6 @@
     let editingId = null;
     let expandedId = null;
 
-    function setLoading(isLoading) {
-        if (!pageCardLoading || !moduleContent) return;
-        if (isLoading) {
-            pageCardLoading.classList.add('is-visible');
-            moduleContent.classList.add('hidden');
-            if (pageCardEmpty) pageCardEmpty.classList.remove('is-visible');
-        } else {
-            pageCardLoading.classList.remove('is-visible');
-            if (!pageCardEmpty?.classList.contains('is-visible')) {
-                moduleContent.classList.remove('hidden');
-            }
-        }
-    }
-
-    function toggleEmptyState(show) {
-        if (!pageCardEmpty || !moduleContent) return;
-        if (show) {
-            pageCardEmpty.classList.add('is-visible');
-            moduleContent.classList.add('hidden');
-        } else {
-            pageCardEmpty.classList.remove('is-visible');
-            moduleContent.classList.remove('hidden');
-        }
-    }
 
     const setFormCreate = () => {
         editingId = null;
@@ -75,10 +52,10 @@
     function renderList(data) {
         if (!data || data.length === 0) {
             listContainer.innerHTML = '';
-            toggleEmptyState(true);
+            Utils.setPageState(ui, { empty: true });
             return;
         }
-        toggleEmptyState(false);
+        Utils.setPageState(ui, {});
 
         let html = `
             <div class="table-scroll">
@@ -140,7 +117,7 @@
 
     // 4. Fetch Data
     async function loadList() {
-        setLoading(true);
+        Utils.setPageState(ui, { loading: true });
         try {
             const { data, error } = await window.sb
                 .from('master_proveedores')
@@ -154,9 +131,9 @@
         } catch (err) {
             console.error('Error loading suppliers:', err);
             listContainer.innerHTML = errorState(err.message);
-            toggleEmptyState(false);
+            Utils.setPageState(ui, {});
         } finally {
-            setLoading(false);
+            Utils.setPageState(ui, { loading: false });
         }
     }
 

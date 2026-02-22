@@ -1,4 +1,4 @@
-# =============================================================================
+﻿# =============================================================================
 # Operations Watchdog - FormulaMid 4 (Torre de Control)
 # Usage: powershell -ExecutionPolicy Bypass -File scripts/ops-watchdog.ps1
 #
@@ -26,7 +26,7 @@ $AgentsDir   = Join-Path $ProjectRoot ".agent\agents"
 $checkCount  = 0
 $sessionStart = Get-Date
 
-# ── Colores ──
+# â”€â”€ Colores â”€â”€
 function Write-OK   ($msg) { Write-Host "  [OK] $msg" -ForegroundColor Green }
 function Write-Info ($msg) { Write-Host "  [i]  $msg" -ForegroundColor DarkGray }
 function Write-Warn ($msg) { Write-Host "  [!]  $msg" -ForegroundColor Yellow }
@@ -42,7 +42,7 @@ Write-Host ""
 Write-Host "  Que hace: monitorea la actividad de tu proyecto" -ForegroundColor DarkGray
 Write-Host "  cada $IntervalSeconds segundos. Te muestra:" -ForegroundColor DarkGray
 Write-Host "    1. Archivos modificados recientemente" -ForegroundColor DarkGray
-Write-Host "    2. Documentacion de agentes (docs/output/)" -ForegroundColor DarkGray
+Write-Host "    2. Documentacion de agentes (docs/80-ephemeral/agent-logs/)" -ForegroundColor DarkGray
 Write-Host "    3. Estado de git (sin commitear, sin pushear)" -ForegroundColor DarkGray
 Write-Host "    4. Cobertura documental (paginas vs docs)" -ForegroundColor DarkGray
 Write-Host "    5. Recordatorio para agentes nuevos" -ForegroundColor DarkGray
@@ -62,11 +62,11 @@ while ($true) {
 
     Write-Host "=== Check #$checkCount @ $time (sesion: $elapsed min) ===" -ForegroundColor White
 
-    # ─────────────────────────────────────────────────────────────────
+    # â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     # 1. ACTIVIDAD RECIENTE
     # Que archivos de codigo se tocaron en los ultimos minutos?
     # Esto te dice que estuvo haciendo el agente (o vos).
-    # ─────────────────────────────────────────────────────────────────
+    # â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     Write-Head "1. ACTIVIDAD RECIENTE (ultimos 30 min)"
     Write-Info "Archivos de codigo modificados recientemente"
 
@@ -95,13 +95,13 @@ while ($true) {
         Write-OK "Sin actividad reciente en los ultimos 30 min"
     }
 
-    # ─────────────────────────────────────────────────────────────────
+    # â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     # 2. DOCUMENTACION DE AGENTES
-    # Los agentes dejaron documentacion en docs/output/?
+    # Los agentes dejaron documentacion en docs/80-ephemeral/agent-logs/?
     # Si hay archivos recientes = estan documentando.
     # Si no hay nada = alguien no esta siguiendo las reglas.
-    # ─────────────────────────────────────────────────────────────────
-    Write-Head "2. DOCUMENTACION DE AGENTES (docs/output/)"
+    # â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    Write-Head "2. DOCUMENTACION DE AGENTES (docs/80-ephemeral/agent-logs/)"
     Write-Info "Verifico si los agentes estan documentando su trabajo"
 
     $agentFolders = @("frontend", "logic", "data", "qa", "product", "orchestrator")
@@ -132,19 +132,19 @@ while ($true) {
 
     if ($recentFiles.Count -gt 3 -and $todayDocs -eq 0) {
         Write-Warn "Hay $($recentFiles.Count) archivos modificados pero 0 docs hoy"
-        Write-Host "       Recordale al agente: 'Documenta en docs/output/{tu_agente}/'" -ForegroundColor Yellow
+        Write-Host "       Recordale al agente: 'Documenta en docs/80-ephemeral/agent-logs/{tu_agente}/'" -ForegroundColor Yellow
     } elseif ($todayDocs -gt 0) {
         Write-OK "$todayDocs docs nuevos hoy, $totalDocs total"
     } else {
         Write-Info "$totalDocs docs total, ninguno nuevo hoy"
     }
 
-    # ─────────────────────────────────────────────────────────────────
+    # â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     # 3. ESTADO DE GIT
     # Cuantos archivos tenes sin commitear? Hace cuanto fue el
     # ultimo push? Si tenes muchos cambios sin subir, estas en riesgo
     # de perder trabajo.
-    # ─────────────────────────────────────────────────────────────────
+    # â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     Write-Head "3. ESTADO DE GIT"
     Write-Info "Archivos sin commitear y tiempo desde ultimo push"
 
@@ -175,11 +175,11 @@ while ($true) {
         Write-OK "Sincronizado con GitHub"
     }
 
-    # ─────────────────────────────────────────────────────────────────
+    # â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     # 4. COBERTURA DOCUMENTAL
     # Cada pagina HTML deberia tener su doc en docs/modules/.
     # Si hay paginas sin doc, falta documentacion.
-    # ─────────────────────────────────────────────────────────────────
+    # â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     Write-Head "4. COBERTURA DOCUMENTAL"
     Write-Info "Paginas HTML vs documentacion en docs/modules/"
 
@@ -200,11 +200,11 @@ while ($true) {
         Write-Host "       Muchas paginas sin documentar!" -ForegroundColor Yellow
     }
 
-    # ─────────────────────────────────────────────────────────────────
+    # â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     # 5. RECORDATORIO PARA AGENTES
     # Un texto listo para copiar y pegar al agente nuevo para
     # darle contexto rapido sin tener que explicar todo.
-    # ─────────────────────────────────────────────────────────────────
+    # â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     Write-Head "5. COPIAR Y PEGAR AL AGENTE NUEVO"
     Write-Info "Si empezas una conversacion nueva, pegale esto:"
 
@@ -229,11 +229,11 @@ while ($true) {
         $padded = $rel.PadRight(43)
         Write-Host "  |  $padded|" -ForegroundColor DarkCyan
     }
-    Write-Host "  | Documenta tu trabajo en docs/output/.       |" -ForegroundColor White
+    Write-Host "  | Documenta tu trabajo en docs/80-ephemeral/agent-logs/.       |" -ForegroundColor White
     Write-Host "  +---------------------------------------------+" -ForegroundColor DarkMagenta
     Write-Host ""
 
-    # ── RESULTADO ──
+    # â”€â”€ RESULTADO â”€â”€
     $statusColor = "Green"
     $statusMsg = "PROYECTO EN ORDEN"
     if ($uncommitted.Count -gt 20 -or ($recentFiles.Count -gt 3 -and $todayDocs -eq 0)) {

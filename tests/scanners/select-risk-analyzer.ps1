@@ -1,4 +1,4 @@
-# =============================================================================
+﻿# =============================================================================
 # SELECT-to-DB Risk Analyzer
 # Traces every <select> element in HTML through JS to DB operations
 # Usage: powershell -ExecutionPolicy Bypass -File scripts/select-risk-analyzer.ps1
@@ -10,7 +10,7 @@
 # 4. Detecta si el valor llega a Supabase (.insert, .update, .upsert, .rpc)
 # 5. Genera reporte con riesgo por pagina y por approach (wrap vs replace)
 #
-# OUTPUT: docs/output/ui-scan/select-risk-report.md
+# OUTPUT: docs/80-ephemeral/agent-logs/ui-scan/select-risk-report.md
 # =============================================================================
 
 $ProjectRoot = Split-Path -Parent $PSScriptRoot
@@ -240,11 +240,11 @@ $md += '### Option A: Wrap (enhance native select visually)'
 $md += ''
 $md += '| Factor | Assessment |'
 $md += '|--------|-----------|'
-$md += '| JS changes required | **ZERO** — native `<select>` stays in DOM |'
-$md += '| DB contract risk | **ZERO** — `.value`, `.selectedIndex` still work |'
-$md += '| Accessibility | **NATIVE** — screen readers, keyboard nav for free |'
-$md += '| Visual control | **LIMITED** — `<option>` styling is restricted cross-browser |'
-$md += '| Best practice? | **YES** — progressive enhancement pattern |'
+$md += '| JS changes required | **ZERO** â€” native `<select>` stays in DOM |'
+$md += '| DB contract risk | **ZERO** â€” `.value`, `.selectedIndex` still work |'
+$md += '| Accessibility | **NATIVE** â€” screen readers, keyboard nav for free |'
+$md += '| Visual control | **LIMITED** â€” `<option>` styling is restricted cross-browser |'
+$md += '| Best practice? | **YES** â€” progressive enhancement pattern |'
 $md += ''
 $md += '### Option B: Replace (div-based + hidden input)'
 $md += ''
@@ -252,8 +252,8 @@ $md += '| Factor | Assessment |'
 $md += '|--------|-----------|'
 $md += "| JS changes required | **$totalDbBound select(s)** need JS updates |"
 $md += '| DB contract risk | **HIGH** for CRITICAL/HIGH selects |'
-$md += '| Accessibility | **MANUAL** — must implement ARIA roles, keyboard nav |'
-$md += '| Visual control | **FULL** — complete styling freedom |'
+$md += '| Accessibility | **MANUAL** â€” must implement ARIA roles, keyboard nav |'
+$md += '| Visual control | **FULL** â€” complete styling freedom |'
 $md += '| Best practice? | **ONLY if** hidden input preserves same `id` and fires `change` event |'
 $md += ''
 
@@ -281,7 +281,7 @@ $md += '| Page | Select ID | Risk | APIs Used | DB-Bound | Detail |'
 $md += '|------|-----------|------|-----------|----------|--------|'
 
 foreach ($f in ($allFindings | Sort-Object { switch ($_.riskLevel) { 'CRITICAL' { 0 } 'HIGH' { 1 } 'MEDIUM' { 2 } default { 3 } } })) {
-    $apis = if ($f.apisUsed.Count -gt 0) { ($f.apisUsed -join ', ') } else { '—' }
+    $apis = if ($f.apisUsed.Count -gt 0) { ($f.apisUsed -join ', ') } else { 'â€”' }
     $db = if ($f.dbBound) { 'YES' } else { 'no' }
     $risk = $f.riskLevel
     $md += "| $($f.page) | ``$($f.selectId)`` | **$risk** | $apis | $db | $($f.riskDetail) |"
@@ -291,10 +291,10 @@ foreach ($f in ($allFindings | Sort-Object { switch ($_.riskLevel) { 'CRITICAL' 
 $criticalFindings = $allFindings | Where-Object { $_.riskLevel -in @('CRITICAL', 'HIGH') }
 if ($criticalFindings.Count -gt 0) {
     $md += ''
-    $md += '## CRITICAL/HIGH Detail — JS Usage Lines'
+    $md += '## CRITICAL/HIGH Detail â€” JS Usage Lines'
     $md += ''
     foreach ($f in $criticalFindings) {
-        $md += "### ``$($f.page)`` → ``#$($f.selectId)``"
+        $md += "### ``$($f.page)`` â†’ ``#$($f.selectId)``"
         $md += ''
         $md += "- **JS File**: ``$($f.jsFile)``"
         $md += "- **APIs**: $($f.apisUsed -join ', ')"

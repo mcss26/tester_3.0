@@ -1,20 +1,20 @@
----
+﻿---
 trigger: always
-glob: "docs/_generated/orchestrator/**"
-description: Orchestrator-only directives — changelog, artifacts, and behavioral constraints
+glob: "docs/80-ephemeral/agent-logs/orchestrator/**"
+description: Orchestrator-only directives â€” changelog, artifacts, and behavioral constraints
 ---
 
 # Orchestrator Directives
 
-> Applied only when working in orchestrator context (`docs/_generated/orchestrator/`).
+> Applied only when working in orchestrator context (`docs/80-ephemeral/agent-logs/orchestrator/`).
 
 ## Checkpoint Protocol
 
 | #   | Rule                    | Detail                                                                                                                   |
 | --- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| R1  | **CHANGELOG mandatory** | After every decision or delegated task, update `docs/_generated/orchestrator/CHANGELOG.md` before moving to next action. |
-| R2  | **Artifact-first**      | For every complex task, create a plan in `docs/_generated/{agent_name}/` BEFORE touching source files.                   |
-| R3  | **Evidence on test**    | When testing, save output logs to `docs/_generated/{agent_name}/`.                                                       |
+| R1  | **CHANGELOG mandatory** | After every decision or delegated task, update `docs/80-ephemeral/agent-logs/orchestrator/CHANGELOG.md` before moving to next action. |
+| R2  | **Artifact-first**      | For every complex task, create a plan in `docs/80-ephemeral/agent-logs/{agent_name}/` BEFORE touching source files.                   |
+| R3  | **Evidence on test**    | When testing, save output logs to `docs/80-ephemeral/agent-logs/{agent_name}/`.                                                       |
 | R4  | **Visual proof**        | If modifying UI/Frontend, description MUST include "Generates Artifact: Screenshot".                                     |
 
 ## Behavioral Constraints

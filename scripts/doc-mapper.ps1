@@ -1,4 +1,4 @@
-# =============================================================================
+﻿# =============================================================================
 # Doc Mapper v1 - FormulaMid 4
 #
 # Usage:
@@ -9,7 +9,7 @@
 #   powershell -ExecutionPolicy Bypass -File scripts/doc-mapper.ps1 -Workers 3
 #
 # QUE HACE:
-# 1. Escanea TODOS los .md del proyecto (excluye node_modules, .git, docs/output)
+# 1. Escanea TODOS los .md del proyecto (excluye node_modules, .git, docs/80-ephemeral/agent-logs)
 # 2. Extrae dependencias de cada uno:
 #    - Referencias a otros .md (links markdown)
 #    - Tablas/Vistas Supabase mencionadas
@@ -20,8 +20,8 @@
 # 4. Invoca Gemini CLI para que mapee, actualice e indexe cada documento
 #
 # OUTPUT:
-#   docs/output/qa/doc-map.json        (mapa de dependencias completo)
-#   docs/output/qa/doc-map-report.md   (reporte legible)
+#   docs/80-ephemeral/agent-logs/qa/doc-map.json        (mapa de dependencias completo)
+#   docs/80-ephemeral/agent-logs/qa/doc-map-report.md   (reporte legible)
 # =============================================================================
 
 param(
@@ -139,7 +139,7 @@ foreach ($mdFile in $allMdFiles) {
     $relPath  = $mdFile.FullName.Replace("$ProjectRoot\", "")
     $category = Get-DocCategory $relPath
 
-    # Filtrar por categoría si se especificó
+    # Filtrar por categorÃ­a si se especificÃ³
     if ($OnlyCategory -ne "" -and $category -ne $OnlyCategory) { continue }
 
     $content = Get-Content $mdFile.FullName -Raw -ErrorAction SilentlyContinue
@@ -148,7 +148,7 @@ foreach ($mdFile in $allMdFiles) {
     $lines = Get-Content $mdFile.FullName -ErrorAction SilentlyContinue
     $lineCount = if ($lines) { $lines.Count } else { 0 }
 
-    # Extraer título (primer H1)
+    # Extraer tÃ­tulo (primer H1)
     $title = ""
     if ($content -match '(?m)^#\s+(.+)$') { $title = $Matches[1].Trim() }
 
@@ -185,7 +185,7 @@ foreach ($mdFile in $allMdFiles) {
     $docMap += $entry
 
     if ($depCount -gt 0) {
-        Write-Found "$relPath → $depCount dependencias"
+        Write-Found "$relPath â†’ $depCount dependencias"
     } else {
         Write-Info  "$relPath (sin dependencias detectadas)"
     }
@@ -199,7 +199,7 @@ Write-OK "$($docMap.Count) documentos procesados | $totalDeps dependencias total
 # =============================================================================
 Write-Head "3. ANALISIS DE GRAFO"
 
-# Documentos huérfanos (nadie los referencia)
+# Documentos huÃ©rfanos (nadie los referencia)
 $allPaths = $docMap | ForEach-Object { $_.path }
 $referencedPaths = @()
 foreach ($d in $docMap) {
@@ -219,9 +219,9 @@ foreach ($d in $docMap) {
 }
 $referencedPaths = $referencedPaths | Select-Object -Unique
 
-$orphans = $allPaths | Where-Object { $_ -notin $referencedPaths -and $_ -ne "docs/INDEX.md" -and $_ -ne "AGENT.md" -and $_ -ne "README.md" }
+$orphans = $allPaths | Where-Object { $_ -notin $referencedPaths -and $_ -ne "docs/_router.md" -and $_ -ne "AGENT.md" -and $_ -ne "README.md" }
 
-# Tablas más referenciadas
+# Tablas mÃ¡s referenciadas
 $tableFreq = @{}
 foreach ($d in $docMap) {
     foreach ($t in $d.deps.tables) {
@@ -230,10 +230,10 @@ foreach ($d in $docMap) {
 }
 $topTables = $tableFreq.GetEnumerator() | Sort-Object Value -Descending | Select-Object -First 15
 
-# Documentos más conectados
+# Documentos mÃ¡s conectados
 $topConnected = $docMap | Sort-Object dep_count -Descending | Select-Object -First 10
 
-# Categorías
+# CategorÃ­as
 $categories = $docMap | Group-Object category | Sort-Object Count -Descending
 
 Write-OK "Huerfanos: $($orphans.Count) documentos sin referencia entrante"
@@ -269,8 +269,8 @@ $report += ""
 $report += "---"
 $report += ""
 
-# Resumen por categoría
-$report += "## 1. Resumen por Categoría"
+# Resumen por categorÃ­a
+$report += "## 1. Resumen por CategorÃ­a"
 $report += ""
 $report += "| Categoria | Cantidad | Dependencias |"
 $report += "| :--- | :---: | :---: |"
@@ -293,7 +293,7 @@ $report += ""
 # Top documentos conectados
 $report += "## 3. Documentos Mas Conectados"
 $report += ""
-$report += "| Documento | Categoría | Deps | Tablas | Vistas | RPCs |"
+$report += "| Documento | CategorÃ­a | Deps | Tablas | Vistas | RPCs |"
 $report += "| :--- | :--- | :---: | :---: | :---: | :---: |"
 foreach ($tc in $topConnected) {
     $tCount = $tc.deps.tables.Count
@@ -303,7 +303,7 @@ foreach ($tc in $topConnected) {
 }
 $report += ""
 
-# Huérfanos
+# HuÃ©rfanos
 $report += "## 4. Documentos Huerfanos (sin referencia entrante)"
 $report += ""
 if ($orphans.Count -gt 0) {
@@ -313,7 +313,7 @@ if ($orphans.Count -gt 0) {
         $report += "- ``$o`` -- $title"
     }
 } else {
-    $report += "Todos conectados ✅"
+    $report += "Todos conectados âœ…"
 }
 $report += ""
 
@@ -373,7 +373,7 @@ $geminiPath = Get-Command "gemini" -ErrorAction SilentlyContinue
 if (-not $geminiPath) {
     Write-Alert "gemini CLI no encontrado en PATH"
     Write-Info  "El mapa fue generado correctamente."
-    Write-Info  "Instala gemini CLI para la fase de indexación automática."
+    Write-Info  "Instala gemini CLI para la fase de indexaciÃ³n automÃ¡tica."
     Write-Host ""
     exit 1
 }
@@ -386,19 +386,19 @@ $mapContent = Get-Content $MapReport -Raw -Encoding UTF8
 $masterPrompt = @"
 Sos el agente QA del proyecto FormulaMid 4.
 
-Recibiste el mapa completo de documentación del proyecto con dependencias.
+Recibiste el mapa completo de documentaciÃ³n del proyecto con dependencias.
 Tu trabajo es:
 
 1. **VERIFICAR** que cada documento tenga sus dependencias correctas y actualizadas.
-2. **DETECTAR** documentos desactualizados (comparando fecha de modificación con sus dependencias).
+2. **DETECTAR** documentos desactualizados (comparando fecha de modificaciÃ³n con sus dependencias).
 3. **IDENTIFICAR** dependencias rotas (links a archivos que no existen, tablas renombradas, RPCs obsoletas).
 4. **RECOMENDAR** acciones concretas:
-   - Documentos que necesitan actualización
+   - Documentos que necesitan actualizaciÃ³n
    - Links rotos que reparar
    - Dependencias faltantes que agregar
-   - Documentos huérfanos que conectar o eliminar
+   - Documentos huÃ©rfanos que conectar o eliminar
 
-5. **GENERAR** un reporte de acción con prioridades (CRITICO / ALTO / MEDIO / BAJO).
+5. **GENERAR** un reporte de acciÃ³n con prioridades (CRITICO / ALTO / MEDIO / BAJO).
 
 == MAPA DE DOCUMENTACION ==
 
@@ -406,14 +406,14 @@ $mapContent
 
 == FIN DEL MAPA ==
 
-Genera el reporte de acción. Sé conciso y accionable.
+Genera el reporte de acciÃ³n. SÃ© conciso y accionable.
 Para cada hallazgo incluye:
 - Prioridad (CRITICO/ALTO/MEDIO/BAJO)
 - Documento afectado
 - Problema detectado
-- Acción recomendada
+- AcciÃ³n recomendada
 
-Al final, incluye un resumen ejecutivo con el health score general de la documentación (0-100).
+Al final, incluye un resumen ejecutivo con el health score general de la documentaciÃ³n (0-100).
 "@
 
 Write-Info "Enviando mapa completo a Gemini CLI..."
@@ -454,11 +454,11 @@ Remove-Job $job -Force -ErrorAction SilentlyContinue
 # 6. PROCESAMIENTO INDIVIDUAL POR DOCUMENTO (opcional - solo docs criticos)
 # =============================================================================
 
-# Identificar docs críticos (core + módulos con alta conectividad)
+# Identificar docs crÃ­ticos (core + mÃ³dulos con alta conectividad)
 $criticalDocs = $docMap | Where-Object {
     $_.category -eq "core" -or
     ($_.category -eq "modules" -and $_.dep_count -ge 5) -or
-    $_.path -in @("AGENT.md", "docs/INDEX.md", "docs/backend-architecture-map.md")
+    $_.path -in @("AGENT.md", "docs/_router.md", "docs/00-source-of-truth/backend-rpcs.md")
 }
 
 if ($criticalDocs.Count -gt 0 -and -not $SkipCli) {
@@ -571,7 +571,7 @@ if (Test-Path $cliOutputFile) {
 }
 Write-Host ""
 
-# Categorías resumen
+# CategorÃ­as resumen
 foreach ($cat in $categories) {
     $icon = switch ($cat.Name) {
         "core"           { "[C]" }

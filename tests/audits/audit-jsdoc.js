@@ -1,13 +1,13 @@
-#!/usr/bin/env node
+﻿#!/usr/bin/env node
 /**
- * audit-jsdoc.js — JSDoc Coverage Auditor
+ * audit-jsdoc.js â€” JSDoc Coverage Auditor
  * 
  * Scans all JS files in assets/js/core/ and assets/js/modules/ (recursive).
  * Reports which exported/public functions have JSDoc comments.
  * 
  * Output:
  *   - Console summary
- *   - docs/output/jsdoc-coverage.md
+ *   - docs/80-ephemeral/agent-logs/jsdoc-coverage.md
  */
 
 const fs = require('fs');
@@ -18,7 +18,7 @@ const SCAN_DIRS = ['assets/js/core', 'assets/js/modules'];
 const OUTPUT_DIR = path.resolve(ROOT, 'docs/output');
 const OUTPUT_FILE = path.resolve(OUTPUT_DIR, 'jsdoc-coverage.md');
 
-// ─── Recursive file walk ─────────────────────────────────────────────────────
+// â”€â”€â”€ Recursive file walk â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function walkDir(dir) {
   const results = [];
@@ -33,7 +33,7 @@ function walkDir(dir) {
   return results;
 }
 
-// ─── Patterns ────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Patterns â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const FUNC_PATTERNS = [
   // const name = (...) => | const name = function( | const name = async (
@@ -74,7 +74,7 @@ function analyzeFile(filePath) {
         if (JSDOC_END.test(lines[j])) { hasJSDoc = true; break; }
         if (prev === '') continue;
         if (prev.startsWith('*') || prev.startsWith('/**') || prev.startsWith('//')) continue;
-        break; // Non-comment line — stop
+        break; // Non-comment line â€” stop
       }
 
       functions.push({ name, line: i + 1, hasJSDoc });
@@ -85,7 +85,7 @@ function analyzeFile(filePath) {
   return functions;
 }
 
-// ─── Main ────────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Main â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function main() {
   const allFiles = [];
@@ -128,7 +128,7 @@ function main() {
 
   const globalPct = totalFuncs > 0 ? Math.round((totalDocumented / totalFuncs) * 100) : 0;
 
-  // ─── Console Output ──────────────────────────────────────────────────────
+  // â”€â”€â”€ Console Output â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   console.log('\n  ========================================');
   console.log('   JSDoc Coverage Audit');
   console.log('  ========================================\n');
@@ -141,7 +141,7 @@ function main() {
   // Show files with low coverage
   const lowCoverage = results.filter(r => r.pct < 50).sort((a, b) => a.pct - b.pct);
   if (lowCoverage.length > 0) {
-    console.log(`  ⚠ Files below 50% coverage: ${lowCoverage.length}`);
+    console.log(`  âš  Files below 50% coverage: ${lowCoverage.length}`);
     for (const r of lowCoverage.slice(0, 15)) {
       console.log(`    ${String(r.pct).padStart(3)}%  ${r.file} (${r.documented}/${r.total})`);
     }
@@ -149,7 +149,7 @@ function main() {
     console.log();
   }
 
-  // ─── Markdown Output ─────────────────────────────────────────────────────
+  // â”€â”€â”€ Markdown Output â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const md = [
     '# JSDoc Coverage Report',
     '',
@@ -174,7 +174,7 @@ function main() {
   ];
 
   for (const r of results.sort((a, b) => a.pct - b.pct)) {
-    const icon = r.pct >= 80 ? '✅' : r.pct >= 50 ? '🟡' : '🔴';
+    const icon = r.pct >= 80 ? 'âœ…' : r.pct >= 50 ? 'ðŸŸ¡' : 'ðŸ”´';
     md.push(`| ${icon} ${r.pct}% | ${r.file} | ${r.total} | ${r.documented} |`);
   }
 
@@ -195,7 +195,7 @@ function main() {
 
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
   fs.writeFileSync(OUTPUT_FILE, md.join('\n'), 'utf-8');
-  console.log(`  Report: docs/output/jsdoc-coverage.md`);
+  console.log(`  Report: docs/80-ephemeral/agent-logs/jsdoc-coverage.md`);
   console.log();
 }
 

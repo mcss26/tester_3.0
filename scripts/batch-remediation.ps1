@@ -1,4 +1,4 @@
-# =============================================================================
+﻿# =============================================================================
 # Batch Remediation Orchestrator v1 - FormulaMid 4
 #
 # Usage:
@@ -11,7 +11,7 @@
 # QUE HACE:
 # Lee los prompts generados por ui-component-scanner.ps1 y los envia
 # a instancias paralelas de Gemini CLI. Cada instancia recibe un prompt
-# y genera un plan de remediacion que se guarda en docs/output/ui-scan/plans/.
+# y genera un plan de remediacion que se guarda en docs/80-ephemeral/agent-logs/ui-scan/plans/.
 #
 # PREREQUISITOS:
 # - Gemini CLI instalado y autenticado (gemini en PATH)

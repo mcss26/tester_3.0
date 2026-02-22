@@ -17,6 +17,7 @@
     const pageCardLoading = document.getElementById('page-card-loading');
     const pageCardEmpty = document.getElementById('page-card-empty');
 
+    const ui = { loadingState: pageCardLoading, moduleContent, emptyState: pageCardEmpty };
     const selType = document.getElementById('req-type');
     const selSku = document.getElementById('req-sku');
     const inpNombre = document.getElementById('req-nombre');
@@ -52,17 +53,6 @@
     let skuRows = [];
     let activeView = 'requests';
 
-    function setLoading(isLoading) {
-        if (!pageCardLoading || !moduleContent) return;
-        if (isLoading) {
-            pageCardLoading.classList.add('is-visible');
-            moduleContent.classList.add('hidden');
-            if (pageCardEmpty) pageCardEmpty.classList.remove('is-visible');
-        } else {
-            pageCardLoading.classList.remove('is-visible');
-            moduleContent.classList.remove('hidden');
-        }
-    }
 
     const typeLabels = {
         create: 'Agregar SKU',
@@ -266,7 +256,7 @@
         `;
 
         data.forEach((req) => {
-            const createdAt = req.created_at ? new Date(req.created_at).toLocaleString() : '-';
+            const createdAt = req.created_at ? new Date(req.created_at).toLocaleString('es-AR') : '-';
             const skuName = req.sku_nombre || req.payload?.nombre || '-';
             const typeLabel = typeLabels[req.request_type] || req.request_type || '-';
             const statusClass = req.status === 'approved'
@@ -469,12 +459,12 @@
         });
     }
 
-    setLoading(true);
+    Utils.setPageState(ui, { loading: true });
     try {
         await Promise.all([loadProviders(), loadSkus()]);
         await loadRequests();
     } finally {
-        setLoading(false);
+        Utils.setPageState(ui, {});
     }
     renderViewTabs();
     setActiveView(activeView);

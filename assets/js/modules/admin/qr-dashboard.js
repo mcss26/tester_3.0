@@ -109,7 +109,7 @@
                 <div>
                      <p class="font-mono text-sm text-accent">${item.qr_codes?.code || 'Desconocido'}</p>
                      <p class="text-xs text-white/50">
-                        ${item.operator?.full_name || 'Staff'} • ${new Date(item.created_at).toLocaleTimeString()}
+                        ${item.operator?.full_name || 'Staff'} • ${new Date(item.created_at).toLocaleTimeString('es-AR')}
                      </p>
                 </div>
                 <div class="px-2 py-1 rounded text-xs font-bold ${item.success ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}">

@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
   Workdays Progressive Verifier v2 - FormulaMid 4
 .DESCRIPTION
@@ -850,7 +850,7 @@ try {
         $barColor = if ($null -ne $overall -and $overall -ge 70) { "Green" } else { "Yellow" }
         Write-Host "  +---------------------------------------------+" -ForegroundColor $barColor
         $scoreDisp = if ($null -ne $overall) { "$overall/100 $tag" } else { "Parcial..." }
-        Write-Host "  |  Score: $scoreDisp  |  Reporte: docs/output/qa/workdays-progressive.md" -ForegroundColor White
+        Write-Host "  |  Score: $scoreDisp  |  Reporte: docs/80-ephemeral/agent-logs/qa/workdays-progressive.md" -ForegroundColor White
         Write-Host "  +---------------------------------------------+" -ForegroundColor $barColor
 
         if ($Watch) {
@@ -871,7 +871,7 @@ finally {
     Write-Host "   Rondas   : $($script:state.lastRound)" -ForegroundColor White
     $ov = $script:state.scores["overall"]
     if ($null -ne $ov) { Write-Host "   Score    : $ov/100 $(Get-ScoreTag $ov)" -ForegroundColor White }
-    Write-Host "   Reporte  : docs/output/qa/workdays-progressive.md" -ForegroundColor White
+    Write-Host "   Reporte  : docs/80-ephemeral/agent-logs/qa/workdays-progressive.md" -ForegroundColor White
     Write-Host "  ========================================" -ForegroundColor Cyan
     Write-Host ""
 }

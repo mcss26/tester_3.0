@@ -1,11 +1,11 @@
-# =============================================================================
+﻿# =============================================================================
 # DB Batch Remediation Orchestrator v1 - FormulaMid 4
 #
 # Usage:
 #   powershell -ExecutionPolicy Bypass -File scripts/db-batch-remediation.ps1
 #
 # QUE HACE:
-# Lee los prompts generados en docs/output/db-remediation/prompts/ y los
+# Lee los prompts generados en docs/80-ephemeral/agent-logs/db-remediation/prompts/ y los
 # envia a instancias paralelas de Gemini CLI. El output se guarda DIRECTAMENTE
 # como migraciones SQL en supabase/migrations/.
 # =============================================================================
@@ -91,10 +91,10 @@ for ($i = 0; $i -lt $promptFiles.Count; $i += $Workers) {
         $result = $bj.Job | Wait-Job -Timeout 120 | Receive-Job
         if ($result.Success) {
             $completed++
-            Write-OK "$($bj.Item.BaseName) -> Migración SQL generada."
+            Write-OK "$($bj.Item.BaseName) -> MigraciÃ³n SQL generada."
         } else {
             $failed++
-            Write-Alert "$($bj.Item.BaseName) -> Falló: $($result.Output)"
+            Write-Alert "$($bj.Item.BaseName) -> FallÃ³: $($result.Output)"
         }
         Remove-Job $bj.Job -Force -ErrorAction SilentlyContinue
     }
@@ -103,5 +103,5 @@ for ($i = 0; $i -lt $promptFiles.Count; $i += $Workers) {
 Write-Head "RESUMEN DE BATCH"
 Write-OK "$completed migraciones generadas en supabase/migrations/"
 if ($failed -gt 0) { Write-Alert "$failed tareas fallidas." }
-Write-Info "Siguiente Paso: Revisa el SQL generado y ejecuta 'supabase db push' o aplícalos en tu consola."
+Write-Info "Siguiente Paso: Revisa el SQL generado y ejecuta 'supabase db push' o aplÃ­calos en tu consola."
 Write-Host ""

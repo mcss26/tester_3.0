@@ -59,6 +59,8 @@
     filterPills: document.querySelectorAll(".pill[data-status]"),
   };
 
+  const ui = { loadingState: refs.pageCardLoading, moduleContent: refs.moduleContent, emptyState: refs.pageCardEmpty };
+
   // ─────────────────────────────────────────────────────────────────────────
   // 4. Estado Local
   // ─────────────────────────────────────────────────────────────────────────
@@ -66,40 +68,13 @@
     members: [],
     currentFilter: "pendiente",
     currentView: "solicitudes",
-    isLoading: false,
     birthdayCount: 0,
   };
 
   // ─────────────────────────────────────────────────────────────────────────
   // 5. Helpers de UI
   // ─────────────────────────────────────────────────────────────────────────
-  function setLoading(isLoading) {
-    state.isLoading = isLoading;
-    if (!refs.pageCardLoading || !refs.moduleContent) return;
 
-    if (isLoading) {
-      refs.pageCardLoading.classList.add("is-visible");
-      refs.moduleContent.classList.add("hidden");
-      refs.pageCardEmpty?.classList.remove("is-visible");
-    } else {
-      refs.pageCardLoading.classList.remove("is-visible");
-      if (!refs.pageCardEmpty?.classList.contains("is-visible")) {
-        refs.moduleContent.classList.remove("hidden");
-      }
-    }
-  }
-
-  function setEmpty(isEmpty) {
-    if (!refs.pageCardEmpty || !refs.moduleContent) return;
-
-    if (isEmpty) {
-      refs.pageCardEmpty.classList.add("is-visible");
-      refs.moduleContent.classList.add("hidden");
-    } else {
-      refs.pageCardEmpty.classList.remove("is-visible");
-      refs.moduleContent.classList.remove("hidden");
-    }
-  }
 
   function escapeHTML(str) {
     if (!str) return "";
@@ -182,7 +157,7 @@
   // 6. Carga de Datos
   // ─────────────────────────────────────────────────────────────────────────
   async function loadMembers() {
-    setLoading(true);
+    Utils.setPageState(ui, { loading: true });
 
     try {
       let allData = [];
@@ -230,9 +205,9 @@
       updateStatusPill();
 
       if (state.members.length === 0) {
-        setEmpty(true);
+        Utils.setPageState(ui, { empty: true });
       } else {
-        setEmpty(false);
+        Utils.setPageState(ui, {});
         if (state.currentView === "cumple") {
           renderBirthdays();
         } else {
@@ -246,9 +221,9 @@
         refs.requestsList.innerHTML =
           '<div class="empty-state danger">Error al cargar datos.</div>';
       }
-      setEmpty(false);
+      Utils.setPageState(ui, {});
     } finally {
-      setLoading(false);
+      Utils.setPageState(ui, { loading: false });
     }
   }
 

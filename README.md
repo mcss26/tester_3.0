@@ -26,11 +26,11 @@ tester_3.0/
 │       ├── core/   20 módulos (auth, config, router, utils, supabase-client)
 │       ├── modules/ 42 módulos de negocio
 │       └── importers/ 6 importadores (GBOL, AFIP, Passline)
-├── scripts/        17 herramientas operativas (fix, extract, backup, context)
-├── docs/           design-system/ (consolidado ✅), source-of-truth/, operaciones/
-├── supabase/       29 migraciones + 1 edge function
-├── .agent/         4 agentes, 12 workflows, 22 skills
-└── tests/          8 subdirs: sql/ audits/ scanners/ watchdogs/ runners/ collectors/ fixtures/ e2e/ (9 specs)
+├── scripts/        27 herramientas operativas (audit, extract, backup, context, security)
+├── docs/           _router.md → 00-source-of-truth/ 01-design-system/ 02-ui-ux/ 03-business-logic/ 04-operations/ 80-ephemeral/
+├── supabase/       39 migraciones + 1 edge function
+├── .agent/         4 agentes, 12 workflows, 22 skills (component-builder absorbida → css-architect v3.0)
+└── tests/          8 subdirs: sql/ audits/ scanners/ watchdogs/ runners/ collectors/ fixtures/ e2e/ (9 specs, 214 tests)
 ```
 
 ## Módulos por Dominio
@@ -68,21 +68,27 @@ npm run audit
 
 ## Herramientas PowerShell / Node
 
-| Script                     | Uso                                                                                 |
-| -------------------------- | ----------------------------------------------------------------------------------- |
-| `ui-component-scanner.ps1` | Escanea 45 páginas, 10 reglas de relevancia contextual, genera matrix + CLI prompts |
-| `ds-verify.ps1`            | Compara scores pre/post y detecta regresiones Tier0                                 |
-| `audit-jsdoc.js`           | Audita cobertura JSDoc en 62 archivos JS → `docs/output/jsdoc-coverage.md`          |
-| `audit-css.js`             | Audita especificidad y patrones tóxicos                                             |
-| `security-watchdog.ps1`    | Monitoreo de seguridad                                                              |
+| Script                         | Uso                                                              |
+| ------------------------------ | ---------------------------------------------------------------- |
+| `audit-jsdoc.js`               | Audita cobertura JSDoc en core/ y modules/ → `jsdoc-coverage.md` |
+| `audit-links.js`               | Valida links internos en archivos markdown                       |
+| `extract-recipes.js`           | Extrae recetas de facturación GBOL                               |
+| `inject-csp.js`                | Inyecta Content Security Policy en HTML                          |
+| `context-loader.ps1`           | Carga contexto del repo para agentes AI                          |
+| `flow-tracer.ps1`              | Traza flujos de ejecución entre módulos                          |
+| `doc-mapper.ps1`               | Mapea documentación a estructura del repo                        |
+| `security-startup.ps1`         | Verificación de seguridad al iniciar                             |
+| `security-shutdown.ps1`        | Limpieza segura al cerrar                                        |
+| `visual-audit-screenshots.mjs` | Captura screenshots para auditoría visual                        |
+| `workdays-verifier.ps1`        | Verifica integridad de jornadas laborales                        |
 
 ## Design System
 
 - **GS Compliance:** Score avg **81%** · 32/45 páginas compliant (≥80) · 5 launchers N/A
-- **JSDoc Coverage:** **9%** (65/710 funciones documentadas)
-- Spec completa: [`docs/design-system/MASTER.md`](docs/design-system/MASTER.md)
-- Compliance matrix: `docs/output/ui-scan/compliance-matrix.md` (regenerar con `ui-component-scanner.ps1`)
-- JSDoc report: [`docs/output/jsdoc-coverage.md`](docs/output/jsdoc-coverage.md)
+- **JSDoc Coverage:** **5%** (43/923 funciones documentadas — core 37%, modules 0-24%)
+- Spec completa: [`docs/01-design-system/master-design-spec.md`](docs/01-design-system/master-design-spec.md)
+- Compliance matrix: `docs/80-ephemeral/agent-logs/ui-scan/compliance-matrix.md` (regenerar con `ui-component-scanner.ps1`)
+- JSDoc report: [`docs/80-ephemeral/agent-logs/jsdoc-coverage.md`](docs/80-ephemeral/agent-logs/jsdoc-coverage.md)
 
 ## E2E Testing (Playwright)
 
@@ -111,4 +117,4 @@ npm run audit
 | [`state.md`](state.md)                 | Estado actual del proyecto con métricas vivas |
 | [`ROADMAP.md`](ROADMAP.md)             | Roadmap técnico por capas de dependencia      |
 | [`.agent/README.md`](.agent/README.md) | Instrucciones para agentes AI                 |
-| [`docs/INDEX.md`](docs/INDEX.md)       | Índice de documentación                       |
+| [`docs/_router.md`](docs/_router.md)   | Índice de documentación                       |

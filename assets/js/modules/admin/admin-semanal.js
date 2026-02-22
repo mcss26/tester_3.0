@@ -19,6 +19,10 @@
         }
     };
 
+    const ui = {
+        loadingState: document.getElementById('page-card-loading'),
+    };
+
     // Load Weeks (Last 12)
     const populateWeeks = () => {
         const packet = [];
@@ -45,7 +49,9 @@
         const isCurrent = refs.weekSelect.selectedIndex === 0;
 
         refs.statusBanner.classList.toggle('hidden', !isCurrent);
-        refs.btnFreeze.classList.toggle('hidden', !isCurrent); // Only freeze current/latest
+        refs.btnFreeze.classList.toggle('hidden', !isCurrent);
+
+        Utils.setPageState(ui, { loading: true });
 
         try {
             // Try fetching frozen first
@@ -74,7 +80,12 @@
 
             render(data);
 
-        } catch (e) { console.error(e); }
+        } catch (e) {
+            console.error(e);
+            window.Toast?.error("Error cargando datos semanales: " + e.message);
+        } finally {
+            Utils.setPageState(ui, { loading: false });
+        }
     };
 
     const render = (d) => {
