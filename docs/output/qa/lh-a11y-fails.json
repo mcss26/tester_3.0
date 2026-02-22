@@ -1,0 +1,48 @@
+[
+  {
+    "id": "aria-input-field-name",
+    "score": 0,
+    "weight": 7,
+    "title": "ARIA input fields do not have accessible names",
+    "count": 2,
+    "selectors": [
+      "section.planner-section > div.planner-col > div.custom-dropdown > div.custom-dropdown-trigger",
+      "div.planner-col > div.wd-template-row > div.custom-dropdown > div.custom-dropdown-trigger"
+    ]
+  },
+  {
+    "id": "color-contrast",
+    "score": 0,
+    "weight": 7,
+    "title": "Background and foreground colors do not have a sufficient contrast ratio.",
+    "count": 1,
+    "selectors": [
+      "header.topbar > div.topbar-end > div.dropdown-container > button#user-avatar"
+    ]
+  },
+  {
+    "id": "label",
+    "score": 0,
+    "weight": 10,
+    "title": "Form elements do not have associated labels",
+    "count": 19,
+    "selectors": [
+      "div.planner-item > div > div.item-controls > input.input",
+      "div.planner-item > div > div.item-controls > input.input",
+      "div.planner-item > div > div.item-controls > input.input",
+      "div.planner-item > div > div.item-controls > input.input",
+      "div.planner-item > div > div.item-controls > input.input"
+    ]
+  },
+  {
+    "id": "label-content-name-mismatch",
+    "score": 0,
+    "weight": 0,
+    "title": "Elements with visible text labels do not have matching accessible names.",
+    "count": 2,
+    "selectors": [
+      "header.topbar > div.topbar-end > div.dropdown-container > button#btn-notifications",
+      "header.topbar > div.topbar-end > div.dropdown-container > button#user-avatar"
+    ]
+  }
+]

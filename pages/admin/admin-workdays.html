@@ -1,1264 +1,2021 @@
-﻿<!DOCTYPE html>
+﻿<!doctype html>
 <html lang="es">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy"
-    content="default-src 'self';
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self';
       script-src 'self' https://cdn.jsdelivr.net;
       style-src 'self' 'unsafe-inline';
       connect-src 'self' https://iyknbgmcnbpvalvsjxjz.supabase.co;
       img-src 'self' data:;
       font-src 'self';
-      frame-src 'none';">
-    <meta name="theme-color" content="#000000">
-    <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
+      frame-src 'none';"
+    />
+    <meta name="theme-color" content="#000000" />
+    <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg" />
     <title>Jornadas — Midnight</title>
-    <link rel="stylesheet" href="../../assets/css/tokens.css">
-    <link rel="stylesheet" href="../../assets/css/base.css">
-    <link rel="stylesheet" href="../../assets/css/layout.css">
-    <link rel="stylesheet" href="../../assets/css/components.css">
-    <link rel="stylesheet" href="../../assets/css/forms.css">
-    <link rel="stylesheet" href="../../assets/css/utilities.css">
-    <link rel="stylesheet" href="../../assets/css/admin-master.css">
-    <link rel="stylesheet" href="../../assets/css/admin-workdays.css">
-</head>
+    <link rel="stylesheet" href="../../assets/css/tokens.css" />
+    <link rel="stylesheet" href="../../assets/css/base.css" />
+    <link rel="stylesheet" href="../../assets/css/layout.css" />
+    <link rel="stylesheet" href="../../assets/css/components.css" />
+    <link rel="stylesheet" href="../../assets/css/forms.css" />
+    <link rel="stylesheet" href="../../assets/css/utilities.css" />
+    <link rel="stylesheet" href="../../assets/css/admin-master.css" />
+    <link rel="stylesheet" href="../../assets/css/admin-workdays.css" />
+  </head>
 
-<body class="app-shell admin-shell admin-scroll" data-allowed-roles="admin,contable">
-
+  <body
+    class="app-shell admin-shell admin-scroll"
+    data-allowed-roles="admin,contable"
+  >
     <!-- Topbar (Golden Standard) -->
     <header class="topbar">
-        <nav class="breadcrumb topbar-start">
-            <a href="./admin-index.html" class="breadcrumb-item breadcrumb-link">Administración</a>
-            <span class="breadcrumb-sep">/</span>
-            <span class="breadcrumb-item current">Jornadas</span>
-        </nav>
+      <nav class="breadcrumb topbar-start">
+        <a href="./admin-index.html" class="breadcrumb-item breadcrumb-link"
+          >Administración</a
+        >
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-item current">Jornadas</span>
+      </nav>
 
-        <!-- Center: Search -->
-        <div class="topbar-center header-search">
-            <input type="text" id="global-search" class="input" placeholder="Ir a..." aria-label="Navegación rápida">
-            <svg class="header-search-icon" viewBox="0 0 24 24">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      <!-- Center: Search -->
+      <div class="topbar-center header-search">
+        <input
+          type="text"
+          id="global-search"
+          class="input"
+          placeholder="Ir a..."
+          aria-label="Navegación rápida"
+        />
+        <svg class="header-search-icon" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <span class="header-shortcut">⌘K</span>
+      </div>
+
+      <!-- Right: Avatar -->
+      <div class="topbar-end">
+        <!-- Notifications Dropdown -->
+        <div class="dropdown-container">
+          <button
+            type="button"
+            id="btn-notifications"
+            class="icon-btn"
+            aria-label="Notificaciones"
+          >
+            <svg class="icon-notification" viewBox="0 0 24 24">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
             </svg>
-            <span class="header-shortcut">⌘K</span>
+            <span class="notification-badge" id="notification-count">3</span>
+          </button>
+          <div
+            class="dropdown-menu dropdown-notifications hidden"
+            id="notifications-menu"
+          >
+            <div class="dropdown-header">Notificaciones</div>
+            <div class="notification-item">
+              <div class="notification-title">Stock bajo</div>
+              <div class="notification-desc">5 SKUs por debajo del ideal</div>
+              <div class="notification-time">Hace 2h</div>
+            </div>
+            <div class="notification-item">
+              <div class="notification-title">Importación exitosa</div>
+              <div class="notification-desc">Consumo del 03/02 procesado</div>
+              <div class="notification-time">Hace 5h</div>
+            </div>
+            <div class="notification-item">
+              <div class="notification-title">Cierre de jornada</div>
+              <div class="notification-desc">
+                Jornada 02/02 cerrada correctamente
+              </div>
+              <div class="notification-time">Ayer</div>
+            </div>
+            <div class="dropdown-footer">
+              <a href="#" class="dropdown-link">Ver todas</a>
+            </div>
+          </div>
         </div>
 
-        <!-- Right: Avatar -->
-        <div class="topbar-end">
-            <!-- Notifications Dropdown -->
-            <div class="dropdown-container">
-                <button type="button" id="btn-notifications" class="icon-btn" aria-label="Notificaciones">
-                    <svg class="icon-notification" viewBox="0 0 24 24">
-                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                    </svg>
-                    <span class="notification-badge" id="notification-count">3</span>
-                </button>
-                <div class="dropdown-menu dropdown-notifications hidden" id="notifications-menu">
-                    <div class="dropdown-header">Notificaciones</div>
-                    <div class="notification-item">
-                        <div class="notification-title">Stock bajo</div>
-                        <div class="notification-desc">5 SKUs por debajo del ideal</div>
-                        <div class="notification-time">Hace 2h</div>
-                    </div>
-                    <div class="notification-item">
-                        <div class="notification-title">Importación exitosa</div>
-                        <div class="notification-desc">Consumo del 03/02 procesado</div>
-                        <div class="notification-time">Hace 5h</div>
-                    </div>
-                    <div class="notification-item">
-                        <div class="notification-title">Cierre de jornada</div>
-                        <div class="notification-desc">Jornada 02/02 cerrada correctamente</div>
-                        <div class="notification-time">Ayer</div>
-                    </div>
-                    <div class="dropdown-footer">
-                        <a href="#" class="dropdown-link">Ver todas</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="dropdown-container">
-                <button type="button" class="avatar avatar-sm" id="user-avatar" aria-label="Menú de usuario">AD</button>
-                <div class="dropdown-menu dropdown-user hidden" id="user-menu">
-                    <div class="dropdown-header" id="user-name-display">Usuario</div>
-                    <div class="dropdown-divider"></div>
-                    <a href="./admin-config.html" class="dropdown-item">
-                        <svg class="dropdown-icon" viewBox="0 0 24 24">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                        </svg>
-                        Perfil
-                    </a>
-                    <a href="./admin-config.html" class="dropdown-item">
-                        <svg class="dropdown-icon" viewBox="0 0 24 24">
-                            <circle cx="12" cy="12" r="3"></circle>
-                            <path
-                                d="M12 1v6m0 6v6M5.64 5.64l4.24 4.24m6.36 6.36l4.24 4.24M1 12h6m6 0h6M5.64 18.36l4.24-4.24m6.36-6.36l4.24-4.24">
-                            </path>
-                        </svg>
-                        Configuración
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <a href="#" id="btn-logout" class="dropdown-item dropdown-item-danger">
-                        <svg class="dropdown-icon" viewBox="0 0 24 24">
-                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                            <polyline points="16 17 21 12 16 7"></polyline>
-                            <line x1="21" y1="12" x2="9" y2="12"></line>
-                        </svg>
-                        Cerrar Sesión
-                    </a>
-                </div>
-            </div>
+        <div class="dropdown-container">
+          <button
+            type="button"
+            class="avatar avatar-sm"
+            id="user-avatar"
+            aria-label="Menú de usuario"
+          >
+            AD
+          </button>
+          <div class="dropdown-menu dropdown-user hidden" id="user-menu">
+            <div class="dropdown-header" id="user-name-display">Usuario</div>
+            <div class="dropdown-divider"></div>
+            <a href="./admin-config.html" class="dropdown-item">
+              <svg class="dropdown-icon" viewBox="0 0 24 24">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              Perfil
+            </a>
+            <a href="./admin-config.html" class="dropdown-item">
+              <svg class="dropdown-icon" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path
+                  d="M12 1v6m0 6v6M5.64 5.64l4.24 4.24m6.36 6.36l4.24 4.24M1 12h6m6 0h6M5.64 18.36l4.24-4.24m6.36-6.36l4.24-4.24"
+                ></path>
+              </svg>
+              Configuración
+            </a>
+            <div class="dropdown-divider"></div>
+            <a
+              href="#"
+              id="btn-logout"
+              class="dropdown-item dropdown-item-danger"
+            >
+              <svg class="dropdown-icon" viewBox="0 0 24 24">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+              </svg>
+              Cerrar Sesión
+            </a>
+          </div>
         </div>
+      </div>
     </header>
 
     <!-- Main Layout -->
     <main class="page-shell">
-        <div class="page-card-wrap">
-            <div class="page-card overflow-visible">
-
-                <!-- Loading State -->
-                <div class="page-card-loading" id="page-card-loading">
-                    <div class="state-block loading">
-                        <div class="state-spinner" aria-hidden="true"></div>
-                        <div class="state-loader"></div>
-                        <p class="state-title">Cargando jornadas...</p>
-                    </div>
-                </div>
-
-                <!-- Empty State -->
-                <div class="page-card-empty" id="page-card-empty">
-                    <div class="state-block">
-                        <p class="state-title">No hay jornadas registradas</p>
-                        <p class="state-subtitle">Crea una nueva jornada para comenzar.</p>
-                        <button type="button" class="btn-primary btn-sm" id="btn-new-empty">+ Nueva Jornada</button>
-                    </div>
-                </div>
-
-                <div id="module-content">
-                    <div class="staff-dashboard">
-
-                        <!-- Dashboard Header (Golden Standard) -->
-                        <div class="dashboard-header align-start">
-                            <div>
-                                <h2 class="dashboard-title dashboard-title-soft">
-                                    Gestión de Jornada
-                                    <span class="status-pill-header staff-status-pending"
-                                        id="workday-status-header">Draft</span>
-                                </h2>
-                                <p class="dashboard-subtitle dashboard-subtitle-soft" id="dashboard-subtitle">Control de
-                                    operaciones y costos</p>
-                            </div>
-                            <div class="actions-bar">
-                                <!-- Date Navigation -->
-                                <div class="workday-nav" id="workday-nav">
-                                    <button type="button" class="btn-icon btn-sm" id="btn-prev-day" title="Día Anterior">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                            stroke="currentColor" stroke-width="2">
-                                            <path d="M15 18l-6-6 6-6" />
-                                        </svg>
-                                    </button>
-
-                                    <div class="nav-date-display">
-                                        <svg class="icon-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                            stroke-width="2">
-                                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                            <line x1="16" y1="2" x2="16" y2="6"></line>
-                                            <line x1="8" y1="2" x2="8" y2="6"></line>
-                                            <line x1="3" y1="10" x2="21" y2="10"></line>
-                                        </svg>
-                                        <span id="current-date-display">...</span>
-                                    </div>
-
-                                    <button type="button" class="btn-icon btn-sm" id="btn-next-day" title="Día Siguiente">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                            stroke="currentColor" stroke-width="2">
-                                            <path d="M9 18l6-6-6-6" />
-                                        </svg>
-                                    </button>
-
-                                    <button type="button" class="btn-secondary btn-sm" id="btn-today">Hoy</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- ═══════════════════════════════════════════ -->
-                        <!-- TAB BAR: 3 Vistas (Status Machine)        -->
-                        <!-- ═══════════════════════════════════════════ -->
-                        <div class="actions-bar">
-                            <div class="tab-bar" id="workday-tabs" role="tablist" aria-label="Vistas de jornada">
-                                <button type="button" class="tab-chip active" data-tab="panelPlanner" role="tab" aria-selected="true"
-                                    aria-controls="panelPlanner">Planificación</button>
-                                <button type="button" class="tab-chip" data-tab="panelNightChief" role="tab" aria-selected="false"
-                                    aria-controls="panelNightChief">Cierre Nocturno <span class="live-dot hidden"
-                                        id="live-dot" title="Polling activo"></span></button>
-                                <button type="button" class="tab-chip" data-tab="panelReport" role="tab" aria-selected="false"
-                                    aria-controls="panelReport">Reporte</button>
-                            </div>
-                        </div>
-
-                        <!-- ═══════════════════════════════════════════ -->
-                        <!-- TAB 1: PLANNER (Planificación)             -->
-                        <!-- ═══════════════════════════════════════════ -->
-                        <section id="panelPlanner" class="tab-content" role="tabpanel">
-
-                            <!-- Stats Grid (4 KPIs) -->
-                            <!-- Summary Metrics (Golden Standard — 4-col variant) -->
-                            <div class="summary-metrics-container">
-                                <div class="summary-metrics-grid summary-metrics-4col">
-                                    <div class="summary-metric-card border-l-staff">
-                                        <div class="summary-metric-label">Costo Staff</div>
-                                        <div class="summary-metric-value" id="kpi-staff-cost">$0</div>
-                                        <div class="stat-delta" id="kpi-staff-delta"></div>
-                                    </div>
-                                    <div class="summary-metric-card border-l-costs">
-                                        <div class="summary-metric-label">Costo Apertura</div>
-                                        <div class="summary-metric-value" id="kpi-fixed-cost">$0</div>
-                                    </div>
-                                    <div class="summary-metric-card border-l-breakeven">
-                                        <div class="summary-metric-label">Break-even</div>
-                                        <div class="summary-metric-value" id="kpi-total-cost">$0</div>
-                                    </div>
-                                    <div class="summary-metric-card border-l-promo">
-                                        <div class="summary-metric-label">Convocatoria</div>
-                                        <div class="summary-metric-value" id="kpi-staff-status">—/—</div>
-                                        <div class="stat-delta text-warning" id="kpi-staff-pending"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Break-Even Card (Sprint 4) -->
-                            <div class="wd-breakeven-card" id="breakeven-card">
-                                <div class="wd-breakeven-header">
-                                    <div class="wd-breakeven-title">
-                                        <span class="wd-breakeven-icon">⚖️</span>
-                                        <span>Break-Even</span>
-                                    </div>
-                                    <div class="wd-breakeven-values">
-                                        <span class="wd-breakeven-cost" id="be-cost">$0</span>
-                                        <span class="wd-breakeven-sep">/</span>
-                                        <span class="wd-breakeven-avg" id="be-avg-revenue">$0 avg</span>
-                                    </div>
-                                </div>
-                                <div class="wd-breakeven-bar-container">
-                                    <div class="wd-breakeven-bar" id="be-progress-bar"></div>
-                                    <span class="wd-breakeven-pct" id="be-progress-pct">0%</span>
-                                </div>
-                                <div class="wd-benchmark-pills" id="benchmark-pills">
-                                    <!-- Populated by JS: avg attendance, avg margin, sample count -->
-                                </div>
-                            </div>
-
-                            <div class="planner-layout">
-
-                                <!-- SIDEBAR: Configuración y Costos -->
-                                <aside class="planner-sidebar">
-
-                                    <!-- PANEL A: Definición -->
-                                    <section class="planner-section">
-                                        <div class="panel-title-row">
-                                            <span>A. Definición</span>
-                                            <button type="button" class="btn-secondary btn-sm" id="btn-new-event"
-                                                title="Crear nuevo evento">+ Evento</button>
-                                        </div>
-
-                                        <div class="planner-col mt-4">
-                                            <label class="form-label">Fecha Operativa</label>
-                                            <input type="date" id="input-date" aria-label="Fecha de jornada" class="input" required>
-                                        </div>
-
-                                        <div class="planner-col mt-4">
-                                            <label class="form-label">Evento Vinculado</label>
-                                            <select id="select-event" class="input">
-                                                <option value="">-- Sin Evento --</option>
-                                            </select>
-                                        </div>
-
-                                        <div class="mt-4 flex items-center justify-between">
-                                            <label for="check-high-demand" class="form-label mb-0">Alta Demanda</label>
-                                            <label class="toggle-switch">
-                                                <input type="checkbox" id="check-high-demand" aria-label="Alta demanda" class="toggle-input">
-                                                <span class="toggle-slider"></span>
-                                            </label>
-                                        </div>
-
-                                        <div class="planner-col mt-4">
-                                            <!-- countdown-event removed: dead ref, no JS handler -->
-                                        </div>
-
-                                        <div class="planner-col mt-4">
-                                            <label class="form-label">Notas</label>
-                                            <textarea id="input-notes" class="input input-notes-expandable" rows="1"
-                                                placeholder="Notas internas..."></textarea>
-                                        </div>
-
-                                        <!-- Template Selector (Sprint 4) -->
-                                        <div class="planner-col mt-4 wd-template-section">
-                                            <label class="form-label">Plantilla</label>
-                                            <div class="wd-template-row">
-                                                <select id="select-template" class="input">
-                                                    <option value="">-- Sin plantilla --</option>
-                                                </select>
-                                                <button type="button" class="btn-secondary btn-sm" id="btn-save-template"
-                                                    title="Guardar configuración actual como plantilla">💾</button>
-                                            </div>
-                                        </div>
-                                    </section>
-
-                                </aside>
-
-                                <!-- MAIN CANVAS: Staff + Costos -->
-                                <main class="planner-canvas">
-
-                                    <!-- PANEL B: Staff -->
-                                    <div class="planner-panel panel-staff">
-                                        <div class="panel-title-row">
-                                            <span>B. Dimensionamiento de Staff</span>
-                                            <span class="badge" id="staff-subtotal">$0</span>
-                                        </div>
-                                        <div class="panel-scroll scroll-staff" id="staff-container">
-                                            <div class="state-block loading">
-                                                <div class="state-loader"></div>
-                                                <p class="state-title">Cargando roles...</p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- PANEL C: Costos -->
-                                    <div class="planner-panel panel-costs">
-                                        <div class="panel-title-row">
-                                            <span>C. Costos Apertura</span>
-                                            <div class="dashboard-actions">
-                                                <span class="badge" id="costs-subtotal">$0</span>
-                                                <button type="button" class="btn-secondary btn-sm" id="btn-add-cost"
-                                                    title="Agregar costo">+
-                                                    Costo</button>
-                                            </div>
-                                        </div>
-                                        <div class="panel-scroll scroll-costs" id="costs-container">
-                                            <div class="state-block loading">
-                                                <div class="state-loader"></div>
-                                                <p class="state-title">Cargando costos...</p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </main>
-
-                            </div>
-                        </section>
-
-                        <!-- ═══════════════════════════════════════════ -->
-                        <!-- TAB 2: NIGHT CHIEF (Caja + Stock Audit)    -->
-                        <!-- ═══════════════════════════════════════════ -->
-                        <section id="panelNightChief" class="tab-content hidden" role="tabpanel">
-
-                            <!-- LIVE Status Chip (Sprint 5 — shows polling state) -->
-                            <div class="live-chip hidden" id="live-chip">
-                                <span class="live-chip-dot"></span>
-                                <span class="live-chip-label">LIVE</span>
-                                <span class="live-chip-time" id="live-chip-time">—</span>
-                            </div>
-
-                            <!-- Anomaly Alerts (populated by JS polling) -->
-                            <div id="anomaly-alerts" class="hidden"></div>
-
-                            <!-- Sección de Planificación -->
-                            <div class="planning-grid">
-                                <div class="stat-card">
-                                    <div class="stat-label">Total Sistema</div>
-                                    <div class="stat-value font-mono" id="evt-kpi-system">$0</div>
-                                </div>
-                                <div class="stat-card">
-                                    <div class="stat-label">Total Declarado</div>
-                                    <div class="stat-value font-mono" id="evt-kpi-declared">$0</div>
-                                </div>
-                                <div class="stat-card">
-                                    <div class="stat-label">Diferencia</div>
-                                    <div class="stat-value font-mono" id="evt-kpi-diff">$0</div>
-                                </div>
-                            </div>
-
-                            <!-- ── Sub-sección: CAJA ── -->
-                            <div class="staff-dashboard" id="section-caja">
-                                <div class="dashboard-header align-start">
-                                    <div>
-                                        <h2 class="dashboard-title dashboard-title-soft">Rendición de Caja</h2>
-                                        <p class="dashboard-subtitle dashboard-subtitle-soft">Conciliación diaria por
-                                            terminal</p>
-                                    </div>
-                                    <div class="filter-actions">
-                                        <div class="filter-group">
-                                            <button type="button" id="btn-sync-gbol-wd" class="btn-primary btn-sm">⚡ SYNC
-                                                GBOL</button>
-                                            <button type="button" data-trigger="file-extracciones"
-                                                class="btn-import btn-ghost btn-sm">RETIROS</button>
-                                            <button type="button" data-trigger="file-gbol" class="btn-import btn-ghost btn-sm">GBOL
-                                                CSV</button>
-                                            <button type="button" data-trigger="file-passline"
-                                                class="btn-import btn-ghost btn-sm">PASSLINE</button>
-                                            <button type="button" data-trigger="file-afip"
-                                                class="btn-import btn-ghost btn-sm">TERMINALES</button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Terminal Reconciliation Table -->
-                                <div class="table-viewport table-shell table-viewport-limited">
-                                    <div class="table-scroll">
-                                        <table class="table table-sticky">
-                                            <thead>
-                                                <tr class="table-head">
-                                                    <th class="table-cell is-header">Terminal</th>
-                                                    <th class="table-cell is-header text-right">Efectivo (Decl)</th>
-                                                    <th class="table-cell is-header text-right">Zoco (Decl)</th>
-                                                    <th class="table-cell is-header text-right muted">Efectivo (GBol)
-                                                    </th>
-                                                    <th class="table-cell is-header text-right muted">Zoco (GBol)</th>
-                                                    <th class="table-cell is-header text-right">Diferencia</th>
-                                                    <th class="table-cell is-header text-center">Estado</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="cierre-table-body">
-                                                <tr>
-                                                    <td colspan="7" class="cell-pad text-center muted">Selecciona una
-                                                        jornada para cargar datos</td>
-                                                </tr>
-                                            </tbody>
-                                            <tfoot class="table-head table-foot-sticky">
-                                                <tr>
-                                                    <td class="table-cell is-header">Totales</td>
-                                                    <td class="table-cell is-header text-right" id="total-cash-decl">
-                                                        $0.00
-                                                    </td>
-                                                    <td class="table-cell is-header text-right" id="total-zoco-decl">
-                                                        $0.00
-                                                    </td>
-                                                    <td class="table-cell is-header text-right muted"
-                                                        id="total-cash-sys">
-                                                        $0.00</td>
-                                                    <td class="table-cell is-header text-right muted"
-                                                        id="total-zoco-sys">
-                                                        $0.00</td>
-                                                    <td class="table-cell is-header text-right font-bold"
-                                                        id="total-diff">
-                                                        $0.00</td>
-                                                    <td class="table-cell is-header"></td>
-                                                </tr>
-                                            </tfoot>
-                                        </table>
-                                    </div>
-                                </div>
-
-                                <!-- Detail Grid: QR + Desglose -->
-                                <div class="reconcile-grid">
-                                    <!-- QR Reconciliation -->
-                                    <div class="staff-dashboard reconcile-card">
-                                        <div class="dashboard-header cell-pad">
-                                            <h3 class="dashboard-subtitle muted">Conciliación Entradas QR</h3>
-                                            <span class="dashboard-subtitle muted">Ingresos x Acreditación</span>
-                                        </div>
-                                        <div class="table-wrap">
-                                            <table class="table">
-                                                <thead>
-                                                    <tr class="table-head">
-                                                        <th class="table-cell is-header">Origen</th>
-                                                        <th class="table-cell is-header text-center">Cant.</th>
-                                                        <th class="table-cell is-header text-right">Sistema ($)</th>
-                                                        <th class="table-cell is-header text-right">Declarado ($)</th>
-                                                        <th class="table-cell is-header text-right">Diff</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr class="table-row">
-                                                        <td class="table-cell font-bold text-accent">Passline</td>
-                                                        <td class="table-cell text-center" id="qr-passline-qty">0</td>
-                                                        <td class="table-cell text-right muted" id="qr-passline-sys">$0
-                                                        </td>
-                                                        <td class="table-cell text-right">
-                                                            <input type="number" id="qr-passline-decl" aria-label="QR Passline declarado"
-                                                                class="input input-reconcile-compact" value="0">
-                                                        </td>
-                                                        <td class="table-cell text-right font-mono font-bold"
-                                                            id="qr-passline-diff">$0</td>
-                                                    </tr>
-                                                    <tr class="table-row">
-                                                        <td class="table-cell font-bold text-success">Boletería</td>
-                                                        <td class="table-cell text-center" id="qr-boleteria-qty">0</td>
-                                                        <td class="table-cell text-right muted" id="qr-boleteria-sys">$0
-                                                        </td>
-                                                        <td class="table-cell text-right">
-                                                            <input type="number" id="qr-boleteria-decl" aria-label="QR Boleter�a declarado"
-                                                                class="input input-reconcile-compact" value="0">
-                                                        </td>
-                                                        <td class="table-cell text-right font-mono font-bold"
-                                                            id="qr-boleteria-diff">$0</td>
-                                                    </tr>
-                                                    <tr class="table-row">
-                                                        <td class="table-cell font-bold muted">RRPP / Cortesía</td>
-                                                        <td class="table-cell text-center" id="qr-rrpp-qty">0</td>
-                                                        <td class="table-cell text-right muted" id="qr-rrpp-sys">$0</td>
-                                                        <td class="table-cell text-right muted">-</td>
-                                                        <td class="table-cell text-right">-</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-
-                                    <!-- System Sales Breakdown -->
-                                    <div class="staff-dashboard reconcile-card">
-                                        <div class="dashboard-header cell-pad">
-                                            <h3 class="dashboard-subtitle muted">Desglose de Ventas (Sistema)</h3>
-                                            <span class="dashboard-subtitle muted">Ventas Barra + Entradas</span>
-                                        </div>
-                                        <div class="table-wrap">
-                                            <table class="table">
-                                                <thead>
-                                                    <tr class="table-head">
-                                                        <th class="table-cell is-header">Concepto</th>
-                                                        <th class="table-cell is-header text-right">Efectivo</th>
-                                                        <th class="table-cell is-header text-right">Zoco/Card</th>
-                                                        <th class="table-cell is-header text-right">Total</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr class="table-row">
-                                                        <td class="table-cell font-bold">Ventas Barra</td>
-                                                        <td class="table-cell text-right font-mono"
-                                                            id="breakdown-bar-cash">
-                                                            $0</td>
-                                                        <td class="table-cell text-right font-mono"
-                                                            id="breakdown-bar-card">
-                                                            $0</td>
-                                                        <td class="table-cell text-right font-bold font-mono"
-                                                            id="breakdown-bar-total">$0</td>
-                                                    </tr>
-                                                    <tr class="table-row">
-                                                        <td class="table-cell font-bold">Entradas QR</td>
-                                                        <td class="table-cell text-right font-mono muted">-</td>
-                                                        <td class="table-cell text-right font-mono"
-                                                            id="breakdown-qr-zoco">
-                                                            $0</td>
-                                                        <td class="table-cell text-right font-bold font-mono"
-                                                            id="breakdown-qr-total">$0</td>
-                                                    </tr>
-                                                    <tr class="table-row table-row-border" id="row-template" hidden>
-                                                        <td class="table-cell font-bold text-accent">TOTAL SISTEMA</td>
-                                                        <td class="table-cell text-right font-bold font-mono"
-                                                            id="breakdown-total-cash">$0</td>
-                                                        <td class="table-cell text-right font-bold font-mono"
-                                                            id="breakdown-total-zoco">$0</td>
-                                                        <td class="table-cell text-right font-bold font-mono text-lg"
-                                                            id="breakdown-total-global">$0</td>
-                                                    </tr>
-                                                </tbody>
-                                                <tfoot class="table-head">
-                                                    <tr>
-                                                        <td class="table-cell muted text-xs" colspan="4">
-                                                            * Datos calculados automáticamente desde vw_daily_sales
-                                                        </td>
-                                                    </tr>
-                                                </tfoot>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Fiscal Summary Mini-Cards (GBOL) -->
-                                <div class="stats-grid stats-grid-4col mt-4 hidden" id="fiscal-summary-cards">
-                                    <div class="stat-card">
-                                        <div class="stat-label">Facturado (GBOL)</div>
-                                        <div class="stat-value font-mono" id="fiscal-total-bruto">—</div>
-                                    </div>
-                                    <div class="stat-card">
-                                        <div class="stat-label">% Blanqueado</div>
-                                        <div class="stat-value font-mono" id="fiscal-pct-blanco">—</div>
-                                    </div>
-                                    <div class="stat-card">
-                                        <div class="stat-label">IVA Total</div>
-                                        <div class="stat-value font-mono" id="fiscal-iva">—</div>
-                                    </div>
-                                    <div class="stat-card">
-                                        <div class="stat-label">Tickets</div>
-                                        <div class="stat-value font-mono" id="fiscal-tickets">—</div>
-                                    </div>
-                                </div>
-
-                                <!-- Notes -->
-                                <div class="staff-dashboard notes-panel">
-                                    <h3 class="dashboard-subtitle font-bold muted">Notas de Cierre</h3>
-                                    <textarea id="closing-notes" class="input notes-input"
-                                        placeholder="Observaciones de la noche..."
-                                        aria-label="Notas de cierre"></textarea>
-                                    <div class="notes-actions">
-                                        <button type="button" id="btn-save-notes" class="btn-ghost btn-sm">Guardar Notas</button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- ── Sub-sección: DEVENCIONES (Nómina Devengada) ── -->
-                            <div class="staff-dashboard mt-4" id="section-devenciones">
-                                <div class="dashboard-header align-start">
-                                    <div>
-                                        <h2 class="dashboard-title dashboard-title-soft">Devenciones de Nómina</h2>
-                                        <p class="dashboard-subtitle dashboard-subtitle-soft">Devengado por staff
-                                            convocado
-                                            esta noche</p>
-                                    </div>
-                                    <div class="dashboard-actions kpi-group">
-                                        <span class="status-pill kpi-value-sm-bold" id="devencion-kpi-total">$0</span>
-                                        <button type="button" id="btn-generate-accruals" class="btn-primary btn-sm" disabled>Generar
-                                            Devenciones</button>
-                                    </div>
-                                </div>
-                                <div class="table-viewport table-shell">
-                                    <div class="table-scroll">
-                                        <table class="table table-sticky table-compact">
-                                            <thead>
-                                                <tr class="table-head">
-                                                    <th class="table-cell is-header">Staff</th>
-                                                    <th class="table-cell is-header text-center">Rol</th>
-                                                    <th class="table-cell is-header text-right">Tarifa</th>
-                                                    <th class="table-cell is-header text-right">Ajuste</th>
-                                                    <th class="table-cell is-header text-right">Total</th>
-                                                    <th class="table-cell is-header text-center">Estado</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="devenciones-table-body">
-                                                <tr>
-                                                    <td colspan="6" class="cell-pad text-center muted">
-                                                        Genera devenciones para ver el detalle de nómina.
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                            <tfoot class="table-head table-foot-sticky">
-                                                <tr>
-                                                    <td class="table-cell is-header" colspan="4">Total Devengado</td>
-                                                    <td class="table-cell is-header text-right font-mono font-bold"
-                                                        id="devenciones-total-footer">$0</td>
-                                                    <td class="table-cell is-header"></td>
-                                                </tr>
-                                            </tfoot>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Acción principal -->
-                            <div class="footer-actions-right">
-                                <button type="button" id="btn-close-night" class="btn-danger" disabled>
-                                    CERRAR NOCHE
-                                </button>
-                            </div>
-
-                            <!-- ═════════════════════════════════════════════════ -->
-                            <!-- NIGHT CHIEF continued: STOCK AUDIT (merged in)  -->
-                            <!-- ═════════════════════════════════════════════════ -->
-                            <!-- Stock Audit Section (inside Night Chief) -->
-                            <div class="stats-grid stats-grid-4col">
-                                <div class="stat-card">
-                                    <div class="stat-label">Costo Físico</div>
-                                    <div class="stat-value font-mono" id="sa-kpi-physical">—</div>
-                                </div>
-                                <div class="stat-card">
-                                    <div class="stat-label">Costo Teórico</div>
-                                    <div class="stat-value font-mono" id="sa-kpi-theoretical">—</div>
-                                </div>
-                                <div class="stat-card">
-                                    <div class="stat-label">Pérdida Estimada</div>
-                                    <div class="stat-value font-mono" id="sa-kpi-loss">—</div>
-                                    <div class="stat-delta" id="sa-kpi-loss-delta"></div>
-                                </div>
-                                <div class="stat-card">
-                                    <div class="stat-label">Eficiencia</div>
-                                    <div class="stat-value" id="sa-kpi-rating">—</div>
-                                </div>
-                            </div>
-
-                            <!-- Bar Sessions Summary -->
-                            <div class="staff-dashboard">
-                                <div class="dashboard-header align-start">
-                                    <div>
-                                        <h2 class="dashboard-title dashboard-title-soft">Sesiones de Barra</h2>
-                                        <p class="dashboard-subtitle dashboard-subtitle-soft">Eficiencia por ubicación
-                                            esta
-                                            noche</p>
-                                    </div>
-                                </div>
-                                <div class="table-viewport table-shell table-viewport-limited">
-                                    <div class="table-scroll">
-                                        <table class="table table-sticky table-compact">
-                                            <thead>
-                                                <tr class="table-head">
-                                                    <th class="table-cell is-header">Ubicación</th>
-                                                    <th class="table-cell is-header">Barman</th>
-                                                    <th class="table-cell is-header text-right">Revenue</th>
-                                                    <th class="table-cell is-header text-right">C. Físico</th>
-                                                    <th class="table-cell is-header text-right">C. Teórico</th>
-                                                    <th class="table-cell is-header text-right">Pérdida</th>
-                                                    <th class="table-cell is-header text-right">Varianza %</th>
-                                                    <th class="table-cell is-header text-center">Rating</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="sa-sessions-body">
-                                                <tr>
-                                                    <td colspan="8" class="cell-pad text-center muted">Selecciona una
-                                                        jornada activa</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- SKU Variance Detail -->
-                            <div class="staff-dashboard mt-4">
-                                <div class="dashboard-header align-start">
-                                    <div>
-                                        <h2 class="dashboard-title dashboard-title-soft">Varianza por Producto</h2>
-                                        <p class="dashboard-subtitle dashboard-subtitle-soft">Detalle: consumo real vs
-                                            teórico por SKU</p>
-                                    </div>
-                                    <div class="dashboard-actions">
-                                        <select id="sa-filter-clasif" class="input input-sm" aria-label="Filtrar clasificación de varianza">
-                                            <option value="">Todas</option>
-                                            <option value="ALERTA_PERDIDA">🔴 Alerta Pérdida</option>
-                                            <option value="ERROR_REGISTRO">🟡 Error Registro</option>
-                                            <option value="DENTRO_DE_RANGO">🟢 Dentro de Rango</option>
-                                            <option value="SIN_MOVIMIENTO">⚪ Sin Movimiento</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="table-viewport table-shell">
-                                    <div class="table-scroll">
-                                        <table class="table table-sticky table-compact">
-                                            <thead>
-                                                <tr class="table-head">
-                                                    <th class="table-cell is-header">SKU</th>
-                                                    <th class="table-cell is-header">Categoría</th>
-                                                    <th class="table-cell is-header text-right">Apertura</th>
-                                                    <th class="table-cell is-header text-right">Cierre</th>
-                                                    <th class="table-cell is-header text-right">Consumo Real</th>
-                                                    <th class="table-cell is-header text-right">Consumo Sist.</th>
-                                                    <th class="table-cell is-header text-right">Diferencia</th>
-                                                    <th class="table-cell is-header text-right">$ Diferencia</th>
-                                                    <th class="table-cell is-header text-center">Estado</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="sa-variance-body">
-                                                <tr>
-                                                    <td colspan="9" class="cell-pad text-center muted">Sin datos de
-                                                        varianza
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Consumo Teórico GBOL -->
-                            <div class="staff-dashboard mt-4">
-                                <div class="dashboard-header align-start">
-                                    <div>
-                                        <h2 class="dashboard-title dashboard-title-soft">Consumo Teórico (GBOL)</h2>
-                                        <p class="dashboard-subtitle dashboard-subtitle-soft">Ingredientes consumidos
-                                            según
-                                            comandas facturadas</p>
-                                    </div>
-                                </div>
-                                <div class="table-viewport table-shell table-viewport-limited">
-                                    <div class="table-scroll">
-                                        <table class="table table-sticky table-compact">
-                                            <thead>
-                                                <tr class="table-head">
-                                                    <th class="table-cell is-header">SKU</th>
-                                                    <th class="table-cell is-header text-right">Cant. Consumida</th>
-                                                    <th class="table-cell is-header text-right">Costo Consumido</th>
-                                                    <th class="table-cell is-header text-right">Tickets Origen</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="sa-consumo-gbol-body">
-                                                <tr>
-                                                    <td colspan="4" class="cell-pad text-center muted">Sin datos GBOL
-                                                        para
-                                                        esta noche</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-
-                        <!-- ═══════════════════════════════════════════ -->
-                        <!-- TAB 3: REPORT (Dashboard Diagnóstico)     -->
-                        <!-- ═══════════════════════════════════════════ -->
-                        <section id="panelReport" class="tab-content hidden" role="tabpanel">
-
-                            <!-- ── REPORT HEADER ── -->
-                            <div class="rpt-header">
-                                <div class="rpt-header-left">
-                                    <h2 class="dashboard-title dashboard-title-soft" id="rpt-title">Reporte de Noche
-                                    </h2>
-                                    <p class="dashboard-subtitle dashboard-subtitle-soft">
-                                        <span id="rpt-date" class="font-mono">—</span>
-                                        <span class="muted">·</span>
-                                        <span id="rpt-event">—</span>
-                                        <span class="muted">·</span>
-                                        <span id="rpt-health-badge" class="status-pill">—</span>
-                                    </p>
-                                </div>
-                                <div class="rpt-header-right">
-                                    <button type="button" id="rpt-btn-pdf" class="btn-outline btn-sm" title="Exportar PDF">
-                                        📄 Exportar PDF
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!-- ── KPI STRIP (5 metrics) ── -->
-                            <div class="summary-metrics-container">
-                                <div class="summary-metrics-grid rpt-kpi-strip">
-                                    <div class="summary-metric-card">
-                                        <div class="summary-metric-label">Revenue</div>
-                                        <div class="summary-metric-value" id="rpt-kpi-revenue">—</div>
-                                        <div class="stat-delta" id="rpt-kpi-revenue-delta"></div>
-                                    </div>
-                                    <div class="summary-metric-card">
-                                        <div class="summary-metric-label">Neto</div>
-                                        <div class="summary-metric-value" id="rpt-kpi-net">—</div>
-                                        <div class="stat-delta" id="rpt-kpi-net-delta"></div>
-                                    </div>
-                                    <div class="summary-metric-card">
-                                        <div class="summary-metric-label">Margen</div>
-                                        <div class="summary-metric-value" id="rpt-kpi-margin">—</div>
-                                        <div class="stat-delta" id="rpt-kpi-margin-delta"></div>
-                                    </div>
-                                    <div class="summary-metric-card">
-                                        <div class="summary-metric-label">Per Cápita</div>
-                                        <div class="summary-metric-value" id="rpt-kpi-percapita">—</div>
-                                        <div class="stat-delta" id="rpt-kpi-percapita-delta"></div>
-                                    </div>
-                                    <div class="summary-metric-card">
-                                        <div class="summary-metric-label">Score</div>
-                                        <div class="summary-metric-value" id="rpt-kpi-score">—</div>
-                                        <div class="stat-delta" id="rpt-kpi-score-delta"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- ── DUAL-PANEL GRID (55 / 45) ── -->
-                            <div class="rpt-dual-panel">
-
-                                <!-- LEFT PANEL (55%) -->
-                                <div class="rpt-panel-left">
-
-                                    <!-- Chart Area -->
-                                    <div class="rpt-chart-section">
-                                        <div class="rpt-chart-header">
-                                            <h3 class="rpt-section-title">P&amp;L Visual</h3>
-                                            <select id="rpt-chart-mode" class="input input-sm rpt-chart-select">
-                                                <option value="area">Área</option>
-                                                <option value="waterfall">Waterfall</option>
-                                                <option value="doughnut">Doughnut</option>
-                                            </select>
-                                        </div>
-                                        <div class="rpt-chart-container">
-                                            <canvas id="rpt-chart" height="200"></canvas>
-                                        </div>
-                                        <div class="rpt-chart-kpis">
-                                            <span class="rpt-chart-kpi">
-                                                <span class="muted">Margen Op.</span>
-                                                <strong id="rpt-chart-margin">—</strong>
-                                            </span>
-                                            <span class="rpt-chart-kpi">
-                                                <span class="muted">Break-even</span>
-                                                <strong id="rpt-chart-breakeven">—</strong>
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <!-- Facturación Fiscal Table -->
-                                    <div class="rpt-fiscal-section">
-                                        <div class="rpt-chart-header">
-                                            <h3 class="rpt-section-title">Facturación Fiscal</h3>
-                                        </div>
-                                        <div class="table-viewport table-shell">
-                                            <table class="table table-compact">
-                                                <thead>
-                                                    <tr class="table-head">
-                                                        <th class="table-cell is-header">Tipo</th>
-                                                        <th class="table-cell is-header text-right">Monto</th>
-                                                        <th class="table-cell is-header text-right">%</th>
-                                                        <th class="table-cell is-header text-right">Tickets</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="rpt-fiscal-body">
-                                                    <tr>
-                                                        <td colspan="4" class="p-4 text-center muted italic">Cargando
-                                                            fiscal...</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- RIGHT PANEL (45%) -->
-                                <div class="rpt-panel-right">
-
-                                    <!-- Anomalías Accionables -->
-                                    <div class="rpt-anomalies-section">
-                                        <h3 class="rpt-section-title">Anomalías</h3>
-                                        <div id="rpt-anomalies-list" class="rpt-anomalies-list">
-                                            <div class="rpt-anomaly-empty muted italic">Sin anomalías detectadas ✅</div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Resumen Operativo (3 rows) -->
-                                    <div class="rpt-ops-section">
-                                        <h3 class="rpt-section-title">Resumen Operativo</h3>
-
-                                        <!-- Stock Audit -->
-                                        <div class="rpt-ops-card">
-                                            <div class="rpt-ops-icon">📦</div>
-                                            <div class="rpt-ops-content">
-                                                <div class="rpt-ops-label">Stock Audit</div>
-                                                <div class="rpt-ops-metrics">
-                                                    <span>Precisión: <strong
-                                                            id="rpt-ops-stock-precision">—</strong></span>
-                                                    <span>Merma: <strong id="rpt-ops-stock-loss">—</strong></span>
-                                                    <span>SKUs c/diff: <strong id="rpt-ops-stock-skus">—</strong></span>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Caja -->
-                                        <div class="rpt-ops-card">
-                                            <div class="rpt-ops-icon">💰</div>
-                                            <div class="rpt-ops-content">
-                                                <div class="rpt-ops-label">Caja</div>
-                                                <div class="rpt-ops-metrics">
-                                                    <span>Diff: <strong id="rpt-ops-caja-diff">—</strong></span>
-                                                    <span>Terminales OK: <strong
-                                                            id="rpt-ops-caja-terminals">—</strong></span>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Nómina -->
-                                        <div class="rpt-ops-card">
-                                            <div class="rpt-ops-icon">👥</div>
-                                            <div class="rpt-ops-content">
-                                                <div class="rpt-ops-label">Nómina</div>
-                                                <div class="rpt-ops-metrics">
-                                                    <span>Staff: <strong id="rpt-ops-nomina-count">—</strong></span>
-                                                    <span>Costo: <strong id="rpt-ops-nomina-cost">—</strong></span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- ── BOTTOM: HISTORIAL (Enhanced) ── -->
-                            <div class="staff-dashboard mt-6">
-                                <div class="dashboard-header align-start">
-                                    <div>
-                                        <h2 class="dashboard-title dashboard-title-soft">Historial de Jornadas</h2>
-                                        <p class="dashboard-subtitle dashboard-subtitle-soft">Conciliación nocturna —
-                                            click para cargar una fecha</p>
-                                    </div>
-                                </div>
-                                <div class="table-viewport table-shell">
-                                    <div class="table-scroll">
-                                        <table class="table table-sticky table-compact">
-                                            <thead>
-                                                <tr class="table-head">
-                                                    <th class="table-cell is-header cell-pad">Fecha</th>
-                                                    <th class="table-cell is-header">Evento</th>
-                                                    <th class="table-cell is-header text-right">Ingresos</th>
-                                                    <th class="table-cell is-header text-right">GBOL Efect.</th>
-                                                    <th class="table-cell is-header text-right">Retiros</th>
-                                                    <th class="table-cell is-header text-right">Efect. Neto</th>
-                                                    <th class="table-cell is-header text-right">Declarado</th>
-                                                    <th class="table-cell is-header text-right">Conciliación</th>
-                                                    <th class="table-cell is-header text-right">Loss Stock</th>
-                                                    <th class="table-cell is-header text-right">Nómina</th>
-                                                    <th class="table-cell is-header text-right">Resultado</th>
-                                                    <th class="table-cell is-header text-center">Health</th>
-                                                    <th class="table-cell is-header text-center">Estado</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="history-table-body">
-                                                <tr>
-                                                    <td colspan="13" class="p-4 text-center muted italic">Cargando
-                                                        historial...</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-
-
-                    </div> <!-- /staff-dashboard -->
-                </div> <!-- /module-content -->
+      <div class="page-card-wrap">
+        <div class="page-card overflow-visible">
+          <!-- Loading State -->
+          <div class="page-card-loading" id="page-card-loading">
+            <div class="state-block loading">
+              <div class="state-spinner" aria-hidden="true"></div>
+              <div class="state-loader"></div>
+              <p class="state-title">Cargando jornadas...</p>
             </div>
+          </div>
+
+          <!-- Empty State -->
+          <div class="page-card-empty" id="page-card-empty">
+            <div class="state-block">
+              <p class="state-title">No hay jornadas registradas</p>
+              <p class="state-subtitle">
+                Crea una nueva jornada para comenzar.
+              </p>
+              <button
+                type="button"
+                class="btn-primary btn-sm"
+                id="btn-new-empty"
+              >
+                + Nueva Jornada
+              </button>
+            </div>
+          </div>
+
+          <div id="module-content">
+            <div class="staff-dashboard">
+              <!-- Dashboard Header (Golden Standard) -->
+              <div class="dashboard-header align-start">
+                <div>
+                  <h2 class="dashboard-title dashboard-title-soft">
+                    Gestión de Jornada
+                    <span
+                      class="status-pill-header staff-status-pending"
+                      id="workday-status-header"
+                      >Draft</span
+                    >
+                  </h2>
+                  <p
+                    class="dashboard-subtitle dashboard-subtitle-soft"
+                    id="dashboard-subtitle"
+                  >
+                    Control de operaciones y costos
+                  </p>
+                </div>
+                <div class="actions-bar">
+                  <!-- Date Navigation -->
+                  <div class="workday-nav" id="workday-nav">
+                    <button
+                      type="button"
+                      class="btn-icon btn-sm"
+                      id="btn-prev-day"
+                      title="Día Anterior"
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <path d="M15 18l-6-6 6-6" />
+                      </svg>
+                    </button>
+
+                    <div
+                      class="nav-date-display"
+                      style="position: relative; cursor: pointer"
+                      title="Click para abrir calendario"
+                    >
+                      <svg
+                        class="icon-calendar"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <rect
+                          x="3"
+                          y="4"
+                          width="18"
+                          height="18"
+                          rx="2"
+                          ry="2"
+                        ></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                      </svg>
+                      <span id="current-date-display">...</span>
+                      <input
+                        type="date"
+                        id="input-date"
+                        aria-label="Fecha de jornada"
+                        class="input nav-date-input"
+                        required
+                        style="
+                          position: absolute;
+                          inset: 0;
+                          opacity: 0;
+                          cursor: pointer;
+                          width: 100%;
+                          height: 100%;
+                        "
+                      />
+                    </div>
+
+                    <button
+                      type="button"
+                      class="btn-icon btn-sm"
+                      id="btn-next-day"
+                      title="Día Siguiente"
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <path d="M9 18l6-6-6-6" />
+                      </svg>
+                    </button>
+
+                    <button
+                      type="button"
+                      class="btn-secondary btn-sm"
+                      id="btn-today"
+                    >
+                      Hoy
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ═══════════════════════════════════════════ -->
+              <!-- TAB BAR: 3 Vistas (Status Machine)        -->
+              <!-- ═══════════════════════════════════════════ -->
+              <div class="actions-bar">
+                <div
+                  class="tab-bar"
+                  id="workday-tabs"
+                  role="tablist"
+                  aria-label="Vistas de jornada"
+                >
+                  <button
+                    type="button"
+                    class="tab-chip active"
+                    data-tab="panelPlanner"
+                    role="tab"
+                    aria-selected="true"
+                    aria-controls="panelPlanner"
+                  >
+                    Planificación
+                  </button>
+                  <button
+                    type="button"
+                    class="tab-chip"
+                    data-tab="panelNightChief"
+                    role="tab"
+                    aria-selected="false"
+                    aria-controls="panelNightChief"
+                  >
+                    Cierre Nocturno
+                    <span
+                      class="live-dot hidden"
+                      id="live-dot"
+                      title="Polling activo"
+                    ></span>
+                  </button>
+                  <button
+                    type="button"
+                    class="tab-chip"
+                    data-tab="panelReport"
+                    role="tab"
+                    aria-selected="false"
+                    aria-controls="panelReport"
+                  >
+                    Reporte
+                  </button>
+                </div>
+              </div>
+
+              <!-- ═══════════════════════════════════════════ -->
+              <!-- TAB 1: PLANNER (Planificación)             -->
+              <!-- ═══════════════════════════════════════════ -->
+              <section id="panelPlanner" class="tab-content" role="tabpanel">
+                <!-- Stats Grid (4 KPIs) -->
+                <!-- Summary Metrics (Golden Standard — 4-col variant) -->
+                <div class="summary-metrics-container">
+                  <div class="summary-metrics-grid summary-metrics-4col">
+                    <div class="summary-metric-card border-l-staff">
+                      <div class="summary-metric-label">Costo Staff</div>
+                      <div class="summary-metric-value" id="kpi-staff-cost">
+                        $0
+                      </div>
+                      <div class="stat-delta" id="kpi-staff-delta"></div>
+                    </div>
+                    <div class="summary-metric-card border-l-costs">
+                      <div class="summary-metric-label">Costo Apertura</div>
+                      <div class="summary-metric-value" id="kpi-fixed-cost">
+                        $0
+                      </div>
+                    </div>
+                    <div class="summary-metric-card border-l-breakeven">
+                      <div class="summary-metric-label">Break-even</div>
+                      <div class="summary-metric-value" id="kpi-total-cost">
+                        $0
+                      </div>
+                    </div>
+                    <div class="summary-metric-card border-l-promo">
+                      <div class="summary-metric-label">Convocatoria</div>
+                      <div class="summary-metric-value" id="kpi-staff-status">
+                        —/—
+                      </div>
+                      <div
+                        class="stat-delta text-warning"
+                        id="kpi-staff-pending"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Break-Even Card (Sprint 4) -->
+                <div class="wd-breakeven-card" id="breakeven-card">
+                  <div class="wd-breakeven-header">
+                    <div class="wd-breakeven-title">
+                      <span class="wd-breakeven-icon">⚖️</span>
+                      <span>Break-Even</span>
+                    </div>
+                    <div class="wd-breakeven-values">
+                      <span class="wd-breakeven-cost" id="be-cost">$0</span>
+                      <span class="wd-breakeven-sep">/</span>
+                      <span class="wd-breakeven-avg" id="be-avg-revenue"
+                        >$0 avg</span
+                      >
+                    </div>
+                  </div>
+                  <div class="wd-breakeven-bar-container">
+                    <div class="wd-breakeven-bar" id="be-progress-bar"></div>
+                    <span class="wd-breakeven-pct" id="be-progress-pct"
+                      >0%</span
+                    >
+                  </div>
+                  <div class="wd-benchmark-pills" id="benchmark-pills">
+                    <!-- Populated by JS: avg attendance, avg margin, sample count -->
+                  </div>
+                </div>
+
+                <div class="planner-layout">
+                  <!-- SIDEBAR: Configuración y Costos -->
+                  <aside class="planner-sidebar">
+                    <!-- PANEL A: Definición -->
+                    <section class="planner-section">
+                      <div class="panel-title-row">
+                        <span>A. Definición</span>
+                        <button
+                          type="button"
+                          class="btn-secondary btn-sm"
+                          id="btn-new-event"
+                          title="Crear nuevo evento"
+                        >
+                          + Evento
+                        </button>
+                      </div>
+
+                      <div class="planner-col mt-4">
+                        <label class="form-label">Fecha Operativa</label>
+                        <span id="input-date-mirror" class="input" style="display:inline-block;opacity:0.7;">—</span>
+                      </div>
+
+                      <div class="planner-col mt-4">
+                        <label class="form-label">Evento Vinculado</label>
+                        <select id="select-event" class="input">
+                          <option value="">-- Sin Evento --</option>
+                        </select>
+                      </div>
+
+                      <div class="mt-4 flex items-center justify-between">
+                        <label for="check-high-demand" class="form-label mb-0"
+                          >Alta Demanda</label
+                        >
+                        <label class="toggle-switch">
+                          <input
+                            type="checkbox"
+                            id="check-high-demand"
+                            aria-label="Alta demanda"
+                            class="toggle-input"
+                          />
+                          <span class="toggle-slider"></span>
+                        </label>
+                      </div>
+
+                      <div class="planner-col mt-4">
+                        <!-- countdown-event removed: dead ref, no JS handler -->
+                      </div>
+
+                      <div class="planner-col mt-4">
+                        <label class="form-label">Notas</label>
+                        <textarea
+                          id="input-notes"
+                          class="input input-notes-expandable"
+                          rows="1"
+                          placeholder="Notas internas..."
+                        ></textarea>
+                      </div>
+
+                      <!-- Template Selector (Sprint 4) -->
+                      <div class="planner-col mt-4 wd-template-section">
+                        <label class="form-label">Plantilla</label>
+                        <div class="wd-template-row">
+                          <select id="select-template" class="input">
+                            <option value="">-- Sin plantilla --</option>
+                          </select>
+                          <button
+                            type="button"
+                            class="btn-secondary btn-sm"
+                            id="btn-save-template"
+                            title="Guardar configuración actual como plantilla"
+                          >
+                            💾
+                          </button>
+                        </div>
+                      </div>
+                    </section>
+                  </aside>
+
+                  <!-- MAIN CANVAS: Staff + Costos -->
+                  <main class="planner-canvas">
+                    <!-- PANEL B: Staff -->
+                    <div class="planner-panel panel-staff">
+                      <div class="panel-title-row">
+                        <span>B. Dimensionamiento de Staff</span>
+                        <span class="badge" id="staff-subtotal">$0</span>
+                      </div>
+                      <div
+                        class="panel-scroll scroll-staff"
+                        id="staff-container"
+                      >
+                        <div class="state-block loading">
+                          <div class="state-loader"></div>
+                          <p class="state-title">Cargando roles...</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- PANEL C: Costos -->
+                    <div class="planner-panel panel-costs">
+                      <div class="panel-title-row">
+                        <span>C. Costos Apertura</span>
+                        <div class="dashboard-actions">
+                          <span class="badge" id="costs-subtotal">$0</span>
+                          <button
+                            type="button"
+                            class="btn-secondary btn-sm"
+                            id="btn-add-cost"
+                            title="Agregar costo"
+                          >
+                            + Costo
+                          </button>
+                        </div>
+                      </div>
+                      <div
+                        class="panel-scroll scroll-costs"
+                        id="costs-container"
+                      >
+                        <div class="state-block loading">
+                          <div class="state-loader"></div>
+                          <p class="state-title">Cargando costos...</p>
+                        </div>
+                      </div>
+                    </div>
+                  </main>
+                </div>
+              </section>
+
+              <!-- ═══════════════════════════════════════════ -->
+              <!-- TAB 2: NIGHT CHIEF (Caja + Stock Audit)    -->
+              <!-- ═══════════════════════════════════════════ -->
+              <section
+                id="panelNightChief"
+                class="tab-content hidden"
+                role="tabpanel"
+              >
+                <!-- LIVE Status Chip (Sprint 5 — shows polling state) -->
+                <div class="live-chip hidden" id="live-chip">
+                  <span class="live-chip-dot"></span>
+                  <span class="live-chip-label">LIVE</span>
+                  <span class="live-chip-time" id="live-chip-time">—</span>
+                </div>
+
+                <!-- Anomaly Alerts (populated by JS polling) -->
+                <div id="anomaly-alerts" class="hidden"></div>
+
+                <!-- Sección de Planificación -->
+                <div class="planning-grid">
+                  <div class="stat-card">
+                    <div class="stat-label">Total Sistema</div>
+                    <div class="stat-value font-mono" id="evt-kpi-system">
+                      $0
+                    </div>
+                  </div>
+                  <div class="stat-card">
+                    <div class="stat-label">Total Declarado</div>
+                    <div class="stat-value font-mono" id="evt-kpi-declared">
+                      $0
+                    </div>
+                  </div>
+                  <div class="stat-card">
+                    <div class="stat-label">Diferencia</div>
+                    <div class="stat-value font-mono" id="evt-kpi-diff">$0</div>
+                  </div>
+                </div>
+
+                <!-- ── Sub-sección: CAJA ── -->
+                <div class="staff-dashboard" id="section-caja">
+                  <div class="dashboard-header align-start">
+                    <div>
+                      <h2 class="dashboard-title dashboard-title-soft">
+                        Rendición de Caja
+                      </h2>
+                      <p class="dashboard-subtitle dashboard-subtitle-soft">
+                        Conciliación diaria por terminal
+                      </p>
+                    </div>
+                    <div class="filter-actions">
+                      <div class="filter-group">
+                        <button
+                          type="button"
+                          id="btn-sync-gbol-wd"
+                          class="btn-primary btn-sm"
+                        >
+                          ⚡ SYNC GBOL
+                        </button>
+                        <button
+                          type="button"
+                          data-trigger="file-extracciones"
+                          class="btn-import btn-ghost btn-sm"
+                        >
+                          RETIROS
+                        </button>
+                        <button
+                          type="button"
+                          data-trigger="file-gbol"
+                          class="btn-import btn-ghost btn-sm"
+                        >
+                          GBOL CSV
+                        </button>
+                        <button
+                          type="button"
+                          data-trigger="file-passline"
+                          class="btn-import btn-ghost btn-sm"
+                        >
+                          PASSLINE
+                        </button>
+                        <button
+                          type="button"
+                          data-trigger="file-afip"
+                          class="btn-import btn-ghost btn-sm"
+                        >
+                          TERMINALES
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Terminal Reconciliation Table -->
+                  <div
+                    class="table-viewport table-shell table-viewport-limited"
+                  >
+                    <div class="table-scroll">
+                      <table class="table table-sticky">
+                        <thead>
+                          <tr class="table-head">
+                            <th class="table-cell is-header">Terminal</th>
+                            <th class="table-cell is-header text-right">
+                              Efectivo (Decl)
+                            </th>
+                            <th class="table-cell is-header text-right">
+                              Zoco (Decl)
+                            </th>
+                            <th class="table-cell is-header text-right muted">
+                              Efectivo (GBol)
+                            </th>
+                            <th class="table-cell is-header text-right muted">
+                              Zoco (GBol)
+                            </th>
+                            <th class="table-cell is-header text-right">
+                              Diferencia
+                            </th>
+                            <th class="table-cell is-header text-center">
+                              Estado
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody id="cierre-table-body">
+                          <tr>
+                            <td colspan="7" class="cell-pad text-center muted">
+                              Selecciona una jornada para cargar datos
+                            </td>
+                          </tr>
+                        </tbody>
+                        <tfoot class="table-head table-foot-sticky">
+                          <tr>
+                            <td class="table-cell is-header">Totales</td>
+                            <td
+                              class="table-cell is-header text-right"
+                              id="total-cash-decl"
+                            >
+                              $0.00
+                            </td>
+                            <td
+                              class="table-cell is-header text-right"
+                              id="total-zoco-decl"
+                            >
+                              $0.00
+                            </td>
+                            <td
+                              class="table-cell is-header text-right muted"
+                              id="total-cash-sys"
+                            >
+                              $0.00
+                            </td>
+                            <td
+                              class="table-cell is-header text-right muted"
+                              id="total-zoco-sys"
+                            >
+                              $0.00
+                            </td>
+                            <td
+                              class="table-cell is-header text-right font-bold"
+                              id="total-diff"
+                            >
+                              $0.00
+                            </td>
+                            <td class="table-cell is-header"></td>
+                          </tr>
+                        </tfoot>
+                      </table>
+                    </div>
+                  </div>
+
+                  <!-- Detail Grid: QR + Desglose -->
+                  <div class="reconcile-grid">
+                    <!-- QR Reconciliation -->
+                    <div class="staff-dashboard reconcile-card">
+                      <div class="dashboard-header cell-pad">
+                        <h3 class="dashboard-subtitle muted">
+                          Conciliación Entradas QR
+                        </h3>
+                        <span class="dashboard-subtitle muted"
+                          >Ingresos x Acreditación</span
+                        >
+                      </div>
+                      <div class="table-wrap">
+                        <table class="table">
+                          <thead>
+                            <tr class="table-head">
+                              <th class="table-cell is-header">Origen</th>
+                              <th class="table-cell is-header text-center">
+                                Cant.
+                              </th>
+                              <th class="table-cell is-header text-right">
+                                Sistema ($)
+                              </th>
+                              <th class="table-cell is-header text-right">
+                                Declarado ($)
+                              </th>
+                              <th class="table-cell is-header text-right">
+                                Diff
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr class="table-row">
+                              <td class="table-cell font-bold text-accent">
+                                Passline
+                              </td>
+                              <td
+                                class="table-cell text-center"
+                                id="qr-passline-qty"
+                              >
+                                0
+                              </td>
+                              <td
+                                class="table-cell text-right muted"
+                                id="qr-passline-sys"
+                              >
+                                $0
+                              </td>
+                              <td class="table-cell text-right">
+                                <input
+                                  type="number"
+                                  id="qr-passline-decl"
+                                  aria-label="QR Passline declarado"
+                                  class="input input-reconcile-compact"
+                                  value="0"
+                                />
+                              </td>
+                              <td
+                                class="table-cell text-right font-mono font-bold"
+                                id="qr-passline-diff"
+                              >
+                                $0
+                              </td>
+                            </tr>
+                            <tr class="table-row">
+                              <td class="table-cell font-bold text-success">
+                                Boletería
+                              </td>
+                              <td
+                                class="table-cell text-center"
+                                id="qr-boleteria-qty"
+                              >
+                                0
+                              </td>
+                              <td
+                                class="table-cell text-right muted"
+                                id="qr-boleteria-sys"
+                              >
+                                $0
+                              </td>
+                              <td class="table-cell text-right">
+                                <input
+                                  type="number"
+                                  id="qr-boleteria-decl"
+                                  aria-label="QR Boleter�a declarado"
+                                  class="input input-reconcile-compact"
+                                  value="0"
+                                />
+                              </td>
+                              <td
+                                class="table-cell text-right font-mono font-bold"
+                                id="qr-boleteria-diff"
+                              >
+                                $0
+                              </td>
+                            </tr>
+                            <tr class="table-row">
+                              <td class="table-cell font-bold muted">
+                                RRPP / Cortesía
+                              </td>
+                              <td
+                                class="table-cell text-center"
+                                id="qr-rrpp-qty"
+                              >
+                                0
+                              </td>
+                              <td
+                                class="table-cell text-right muted"
+                                id="qr-rrpp-sys"
+                              >
+                                $0
+                              </td>
+                              <td class="table-cell text-right muted">-</td>
+                              <td class="table-cell text-right">-</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                    <!-- System Sales Breakdown -->
+                    <div class="staff-dashboard reconcile-card">
+                      <div class="dashboard-header cell-pad">
+                        <h3 class="dashboard-subtitle muted">
+                          Desglose de Ventas (Sistema)
+                        </h3>
+                        <span class="dashboard-subtitle muted"
+                          >Ventas Barra + Entradas</span
+                        >
+                      </div>
+                      <div class="table-wrap">
+                        <table class="table">
+                          <thead>
+                            <tr class="table-head">
+                              <th class="table-cell is-header">Concepto</th>
+                              <th class="table-cell is-header text-right">
+                                Efectivo
+                              </th>
+                              <th class="table-cell is-header text-right">
+                                Zoco/Card
+                              </th>
+                              <th class="table-cell is-header text-right">
+                                Total
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr class="table-row">
+                              <td class="table-cell font-bold">Ventas Barra</td>
+                              <td
+                                class="table-cell text-right font-mono"
+                                id="breakdown-bar-cash"
+                              >
+                                $0
+                              </td>
+                              <td
+                                class="table-cell text-right font-mono"
+                                id="breakdown-bar-card"
+                              >
+                                $0
+                              </td>
+                              <td
+                                class="table-cell text-right font-bold font-mono"
+                                id="breakdown-bar-total"
+                              >
+                                $0
+                              </td>
+                            </tr>
+                            <tr class="table-row">
+                              <td class="table-cell font-bold">Entradas QR</td>
+                              <td class="table-cell text-right font-mono muted">
+                                -
+                              </td>
+                              <td
+                                class="table-cell text-right font-mono"
+                                id="breakdown-qr-zoco"
+                              >
+                                $0
+                              </td>
+                              <td
+                                class="table-cell text-right font-bold font-mono"
+                                id="breakdown-qr-total"
+                              >
+                                $0
+                              </td>
+                            </tr>
+                            <tr
+                              class="table-row table-row-border"
+                              id="row-template"
+                              hidden
+                            >
+                              <td class="table-cell font-bold text-accent">
+                                TOTAL SISTEMA
+                              </td>
+                              <td
+                                class="table-cell text-right font-bold font-mono"
+                                id="breakdown-total-cash"
+                              >
+                                $0
+                              </td>
+                              <td
+                                class="table-cell text-right font-bold font-mono"
+                                id="breakdown-total-zoco"
+                              >
+                                $0
+                              </td>
+                              <td
+                                class="table-cell text-right font-bold font-mono text-lg"
+                                id="breakdown-total-global"
+                              >
+                                $0
+                              </td>
+                            </tr>
+                          </tbody>
+                          <tfoot class="table-head">
+                            <tr>
+                              <td class="table-cell muted text-xs" colspan="4">
+                                * Datos calculados automáticamente desde
+                                vw_daily_sales
+                              </td>
+                            </tr>
+                          </tfoot>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Fiscal Summary Mini-Cards (GBOL) -->
+                  <div
+                    class="stats-grid stats-grid-4col mt-4 hidden"
+                    id="fiscal-summary-cards"
+                  >
+                    <div class="stat-card">
+                      <div class="stat-label">Facturado (GBOL)</div>
+                      <div class="stat-value font-mono" id="fiscal-total-bruto">
+                        —
+                      </div>
+                    </div>
+                    <div class="stat-card">
+                      <div class="stat-label">% Blanqueado</div>
+                      <div class="stat-value font-mono" id="fiscal-pct-blanco">
+                        —
+                      </div>
+                    </div>
+                    <div class="stat-card">
+                      <div class="stat-label">IVA Total</div>
+                      <div class="stat-value font-mono" id="fiscal-iva">—</div>
+                    </div>
+                    <div class="stat-card">
+                      <div class="stat-label">Tickets</div>
+                      <div class="stat-value font-mono" id="fiscal-tickets">
+                        —
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Notes -->
+                  <div class="staff-dashboard notes-panel">
+                    <h3 class="dashboard-subtitle font-bold muted">
+                      Notas de Cierre
+                    </h3>
+                    <textarea
+                      id="closing-notes"
+                      class="input notes-input"
+                      placeholder="Observaciones de la noche..."
+                      aria-label="Notas de cierre"
+                    ></textarea>
+                    <div class="notes-actions">
+                      <button
+                        type="button"
+                        id="btn-save-notes"
+                        class="btn-ghost btn-sm"
+                      >
+                        Guardar Notas
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- ── Sub-sección: DEVENCIONES (Nómina Devengada) ── -->
+                <div class="staff-dashboard mt-4" id="section-devenciones">
+                  <div class="dashboard-header align-start">
+                    <div>
+                      <h2 class="dashboard-title dashboard-title-soft">
+                        Devenciones de Nómina
+                      </h2>
+                      <p class="dashboard-subtitle dashboard-subtitle-soft">
+                        Devengado por staff convocado esta noche
+                      </p>
+                    </div>
+                    <div class="dashboard-actions kpi-group">
+                      <span
+                        class="status-pill kpi-value-sm-bold"
+                        id="devencion-kpi-total"
+                        >$0</span
+                      >
+                      <button
+                        type="button"
+                        id="btn-generate-accruals"
+                        class="btn-primary btn-sm"
+                        disabled
+                      >
+                        Generar Devenciones
+                      </button>
+                    </div>
+                  </div>
+                  <div class="table-viewport table-shell">
+                    <div class="table-scroll">
+                      <table class="table table-sticky table-compact">
+                        <thead>
+                          <tr class="table-head">
+                            <th class="table-cell is-header">Staff</th>
+                            <th class="table-cell is-header text-center">
+                              Rol
+                            </th>
+                            <th class="table-cell is-header text-right">
+                              Tarifa
+                            </th>
+                            <th class="table-cell is-header text-right">
+                              Ajuste
+                            </th>
+                            <th class="table-cell is-header text-right">
+                              Total
+                            </th>
+                            <th class="table-cell is-header text-center">
+                              Estado
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody id="devenciones-table-body">
+                          <tr>
+                            <td colspan="6" class="cell-pad text-center muted">
+                              Genera devenciones para ver el detalle de nómina.
+                            </td>
+                          </tr>
+                        </tbody>
+                        <tfoot class="table-head table-foot-sticky">
+                          <tr>
+                            <td class="table-cell is-header" colspan="4">
+                              Total Devengado
+                            </td>
+                            <td
+                              class="table-cell is-header text-right font-mono font-bold"
+                              id="devenciones-total-footer"
+                            >
+                              $0
+                            </td>
+                            <td class="table-cell is-header"></td>
+                          </tr>
+                        </tfoot>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Acción principal -->
+                <div class="footer-actions-right">
+                  <button
+                    type="button"
+                    id="btn-close-night"
+                    class="btn-danger"
+                    disabled
+                  >
+                    CERRAR NOCHE
+                  </button>
+                </div>
+
+                <!-- ═════════════════════════════════════════════════ -->
+                <!-- NIGHT CHIEF continued: STOCK AUDIT (merged in)  -->
+                <!-- ═════════════════════════════════════════════════ -->
+                <!-- Stock Audit Section (inside Night Chief) -->
+                <div class="stats-grid stats-grid-4col">
+                  <div class="stat-card">
+                    <div class="stat-label">Costo Físico</div>
+                    <div class="stat-value font-mono" id="sa-kpi-physical">
+                      —
+                    </div>
+                  </div>
+                  <div class="stat-card">
+                    <div class="stat-label">Costo Teórico</div>
+                    <div class="stat-value font-mono" id="sa-kpi-theoretical">
+                      —
+                    </div>
+                  </div>
+                  <div class="stat-card">
+                    <div class="stat-label">Pérdida Estimada</div>
+                    <div class="stat-value font-mono" id="sa-kpi-loss">—</div>
+                    <div class="stat-delta" id="sa-kpi-loss-delta"></div>
+                  </div>
+                  <div class="stat-card">
+                    <div class="stat-label">Eficiencia</div>
+                    <div class="stat-value" id="sa-kpi-rating">—</div>
+                  </div>
+                </div>
+
+                <!-- Bar Sessions Summary -->
+                <div class="staff-dashboard">
+                  <div class="dashboard-header align-start">
+                    <div>
+                      <h2 class="dashboard-title dashboard-title-soft">
+                        Sesiones de Barra
+                      </h2>
+                      <p class="dashboard-subtitle dashboard-subtitle-soft">
+                        Eficiencia por ubicación esta noche
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    class="table-viewport table-shell table-viewport-limited"
+                  >
+                    <div class="table-scroll">
+                      <table class="table table-sticky table-compact">
+                        <thead>
+                          <tr class="table-head">
+                            <th class="table-cell is-header">Ubicación</th>
+                            <th class="table-cell is-header">Barman</th>
+                            <th class="table-cell is-header text-right">
+                              Revenue
+                            </th>
+                            <th class="table-cell is-header text-right">
+                              C. Físico
+                            </th>
+                            <th class="table-cell is-header text-right">
+                              C. Teórico
+                            </th>
+                            <th class="table-cell is-header text-right">
+                              Pérdida
+                            </th>
+                            <th class="table-cell is-header text-right">
+                              Varianza %
+                            </th>
+                            <th class="table-cell is-header text-center">
+                              Rating
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody id="sa-sessions-body">
+                          <tr>
+                            <td colspan="8" class="cell-pad text-center muted">
+                              Selecciona una jornada activa
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- SKU Variance Detail -->
+                <div class="staff-dashboard mt-4">
+                  <div class="dashboard-header align-start">
+                    <div>
+                      <h2 class="dashboard-title dashboard-title-soft">
+                        Varianza por Producto
+                      </h2>
+                      <p class="dashboard-subtitle dashboard-subtitle-soft">
+                        Detalle: consumo real vs teórico por SKU
+                      </p>
+                    </div>
+                    <div class="dashboard-actions">
+                      <select
+                        id="sa-filter-clasif"
+                        class="input input-sm"
+                        aria-label="Filtrar clasificación de varianza"
+                      >
+                        <option value="">Todas</option>
+                        <option value="ALERTA_PERDIDA">
+                          🔴 Alerta Pérdida
+                        </option>
+                        <option value="ERROR_REGISTRO">
+                          🟡 Error Registro
+                        </option>
+                        <option value="DENTRO_DE_RANGO">
+                          🟢 Dentro de Rango
+                        </option>
+                        <option value="SIN_MOVIMIENTO">
+                          ⚪ Sin Movimiento
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="table-viewport table-shell">
+                    <div class="table-scroll">
+                      <table class="table table-sticky table-compact">
+                        <thead>
+                          <tr class="table-head">
+                            <th class="table-cell is-header">SKU</th>
+                            <th class="table-cell is-header">Categoría</th>
+                            <th class="table-cell is-header text-right">
+                              Apertura
+                            </th>
+                            <th class="table-cell is-header text-right">
+                              Cierre
+                            </th>
+                            <th class="table-cell is-header text-right">
+                              Consumo Real
+                            </th>
+                            <th class="table-cell is-header text-right">
+                              Consumo Sist.
+                            </th>
+                            <th class="table-cell is-header text-right">
+                              Diferencia
+                            </th>
+                            <th class="table-cell is-header text-right">
+                              $ Diferencia
+                            </th>
+                            <th class="table-cell is-header text-center">
+                              Estado
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody id="sa-variance-body">
+                          <tr>
+                            <td colspan="9" class="cell-pad text-center muted">
+                              Sin datos de varianza
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Consumo Teórico GBOL -->
+                <div class="staff-dashboard mt-4">
+                  <div class="dashboard-header align-start">
+                    <div>
+                      <h2 class="dashboard-title dashboard-title-soft">
+                        Consumo Teórico (GBOL)
+                      </h2>
+                      <p class="dashboard-subtitle dashboard-subtitle-soft">
+                        Ingredientes consumidos según comandas facturadas
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    class="table-viewport table-shell table-viewport-limited"
+                  >
+                    <div class="table-scroll">
+                      <table class="table table-sticky table-compact">
+                        <thead>
+                          <tr class="table-head">
+                            <th class="table-cell is-header">SKU</th>
+                            <th class="table-cell is-header text-right">
+                              Cant. Consumida
+                            </th>
+                            <th class="table-cell is-header text-right">
+                              Costo Consumido
+                            </th>
+                            <th class="table-cell is-header text-right">
+                              Tickets Origen
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody id="sa-consumo-gbol-body">
+                          <tr>
+                            <td colspan="4" class="cell-pad text-center muted">
+                              Sin datos GBOL para esta noche
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- ═══════════════════════════════════════════ -->
+              <!-- TAB 3: REPORT (Dashboard Diagnóstico)     -->
+              <!-- ═══════════════════════════════════════════ -->
+              <section
+                id="panelReport"
+                class="tab-content hidden"
+                role="tabpanel"
+              >
+                <!-- ── REPORT HEADER ── -->
+                <div class="rpt-header">
+                  <div class="rpt-header-left">
+                    <h2
+                      class="dashboard-title dashboard-title-soft"
+                      id="rpt-title"
+                    >
+                      Reporte de Noche
+                    </h2>
+                    <p class="dashboard-subtitle dashboard-subtitle-soft">
+                      <span id="rpt-date" class="font-mono">—</span>
+                      <span class="muted">·</span>
+                      <span id="rpt-event">—</span>
+                      <span class="muted">·</span>
+                      <span id="rpt-health-badge" class="status-pill">—</span>
+                    </p>
+                  </div>
+                  <div class="rpt-header-right">
+                    <button
+                      type="button"
+                      id="rpt-btn-pdf"
+                      class="btn-outline btn-sm"
+                      title="Exportar PDF"
+                    >
+                      📄 Exportar PDF
+                    </button>
+                  </div>
+                </div>
+
+                <!-- ── KPI STRIP (5 metrics) ── -->
+                <div class="summary-metrics-container">
+                  <div class="summary-metrics-grid rpt-kpi-strip">
+                    <div class="summary-metric-card">
+                      <div class="summary-metric-label">Revenue</div>
+                      <div class="summary-metric-value" id="rpt-kpi-revenue">
+                        —
+                      </div>
+                      <div class="stat-delta" id="rpt-kpi-revenue-delta"></div>
+                    </div>
+                    <div class="summary-metric-card">
+                      <div class="summary-metric-label">Neto</div>
+                      <div class="summary-metric-value" id="rpt-kpi-net">—</div>
+                      <div class="stat-delta" id="rpt-kpi-net-delta"></div>
+                    </div>
+                    <div class="summary-metric-card">
+                      <div class="summary-metric-label">Margen</div>
+                      <div class="summary-metric-value" id="rpt-kpi-margin">
+                        —
+                      </div>
+                      <div class="stat-delta" id="rpt-kpi-margin-delta"></div>
+                    </div>
+                    <div class="summary-metric-card">
+                      <div class="summary-metric-label">Per Cápita</div>
+                      <div class="summary-metric-value" id="rpt-kpi-percapita">
+                        —
+                      </div>
+                      <div
+                        class="stat-delta"
+                        id="rpt-kpi-percapita-delta"
+                      ></div>
+                    </div>
+                    <div class="summary-metric-card">
+                      <div class="summary-metric-label">Score</div>
+                      <div class="summary-metric-value" id="rpt-kpi-score">
+                        —
+                      </div>
+                      <div class="stat-delta" id="rpt-kpi-score-delta"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- ── DUAL-PANEL GRID (55 / 45) ── -->
+                <div class="rpt-dual-panel">
+                  <!-- LEFT PANEL (55%) -->
+                  <div class="rpt-panel-left">
+                    <!-- Chart Area -->
+                    <div class="rpt-chart-section">
+                      <div class="rpt-chart-header">
+                        <h3 class="rpt-section-title">P&amp;L Visual</h3>
+                        <select
+                          id="rpt-chart-mode"
+                          class="input input-sm rpt-chart-select"
+                        >
+                          <option value="area">Área</option>
+                          <option value="waterfall">Waterfall</option>
+                          <option value="doughnut">Doughnut</option>
+                        </select>
+                      </div>
+                      <div class="rpt-chart-container">
+                        <canvas id="rpt-chart" height="200"></canvas>
+                      </div>
+                      <div class="rpt-chart-kpis">
+                        <span class="rpt-chart-kpi">
+                          <span class="muted">Margen Op.</span>
+                          <strong id="rpt-chart-margin">—</strong>
+                        </span>
+                        <span class="rpt-chart-kpi">
+                          <span class="muted">Break-even</span>
+                          <strong id="rpt-chart-breakeven">—</strong>
+                        </span>
+                      </div>
+                    </div>
+
+                    <!-- Facturación Fiscal Table -->
+                    <div class="rpt-fiscal-section">
+                      <div class="rpt-chart-header">
+                        <h3 class="rpt-section-title">Facturación Fiscal</h3>
+                      </div>
+                      <div class="table-viewport table-shell">
+                        <table class="table table-compact">
+                          <thead>
+                            <tr class="table-head">
+                              <th class="table-cell is-header">Tipo</th>
+                              <th class="table-cell is-header text-right">
+                                Monto
+                              </th>
+                              <th class="table-cell is-header text-right">%</th>
+                              <th class="table-cell is-header text-right">
+                                Tickets
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody id="rpt-fiscal-body">
+                            <tr>
+                              <td
+                                colspan="4"
+                                class="p-4 text-center muted italic"
+                              >
+                                Cargando fiscal...
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- RIGHT PANEL (45%) -->
+                  <div class="rpt-panel-right">
+                    <!-- Anomalías Accionables -->
+                    <div class="rpt-anomalies-section">
+                      <h3 class="rpt-section-title">Anomalías</h3>
+                      <div id="rpt-anomalies-list" class="rpt-anomalies-list">
+                        <div class="rpt-anomaly-empty muted italic">
+                          Sin anomalías detectadas ✅
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Resumen Operativo (3 rows) -->
+                    <div class="rpt-ops-section">
+                      <h3 class="rpt-section-title">Resumen Operativo</h3>
+
+                      <!-- Stock Audit -->
+                      <div class="rpt-ops-card">
+                        <div class="rpt-ops-icon">📦</div>
+                        <div class="rpt-ops-content">
+                          <div class="rpt-ops-label">Stock Audit</div>
+                          <div class="rpt-ops-metrics">
+                            <span
+                              >Precisión:
+                              <strong id="rpt-ops-stock-precision"
+                                >—</strong
+                              ></span
+                            >
+                            <span
+                              >Merma:
+                              <strong id="rpt-ops-stock-loss">—</strong></span
+                            >
+                            <span
+                              >SKUs c/diff:
+                              <strong id="rpt-ops-stock-skus">—</strong></span
+                            >
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Caja -->
+                      <div class="rpt-ops-card">
+                        <div class="rpt-ops-icon">💰</div>
+                        <div class="rpt-ops-content">
+                          <div class="rpt-ops-label">Caja</div>
+                          <div class="rpt-ops-metrics">
+                            <span
+                              >Diff:
+                              <strong id="rpt-ops-caja-diff">—</strong></span
+                            >
+                            <span
+                              >Terminales OK:
+                              <strong id="rpt-ops-caja-terminals"
+                                >—</strong
+                              ></span
+                            >
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Nómina -->
+                      <div class="rpt-ops-card">
+                        <div class="rpt-ops-icon">👥</div>
+                        <div class="rpt-ops-content">
+                          <div class="rpt-ops-label">Nómina</div>
+                          <div class="rpt-ops-metrics">
+                            <span
+                              >Staff:
+                              <strong id="rpt-ops-nomina-count">—</strong></span
+                            >
+                            <span
+                              >Costo:
+                              <strong id="rpt-ops-nomina-cost">—</strong></span
+                            >
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- ── BOTTOM: HISTORIAL (Enhanced) ── -->
+                <div class="staff-dashboard mt-6">
+                  <div class="dashboard-header align-start">
+                    <div>
+                      <h2 class="dashboard-title dashboard-title-soft">
+                        Historial de Jornadas
+                      </h2>
+                      <p class="dashboard-subtitle dashboard-subtitle-soft">
+                        Conciliación nocturna — click para cargar una fecha
+                      </p>
+                    </div>
+                  </div>
+                  <div class="table-viewport table-shell">
+                    <div class="table-scroll">
+                      <table class="table table-sticky table-compact">
+                        <thead>
+                          <tr class="table-head">
+                            <th class="table-cell is-header cell-pad">Fecha</th>
+                            <th class="table-cell is-header">Evento</th>
+                            <th class="table-cell is-header text-right">
+                              Ingresos
+                            </th>
+                            <th class="table-cell is-header text-right">
+                              GBOL Efect.
+                            </th>
+                            <th class="table-cell is-header text-right">
+                              Retiros
+                            </th>
+                            <th class="table-cell is-header text-right">
+                              Efect. Neto
+                            </th>
+                            <th class="table-cell is-header text-right">
+                              Declarado
+                            </th>
+                            <th class="table-cell is-header text-right">
+                              Conciliación
+                            </th>
+                            <th class="table-cell is-header text-right">
+                              Loss Stock
+                            </th>
+                            <th class="table-cell is-header text-right">
+                              Nómina
+                            </th>
+                            <th class="table-cell is-header text-right">
+                              Resultado
+                            </th>
+                            <th class="table-cell is-header text-center">
+                              Health
+                            </th>
+                            <th class="table-cell is-header text-center">
+                              Estado
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody id="history-table-body">
+                          <tr>
+                            <td
+                              colspan="13"
+                              class="p-4 text-center muted italic"
+                            >
+                              Cargando historial...
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </div>
+            <!-- /staff-dashboard -->
+          </div>
+          <!-- /module-content -->
         </div>
+      </div>
     </main>
 
     <!-- Sticky Footer -->
     <footer class="sticky-footer">
-        <div class="footer-status hidden">
-            <!-- Status moved to header -->
-        </div>
-        <div class="footer-actions">
-            <button type="button" class="btn btn-outline" id="btn-save-planning" disabled>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
-                    <polyline points="7 3 7 8 15 8"></polyline>
-                </svg>
-                Guardar
-            </button>
-            <button type="button" class="btn btn-primary" id="btn-confirm-jornada" disabled>
-                Abrir Jornada
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M5 12h14M12 5l7 7-7 7"></path>
-                </svg>
-            </button>
-        </div>
+      <div class="footer-status hidden">
+        <!-- Status moved to header -->
+      </div>
+      <div class="footer-actions">
+        <button
+          type="button"
+          class="btn btn-outline"
+          id="btn-save-planning"
+          disabled
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"
+            ></path>
+            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+            <polyline points="7 3 7 8 15 8"></polyline>
+          </svg>
+          Guardar
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          id="btn-confirm-jornada"
+          disabled
+        >
+          Abrir Jornada
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M5 12h14M12 5l7 7-7 7"></path>
+          </svg>
+        </button>
+      </div>
     </footer>
 
     <!-- Slide Panel (List View para Historial — legacy, se mantiene por JS) -->
     <div class="panel-overlay" id="panel-overlay"></div>
     <div class="slide-panel" id="slide-panel">
-        <div class="panel-header">
-            <h3 class="panel-title">Historial de Jornadas</h3>
-            <button type="button" class="btn-icon btn-close-panel" id="btn-close-panel" aria-label="Cerrar panel">✕</button>
+      <div class="panel-header">
+        <h3 class="panel-title">Historial de Jornadas</h3>
+        <button
+          type="button"
+          class="btn-icon btn-close-panel"
+          id="btn-close-panel"
+          aria-label="Cerrar panel"
+        >
+          ✕
+        </button>
+      </div>
+      <div class="panel-body">
+        <div class="table-shell" id="history-container">
+          <!-- Se inyectará el listado existente aquí -->
         </div>
-        <div class="panel-body">
-            <div class="table-shell" id="history-container">
-                <!-- Se inyectará el listado existente aquí -->
-            </div>
-        </div>
+      </div>
     </div>
 
-
     <!-- Confirm Modal -->
-    <div class="modal-overlay hidden" role="dialog" aria-modal="true" id="confirmModal">
-        <div class="modal-card modal-sm">
-            <div class="modal-header">
-                <h2 id="modal-title" class="modal-title">Confirmar Acción</h2>
-            </div>
-            <div class="modal-body">
-                <p id="modal-message">¿Estás seguro de continuar?</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-secondary" id="btnCancelModal">Cancelar</button>
-                <button type="button" class="btn-primary" id="btnConfirmModal">Confirmar</button>
-            </div>
+    <div
+      class="modal-overlay hidden"
+      role="dialog"
+      aria-modal="true"
+      id="confirmModal"
+    >
+      <div class="modal-card modal-sm">
+        <div class="modal-header">
+          <h2 id="modal-title" class="modal-title">Confirmar Acción</h2>
         </div>
+        <div class="modal-body">
+          <p id="modal-message">¿Estás seguro de continuar?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" id="btnCancelModal">
+            Cancelar
+          </button>
+          <button type="button" class="btn-primary" id="btnConfirmModal">
+            Confirmar
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Close Night Confirm Modal (Sprint 3 — P&L extended) -->
-    <div class="modal-overlay hidden" role="dialog" aria-modal="true" id="closeNightModal">
-        <div class="modal-card modal-md">
-            <div class="modal-header">
-                <h2 class="modal-title">Resumen de Cierre</h2>
-                <span class="status-pill" id="pnl-health-badge" title="Health Score">—</span>
-            </div>
-            <div class="modal-body">
-                <!-- P&L Summary Grid -->
-                <div class="pnl-summary-grid">
-                    <!-- Income Column -->
-                    <div class="pnl-column pnl-income">
-                        <h3 class="pnl-column-title text-success">Ingresos</h3>
-                        <div class="pnl-line">
-                            <span class="pnl-label">Efectivo</span>
-                            <span class="pnl-value font-mono" id="pnl-income-cash">—</span>
-                        </div>
-                        <div class="pnl-line">
-                            <span class="pnl-label">QR / Entradas</span>
-                            <span class="pnl-value font-mono" id="pnl-income-qr">—</span>
-                        </div>
-                        <div class="pnl-line">
-                            <span class="pnl-label">Barra</span>
-                            <span class="pnl-value font-mono" id="pnl-income-bar">—</span>
-                        </div>
-                        <div class="pnl-line pnl-line-total">
-                            <span class="pnl-label font-bold">Total Ingresos</span>
-                            <span class="pnl-value font-mono font-bold" id="pnl-total-income">—</span>
-                        </div>
-                    </div>
-                    <!-- Expense Column -->
-                    <div class="pnl-column pnl-expense">
-                        <h3 class="pnl-column-title text-danger">Egresos</h3>
-                        <div class="pnl-line">
-                            <span class="pnl-label">Staff</span>
-                            <span class="pnl-value font-mono" id="pnl-expense-staff">—</span>
-                        </div>
-                        <div class="pnl-line">
-                            <span class="pnl-label">Stock</span>
-                            <span class="pnl-value font-mono" id="pnl-expense-stock">—</span>
-                        </div>
-                        <div class="pnl-line">
-                            <span class="pnl-label">Extras</span>
-                            <span class="pnl-value font-mono" id="pnl-expense-extras">—</span>
-                        </div>
-                        <div class="pnl-line pnl-line-total">
-                            <span class="pnl-label font-bold">Total Egresos</span>
-                            <span class="pnl-value font-mono font-bold" id="pnl-total-expense">—</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Net Result Bar -->
-                <div class="pnl-net-result">
-                    <div class="pnl-net-row">
-                        <span class="pnl-net-label">Resultado Neto</span>
-                        <span class="pnl-net-value font-mono font-bold" id="pnl-net-result">—</span>
-                    </div>
-                    <div class="pnl-net-row muted">
-                        <span class="pnl-net-label">Margen</span>
-                        <span class="pnl-net-value font-mono" id="pnl-margin-pct">—</span>
-                    </div>
-                    <!-- Break-even progress -->
-                    <div class="pnl-breakeven-bar">
-                        <div class="pnl-breakeven-fill" id="pnl-breakeven-fill"></div>
-                    </div>
-                    <p class="text-xs muted text-center mt-1" id="pnl-breakeven-label">Break-even: —</p>
-                </div>
-
-                <!-- Cash Diff (original) -->
-                <div class="pnl-cash-diff">
-                    <span class="pnl-label muted">Diferencia de Caja</span>
-                    <span class="dashboard-title font-mono" id="confirm-diff-display">$0.00</span>
-                </div>
-
-                <p class="text-center text-xs muted mt-4">¿Confirmar cierre permanente de la noche?</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-secondary" id="btnCancelCloseNight">Cancelar</button>
-                <button type="button" class="btn-primary" id="btnConfirmCloseNight">Confirmar Cierre</button>
-            </div>
+    <div
+      class="modal-overlay hidden"
+      role="dialog"
+      aria-modal="true"
+      id="closeNightModal"
+    >
+      <div class="modal-card modal-md">
+        <div class="modal-header">
+          <h2 class="modal-title">Resumen de Cierre</h2>
+          <span class="status-pill" id="pnl-health-badge" title="Health Score"
+            >—</span
+          >
         </div>
+        <div class="modal-body">
+          <!-- P&L Summary Grid -->
+          <div class="pnl-summary-grid">
+            <!-- Income Column -->
+            <div class="pnl-column pnl-income">
+              <h3 class="pnl-column-title text-success">Ingresos</h3>
+              <div class="pnl-line">
+                <span class="pnl-label">Efectivo</span>
+                <span class="pnl-value font-mono" id="pnl-income-cash">—</span>
+              </div>
+              <div class="pnl-line">
+                <span class="pnl-label">QR / Entradas</span>
+                <span class="pnl-value font-mono" id="pnl-income-qr">—</span>
+              </div>
+              <div class="pnl-line">
+                <span class="pnl-label">Barra</span>
+                <span class="pnl-value font-mono" id="pnl-income-bar">—</span>
+              </div>
+              <div class="pnl-line pnl-line-total">
+                <span class="pnl-label font-bold">Total Ingresos</span>
+                <span
+                  class="pnl-value font-mono font-bold"
+                  id="pnl-total-income"
+                  >—</span
+                >
+              </div>
+            </div>
+            <!-- Expense Column -->
+            <div class="pnl-column pnl-expense">
+              <h3 class="pnl-column-title text-danger">Egresos</h3>
+              <div class="pnl-line">
+                <span class="pnl-label">Staff</span>
+                <span class="pnl-value font-mono" id="pnl-expense-staff"
+                  >—</span
+                >
+              </div>
+              <div class="pnl-line">
+                <span class="pnl-label">Stock</span>
+                <span class="pnl-value font-mono" id="pnl-expense-stock"
+                  >—</span
+                >
+              </div>
+              <div class="pnl-line">
+                <span class="pnl-label">Extras</span>
+                <span class="pnl-value font-mono" id="pnl-expense-extras"
+                  >—</span
+                >
+              </div>
+              <div class="pnl-line pnl-line-total">
+                <span class="pnl-label font-bold">Total Egresos</span>
+                <span
+                  class="pnl-value font-mono font-bold"
+                  id="pnl-total-expense"
+                  >—</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Net Result Bar -->
+          <div class="pnl-net-result">
+            <div class="pnl-net-row">
+              <span class="pnl-net-label">Resultado Neto</span>
+              <span
+                class="pnl-net-value font-mono font-bold"
+                id="pnl-net-result"
+                >—</span
+              >
+            </div>
+            <div class="pnl-net-row muted">
+              <span class="pnl-net-label">Margen</span>
+              <span class="pnl-net-value font-mono" id="pnl-margin-pct">—</span>
+            </div>
+            <!-- Break-even progress -->
+            <div class="pnl-breakeven-bar">
+              <div class="pnl-breakeven-fill" id="pnl-breakeven-fill"></div>
+            </div>
+            <p class="text-xs muted text-center mt-1" id="pnl-breakeven-label">
+              Break-even: —
+            </p>
+          </div>
+
+          <!-- Cash Diff (original) -->
+          <div class="pnl-cash-diff">
+            <span class="pnl-label muted">Diferencia de Caja</span>
+            <span class="dashboard-title font-mono" id="confirm-diff-display"
+              >$0.00</span
+            >
+          </div>
+
+          <p class="text-center text-xs muted mt-4">
+            ¿Confirmar cierre permanente de la noche?
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" id="btnCancelCloseNight">
+            Cancelar
+          </button>
+          <button type="button" class="btn-primary" id="btnConfirmCloseNight">
+            Confirmar Cierre
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Create Event Modal -->
-    <div class="modal-overlay hidden" role="dialog" aria-modal="true" id="createEventModal">
-        <div class="modal-card modal-sm">
-            <div class="modal-header">
-                <h2 class="modal-title">Nuevo Evento</h2>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label class="form-label">Nombre del evento</label>
-                    <input type="text" id="input-event-name" aria-label="Nombre del evento" class="input" placeholder="Ej: Noche de Halloween">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Fecha</label>
-                    <input type="date" id="input-event-date" aria-label="Fecha del evento" class="input">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Hora</label>
-                    <input type="time" id="input-event-time" aria-label="Hora del evento" class="input" value="23:59">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Cantidad de QRs a generar</label>
-                    <input type="number" id="input-event-qr-qty" aria-label="Cantidad de QR" class="input" min="0" max="500" value="0"
-                        placeholder="0 = sin QRs">
-                    <p class="text-hint">
-                        Dejar en 0 para no generar entradas
-                        automáticamente.</p>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-secondary" id="btnCancelEventModal">Cancelar</button>
-                <button type="button" class="btn-primary" id="btnCreateEvent">Crear Evento</button>
-            </div>
+    <div
+      class="modal-overlay hidden"
+      role="dialog"
+      aria-modal="true"
+      id="createEventModal"
+    >
+      <div class="modal-card modal-sm">
+        <div class="modal-header">
+          <h2 class="modal-title">Nuevo Evento</h2>
         </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Nombre del evento</label>
+            <input
+              type="text"
+              id="input-event-name"
+              aria-label="Nombre del evento"
+              class="input"
+              placeholder="Ej: Noche de Halloween"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Fecha</label>
+            <input
+              type="date"
+              id="input-event-date"
+              aria-label="Fecha del evento"
+              class="input"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Hora</label>
+            <input
+              type="time"
+              id="input-event-time"
+              aria-label="Hora del evento"
+              class="input"
+              value="23:59"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Cantidad de QRs a generar</label>
+            <input
+              type="number"
+              id="input-event-qr-qty"
+              aria-label="Cantidad de QR"
+              class="input"
+              min="0"
+              max="500"
+              value="0"
+              placeholder="0 = sin QRs"
+            />
+            <p class="text-hint">
+              Dejar en 0 para no generar entradas automáticamente.
+            </p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" id="btnCancelEventModal">
+            Cancelar
+          </button>
+          <button type="button" class="btn-primary" id="btnCreateEvent">
+            Crear Evento
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Add/Edit Cost Modal -->
-    <div class="modal-overlay hidden" role="dialog" aria-modal="true" id="costModal">
-        <div class="modal-card modal-sm">
-            <div class="modal-header">
-                <h2 class="modal-title" id="costModalTitle">Agregar Costo de Apertura</h2>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label class="form-label">Nombre del costo</label>
-                    <input type="text" id="input-cost-name" aria-label="Nombre del costo" class="input" placeholder="Ej: Alquiler de equipo">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Monto ($)</label>
-                    <input type="number" id="input-cost-amount" aria-label="Monto del costo" class="input" min="0" step="100" placeholder="0">
-                </div>
-                <input type="hidden" id="input-cost-id" aria-label="ID del costo">
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-secondary" id="btnCancelCostModal">Cancelar</button>
-                <button type="button" class="btn-primary" id="btnSaveCost">Guardar Costo</button>
-            </div>
+    <div
+      class="modal-overlay hidden"
+      role="dialog"
+      aria-modal="true"
+      id="costModal"
+    >
+      <div class="modal-card modal-sm">
+        <div class="modal-header">
+          <h2 class="modal-title" id="costModalTitle">
+            Agregar Costo de Apertura
+          </h2>
         </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Nombre del costo</label>
+            <input
+              type="text"
+              id="input-cost-name"
+              aria-label="Nombre del costo"
+              class="input"
+              placeholder="Ej: Alquiler de equipo"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Monto ($)</label>
+            <input
+              type="number"
+              id="input-cost-amount"
+              aria-label="Monto del costo"
+              class="input"
+              min="0"
+              step="100"
+              placeholder="0"
+            />
+          </div>
+          <input type="hidden" id="input-cost-id" aria-label="ID del costo" />
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" id="btnCancelCostModal">
+            Cancelar
+          </button>
+          <button type="button" class="btn-primary" id="btnSaveCost">
+            Guardar Costo
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Pre-flight Checklist Modal (Sprint 3) -->
-    <div class="modal-overlay hidden" role="dialog" aria-modal="true" id="preFlightModal">
-        <div class="modal-card modal-md">
-            <div class="modal-header">
-                <h2 class="modal-title">Pre-flight Checklist</h2>
-                <span class="status-pill" id="preflight-status-badge">Verificando...</span>
-            </div>
-            <div class="modal-body">
-                <p class="text-xs muted mb-4">Verificación antes de abrir operaciones</p>
-                <div id="preflight-checks" class="preflight-list">
-                    <!-- Populated by JS -->
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-secondary" id="btnCancelPreFlight">Cancelar</button>
-                <button type="button" class="btn-primary" id="btnConfirmPreFlight" disabled>Abrir Jornada</button>
-            </div>
+    <div
+      class="modal-overlay hidden"
+      role="dialog"
+      aria-modal="true"
+      id="preFlightModal"
+    >
+      <div class="modal-card modal-md">
+        <div class="modal-header">
+          <h2 class="modal-title">Pre-flight Checklist</h2>
+          <span class="status-pill" id="preflight-status-badge"
+            >Verificando...</span
+          >
         </div>
+        <div class="modal-body">
+          <p class="text-xs muted mb-4">
+            Verificación antes de abrir operaciones
+          </p>
+          <div id="preflight-checks" class="preflight-list">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" id="btnCancelPreFlight">
+            Cancelar
+          </button>
+          <button
+            type="button"
+            class="btn-primary"
+            id="btnConfirmPreFlight"
+            disabled
+          >
+            Abrir Jornada
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Template Modal (Sprint 4) -->
-    <div class="modal-overlay hidden" role="dialog" aria-modal="true" id="templateModal">
-        <div class="modal-card modal-sm">
-            <div class="modal-header">
-                <h2 class="modal-title" id="templateModalTitle">Guardar Plantilla</h2>
-            </div>
-            <div class="modal-body">
-                <div class="planner-col mt-2">
-                    <label class="form-label">Nombre de la Plantilla</label>
-                    <input type="text" id="input-template-name" class="input" placeholder="Ej: Sábado regular" required>
-                </div>
-                <p class="text-xs muted mt-4">Se guardará la configuración actual de staff y costos.</p>
-                <input type="hidden" id="input-template-id" value="">
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-secondary" id="btnCancelTemplateModal">Cancelar</button>
-                <button type="button" class="btn-primary" id="btnSaveTemplate">Guardar</button>
-            </div>
+    <div
+      class="modal-overlay hidden"
+      role="dialog"
+      aria-modal="true"
+      id="templateModal"
+    >
+      <div class="modal-card modal-sm">
+        <div class="modal-header">
+          <h2 class="modal-title" id="templateModalTitle">Guardar Plantilla</h2>
         </div>
+        <div class="modal-body">
+          <div class="planner-col mt-2">
+            <label class="form-label">Nombre de la Plantilla</label>
+            <input
+              type="text"
+              id="input-template-name"
+              class="input"
+              placeholder="Ej: Sábado regular"
+              required
+            />
+          </div>
+          <p class="text-xs muted mt-4">
+            Se guardará la configuración actual de staff y costos.
+          </p>
+          <input type="hidden" id="input-template-id" value="" />
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn-secondary"
+            id="btnCancelTemplateModal"
+          >
+            Cancelar
+          </button>
+          <button type="button" class="btn-primary" id="btnSaveTemplate">
+            Guardar
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Hidden Inputs for CSV Import -->
-    <input type="file" id="file-extracciones" aria-label="Archivo extracciones CSV" hidden accept=".csv">
-    <input type="file" id="file-gbol" aria-label="Archivo GBOL CSV" hidden accept=".csv">
-    <input type="file" id="file-passline" aria-label="Archivo Passline CSV" hidden accept=".csv">
-    <input type="file" id="file-afip" aria-label="Archivo AFIP CSV" hidden accept=".csv">
+    <input
+      type="file"
+      id="file-extracciones"
+      aria-label="Archivo extracciones CSV"
+      hidden
+      accept=".csv"
+    />
+    <input
+      type="file"
+      id="file-gbol"
+      aria-label="Archivo GBOL CSV"
+      hidden
+      accept=".csv"
+    />
+    <input
+      type="file"
+      id="file-passline"
+      aria-label="Archivo Passline CSV"
+      hidden
+      accept=".csv"
+    />
+    <input
+      type="file"
+      id="file-afip"
+      aria-label="Archivo AFIP CSV"
+      hidden
+      accept=".csv"
+    />
 
     <!-- Scripts -->
-    <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"
+    ></script>
     <script defer src="../../assets/js/core/config.js"></script>
     <script defer src="../../assets/js/core/constants.js"></script>
     <script defer src="../../assets/js/core/supabase-client.js"></script>
@@ -1273,14 +2030,19 @@
 
     <!-- Importers (para Evento tab) -->
     <script defer src="../../assets/js/importers/importer-utils.js"></script>
-    <script defer src="../../assets/js/importers/importer-extracciones.js"></script>
+    <script
+      defer
+      src="../../assets/js/importers/importer-extracciones.js"
+    ></script>
     <script defer src="../../assets/js/importers/importer-gbol.js"></script>
     <script defer src="../../assets/js/importers/importer-passline.js"></script>
     <script defer src="../../assets/js/importers/importer-afip.js"></script>
 
-    <script defer src="../../assets/js/modules/admin/admin-workdays.js?v=3"></script>
+    <script
+      defer
+      src="../../assets/js/modules/admin/admin-workdays.js?v=3"
+    ></script>
 
     <script defer src="../../assets/js/core/custom-dropdown.js"></script>
-</body>
-
+  </body>
 </html>
