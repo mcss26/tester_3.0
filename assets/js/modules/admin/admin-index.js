@@ -16,9 +16,12 @@
 
     // 3. DOM References
     const refs = {
-        userName: document.getElementById('user-name'),
-        systemStatus: document.getElementById('system-status'),
-        workDayDate: document.getElementById('work-day-date'),
+        avatar: document.getElementById('user-avatar'),
+        userNameDisplay: document.getElementById('user-name-display'),
+        userMenu: document.getElementById('user-menu'),
+        workdayStatus: document.getElementById('workday-status'),
+        workdayText: document.getElementById('workday-text'),
+        logoutBtn: document.getElementById('btn-logout'),
         qrWidget: document.getElementById('qr-live-widget'),
         qrCount: document.getElementById('qr-live-count'),
         tabs: document.querySelectorAll('.segment-btn'),
@@ -28,10 +31,12 @@
     // 4. State & Logic
     
     /**
-     * Loads and displays the current user's name.
+     * Loads and displays the current user's name and avatar initials.
      */
     async function loadUserProfile(userId) {
-        if (!refs.userName) return;
+        const user = session.user;
+        const meta = user.user_metadata || {};
+        const fallbackName = meta.full_name || meta.name || user.email || 'Admin';
 
         try {
             const { data: profile, error } = await window.sb
@@ -41,58 +46,47 @@
                 .single();
             
             if (error) throw error;
-            refs.userName.textContent = profile?.full_name || 'Admin';
+            const fullName = profile?.full_name || fallbackName;
+            const initials = fullName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'AD';
+            if (refs.avatar) refs.avatar.textContent = initials;
+            if (refs.userNameDisplay) refs.userNameDisplay.textContent = fullName;
         } catch (err) {
-            console.error('Error loading profile:', err);
-            // Non-blocking error, just leave default
+            console.error('[admin-index] Error loading profile:', err);
+            if (refs.avatar) refs.avatar.textContent = 'AD';
+            if (refs.userNameDisplay) refs.userNameDisplay.textContent = fallbackName;
         }
     }
 
     /**
-     * Checks for open/planned work days and updates the status indicator.
+     * Loads workday status using WorkDayHelper and updates the GS topbar widget.
      */
     async function loadSystemStatus() {
-        if (!refs.systemStatus) return null;
-
         try {
-            const { data: wd, error } = await window.sb
-                .from('work_days')
-                .select('id, work_date, status')
-                .in('status', ['ACTIVE', 'PLANNED', 'DRAFT'])
-                .order('work_date', { ascending: true })
-                .limit(1)
-                .maybeSingle();
-
-            if (error) throw error;
+            const wd = await window.WorkDayHelper.getPlannableWorkDay();
 
             if (wd) {
-                // Update Date Text
-                if (refs.workDayDate) {
-                    refs.workDayDate.textContent = wd.work_date;
+                const date = new Date(wd.work_date + 'T12:00:00');
+                const dayName = date.toLocaleDateString('es-AR', { weekday: 'long' });
+                const dayNum = date.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' });
+                if (refs.workdayText) refs.workdayText.textContent = `${dayName} ${dayNum}`;
+                if (refs.workdayStatus) {
+                    refs.workdayStatus.classList.remove('status-closed', 'status-planning');
+                    refs.workdayStatus.classList.add(
+                        wd.status === 'ACTIVE' ? 'status-open' : 'status-planning'
+                    );
                 }
-
-                // Show Container
-                window.Utils.show(refs.systemStatus);
-                
-                // Visual Pulse for Open Days
-                if (wd.status === 'ACTIVE') {
-                    refs.systemStatus.classList.add('live');
-                    const dot = refs.systemStatus.querySelector('.kpi-dot');
-                    if (dot) dot.classList.add('kpi-dot-success');
-                } else {
-                    refs.systemStatus.classList.remove('live');
-                    const dot = refs.systemStatus.querySelector('.kpi-dot');
-                    if (dot) dot.classList.add('kpi-dot-info');
-                }
-
                 return wd;
             } else {
-                window.Utils.hide(refs.systemStatus);
+                if (refs.workdayText) refs.workdayText.textContent = 'Sin jornada activa';
+                if (refs.workdayStatus) {
+                    refs.workdayStatus.classList.remove('status-open', 'status-planning');
+                    refs.workdayStatus.classList.add('status-closed');
+                }
                 return null;
             }
         } catch (err) {
-            console.error('Error fetching WorkDay:', err);
-            window.Utils.hide(refs.systemStatus);
+            console.warn('[admin-index] WorkDay fetch error:', err);
+            if (refs.workdayText) refs.workdayText.textContent = 'Error';
             return null;
         }
     }
@@ -217,7 +211,33 @@
         });
     }
 
-    // 5. Initialization Sequence
+    // 5. Avatar Dropdown Toggle
+    if (refs.avatar && refs.userMenu) {
+        refs.avatar.addEventListener('click', (e) => {
+            e.stopPropagation();
+            refs.userMenu.classList.toggle('hidden');
+        });
+        document.addEventListener('click', () => {
+            refs.userMenu.classList.add('hidden');
+        });
+    }
+
+    // 6. Logout
+    refs.logoutBtn?.addEventListener('click', async (e) => {
+        e.preventDefault();
+        const confirmed = window.Utils?.confirmModal
+            ? await window.Utils.confirmModal('Cerrar sesión?')
+            : window.confirm('Cerrar sesión?');
+        if (!confirmed) return;
+        try {
+            await window.Auth.logout();
+        } catch (err) {
+            console.error('[admin-index] Logout error:', err);
+            window.Toast?.error('Error al cerrar sesión.');
+        }
+    });
+
+    // 7. Initialization Sequence
     initTabs();
     
     // Load Data in parallel

@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy"
-    content="default-src 'self';
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self';
       script-src 'self' https://cdn.jsdelivr.net;
       style-src 'self' 'unsafe-inline';
       connect-src 'self' https://iyknbgmcnbpvalvsjxjz.supabase.co;
@@ -25,22 +25,30 @@
 
 <body class="app-shell admin-shell admin-scroll" data-allowed-roles="encargado_barra,admin">
 
+    <!-- Topbar: Golden Standard Sub-Page -->
     <header class="topbar">
-        <div class="topbar-start">
-            <button class="btn-icon btn-icon-flat" data-go="pages/encargados/encargado-barra-index.html"
-                aria-label="Volver a Inicio">←</button>
-            <nav class="breadcrumb" aria-label="Navegación">
-                <span class="breadcrumb-item"><a class="breadcrumb-link"
-                        href="encargado-barra-index.html">BARRA</a></span>
-                <span class="breadcrumb-sep">/</span>
-                <span class="breadcrumb-item current">PERSONAL</span>
-            </nav>
-        </div>
-        <div class="topbar-center">
-            <span class="topbar-title">GESTIÓN PERSONAL</span>
-        </div>
+        <nav class="breadcrumb topbar-start" aria-label="Navegación">
+            <a href="encargado-barra-index.html" class="breadcrumb-item breadcrumb-link">Barra</a>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-item current">Personal</span>
+        </nav>
+        <div class="topbar-center"></div>
         <div class="topbar-end">
-            <button id="btn-refresh" class="btn-icon btn-icon-flat" aria-label="Refrescar">↻</button>
+            <div class="dropdown-container">
+                <button class="avatar avatar-sm" id="user-avatar" aria-label="Menú de usuario">...</button>
+                <div class="dropdown-menu dropdown-user hidden" id="user-menu">
+                    <div class="dropdown-header" id="user-name-display">Usuario</div>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" id="btn-logout" class="dropdown-item dropdown-item-danger">
+                        <svg class="dropdown-icon" viewBox="0 0 24 24">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        Cerrar Sesión
+                    </a>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -49,88 +57,99 @@
         <div class="page-card-wrap">
 
             <!-- Loading State -->
-            <div id="pageLoading">
-                <div class="state-spinner"></div>
-                <span class="muted">Cargando datos...</span>
+            <div class="page-card-loading" id="page-card-loading">
+                <div class="state-block loading">
+                    <div class="state-spinner" aria-hidden="true"></div>
+                    <div class="state-loader"></div>
+                    <p class="state-title">Cargando personal...</p>
+                </div>
             </div>
 
             <!-- Empty State -->
-            <div class="page-card-empty hidden" id="pageEmpty">
-                <p>Selecciona una jornada para gestionar convocatorias.</p>
+            <div class="page-card-empty hidden" id="page-card-empty">
+                <div class="state-block">
+                    <p class="state-title">Selecciona una jornada para gestionar convocatorias</p>
+                </div>
             </div>
 
             <!-- Page Content -->
-            <div class="page-content page-card hidden" id="pageContent">
+            <div id="module-content" class="page-content page-card hidden">
 
-                <!-- Tabs -->
-                <div class="filter-bar filter-bar-compact">
-                    <div class="filter-group">
-                        <button class="status-pill filter-pill active" data-tab="convocar">Convocatorias</button>
-                        <button class="status-pill filter-pill" data-tab="nomina">Nómina</button>
-                    </div>
-                    <div class="filter-actions">
-                        <input type="search" class="input input-compact filter-input" placeholder="Buscar staff..."
-                            id="searchStaff" aria-label="Buscar en nómina de staff">
-                    </div>
-                </div>
-
-                <!-- Workday Selector -->
-                <div class="form-row my-md">
-                    <div class="form-group flex-1">
-                        <label class="form-label">Jornada Activa</label>
-                        <select id="selectWorkday" class="input">
-                            <option value="">Cargando fechas...</option>
-                        </select>
-                    </div>
-                    <div class="form-group flex-none self-end">
-                        <span id="workdayStatus" class="status-pill status-neutral">SELECCIONAR</span>
-                    </div>
-                </div>
-
-                <!-- TAB: Convocatorias -->
-                <section id="tabConvocar" class="tab-content">
-                    <!-- Planning Summary -->
-                    <div id="planningSummary" class="hidden grid-2 mb-md">
-                        <div class="staff-dashboard auto-height">
-                            <h3 class="dashboard-subtitle">DOTACIÓN REQUERIDA</h3>
-                            <div id="requirementsList" class="staff-list scroll-cap-sm">
-                                <!-- JS Injected -->
+                <div class="staff-dashboard">
+                    <!-- Header -->
+                    <div class="dashboard-header">
+                        <div>
+                            <h2 class="dashboard-title dashboard-title-soft">Personal de Barra</h2>
+                            <p class="dashboard-subtitle-soft">Convocatorias y nómina de staff</p>
+                        </div>
+                        <div class="actions-bar">
+                            <div class="tab-bar">
+                                <button class="tab-chip active" data-tab="convocar">Convocatorias</button>
+                                <button class="tab-chip" data-tab="nomina">Nómina (Staff)</button>
                             </div>
                         </div>
-                        <div class="staff-dashboard auto-height text-center">
-                            <div class="kpi-value" id="coveragePercent">0%</div>
-                            <div class="kpi-label">Cubierto</div>
-                            <button id="btnAutoConvocate" class="btn btn-ghost btn-sm hidden mt-sm">Sugerir
-                                Staff</button>
+                    </div>
+
+                    <!-- TAB: CONVOCAR -->
+                    <div id="tabConvocar" class="tab-content fade-in">
+                        <!-- Toolbar -->
+                        <div class="filter-bar filter-bar-compact">
+                            <div class="filter-group">
+                                <div class="form-group">
+                                    <label class="form-label">Jornada Activa</label>
+                                    <select id="selectWorkday" class="input input-compact"
+                                        aria-label="Seleccionar jornada activa">
+                                        <option value="">Cargando fechas...</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="filter-actions">
+                                <span id="workdayStatus" class="status-pill status-neutral">SELECCIONAR</span>
+                            </div>
+                        </div>
+
+                        <!-- Requirements Stats -->
+                        <div id="planningSummary" class="dashboard-stats-grid hidden">
+                            <div class="stat-card">
+                                <h3 class="stat-label">Requerido</h3>
+                                <div id="requirementsList" class="stat-content">
+                                    <!-- JS Injected -->
+                                </div>
+                            </div>
+                            <div class="stat-card stat-card-center">
+                                <span class="stat-value" id="coveragePercent">0%</span>
+                                <span class="stat-label">Cubierto</span>
+                                <button id="btnAutoConvocate" class="btn btn-ghost btn-sm hidden mt-sm">Sugerir
+                                    Staff</button>
+                            </div>
+                        </div>
+
+                        <!-- Staff List -->
+                        <div class="staff-list" id="convocationList">
+                            <div class="empty-state">Selecciona una jornada para gestionar convocatorias.</div>
                         </div>
                     </div>
 
-                    <!-- Staff List for Convocation -->
-                    <div class="staff-dashboard">
-                        <div class="dashboard-header">
-                            <h2 class="dashboard-title">Convocatorias</h2>
+                    <!-- TAB: NOMINA -->
+                    <div id="tabNomina" class="tab-content hidden fade-in">
+                        <div class="filter-bar filter-bar-compact">
+                            <div class="filter-group">
+                                <input type="search" id="searchStaff" class="input input-compact filter-input"
+                                    placeholder="Buscar staff..." aria-label="Buscar en nómina de staff">
+                            </div>
+                            <div class="filter-actions">
+                                <button class="btn-primary btn-sm" id="btnAddStaff"
+                                    aria-label="Agregar nuevo staff">+ Nuevo</button>
+                            </div>
                         </div>
-                        <div id="convocationList" class="staff-list">
-                            <!-- Cards per Staff - JS Injected -->
-                        </div>
-                    </div>
-                </section>
 
-                <!-- TAB: Nomina -->
-                <section id="tabNomina" class="tab-content hidden">
-                    <div class="staff-dashboard">
-                        <div class="dashboard-header">
-                            <h2 class="dashboard-title">Miembros del Staff</h2>
-                            <button class="btn-icon btn-icon-flat btn-icon-plus" id="btnAddStaff"
-                                aria-label="Agregar Staff">+</button>
-                        </div>
                         <div class="staff-list table-viewport table-shell">
                             <div class="table-scroll">
                                 <table class="table table-sticky">
                                     <thead>
                                         <tr class="table-head">
-                                        <th class="table-cell is-header cell-pad">Nombre</th>
-                                            <th class="table-cell is-header cell-pad">DNI / Tel</th>
+                                            <th class="table-cell is-header cell-pad">Nombre</th>
+                                            <th class="table-cell is-header cell-pad">Rol</th>
                                             <th class="table-cell is-header cell-pad text-center">Estado</th>
                                             <th class="table-cell is-header cell-pad text-right">Acciones</th>
                                         </tr>
@@ -142,7 +161,8 @@
                             </div>
                         </div>
                     </div>
-                </section>
+
+                </div>
 
             </div>
         </div>
@@ -162,14 +182,6 @@
                 <div class="form-group">
                     <label class="form-label">Nombre Completo</label>
                     <input type="text" id="staffName" class="input" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Email (Opcional - Login)</label>
-                    <input type="email" id="staffEmail" class="input" placeholder="staff@midnight.com">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Teléfono</label>
-                    <input type="tel" id="staffPhone" class="input">
                 </div>
             </form>
         </div>
@@ -225,7 +237,6 @@
     <script defer src="../../assets/js/core/work-day-helper.js"></script>
     <script defer src="../../assets/js/core/navigation.js"></script>
     <script defer src="../../assets/js/modules/encargados/encargado-barra-personal.js"></script>
-
     <script defer src="../../assets/js/core/custom-dropdown.js"></script>
 </body>
 

@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy"
-    content="default-src 'self';
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self';
       script-src 'self' https://cdn.jsdelivr.net;
       style-src 'self' 'unsafe-inline';
       connect-src 'self' https://iyknbgmcnbpvalvsjxjz.supabase.co;
@@ -24,28 +24,29 @@
     <link rel="stylesheet" href="../../assets/css/admin-master.css">
 </head>
 
-<body class="app-shell admin-shell admin-scroll"
-    data-allowed-roles="operativo,staff_barra,admin,encargado_barra,encargado_caja,encargado_limpieza,encargado_seguridad,staff_caja,staff_seguridad,staff_operativo">
+<body class="app-shell admin-shell admin-scroll" data-allowed-roles="operativo,admin">
 
-    <!-- Topbar: Golden Standard -->
+    <!-- Topbar: Golden Standard Sub-Page -->
     <header class="topbar">
-        <nav class="breadcrumb topbar-start" aria-label="Navegación">
-            <span class="breadcrumb-item">
-                <a class="breadcrumb-link" href="operativo-index.html">Operativo</a>
-            </span>
-            <span class="breadcrumb-sep">/</span>
-            <span class="breadcrumb-item current">Work Day</span>
-        </nav>
-
-        <div class="topbar-center header-search">
-            <input type="text" id="global-search" class="input" placeholder="Ir a..." aria-label="Navegación rápida">
-            <span class="header-shortcut">⌘K</span>
+        <div class="topbar-start">
+            <button class="btn-icon btn-icon-flat" data-go="pages/operativo/operativo-index.html"
+                aria-label="Volver a Operativo">←</button>
+            <nav class="breadcrumb" aria-label="Navegación">
+                <span class="breadcrumb-item"><a class="breadcrumb-link"
+                        href="operativo-index.html">OPERATIVO</a></span>
+                <span class="breadcrumb-sep">/</span>
+                <span class="breadcrumb-item current">WORK DAY</span>
+            </nav>
         </div>
-
+        <div class="topbar-center">
+            <div id="workday-status" class="workday-status status-closed">
+                <span class="workday-dot"></span>
+                <span id="workday-text">Cargando...</span>
+            </div>
+        </div>
         <div class="topbar-end">
-            <span class="badge status-neutral" id="workday-status">Jornada: --</span>
             <div class="dropdown-container">
-                <button class="avatar avatar-sm" id="user-avatar" aria-label="Menú de usuario">OP</button>
+                <button class="avatar avatar-sm" id="user-avatar" aria-label="Menú de usuario">...</button>
                 <div class="dropdown-menu dropdown-user hidden" id="user-menu">
                     <div class="dropdown-header" id="user-name-display">Usuario</div>
                     <div class="dropdown-divider"></div>
@@ -62,89 +63,86 @@
         </div>
     </header>
 
+    <!-- Main Content -->
     <main class="page-shell">
         <div class="page-card-wrap">
-            <div class="page-card">
 
-                <!-- Master Navigation -->
-
-
-                <!-- Loading State -->
-                <div class="page-card-loading" id="page-card-loading">
-                    <div class="state-block loading">
-                        <div class="state-loader"></div>
-                        <p class="state-title">Cargando Work Day...</p>
-                        <p class="state-desc">Sincronizando jornada operativa</p>
-                    </div>
+            <!-- Loading State -->
+            <div class="page-card-loading" id="page-card-loading">
+                <div class="state-block loading">
+                    <div class="state-loader"></div>
+                    <p class="state-title">Cargando Work Day...</p>
+                    <p class="state-desc">Sincronizando jornada operativa</p>
                 </div>
+            </div>
 
-                <!-- Main Content -->
-                <div id="module-content">
-                    <div class="staff-dashboard">
-                        <div class="dashboard-header align-start">
-                            <div>
-                                <h2 class="dashboard-title dashboard-title-soft">Work Day Planner</h2>
-                                <p class="dashboard-subtitle-soft">Gestión de jornada, accesos y personal.</p>
-                            </div>
-                            <div class="actions-bar">
-                                <span class="text-muted" id="workday-date"></span>
-                            </div>
+            <!-- Main Content -->
+            <div id="module-content">
+                <div class="staff-dashboard">
+                    <div class="dashboard-header align-start">
+                        <div>
+                            <h2 class="dashboard-title dashboard-title-soft">Work Day Planner</h2>
+                            <p class="dashboard-subtitle-soft">Gestión de jornada, accesos y personal.</p>
                         </div>
+                        <div class="actions-bar">
+                            <span class="text-muted" id="workday-date"></span>
+                        </div>
+                    </div>
 
-                        <!-- PANEL A: Links Públicos de Passline -->
-                        <div class="planner-panel mb-6">
+                    <!-- PANEL A: Links Públicos de Passline -->
+                    <div class="planner-panel mb-6">
+                        <div class="panel-title-row">
+                            <span>A. Links Públicos de Passline</span>
+                            <button class="btn btn-ghost btn-sm" id="btn-new-link" aria-label="Nuevo link">+ Nuevo</button>
+                        </div>
+                        <div class="table-viewport table-shell max-h-250">
+                            <table class="table table-compact">
+                                <thead>
+                                    <tr>
+                                        <th class="table-cell is-header cell-pad">Nombre</th>
+                                        <th class="table-cell is-header cell-pad">Descripción</th>
+                                        <th class="table-cell is-header cell-pad">URL</th>
+                                        <th class="table-cell is-header cell-pad">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="links-table-body">
+                                    <tr>
+                                        <td colspan="4" class="table-cell text-center text-muted p-4">
+                                            Cargando links...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Grid 2 Columnas: Nómina y Solicitudes -->
+                    <div class="planner-grid">
+
+                        <!-- PANEL B: Estado de Nómina -->
+                        <div class="planner-panel">
                             <div class="panel-title-row">
-                                <span>A. Links Públicos de Passline</span>
+                                <span>B. Estado de Nómina</span>
+                                <span class="badge" id="staff-summary-badge">--/--</span>
                             </div>
-                            <div class="table-viewport table-shell max-h-250">
-                                <table class="table table-compact">
-                                    <thead>
-                                        <tr>
-                                            <th class="table-cell is-header cell-pad">Nombre</th>
-                                            <th class="table-cell is-header cell-pad">Descripción</th>
-                                            <th class="table-cell is-header cell-pad">URL</th>
-                                            <th class="table-cell is-header cell-pad">Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="links-table-body">
-                                        <tr>
-                                            <td colspan="4" class="table-cell text-center text-muted p-4">
-                                                Cargando links...
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <div class="panel-scroll" id="staff-container">
+                                <div class="state-block loading">
+                                    <div class="state-loader"></div>
+                                    <p class="state-title">Cargando nómina...</p>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Grid 2 Columnas: Nómina y Solicitudes -->
-                        <div class="planner-grid">
-
-                            <!-- PANEL B: Estado de Nómina -->
-                            <div class="planner-panel">
-                                <div class="panel-title-row">
-                                    <span>B. Estado de Nómina</span>
-                                    <span class="badge" id="staff-summary-badge">--/--</span>
-                                </div>
-                                <div class="panel-scroll" id="staff-container">
-                                    <div class="state-block loading">
-                                        <div class="state-loader"></div>
-                                        <p class="state-title">Cargando nómina...</p>
-                                    </div>
-                                </div>
+                        <!-- PANEL C: Solicitudes Pendientes -->
+                        <div class="planner-panel">
+                            <div class="panel-title-row">
+                                <span>C. Solicitudes Pendientes</span>
+                                <a href="operativo-solicitudes.html" class="text-sm link">Ver Todas →</a>
                             </div>
-
-                            <!-- PANEL C: Solicitudes Pendientes -->
-                            <div class="planner-panel">
-                                <div class="panel-title-row">
-                                    <span>C. Solicitudes Pendientes</span>
-                                    <a href="operativo-solicitudes.html" class="text-sm link">Ver Todas →</a>
-                                </div>
-                                <div class="panel-scroll" id="requests-container">
-                                    <div class="state-block loading">
-                                        <div class="state-loader"></div>
-                                        <p class="state-title">Cargando solicitudes...</p>
-                                    </div>
+                            <div class="panel-scroll" id="requests-container">
+                                <div class="state-block loading">
+                                    <div class="state-loader"></div>
+                                    <p class="state-title">Cargando solicitudes...</p>
                                 </div>
                             </div>
                         </div>

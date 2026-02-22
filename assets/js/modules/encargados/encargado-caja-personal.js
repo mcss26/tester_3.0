@@ -39,7 +39,7 @@
         
         // Workday controls
         selectWorkDay: document.getElementById('select-workday'),
-        statusLabel: document.getElementById('workday-status'),
+        statusLabel: document.getElementById('workday-status-label'),
         planningSummary: document.getElementById('planning-summary'),
         requirementsList: document.getElementById('requirements-list'),
         coveragePercent: document.getElementById('coverage-percent'),
@@ -58,7 +58,6 @@
         staffPanel: document.getElementById('staff-panel'),
         staffForm: document.getElementById('staff-form'),
         staffName: document.getElementById('staff-name'),
-        staffPhone: document.getElementById('staff-phone'),
         btnAddStaff: document.getElementById('btn-add-staff'),
         btnCloseStaffPanel: document.getElementById('btn-close-staff-panel'),
         btnCancelStaff: document.getElementById('btn-cancel-staff'),
@@ -446,7 +445,6 @@
 
     async function saveStaff() {
         const name = ui.staffName?.value?.trim();
-        const phone = ui.staffPhone?.value?.trim();
 
         if (!name) {
             window.Toast?.warning('Nombre requerido');
@@ -458,7 +456,6 @@
                 .from('profiles')
                 .insert({
                     full_name: name,
-                    phone: phone || null,
                     role: 'staff_caja',
                     active: true
                 });

@@ -17,9 +17,9 @@
     // ─────────────────────────────────────────────────────────────
     const ui = {
         // States
-        pageLoading: document.getElementById('pageLoading'),
-        pageEmpty: document.getElementById('pageEmpty'),
-        pageContent: document.getElementById('pageContent'),
+        pageCardLoading: document.getElementById('page-card-loading'),
+        pageCardEmpty: document.getElementById('page-card-empty'),
+        moduleContent: document.getElementById('module-content'),
 
         // Controls
         selectWorkday: document.getElementById('selectWorkday'),
@@ -51,8 +51,6 @@
         btnSaveStaff: document.getElementById('btnSaveStaff'),
         staffForm: document.getElementById('staffForm'),
         staffName: document.getElementById('staffName'),
-        staffEmail: document.getElementById('staffEmail'),
-        staffPhone: document.getElementById('staffPhone'),
 
         // Role Selection Modal
         roleModal: document.getElementById('roleModal'),
@@ -92,9 +90,9 @@
     // 4. Page State Management
     // ─────────────────────────────────────────────────────────────
     function setPageState(stateName) {
-        ui.pageLoading.classList.toggle('hidden', stateName !== 'loading');
-        ui.pageEmpty.classList.toggle('hidden', stateName !== 'empty');
-        ui.pageContent.classList.toggle('hidden', stateName !== 'content');
+        if (ui.pageCardLoading) ui.pageCardLoading.classList.toggle('hidden', stateName !== 'loading');
+        if (ui.pageCardEmpty) ui.pageCardEmpty.classList.toggle('hidden', stateName !== 'empty');
+        if (ui.moduleContent) ui.moduleContent.classList.toggle('hidden', stateName !== 'content');
     }
 
     // ─────────────────────────────────────────────────────────────
@@ -292,7 +290,7 @@
         const html = state.staffList.map(staff => `
             <tr class="table-row">
                 <td class="table-cell">${staff.full_name || '-'}</td>
-                <td class="table-cell muted">${staff.phone || '-'}</td>
+                <td class="table-cell muted">${staff.role || 'Staff'}</td>
                 <td class="table-cell text-center">
                     <span class="status-pill ${staff.active !== false ? 'status-success' : 'status-error'}">
                         ${staff.active !== false ? 'ACTIVO' : 'INACTIVO'}
@@ -485,7 +483,6 @@
                 .from('profiles')
                 .insert({
                     full_name: name,
-                    email: ui.staffEmail.value || `staff_${Date.now()}@midnight.tmp`,
                     role: 'staff_barra',
                     active: true
                 });
@@ -508,8 +505,8 @@
         // Workday selector
         ui.selectWorkday.addEventListener('change', e => handleWorkDayChange(e.target.value));
 
-        // Refresh button
-        ui.btnRefresh.addEventListener('click', () => {
+        // Refresh button (optional — not present in all layouts)
+        ui.btnRefresh?.addEventListener('click', () => {
             if (state.activeWorkDay) {
                 handleWorkDayChange(state.activeWorkDay.id);
             } else {

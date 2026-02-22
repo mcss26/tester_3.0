@@ -17,41 +17,35 @@
   <title>Logística — Midnight</title>
   <link rel="stylesheet" href="../../assets/css/tokens.css">
   <link rel="stylesheet" href="../../assets/css/base.css">
-    <link rel="stylesheet" href="../../assets/css/layout.css">
-    <link rel="stylesheet" href="../../assets/css/components.css">
-    <link rel="stylesheet" href="../../assets/css/forms.css">
-    <link rel="stylesheet" href="../../assets/css/utilities.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/forms.css">
+  <link rel="stylesheet" href="../../assets/css/utilities.css">
   <link rel="stylesheet" href="../../assets/css/admin-central-stock.css">
+  <link rel="stylesheet" href="../../assets/css/launcher.css">
 </head>
 
-<body class="app-shell admin-shell admin-scroll" data-allowed-roles="logistico,admin">
+<body class="app-shell admin-shell launcher-page" data-allowed-roles="logistico,admin">
 
-  <!-- Topbar: Golden Standard -->
+  <!-- TOPBAR (Golden Standard) -->
   <header class="topbar">
     <!-- Left: Breadcrumb -->
     <div class="topbar-start">
       <nav class="breadcrumb" aria-label="Navegación de migas">
-        <span class="breadcrumb-item">
-          <a class="breadcrumb-link" href="logistica-index.html">Logística</a>
-        </span>
-        <span class="breadcrumb-sep">/</span>
-        <span class="breadcrumb-item current">Inicio</span>
+        <span class="breadcrumb-item current">LOGÍSTICA</span>
       </nav>
     </div>
 
-    <!-- Center: Search -->
-    <div class="topbar-center header-search">
-      <input type="text" id="global-search" class="input" placeholder="Ir a..." aria-label="Navegación rápida">
-      <svg class="header-search-icon" viewBox="0 0 24 24">
-        <circle cx="11" cy="11" r="8"></circle>
-        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-      </svg>
-      <span class="header-shortcut">⌘K</span>
+    <!-- Center: Workday Status -->
+    <div class="topbar-center">
+      <div id="workday-status" class="workday-status status-closed">
+        <span class="workday-dot"></span>
+        <span id="workday-text">Cargando...</span>
+      </div>
     </div>
 
-    <!-- Right: Notifications + Avatar -->
+    <!-- Right: Avatar + Dropdown -->
     <div class="topbar-end">
-      <!-- User Menu Dropdown -->
       <div class="dropdown-container">
         <button class="avatar avatar-sm" id="user-avatar" aria-label="Menú de usuario">LG</button>
         <div class="dropdown-menu dropdown-user hidden" id="user-menu">
@@ -70,59 +64,30 @@
     </div>
   </header>
 
-  <main class="page-shell">
-    <div class="page-card-wrap">
-      <div class="page-card">
-
-        <!-- Master Navigation -->
-        <nav class="master-nav" aria-label="Módulos de logística">
-          <a href="logistica-stock.html" class="master-nav-link" aria-label="Ir a Stock">Stock</a>
-          <a href="logistica-distribucion.html" class="master-nav-link" aria-label="Ir a Distribución">Distribución</a>
-          <a href="logistica-recepcion.html" class="master-nav-link" aria-label="Ir a Recepción">Recepción</a>
-          <a href="logistica-seguimiento.html" class="master-nav-link" aria-label="Ir a Seguimiento">Seguimiento</a>
-        </nav>
-
-        <div id="module-content">
-          <div class="staff-dashboard">
-            <div class="dashboard-header align-start">
-              <div>
-                <h2 class="dashboard-title dashboard-title-soft">Bienvenido a Logística</h2>
-                <p class="dashboard-subtitle">Gestión de stock, distribución y recepción de materiales.</p>
-              </div>
-            </div>
-
-            <!-- Dashboard Widgets / Link Cards -->
-            <div class="profiles-grid">
-              <a href="logistica-stock.html" class="profile-card no-underline">
-                <div class="profile-avatar">📦</div>
-                <h3 class="profile-name">Stock</h3>
-                <p class="profile-role">Gestión de Inventario</p>
-                <span class="profile-info">Consultar y ajustar stock</span>
-              </a>
-              <a href="logistica-distribucion.html" class="profile-card no-underline">
-                <div class="profile-avatar">🔄</div>
-                <h3 class="profile-name">Distribución</h3>
-                <p class="profile-role">Movimientos Internos</p>
-                <span class="profile-info">Transferencias entre áreas</span>
-              </a>
-              <a href="logistica-recepcion.html" class="profile-card no-underline">
-                <div class="profile-avatar">📥</div>
-                <h3 class="profile-name">Recepción</h3>
-                <p class="profile-role">Ingreso de Mercadería</p>
-                <span class="profile-info">Recepcionar proveedores</span>
-              </a>
-              <a href="logistica-seguimiento.html" class="profile-card no-underline">
-                <div class="profile-avatar">🚚</div>
-                <h3 class="profile-name">Seguimiento</h3>
-                <p class="profile-role">Trazabilidad</p>
-                <span class="profile-info">Historial de movimientos</span>
-              </a>
-            </div>
-          </div>
-        </div>
+  <main class="page-shell launcher-center">
+    <div class="dashboard-header">
+      <div>
+        <h2 class="dashboard-title dashboard-title-soft">MIDNIGHT CLUB</h2>
+        <p class="dashboard-subtitle dashboard-subtitle-soft">Panel Logística</p>
       </div>
     </div>
+
+    <nav class="main-nav" aria-label="Módulos de logística">
+      <a href="logistica-stock.html" class="nav-link" id="link-stock"
+        aria-label="Gestión de Inventario">Stock</a>
+      <a href="logistica-distribucion.html" class="nav-link" id="link-distribucion"
+        aria-label="Movimientos Internos">Distribución</a>
+      <a href="logistica-recepcion.html" class="nav-link" id="link-recepcion"
+        aria-label="Ingreso de Mercadería">Recepción</a>
+      <a href="logistica-seguimiento.html" class="nav-link" id="link-seguimiento"
+        aria-label="Historial de Movimientos">Seguimiento</a>
+    </nav>
   </main>
+
+  <!-- FOOTER -->
+  <footer class="launcher-footer">
+    &copy; 2026 Midnight Systems
+  </footer>
 
   <!-- Core Scripts -->
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -132,7 +97,7 @@
   <script defer src="../../assets/js/core/auth.js"></script>
   <script defer src="../../assets/js/core/toast.js"></script>
   <script defer src="../../assets/js/core/work-day-helper.js"></script>
-  <script src="../../assets/js/core/navigation.js"></script>
+  <script defer src="../../assets/js/core/navigation.js"></script>
   <script defer src="../../assets/js/modules/logistica/logistica-index.js"></script>
 </body>
 

@@ -119,9 +119,9 @@
             disableLink(ui.linkRecepcion);
         }
 
-        // B) Check for Open Work Day
+        // B) Check for Plannable Work Day (ACTIVE or PLANNED)
         try {
-            const openDay = await window.WorkDayHelper.getOpenWorkDay();
+            const openDay = await window.WorkDayHelper.getPlannableWorkDay();
 
             if (openDay) {
                 const date = new Date(openDay.work_date + 'T12:00:00');
@@ -131,9 +131,15 @@
                 ui.workdayStatus.classList.remove('status-closed', 'status-planning');
                 ui.workdayStatus.classList.add(openDay.status === 'ACTIVE' ? 'status-open' : 'status-planning');
 
-                // Enable navigation links
+                // Personal: enabled on PLANNED and ACTIVE
                 enableLink(ui.linkPersonal);
-                enableLink(ui.linkNoche);
+
+                // Noche: only enabled on ACTIVE (can't close a night that hasn't started)
+                if (openDay.status === 'ACTIVE') {
+                    enableLink(ui.linkNoche);
+                } else {
+                    disableLink(ui.linkNoche);
+                }
             } else {
                 ui.workdayText.textContent = 'Sin jornada activa';
                 ui.workdayStatus.classList.remove('status-open', 'status-planning');

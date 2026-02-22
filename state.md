@@ -1,7 +1,7 @@
 # Estado del Proyecto: Tester 3.0 — Midnight Club
 
-**Última actualización:** 2026-02-22 02:27  
-**Método:** Visual Polish + Security Hardening + JSDoc Sprint
+**Última actualización:** 2026-02-22 03:43  
+**Método:** Visual Polish + Security Hardening + JSDoc Sprint + Personal Pages Standardization
 
 ---
 
@@ -291,3 +291,57 @@ _Información crítica que el agente debe tener en cuenta._
 
 > **`docs/_generated/`** — `frontend/` y `orchestrator/` vaciados (solo `.gitkeep`). Contenido consolidado en `docs/design-system/`.
 > **`docs/_generated/logic/`** está vacío (solo `.gitkeep`). No se ha generado documentación de lógica.
+
+## 14. TDD Night Simulation — Bugs Encontrados (2026-02-22)
+
+### BUG-001: `rpc_preflight_close_workday` — columna inexistente
+
+- **Línea:** ~171 del PL/pgSQL
+- **Error:** `column "amount" does not exist` en `staff_accruals`
+- **Fix:** Cambiar `amount` → `base_amount` y `adjustment` → `adjustments`
+- **Impacto:** Preflight siempre crashea si hay accruals → bloquea cierre
+- **Estado:** ✅ Corregido (migration `fix_rpc_bugs_001_002_003`)
+
+### BUG-002: `rpc_close_work_day` — case mismatch en `cash_closings.status`
+
+- **Línea:** ~63 del PL/pgSQL
+- **Error:** Escribe `'CLOSED'` (uppercase) pero CHECK solo permite `'open','closed'` (lowercase)
+- **Fix:** Cambiar `status = 'CLOSED'` → `status = 'closed'`
+- **Impacto:** No se puede cerrar workday con `p_cash_closing_id` (workaround: pasar NULL)
+- **Estado:** ✅ Corregido (migration `fix_rpc_bugs_001_002_003`)
+
+### Nota: Workday 2026-02-01 cerrado
+
+Workday `3719f8a9` (2026-02-01) estaba en ACTIVE sin operaciones. Cerrado durante simulación TDD (health_score=40).
+
+### BUG-003: `rpc_revert_work_day` — columna `updated_at` inexistente (TDD #2)
+
+- **Línea:** ~10 del PL/pgSQL
+- **Error:** `column "updated_at" of relation "work_days" does not exist`
+- **Fix:** Remover `updated_at = now()` del UPDATE (la tabla no tiene esa columna)
+- **Impacto:** No se puede revertir un workday de PLANNED → DRAFT
+- **Estado:** ✅ Corregido (migration `fix_rpc_bugs_001_002_003`)
+
+### BUG-004: `rpc_preflight_close_workday` — columna `work_date` inexistente en `import_gbol_facturacion`
+
+- **Línea:** ~165 del PL/pgSQL (CHECK 6: GBOL)
+- **Error:** Referencia `work_date` en `import_gbol_facturacion` (la columna real es `noche`)
+- **Fix:** Cambiar `work_date` → `noche` (ambos type `date`, comparación directa)
+- **Impacto:** Preflight siempre crasheaba en CHECK 6
+- **Estado:** ✅ Corregido (migration `fix_rpc_preflight_bug_004`)
+
+### BUG-005: `rpc_distribute_stock` — NULL stock_actual crash
+
+- **Línea:** ~64 del PL/pgSQL
+- **Error:** `UPDATE inventory_stock SET stock_actual = stock_actual - qty` falla si `stock_actual` es NULL
+- **Fix:** Usar `COALESCE(stock_actual, 0) - qty` o INSERT ON CONFLICT
+- **Impacto:** No se puede distribuir stock si el SKU no tiene stock_actual inicializado
+- **Estado:** ✅ Corregido (migration `fix_rpc_distribute_stock_bug_005`)
+
+### BUG-006: Encargado Personal Pages — Topbar + Page States no-GS
+
+- **Páginas:** `encargado-barra-personal.html`, `encargado-caja-personal.html`
+- **Error 1:** barra usaba IDs no-GS (`pageLoading`, `pageEmpty`, `pageContent`) sin clases CSS requeridas → pantalla en blanco
+- **Error 2:** Topbar tenía `<button>←</button>` + `workday-status` pill nunca actualizada → chip confuso
+- **Fix:** HTML estandarizado a GS (`page-card-loading`, `page-card-empty`, `module-content`), topbar breadcrumb-only, JS DOM refs alineados
+- **Estado:** ✅ Corregido

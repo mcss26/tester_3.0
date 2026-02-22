@@ -41,7 +41,7 @@
 
   // 4. Load workday status
   try {
-    const workday = await window.WorkDayHelper.getOpenWorkDay();
+    const workday = await window.WorkDayHelper.getPlannableWorkDay();
     if (workday) {
       const date = new Date(workday.work_date + "T12:00:00");
       const dayName = date.toLocaleDateString("es-AR", { weekday: "long" });

@@ -1,6 +1,6 @@
 # ✦ Roadmap Técnico: Rediseño UI & Seguridad
 
-> **Última actualización:** 2026-02-22 02:00
+> **Última actualización:** 2026-02-22 03:43
 > **Fuente de verdad:** Este documento — basado en auditoría de codebase real
 > **Método:** Secuencia por dependencias técnicas (cada capa consume la anterior)
 
@@ -152,12 +152,15 @@ Seguridad  CSS Modular  Layout    Testing  Integración  Polish
 ## Capa 4 — UX/DX (En progreso)
 
 ### Completado ✅
+
 - [x] **JSDoc Core** — Documentación técnica en 7 archivos centrales (auth, utils, config, etc.)
+- [x] **Encargado Personal Pages** — Topbar GS estandarizado (breadcrumb-only, sin ← arrow), page states alineados a GS (`page-card-loading`/`page-card-empty`/`module-content`), status pill limpio
 
 ### Pendiente
+
+- [ ] Auditoría visual completa de todas las pantallas (screenshots + wiremap)
 - [ ] Refactor de templates JS para mayor legibilidad
 - [ ] Optimización de carga inicial (Critical CSS path)
-
 
 ---
 

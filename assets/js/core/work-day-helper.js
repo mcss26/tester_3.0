@@ -32,6 +32,32 @@ const WorkDayHelper = {
   },
 
   /**
+   * Fetches the current plannable work day (ACTIVE or PLANNED).
+   * Use this for encargado indexes where staff management is needed
+   * before the workday is opened (ACTIVE).
+   * 
+   * @async
+   * @returns {Promise<Object|null>} The plannable work day record or null.
+   */
+  async getPlannableWorkDay() {
+    try {
+      const { data, error } = await window.sb
+        .from("work_days")
+        .select("*")
+        .in("status", ["ACTIVE", "PLANNED"])
+        .order("work_date", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (error) throw error;
+      return data;
+    } catch (err) {
+      console.error("WorkDayHelper: Error fetching plannable work day", err);
+      return null;
+    }
+  },
+
+  /**
    * Fetches the summary view (vw_work_day_summary) for admin dashboards.
    * 
    * @async

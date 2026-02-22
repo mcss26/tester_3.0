@@ -6,6 +6,7 @@
  * @requires window.Auth
  * @requires window.sb (Supabase client)
  * @requires window.Utils
+ * @requires window.WorkDayHelper
  */
 (async function () {
     'use strict';
@@ -22,83 +23,100 @@
 
     // 3. DOM References
     const ui = {
-        userName: document.getElementById('user-name'),
-        systemStatus: document.getElementById('system-status'),
-        pageCardLoading: document.getElementById('page-card-loading'),
-        pageCardEmpty: document.getElementById('page-card-empty'),
-        contentWrap: document.getElementById('module-content')
+        avatar: document.getElementById('user-avatar'),
+        userNameDisplay: document.getElementById('user-name-display'),
+        userMenu: document.getElementById('user-menu'),
+        workdayStatus: document.getElementById('workday-status'),
+        workdayText: document.getElementById('workday-text'),
+        linkPersonal: document.getElementById('link-personal'),
+        linkNoche: document.getElementById('link-noche')
     };
 
-    // 4. State Management
-    function setPageState({ loading = false, empty = false } = {}) {
-        if (ui.pageCardLoading) ui.pageCardLoading.classList.toggle('is-visible', loading);
-        if (ui.pageCardEmpty) ui.pageCardEmpty.classList.toggle('is-visible', empty);
-        if (ui.contentWrap) ui.contentWrap.classList.toggle('hidden', loading || empty);
+    // 4. User Profile
+    try {
+        const { data: profile, error } = await window.sb
+            .from('profiles')
+            .select('full_name')
+            .eq('id', session.user.id)
+            .single();
+
+        if (error) throw error;
+
+        const fullName = profile?.full_name || 'Encargado';
+        const initials = fullName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'E';
+        if (ui.avatar) ui.avatar.textContent = initials;
+        if (ui.userNameDisplay) ui.userNameDisplay.textContent = fullName;
+    } catch (err) {
+        console.error('[EncargadoCajaIndex] Error loading profile:', err);
+        if (ui.avatar) ui.avatar.textContent = 'E';
+        if (ui.userNameDisplay) ui.userNameDisplay.textContent = 'Encargado';
     }
 
-    // 5. Data Loading Functions
-    async function loadUserProfile() {
-        if (!ui.userName) return;
-        
-        try {
-            const { data: profile, error } = await window.sb
-                .from('profiles')
-                .select('full_name')
-                .eq('id', session.user.id)
-                .single();
+    // 5. Workday Status + Navigation Rules
+    try {
+        const openDay = await window.WorkDayHelper.getPlannableWorkDay();
 
-            if (error) throw error;
-            ui.userName.textContent = profile?.full_name || 'Encargado';
-        } catch (e) {
-            console.error('[EncargadoCajaIndex] Error loading profile:', e);
-            ui.userName.textContent = 'Encargado';
-        }
-    }
+        if (openDay) {
+            const date = new Date(openDay.work_date + 'T12:00:00');
+            const dayName = date.toLocaleDateString('es-AR', { weekday: 'long' });
+            const dayNum = date.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' });
 
-    async function loadSystemStatus() {
-        if (!ui.systemStatus) return;
-
-        try {
-            const { data: wd, error } = await window.sb
-                .from('work_days')
-                .select('work_date, status')
-                .eq('status', 'ACTIVE')
-                .maybeSingle();
-
-            if (error) throw error;
-
-            if (wd) {
-                ui.systemStatus.textContent = `🟢 CAJA OPERATIVA: ${wd.work_date}`;
-                ui.systemStatus.className = 'system-status-pill status-success';
-            } else {
-                ui.systemStatus.textContent = '🔴 CAJA CERRADA';
-                ui.systemStatus.className = 'system-status-pill status-error';
+            if (ui.workdayText) ui.workdayText.textContent = `${dayName} ${dayNum}`;
+            if (ui.workdayStatus) {
+                ui.workdayStatus.classList.remove('status-closed', 'status-planning');
+                ui.workdayStatus.classList.add(openDay.status === 'ACTIVE' ? 'status-open' : 'status-planning');
             }
-        } catch (e) {
-            console.error('[EncargadoCajaIndex] Error loading status:', e);
-            ui.systemStatus.textContent = '⚠️ Error de conexión';
-            ui.systemStatus.className = 'system-status-pill status-warning';
+
+            // Personal: enabled on PLANNED and ACTIVE
+            enableLink(ui.linkPersonal);
+
+            // Noche: only enabled on ACTIVE
+            if (openDay.status === 'ACTIVE') {
+                enableLink(ui.linkNoche);
+            } else {
+                disableLink(ui.linkNoche);
+            }
+        } else {
+            if (ui.workdayText) ui.workdayText.textContent = 'Sin jornada activa';
+            if (ui.workdayStatus) {
+                ui.workdayStatus.classList.remove('status-open', 'status-planning');
+                ui.workdayStatus.classList.add('status-closed');
+            }
+            disableLink(ui.linkPersonal);
+            disableLink(ui.linkNoche);
         }
+    } catch (err) {
+        console.warn('[EncargadoCajaIndex] WorkDay fetch error:', err);
+        if (ui.workdayText) ui.workdayText.textContent = 'Error';
+        disableLink(ui.linkPersonal);
+        disableLink(ui.linkNoche);
     }
 
-    // 6. Initialization
-    async function init() {
-        setPageState({ loading: true });
-
-        try {
-            await Promise.all([
-                loadUserProfile(),
-                loadSystemStatus()
-            ]);
-        } catch (e) {
-            console.error('[EncargadoCajaIndex] Initialization error:', e);
-            window.Toast?.error('Error al cargar datos');
-        } finally {
-            setPageState({ loading: false });
-        }
+    // 6. Avatar Dropdown Toggle
+    if (ui.avatar) {
+        ui.avatar.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (ui.userMenu) ui.userMenu.classList.toggle('hidden');
+        });
     }
 
-    // Start
-    init();
+    document.addEventListener('click', () => {
+        if (ui.userMenu) ui.userMenu.classList.add('hidden');
+    });
+
+    // ═══════════════════════════════════════════════════════════
+    // HELPERS
+    // ═══════════════════════════════════════════════════════════
+
+    function enableLink(el) {
+        if (!el) return;
+        el.classList.remove('is-disabled');
+    }
+
+    function disableLink(el) {
+        if (!el) return;
+        el.classList.add('is-disabled');
+    }
 
 })();
+
