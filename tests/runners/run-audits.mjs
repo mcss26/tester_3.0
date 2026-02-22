@@ -5,10 +5,10 @@
  * Sin dependencias externas (usa fetch nativo de Node 18+).
  *
  * USO:
- *   node tests/run-audits.mjs                    # Corre todos
- *   node tests/run-audits.mjs --suite stock      # Solo stock
- *   node tests/run-audits.mjs --suite cash       # Solo caja
- *   node tests/run-audits.mjs --suite payments   # Solo pagos
+ *   node tests/runners/run-audits.mjs                    # Corre todos
+ *   node tests/runners/run-audits.mjs --suite stock      # Solo stock
+ *   node tests/runners/run-audits.mjs --suite cash       # Solo caja
+ *   node tests/runners/run-audits.mjs --suite payments   # Solo pagos
  *
  * ENV (o crear tests/.env):
  *   SUPABASE_URL=https://iyknbgmcnbpvalvsjxjz.supabase.co
@@ -23,7 +23,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // ── Config ──────────────────────────────────────────────────
 function loadEnv() {
-  const envPath = resolve(__dirname, '.env');
+  const envPath = resolve(__dirname, '..', '.env');
   if (existsSync(envPath)) {
     const lines = readFileSync(envPath, 'utf-8').split('\n');
     for (const line of lines) {
@@ -80,15 +80,15 @@ async function executeSql(query) {
 const SUITES = {
   stock: {
     name: '📦 Stock / Bar Flow',
-    file: resolve(__dirname, 'audit-stock-flow.sql')
+    file: resolve(__dirname, '..', 'sql', 'audit-stock-flow.sql')
   },
   cash: {
     name: '💰 Cash Flow',
-    file: resolve(__dirname, 'audit-cash-flow.sql')
+    file: resolve(__dirname, '..', 'sql', 'audit-cash-flow.sql')
   },
   payments: {
     name: '💳 Payments Flow',
-    file: resolve(__dirname, 'audit-payments-flow.sql')
+    file: resolve(__dirname, '..', 'sql', 'audit-payments-flow.sql')
   }
 };
 

@@ -2,7 +2,9 @@
 
 Indice completo de scripts de automatizacion. Todos se corren desde la raiz del proyecto.
 
-**31 scripts** | PowerShell (.ps1) + Node (.js/.mjs) + Python (.py)
+> **Reorganización 2026-02-21:** Scripts de testing, auditoría, scanners, watchdogs y collectors fueron movidos a `tests/`. Ver [`tests/` README](#tests-directory) al final.
+
+**17 scripts operativos** en `scripts/` | **22 scripts de QA** en `tests/`
 
 ---
 
@@ -15,17 +17,6 @@ Checks iniciales al abrir VS Code.
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts/security-startup.ps1
 ```
-
-### security-watchdog.ps1
-
-Monitoreo continuo de seguridad (cada 60s). Detecta: permisos, integridad SHA-256, archivos sospechosos, git leaks, patrones peligrosos, agentes rogue, procesos sospechosos, MCP servers desconocidos.
-
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts/security-watchdog.ps1
-powershell -ExecutionPolicy Bypass -File scripts/security-watchdog.ps1 -LogToFile
-```
-
-**Ctrl+C** para resumen de sesion.
 
 ### security-shutdown.ps1
 
@@ -45,69 +36,7 @@ powershell -ExecutionPolicy Bypass -File scripts/backup-configs.ps1
 
 ---
 
-## 2. Monitoreo
-
-### ops-watchdog.ps1
-
-Torre de control operativa (cada 90s). Monitorea: actividad reciente, docs de agentes, estado git, cobertura de documentacion.
-
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts/ops-watchdog.ps1
-```
-
-**Ctrl+C** para detener.
-
-### auto-prompter.ps1
-
-Envia prompts estrategicos al CLI activo cada N minutos (via SendKeys). Cicla por 10 prompts predefinidos de verificacion y continuacion.
-
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts/auto-prompter.ps1
-powershell -ExecutionPolicy Bypass -File scripts/auto-prompter.ps1 -IntervalMinutes 10
-```
-
----
-
-## 3. Auditoria de Codigo
-
-Scripts que verifican salud del codebase (JS, HTML, CSS, links).
-
-### audit.mjs
-
-Audita modulos JS contra el Golden Standard: patron IIFE, assertSb, escapeHtml, alert/confirm nativos, getThemeColor duplicados.
-
-```powershell
-node scripts/audit.mjs
-```
-
-### audit-css.js
-
-Detecta `<style>` tags e inline `style=` en HTML.
-
-```powershell
-node scripts/audit-css.js
-```
-
-### audit-links.js
-
-Audita links locales rotos en archivos `.md` y `.html`.
-
-```powershell
-node scripts/audit-links.js
-```
-
-### audit-modules.js
-
-Audita estructura de paginas HTML: assets faltantes, inline styles, metadata, topbar, slide-panel.
-
-```powershell
-node scripts/audit-modules.js
-node scripts/audit-modules.js --json reports/module-audit.json
-```
-
----
-
-## 4. Analisis Estatico y Flujo
+## 2. Analisis Estatico y Flujo
 
 ### flow-tracer.ps1
 
@@ -145,52 +74,9 @@ powershell -ExecutionPolicy Bypass -File scripts/doc-mapper.ps1 -OnlyCategory mo
 
 Output: `docs/output/qa/doc-map.json`, `doc-map-report.md`, `doc-map-actions.md`
 
-### select-risk-analyzer.ps1
-
-Traza cada `<select>` en HTML a traves de JS hasta operaciones Supabase. Genera reporte de riesgo por pagina para decidir entre wrap vs replace.
-
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts/select-risk-analyzer.ps1
-```
-
-Output: `docs/output/ui-scan/select-risk-report.md`
-
 ---
 
-## 5. UI / Design System
-
-### ui-component-scanner.ps1
-
-Escanea todas las paginas HTML, extrae componentes, mide compliance contra el Golden Standard. Genera JSON por pagina, matriz de compliance, y prompts CLI para remediacion.
-
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts/ui-component-scanner.ps1
-powershell -ExecutionPolicy Bypass -File scripts/ui-component-scanner.ps1 -TargetPage admin-workdays.html
-```
-
-Output: `docs/output/ui-scan/compliance-matrix.md`, `pages/*.json`, `cli-prompts/*.md`
-
-### ds-verify.ps1
-
-Post-component verification. Ejecuta ui-component-scanner, compara summary.json contra baseline.json, detecta regresiones en Tier0.
-
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts/ds-verify.ps1
-powershell -ExecutionPolicy Bypass -File scripts/ds-verify.ps1 -SaveBaseline
-powershell -ExecutionPolicy Bypass -File scripts/ds-verify.ps1 -SkipScan
-```
-
-Output: `docs/output/ui-scan/verify-diff.md`
-
-### ds-pre-audit.ps1
-
-Ejecuta 5 comandos Gemini CLI en secuencia: inventario tokens, inventario swiss-style, diff de tokens, inventario componentes, hex hardcodeados.
-
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts/ds-pre-audit.ps1
-```
-
-Output: `docs/_generated/frontend/*.md`
+## 3. UI / Design System (Herramientas)
 
 ### ds-fix-hex.ps1
 
@@ -235,39 +121,7 @@ Output: `supabase/migrations/{timestamp}_{prompt-name}.sql`
 
 ---
 
-## 6. Repo Optimization (Nuevo)
-
-Scripts de auditoria integral y limpieza del repo. Diseñados para ejecucion en paralelo via Windows Terminal.
-
-### repo-audit-collect.ps1
-
-Audita infraestructura de agentes (REGISTRY.yml, AGENT.md, skills). Detecta orfanos, paths rotos, solapamiento de keywords.
-
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts/repo-audit-collect.ps1
-```
-
-Output: `docs/output/repo-audit/agent-crossref.json`
-
-### docs-audit-collect.ps1
-
-Escanea `docs/` completo: directorios vacios, duplicados output vs \_generated, naming violations, stubs, dead references, heatmap de tamanio.
-
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts/docs-audit-collect.ps1
-```
-
-Output: `docs/output/repo-audit/docs-waste.json`
-
-### scripts-audit-collect.ps1
-
-Audita `scripts/` completo: salud por archivo (tamanio, params, outputs), cross-ref con package.json, scripts muertos, migraciones Supabase.
-
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts/scripts-audit-collect.ps1
-```
-
-Output: `docs/output/repo-audit/scripts-health.json`
+## 4. Repo Optimization
 
 ### repo-optimize.ps1
 
@@ -291,7 +145,7 @@ powershell -ExecutionPolicy Bypass -File scripts/repo-parallel-optimize.ps1
 
 ---
 
-## 7. QA y Verificacion
+## 5. QA y Verificacion
 
 ### workdays-verifier.ps1
 
@@ -308,20 +162,9 @@ powershell -ExecutionPolicy Bypass -File scripts/workdays-verifier.ps1 -Reset
 
 Output: `docs/output/workdays-progressive.md`
 
-### testing-tracker.js
-
-CLI para visualizar estado del pipeline de testing: observaciones, tickets y planes.
-
-```powershell
-node scripts/testing-tracker.js
-node scripts/testing-tracker.js --tickets
-node scripts/testing-tracker.js --open
-node scripts/testing-tracker.js --obs
-```
-
 ---
 
-## 8. Datos y Utilidades
+## 6. Datos y Utilidades
 
 ### extract-recipes.js
 
@@ -351,32 +194,45 @@ Verifica la existencia de paths criticos del proyecto (scripts, workflows, outpu
 powershell -ExecutionPolicy Bypass -File scripts/_path-check.ps1
 ```
 
+### auto-prompter.ps1
+
+Envia prompts estrategicos al CLI activo cada N minutos (via SendKeys). Cicla por 10 prompts predefinidos de verificacion y continuacion.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/auto-prompter.ps1
+powershell -ExecutionPolicy Bypass -File scripts/auto-prompter.ps1 -IntervalMinutes 10
+```
+
+### modularize-css.ps1
+
+Script one-time para modularizar `components.css` en 5 archivos. Ya ejecutado.
+
 ---
 
 ## Flujo de trabajo recomendado
 
 ```text
 ABRO VS CODE
-  +-- security-startup.ps1          (una vez)
+  +-- security-startup.ps1              (una vez)
 
 DURANTE LA SESION (4 terminales)
-  |-- security-watchdog.ps1 -LogToFile   (siempre corriendo)
-  |-- ops-watchdog.ps1                    (siempre corriendo)
-  |-- workdays-verifier.ps1 -Watch        (durante sprints workdays)
-  +-- flow-tracer.ps1                     (cuando quiero auditar flujo)
+  |-- tests/watchdogs/security-watchdog.ps1 -LogToFile   (siempre corriendo)
+  |-- tests/watchdogs/ops-watchdog.ps1                    (siempre corriendo)
+  |-- scripts/workdays-verifier.ps1 -Watch                (durante sprints workdays)
+  +-- scripts/flow-tracer.ps1                              (cuando quiero auditar flujo)
 
 REPO MAINTENANCE (bajo demanda)
-  +-- repo-parallel-optimize.ps1 -DryRun  (preview + live)
+  +-- scripts/repo-parallel-optimize.ps1 -DryRun  (preview + live)
 
 CIERRO VS CODE
-  +-- security-shutdown.ps1          (una vez)
+  +-- security-shutdown.ps1              (una vez)
 ```
 
 ## Archivos generados
 
 | Script               | Output              | Ubicacion                                       |
 | :------------------- | :------------------ | :---------------------------------------------- |
-| security-watchdog    | Log diario          | `scripts/logs/watchdog-{fecha}.log`             |
+| security-watchdog    | Log diario          | `tests/watchdogs/logs/watchdog-{fecha}.log`     |
 | flow-tracer          | Reporte de flujo    | `docs/output/qa/{fecha}_audit_flow-trace.md`    |
 | workdays-verifier    | Reporte progresivo  | `docs/output/qa/workdays-progressive.md`        |
 | backup-configs       | ZIP de configs      | `scripts/backups/config-backup-{timestamp}.zip` |
@@ -386,4 +242,46 @@ CIERRO VS CODE
 | repo collectors      | JSON reports        | `docs/output/repo-audit/*.json`                 |
 | repo-optimize        | Optimization report | `docs/output/repo-audit/optimization-report.md` |
 
-> Tanto `scripts/logs/` como `scripts/backups/` estan en `.gitignore`.
+> `scripts/backups/` esta en `.gitignore`.
+
+---
+
+## Tests Directory
+
+Scripts de QA movidos a `tests/` — ver estructura completa:
+
+```text
+tests/
+├── sql/          3 SQL audits (cash, payments, stock)
+├── audits/       5 JS audits (css, jsdoc, links, modules, audit.mjs)
+├── scanners/     4 PS1 (ui-component-scanner, ds-verify, ds-pre-audit, select-risk-analyzer)
+├── watchdogs/    3 PS1 (ds, ops, security) + logs/
+├── runners/      2 (run-audits.mjs, testing-tracker.js)
+├── collectors/   3 PS1 (docs, repo, scripts)
+├── fixtures/     3 CSVs de test (gbol, extracciones, passline)
+└── .env.example
+```
+
+### Comandos rapidos
+
+```powershell
+# Auditorias JS
+node tests/audits/audit-css.js
+node tests/audits/audit-links.js
+node tests/audits/audit-modules.js
+
+# Scanner UI
+powershell -ExecutionPolicy Bypass -File tests/scanners/ui-component-scanner.ps1
+powershell -ExecutionPolicy Bypass -File tests/scanners/ds-verify.ps1
+
+# Watchdogs
+powershell -ExecutionPolicy Bypass -File tests/watchdogs/security-watchdog.ps1 -LogToFile
+powershell -ExecutionPolicy Bypass -File tests/watchdogs/ops-watchdog.ps1
+
+# SQL Audits
+node tests/runners/run-audits.mjs
+node tests/runners/run-audits.mjs --suite stock
+
+# Testing tracker
+node tests/runners/testing-tracker.js --tickets
+```

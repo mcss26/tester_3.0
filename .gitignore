@@ -32,6 +32,14 @@ token*.json
 *.log
 scripts/logs/
 scripts/backups/
+tests/watchdogs/logs/
+
+# Playwright
+tests/e2e/report/
+tests/e2e/.auth/
+test-results/
+playwright-report/
+blob-report/
 
 # Scanner output (regenerable)
 docs/output/ui-scan/

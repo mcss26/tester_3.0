@@ -149,10 +149,11 @@
                     <input type="number" step="0.01" class="input input-xs text-center" 
                         value="${(tax.rate * 100).toFixed(2)}" 
                         data-field="rate" data-id="${tax.id}"
+                        aria-label="Tasa de ${window.Utils.escapeHtml(tax.name)}"
                         style="width: 80px;">
                 </td>
                 <td class="table-cell cell-pad">
-                    <select class="input input-xs" data-field="applies_to" data-id="${tax.id}">
+                    <select class="input input-xs" data-field="applies_to" data-id="${tax.id}" aria-label="Base de aplicación para ${window.Utils.escapeHtml(tax.name)}">
                         <option value="base" ${tax.applies_to === 'base' ? 'selected' : ''}>Base imponible</option>
                         <option value="final" ${tax.applies_to === 'final' ? 'selected' : ''}>Precio final</option>
                         <option value="profit" ${tax.applies_to === 'profit' ? 'selected' : ''}>Utilidad</option>
@@ -271,12 +272,12 @@
         ui.skuTypesTableBody.innerHTML = filtered.map(sku => `
             <tr class="table-row ${!sku.active ? 'row-muted' : ''}" data-id="${sku.id}">
                 <td class="table-cell cell-pad text-center">
-                    <input type="checkbox" data-id="${sku.id}" 
+                    <input type="checkbox" data-id="${sku.id}" aria-label="Seleccionar ${window.Utils.escapeHtml(sku.nombre)}"
                         ${state.selectedSkus.has(sku.id) ? 'checked' : ''}>
                 </td>
                 <td class="table-cell cell-pad">${window.Utils.escapeHtml(sku.nombre)}</td>
                 <td class="table-cell cell-pad text-center">
-                    <select class="input input-xs" data-field="tipo" data-id="${sku.id}">
+                    <select class="input input-xs" data-field="tipo" data-id="${sku.id}" aria-label="Tipo de ${window.Utils.escapeHtml(sku.nombre)}">
                         <option value="bar" ${sku.tipo === 'bar' ? 'selected' : ''}>🍺 Bar</option>
                         <option value="limpieza" ${sku.tipo === 'limpieza' ? 'selected' : ''}>🧹 Limpieza</option>
                         <option value="descartables" ${sku.tipo === 'descartables' ? 'selected' : ''}>📦 Descartables</option>

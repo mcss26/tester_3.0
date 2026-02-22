@@ -1,0 +1,4548 @@
+﻿{
+  "config": {
+    "configFile": "C:\\Users\\siste\\Documents\\GitHub\\tester_3.0\\playwright.config.js",
+    "rootDir": "C:/Users/siste/Documents/GitHub/tester_3.0/tests/e2e",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 6
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/Users/siste/Documents/GitHub/tester_3.0/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 6
+        },
+        "id": "setup",
+        "name": "setup",
+        "testDir": "C:/Users/siste/Documents/GitHub/tester_3.0/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "/auth\\.setup\\.js/"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "C:/Users/siste/Documents/GitHub/tester_3.0/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 6
+        },
+        "id": "smoke",
+        "name": "smoke",
+        "testDir": "C:/Users/siste/Documents/GitHub/tester_3.0/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "/smoke\\.spec\\.js/"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "C:/Users/siste/Documents/GitHub/tester_3.0/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 6
+        },
+        "id": "auth",
+        "name": "auth",
+        "testDir": "C:/Users/siste/Documents/GitHub/tester_3.0/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "/auth\\.spec\\.js/"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "C:/Users/siste/Documents/GitHub/tester_3.0/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 6
+        },
+        "id": "authenticated",
+        "name": "authenticated",
+        "testDir": "C:/Users/siste/Documents/GitHub/tester_3.0/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "/^(?!smoke|auth\\.).*\\.spec\\.js$/"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "runAgents": "none",
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.58.2",
+    "workers": 6,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "auth.setup.js",
+      "file": "auth.setup.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "login como admin y guardar sesi├│n",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "setup",
+              "projectName": "setup",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 9077,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-02-22T04:04:51.864Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f376efe52c54b1a876fd-88d364f086b6c6c5f2aa",
+          "file": "auth.setup.js",
+          "line": 18,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "health-scan.spec.js",
+      "file": "health-scan.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Health: Console errors en todas las p├íginas",
+          "file": "health-scan.spec.js",
+          "line": 66,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Admin Index ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 11810,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:07.965Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-4e7ec4e9de310a8bd25b",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "Admin Workdays ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 11847,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:08.009Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-3b476f0adcf7f0548abb",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "Admin Central Stock ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 10817,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:07.982Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-9a2ba471f65359840a05",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "Admin Pagos ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 12030,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:08.007Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-18988f397fba4344a7da",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "Admin Solicitudes ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 11270,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:07.974Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-6243db75f2cab8a7d9b5",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "Admin Reportes ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 11384,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:08.476Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-40ddf4040aab4ead8697",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "Admin Semanal ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 6940,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "  ÔÜá console.error en Admin Semanal: [\n  \u001b[32m'[supabase-client] CRITICAL: window.supabase not found. Ensure SDK is loaded before this script.'\u001b[39m,\n  \u001b[32m\"Executing inline script violates the following Content Security Policy directive 'script-src 'self' https://cdn.jsdelivr.net'. Either the 'unsafe-inline' keyword, a hash ('sha256-vvt4KWwuNr51XfE5m+hzeNEGhiOfZzG97ccfqGsPwvE='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked.\"\u001b[39m\n]\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:20.932Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-01b0ad7e8d95556dce09",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "Admin Config ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 7010,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:21.429Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-8ebcb5208a5f0dd9253d",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "Admin Master Categor├¡as ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 7136,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:21.778Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-8f8299189e9f52cd6959",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "Admin Master N├│mina ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 7329,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:22.018Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-d5885df2e03857f503ac",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "Admin Master POS ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 7508,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:22.065Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-069c7822d94de2cacd75",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "Admin Master Proveedores ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 8488,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:22.221Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-53a5733d8566ecc670bf",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "Admin Master Tarifario ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 6331,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:27.889Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-06da38e059c7c0aedbf0",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "Admin Test Devenciones ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 6724,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "  ÔÜá console.error en Admin Test Devenciones: [\n  \u001b[32m'[supabase-client] CRITICAL: window.supabase not found. Ensure SDK is loaded before this script.'\u001b[39m,\n  \u001b[32m'[FAIL] Supabase client inicializado: Error: window.sb no existe\\n'\u001b[39m +\n    \u001b[32m'    at assert (http://127.0.0.1:5501/pages/admin/test-devenciones.html:191:27)\\n'\u001b[39m +\n    \u001b[32m'    at http://127.0.0.1:5501/pages/admin/test-devenciones.html:214:5\\n'\u001b[39m +\n    \u001b[32m'    at test (http://127.0.0.1:5501/pages/admin/test-devenciones.html:169:27)\\n'\u001b[39m +\n    \u001b[32m'    at http://127.0.0.1:5501/pages/admin/test-devenciones.html:213:10\\n'\u001b[39m +\n    \u001b[32m'    at http://127.0.0.1:5501/pages/admin/test-devenciones.html:497:5'\u001b[39m,\n  \u001b[32m'[FAIL] Sesi├│n activa (necesaria para RLS): Error: No hay sesi├│n activa. Logueate primero en login.html\\n'\u001b[39m +\n    \u001b[32m'    at assert (http://127.0.0.1:5501/pages/admin/test-devenciones.html:191:27)\\n'\u001b[39m +\n    \u001b[32m'    at http://127.0.0.1:5501/pages/admin/test-devenciones.html:220:5\\n'\u001b[39m +\n    \u001b[32m'    at async test (http://127.0.0.1:5501/pages/admin/test-devenciones.html:169:21)\\n'\u001b[39m +\n    \u001b[32m'    at async http://127.0.0.1:5501/pages/admin/test-devenciones.html:218:4'\u001b[39m,\n  \u001b[32m'[FAIL] Perfil con rol admin o contable: Error: No se pudo obtener perfil\\n'\u001b[39m +\n    \u001b[32m'    at assert (http://127.0.0.1:5501/pages/admin/test-devenciones.html:191:27)\\n'\u001b[39m +\n    \u001b[32m'    at http://127.0.0.1:5501/pages/admin/test-devenciones.html:226:5\\n'\u001b[39m +\n    \u001b[32m'    at async test (http://127.0.0.1:5501/pages/admin/test-devenciones.html:169:21)\\n'\u001b[39m +\n    \u001b[32m'    at async http://127.0.0.1:5501/pages/admin/test-devenciones.html:224:4'\u001b[39m,\n  \u001b[32m\"[FAIL] Tabla staff_accruals existe y es accesible: TypeError: Cannot read properties of undefined (reading 'from')\\n\"\u001b[39m +\n    \u001b[32m'    at http://127.0.0.1:5501/pages/admin/test-devenciones.html:237:45\\n'\u001b[39m +\n    \u001b[32m'    at test (http://127.0.0.1:5501/pages/admin/test-devenciones.html:169:27)\\n'\u001b[39m +\n    \u001b[32m'    at http://127.0.0.1:5501/pages/admin/test-devenciones.html:236:10'\u001b[39m,\n  \u001b[32m\"[FAIL] Columnas requeridas presentes: TypeError: Cannot read properties of undefined (reading 'from')\\n\"\u001b[39m +\n    \u001b[32m'    at http://127.0.0.1:5501/pages/admin/test-devenciones.html:253:39\\n'\u001b[39m +\n    \u001b[32m'    at test (http://127.0.0.1:5501/pages/admin/test-devenciones.html:169:27)\\n'\u001b[39m +\n    \u001b[32m'    at http://127.0.0.1:5501/pages/admin/test-devenciones.html:242:10'\u001b[39m,\n  \u001b[32m\"[FAIL] Unique constraint (work_day_id, user_id) activa: TypeError: Cannot read properties of undefined (reading 'from')\\n\"\u001b[39m +\n    \u001b[32m'    at http://127.0.0.1:5501/pages/admin/test-devenciones.html:262:39\\n'\u001b[39m +\n    \u001b[32m'    at test (http://127.0.0.1:5501/pages/admin/test-devenciones.html:169:27)\\n'\u001b[39m +\n    \u001b[32m'    at http://127.0.0.1:5501/pages/admin/test-devenciones.html:260:10'\u001b[39m,\n  \u001b[32m\"[FAIL] Computed column total_amount funciona: TypeError: Cannot read properties of undefined (reading 'from')\\n\"\u001b[39m +\n    \u001b[32m'    at http://127.0.0.1:5501/pages/admin/test-devenciones.html:271:39\\n'\u001b[39m +\n    \u001b[32m'    at test (http://127.0.0.1:5501/pages/admin/test-devenciones.html:169:27)\\n'\u001b[39m +\n    \u001b[32m'    at http://127.0.0.1:5501/pages/admin/test-devenciones.html:269:10'\u001b[39m,\n  \u001b[32m\"[FAIL] Vista accesible y consultable: TypeError: Cannot read properties of undefined (reading 'from')\\n\"\u001b[39m +\n    \u001b[32m'    at http://127.0.0.1:5501/pages/admin/test-devenciones.html:284:45\\n'\u001b[39m +\n    \u001b[32m'    at test (http://127.0.0.1:5501/pages/admin/test-devenciones.html:169:27)\\n'\u001b[39m +\n    \u001b[32m'    at http://127.0.0.1:5501/pages/admin/test-devenciones.html:283:10'\u001b[39m,\n  \u001b[32m\"[FAIL] Columnas esperadas de la vista: TypeError: Cannot read properties of undefined (reading 'from')\\n\"\u001b[39m +\n    \u001b[32m'    at http://127.0.0.1:5501/pages/admin/test-devenciones.html:290:45\\n'\u001b[39m +\n    \u001b[32m'    at test (http://127.0.0.1:5501/pages/admin/test-devenciones.html:169:27)\\n'\u001b[39m +\n    \u001b[32m'    at http://127.0.0.1:5501/pages/admin/test-devenciones.html:289:10'\u001b[39m,\n  \u001b[32m\"[FAIL] RPC existe y es callable: TypeError: Cannot read properties of undefined (reading 'rpc')\\n\"\u001b[39m +\n    \u001b[32m'    at http://127.0.0.1:5501/pages/admin/test-devenciones.html:302:45\\n'\u001b[39m +\n    \u001b[32m'    at test (http://127.0.0.1:5501/pages/admin/test-devenciones.html:169:27)\\n'\u001b[39m +\n    \u001b[32m'    at http://127.0.0.1:5501/pages/admin/test-devenciones.html:300:10'\u001b[39m,\n  \u001b[32m\"[FAIL] Buscar jornada con convocatorias para test live: TypeError: Cannot read properties of undefined (reading 'from')\\n\"\u001b[39m +\n    \u001b[32m'    at http://127.0.0.1:5501/pages/admin/test-devenciones.html:320:7\\n'\u001b[39m +\n    \u001b[32m'    at test (http://127.0.0.1:5501/pages/admin/test-devenciones.html:169:27)\\n'\u001b[39m +\n    \u001b[32m'    at http://127.0.0.1:5501/pages/admin/test-devenciones.html:318:10'\u001b[39m,\n  \u001b[32m\"[FAIL] RPC export existe y es callable: TypeError: Cannot read properties of undefined (reading 'rpc')\\n\"\u001b[39m +\n    \u001b[32m'    at http://127.0.0.1:5501/pages/admin/test-devenciones.html:425:45\\n'\u001b[39m +\n    \u001b[32m'    at test (http://127.0.0.1:5501/pages/admin/test-devenciones.html:169:27)\\n'\u001b[39m +\n    \u001b[32m'    at http://127.0.0.1:5501/pages/admin/test-devenciones.html:424:10'\u001b[39m,\n  \u001b[32m\"[FAIL] Admin puede leer staff_accruals: TypeError: Cannot read properties of undefined (reading 'from')\\n\"\u001b[39m +\n    \u001b[32m'    at http://127.0.0.1:5501/pages/admin/test-devenciones.html:448:39\\n'\u001b[39m +\n    \u001b[32m'    at test (http://127.0.0.1:5501/pages/admin/test-devenciones.html:169:27)\\n'\u001b[39m +\n    \u001b[32m'    at http://127.0.0.1:5501/pages/admin/test-devenciones.html:447:10'\u001b[39m,\n  \u001b[32m\"[FAIL] Admin puede insertar (con FK v├ílido): TypeError: Cannot read properties of undefined (reading 'from')\\n\"\u001b[39m +\n    \u001b[32m'    at http://127.0.0.1:5501/pages/admin/test-devenciones.html:456:39\\n'\u001b[39m +\n    \u001b[32m'    at test (http://127.0.0.1:5501/pages/admin/test-devenciones.html:169:27)\\n'\u001b[39m +\n    \u001b[32m'    at http://127.0.0.1:5501/pages/admin/test-devenciones.html:453:10'\u001b[39m\n]\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:28.455Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-5c5805bfb99ac45c93b5",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "QR Generator ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 6714,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:28.934Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-8b83ae25cec0b742057a",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "QR Index ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6539,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:29.367Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-889aba158e7fbaeed492",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "QR Monitor ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 6653,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:29.594Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-19166452842600da7eec",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "Operativo Index ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 6327,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:30.725Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-8f5898ce4b2a9d9c6b36",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "Operativo Workday ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 6078,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:34.231Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-8b3d5bca40658aafb24a",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "Operativo Stock ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 6309,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:35.192Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-c0f16bf208f61a11ff4c",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "Operativo An├ílisis ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 8049,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:35.661Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-b7a027e50655b775d588",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "Operativo Solicitudes ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 7578,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:35.922Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-8f2b461ecbfc80449fe8",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "Operativo CMS Members ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 7397,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:36.265Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-b68bb295c1d0548aacb3",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "Operativo Master SKU ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 7406,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "  ÔÜá console.error en Operativo Master SKU: [\n  \u001b[32m'Failed to load resource: the server responded with a status of 400 ()'\u001b[39m,\n  \u001b[32m'Error loading SKUs: {code: 42703, details: null, hint: null, message: column master_categories_1.name does not exist}'\u001b[39m\n]\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:37.069Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-6976c385d0873a002d7e",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "Operativo Master Proveedores ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 6280,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:40.321Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-64b56dabd818a4e8538f",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "Operativo Scanner ÔÇö sin console.error ni uncaught exceptions",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 4,
+                      "status": "failed",
+                      "duration": 6394,
+                      "error": {
+                        "message": "Error: Uncaught exceptions en Operativo Scanner: Cannot access 'html5QrCode' before initialization\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoHaveLength\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected length: \u001b[32m0\u001b[39m\nReceived length: \u001b[31m1\u001b[39m\nReceived array:  \u001b[31m[\"Cannot access 'html5QrCode' before initialization\"]\u001b[39m",
+                        "stack": "Error: Uncaught exceptions en Operativo Scanner: Cannot access 'html5QrCode' before initialization\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoHaveLength\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected length: \u001b[32m0\u001b[39m\nReceived length: \u001b[31m1\u001b[39m\nReceived array:  \u001b[31m[\"Cannot access 'html5QrCode' before initialization\"]\u001b[39m\n    at C:\\Users\\siste\\Documents\\GitHub\\tester_3.0\\tests\\e2e\\health-scan.spec.js:91:81",
+                        "location": {
+                          "file": "C:\\Users\\siste\\Documents\\GitHub\\tester_3.0\\tests\\e2e\\health-scan.spec.js",
+                          "column": 81,
+                          "line": 91
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 89 |\u001b[39m       }\n \u001b[90m 90 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 91 |\u001b[39m       expect(errors\u001b[33m,\u001b[39m \u001b[32m`Uncaught exceptions en ${pg.name}: ${errors.join('; ')}`\u001b[39m)\u001b[33m.\u001b[39mtoHaveLength(\u001b[35m0\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                                                                 \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 92 |\u001b[39m     })\u001b[33m;\u001b[39m\n \u001b[90m 93 |\u001b[39m   }\n \u001b[90m 94 |\u001b[39m })\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\siste\\Documents\\GitHub\\tester_3.0\\tests\\e2e\\health-scan.spec.js",
+                            "column": 81,
+                            "line": 91
+                          },
+                          "message": "Error: Uncaught exceptions en Operativo Scanner: Cannot access 'html5QrCode' before initialization\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoHaveLength\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected length: \u001b[32m0\u001b[39m\nReceived length: \u001b[31m1\u001b[39m\nReceived array:  \u001b[31m[\"Cannot access 'html5QrCode' before initialization\"]\u001b[39m\n\n  89 |       }\n  90 |\n> 91 |       expect(errors, `Uncaught exceptions en ${pg.name}: ${errors.join('; ')}`).toHaveLength(0);\n     |                                                                                 ^\n  92 |     });\n  93 |   }\n  94 | });\n    at C:\\Users\\siste\\Documents\\GitHub\\tester_3.0\\tests\\e2e\\health-scan.spec.js:91:81"
+                        }
+                      ],
+                      "stdout": [
+                        {
+                          "text": "  ÔÜá pageerror en Operativo Scanner: [ \u001b[32m\"Cannot access 'html5QrCode' before initialization\"\u001b[39m ]\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:41.519Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\siste\\Documents\\GitHub\\tester_3.0\\test-results\\health-scan-Health-Console-650dd-rror-ni-uncaught-exceptions-authenticated\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\siste\\Documents\\GitHub\\tester_3.0\\test-results\\health-scan-Health-Console-650dd-rror-ni-uncaught-exceptions-authenticated\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\Users\\siste\\Documents\\GitHub\\tester_3.0\\test-results\\health-scan-Health-Console-650dd-rror-ni-uncaught-exceptions-authenticated\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\siste\\Documents\\GitHub\\tester_3.0\\tests\\e2e\\health-scan.spec.js",
+                        "column": 81,
+                        "line": 91
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-7a9a55ae070b1a8d5b75",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "Operativo Scanner Mock ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6496,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:43.514Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-ee65df2073ae88d91b06",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "Encargado Barra Index ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 6532,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "  ÔÜá console.error en Encargado Barra Index: [\n  \u001b[32m'TypeError: Failed to fetch\\n'\u001b[39m +\n    \u001b[32m'    at https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:79863\\n'\u001b[39m +\n    \u001b[32m'    at https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:84376\\n'\u001b[39m +\n    \u001b[32m'    at Zt (https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:84544)\\n'\u001b[39m +\n    \u001b[32m'    at https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:130758\\n'\u001b[39m +\n    \u001b[32m'    at qr._useSession (https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:128306)\\n'\u001b[39m +\n    \u001b[32m'    at async qr._getUser (https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:130617)\\n'\u001b[39m +\n    \u001b[32m'    at async https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:130420'\u001b[39m,\n  \u001b[32m'Error getting user: AuthRetryableFetchError: Failed to fetch\\n'\u001b[39m +\n    \u001b[32m'    at https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:84433\\n'\u001b[39m +\n    \u001b[32m'    at async Zt (https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:84090)\\n'\u001b[39m +\n    \u001b[32m'    at async https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:130752\\n'\u001b[39m +\n    \u001b[32m'    at async qr._useSession (https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:128300)\\n'\u001b[39m +\n    \u001b[32m'    at async qr._getUser (https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:130617)\\n'\u001b[39m +\n    \u001b[32m'    at async https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:130420'\u001b[39m,\n  \u001b[32m'Session exists but no profile found.'\u001b[39m,\n  \u001b[32m'TypeError: Failed to fetch\\n'\u001b[39m +\n    \u001b[32m'    at https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:79863\\n'\u001b[39m +\n    \u001b[32m'    at https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:84376\\n'\u001b[39m +\n    \u001b[32m'    at Zt (https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:84544)\\n'\u001b[39m +\n    \u001b[32m'    at https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:130758\\n'\u001b[39m +\n    \u001b[32m'    at qr._useSession (https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:128306)\\n'\u001b[39m +\n    \u001b[32m'    at async qr._getUser (https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:130617)\\n'\u001b[39m +\n    \u001b[32m'    at async https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:130420'\u001b[39m,\n  \u001b[32m'Error getting user: AuthRetryableFetchError: Failed to fetch\\n'\u001b[39m +\n    \u001b[32m'    at https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:84433\\n'\u001b[39m +\n    \u001b[32m'    at async Zt (https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:84090)\\n'\u001b[39m +\n    \u001b[32m'    at async https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:130752\\n'\u001b[39m +\n    \u001b[32m'    at async qr._useSession (https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:128300)\\n'\u001b[39m +\n    \u001b[32m'    at async qr._getUser (https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:130617)\\n'\u001b[39m +\n    \u001b[32m'    at async https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:130420'\u001b[39m,\n  \u001b[32m'Session exists but no profile found.'\u001b[39m\n]\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:43.679Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-57cf8fef16920a8550d6",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "Encargado Barra Noche ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 6482,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "  ÔÜá console.error en Encargado Barra Noche: [\n  \u001b[32m'Error fetching profile: {message: TypeError: Failed to fetch, details: TypeError: Failed to fetch\\n'\u001b[39m +\n    \u001b[32m'    at https://cdn.jsdeÔÇªmodules/encargados/encargado-barra-noche.js:65:21, hint: , code: }'\u001b[39m,\n  \u001b[32m'Session exists but no profile found.'\u001b[39m\n]\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:43.726Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-d80c9c9201be21d8af77",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "Encargado Barra Personal ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 6256,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "  ÔÜá console.error en Encargado Barra Personal: [\n  \u001b[32m'TypeError: Failed to fetch\\n'\u001b[39m +\n    \u001b[32m'    at https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:79863\\n'\u001b[39m +\n    \u001b[32m'    at https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:84376\\n'\u001b[39m +\n    \u001b[32m'    at Zt (https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:84544)\\n'\u001b[39m +\n    \u001b[32m'    at https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:130758\\n'\u001b[39m +\n    \u001b[32m'    at qr._useSession (https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:128306)\\n'\u001b[39m +\n    \u001b[32m'    at async qr._getUser (https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:130617)\\n'\u001b[39m +\n    \u001b[32m'    at async https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:130420'\u001b[39m,\n  \u001b[32m'Error getting user: AuthRetryableFetchError: Failed to fetch\\n'\u001b[39m +\n    \u001b[32m'    at https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:84433\\n'\u001b[39m +\n    \u001b[32m'    at async Zt (https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:84090)\\n'\u001b[39m +\n    \u001b[32m'    at async https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:130752\\n'\u001b[39m +\n    \u001b[32m'    at async qr._useSession (https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:128300)\\n'\u001b[39m +\n    \u001b[32m'    at async qr._getUser (https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:130617)\\n'\u001b[39m +\n    \u001b[32m'    at async https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:130420'\u001b[39m,\n  \u001b[32m'Session exists but no profile found.'\u001b[39m,\n  \u001b[32m'TypeError: Failed to fetch\\n'\u001b[39m +\n    \u001b[32m'    at https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:79863\\n'\u001b[39m +\n    \u001b[32m'    at https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:84376\\n'\u001b[39m +\n    \u001b[32m'    at Zt (https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:84544)\\n'\u001b[39m +\n    \u001b[32m'    at https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:130758\\n'\u001b[39m +\n    \u001b[32m'    at qr._useSession (https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:128306)\\n'\u001b[39m +\n    \u001b[32m'    at async qr._getUser (https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:130617)\\n'\u001b[39m +\n    \u001b[32m'    at async https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:130420'\u001b[39m,\n  \u001b[32m'Error getting user: AuthRetryableFetchError: Failed to fetch\\n'\u001b[39m +\n    \u001b[32m'    at https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:84433\\n'\u001b[39m +\n    \u001b[32m'    at async Zt (https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:84090)\\n'\u001b[39m +\n    \u001b[32m'    at async https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:130752\\n'\u001b[39m +\n    \u001b[32m'    at async qr._useSession (https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:128300)\\n'\u001b[39m +\n    \u001b[32m'    at async qr._getUser (https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:130617)\\n'\u001b[39m +\n    \u001b[32m'    at async https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js:7:130420'\u001b[39m,\n  \u001b[32m'Session exists but no profile found.'\u001b[39m\n]\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:44.487Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-1289294b635940ab6fb6",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "Encargado Caja Index ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 6567,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:46.611Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-a0013c73417e0f243f3b",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "Encargado Caja Noche ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 9590,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:50.670Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-fe191e6d7a6741cc3704",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "Encargado Caja Personal ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6594,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:50.024Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-686cc5af818997b8d88e",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "Encargado Recepci├│n ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 6693,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:50.225Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-8c6085de945800f77ec5",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "Log├¡stica Index ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 6689,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:50.227Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-a6bba5f3559806276899",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "Log├¡stica Stock ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 6779,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:50.758Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-3c20824ce03ce3b40223",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "Log├¡stica Distribuci├│n ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 6346,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "  ÔÜá console.error en Log├¡stica Distribuci├│n: [\n  \u001b[32m'Failed to load resource: the server responded with a status of 400 ()'\u001b[39m,\n  \u001b[32m'Error loading requests: {code: 42703, details: null, hint: null, message: column replenishment_requests.priority does not exist}'\u001b[39m\n]\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:53.195Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-76f300e52bcd28b9415c",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "Log├¡stica Recepci├│n ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6787,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:56.632Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-8d87c5872f915a955286",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "Log├¡stica Seguimiento ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 7063,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "  ÔÜá console.error en Log├¡stica Seguimiento: [ \u001b[32m'SlidePanel: Overlay or Panel element not found'\u001b[39m ]\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:56.936Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-ba17e979dc419b2e6d76",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "Staff Barra Index ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 6869,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:56.933Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-5e53e7a2fa0e08cc838a",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "Staff Caja Index ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 6380,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:57.553Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-b43ed3608c97a33656ca",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            },
+            {
+              "title": "Gerencia Balance Semanal ÔÇö sin console.error ni uncaught exceptions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 6170,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:05:59.554Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-312ffd02e15e66dc6e01",
+              "file": "health-scan.spec.js",
+              "line": 68,
+              "column": 5
+            }
+          ]
+        },
+        {
+          "title": "Health: Recursos rotos (CSS/JS/img 404)",
+          "file": "health-scan.spec.js",
+          "line": 97,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Admin Index ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 5067,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:02.098Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-dfef86c5b3ff0e05cc4e",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "Admin Workdays ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 8804,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:03.432Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-00a2512abf2cdc63c46f",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "Admin Central Stock ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 18493,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:03.817Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-ac6f39d1ff61d5b9440a",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "Admin Pagos ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 7484,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:03.948Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-66f8a530af91cadf7828",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "Admin Solicitudes ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 8117,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:04.014Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-cbc23117deb204ff76b3",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "Admin Reportes ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 7222,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:05.738Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-5d7fc137ae08062c4397",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "Admin Semanal ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 5969,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:07.182Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-d13d40de040d34ea05e9",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "Admin Config ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 6639,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:11.450Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-00c2fe7a15999b56d687",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "Admin Master Categor├¡as ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 6226,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:12.144Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-ddafe8f28725f9969474",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "Admin Master N├│mina ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6434,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:12.253Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-859912f343a0081e2e19",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "Admin Master POS ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 6927,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:12.976Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-38a9137fe24eef2123ff",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "Admin Master Proveedores ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 6618,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:13.173Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-9be5871086594b42c9c7",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "Admin Master Tarifario ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 6736,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:18.106Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-3d90353f992eee1413ba",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "Admin Test Devenciones ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 5054,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:18.391Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-0cf3c72053bf692665e6",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "QR Generator ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5206,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:18.706Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-57baf192ac3a0d7466c7",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "QR Index ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 7950,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:19.810Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-4fcd8e0d3e2b3ae2858d",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "QR Monitor ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 7480,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:19.923Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-c2395c01820820863f5d",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "Operativo Index ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 5985,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:22.327Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-d0197d9c14a8466e0122",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "Operativo Workday ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 5737,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:23.462Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-762633312a85d29dacd6",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "Operativo Stock ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6358,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:23.929Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-04d73e7e7a852e46dbde",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "Operativo An├ílisis ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 5719,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:24.856Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-024475b8bad4efeb5588",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "Operativo Solicitudes ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 10564,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:27.418Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-cf22b86abf775f3eb6ae",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "Operativo CMS Members ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 10992,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:27.776Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-f67546755b11a373fecc",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "Operativo Master SKU ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 6375,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:28.328Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-e2d5fcaddf0ba4c79b2a",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "Operativo Master Proveedores ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 6508,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:29.222Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-194b26ac4b6f93f5bf73",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "Operativo Scanner ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6973,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:30.306Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-3b376f55ed4b13858d94",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "Operativo Scanner Mock ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 18246,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:30.594Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-9b97df349f78af6a50eb",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "Encargado Barra Index ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 8417,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:34.724Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-275280e3e44c0151d1a1",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "Encargado Barra Noche ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 6474,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:35.746Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-cdf013a62cb2cc4df67f",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "Encargado Barra Personal ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 7673,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:37.296Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-b37b81c431371c0aad75",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "Encargado Caja Index ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 5457,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:37.997Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-858593411b5c4230f140",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "Encargado Caja Noche ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 8423,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:38.791Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-7fc127503690fae0acd2",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "Encargado Caja Personal ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 6704,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:42.237Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-b58fc5b48ee736a70e45",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "Encargado Recepci├│n ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 5514,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:43.161Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-cc14261bb475f5bf0008",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "Log├¡stica Index ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 6184,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:43.473Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-e52b93f70ed8ea5f0481",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "Log├¡stica Stock ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6788,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:44.988Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-260790841e4fc2d3f5bb",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "Log├¡stica Distribuci├│n ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 7149,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:47.233Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-8e16730c908c83e453ea",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "Log├¡stica Recepci├│n ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 6696,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:48.689Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-7fca609383bc48db73e3",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "Log├¡stica Seguimiento ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 6818,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:48.861Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-00fc5302e490e1259e8b",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "Staff Barra Index ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 3778,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:48.956Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-b6573e8614f8b45f3d18",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "Staff Caja Index ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 8154,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:49.675Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-55c469376d8543e1cf8f",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            },
+            {
+              "title": "Gerencia Balance Semanal ÔÇö sin recursos 404/500",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6652,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:51.796Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-6664c8404b67cc5e6642",
+              "file": "health-scan.spec.js",
+              "line": 99,
+              "column": 5
+            }
+          ]
+        },
+        {
+          "title": "Health: IDs duplicados en el DOM",
+          "file": "health-scan.spec.js",
+          "line": 132,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Admin Index ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 5108,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:52.750Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-d5617b4c8614ed908ac4",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "Admin Workdays ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 5445,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:54.399Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-932942f0c25d15301121",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "Admin Central Stock ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 6328,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:55.401Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-05f64106000db45070fc",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "Admin Pagos ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 5409,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:55.697Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-66395b5df057b695b93b",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "Admin Solicitudes ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 5254,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:57.844Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-0232be10d2cdadcfc880",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "Admin Reportes ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 5237,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:57.874Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-fe68440341ea92953dfa",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "Admin Semanal ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5123,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:58.465Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-4e5a0482d8af73e90df2",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "Admin Config ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 5177,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:06:59.862Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-b6a688d9dce01828967a",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "Admin Master Categor├¡as ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 5270,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:07:01.117Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-14678b5e0b9084694626",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "Admin Master N├│mina ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 5845,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:07:01.747Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-f1d7760c7a9d223c7f9f",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "Admin Master POS ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 5587,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:07:03.112Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-054c4cb8d7a983aeb03a",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "Admin Master Proveedores ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 5686,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:07:03.127Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-31087f75a5eeb4edaa8d",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "Admin Master Tarifario ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5808,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:07:03.604Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-9366f6de9a6ab49055b5",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "Admin Test Devenciones ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 5704,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:07:05.061Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-c9ff1f4404975c1402c2",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "QR Generator ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 5231,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:07:06.401Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-2cbddeb9704072b351a9",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "QR Index ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 5419,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:07:07.607Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-98db476d8db920feb5f3",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "QR Monitor ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 5343,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:07:08.714Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-0b9a41f52f4b550c92bb",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "Operativo Index ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 5468,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:07:08.827Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-4025992dd20c58f69a2a",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "Operativo Workday ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5274,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:07:09.429Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-3e5ee55ab0aa9640df4b",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "Operativo Stock ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 5183,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:07:10.784Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-16f7301a42ef06b25392",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "Operativo An├ílisis ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 5856,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:07:11.646Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-7c4e0b2cc8197236ab69",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "Operativo Solicitudes ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 5164,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:07:13.039Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-b3e8b9a7317447857518",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "Operativo CMS Members ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 5173,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:07:14.069Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-1d06eef758a9d848376a",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "Operativo Master SKU ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 5269,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:07:14.308Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-b78fd1ee9e696413570c",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "Operativo Master Proveedores ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5077,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:07:14.715Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-1f70071472f8a63c0706",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "Operativo Scanner ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 5206,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:07:15.980Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-e95f726f165833bd2cbd",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "Operativo Scanner Mock ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 5830,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:07:17.517Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-99315f594f4ddb4af8d3",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "Encargado Barra Index ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 5257,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:07:18.214Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-205f8d0bfa6d58b9b3dd",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "Encargado Barra Noche ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 5119,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:07:19.252Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-f0fb4797cd7c3b17840f",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "Encargado Barra Personal ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 5669,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:07:19.587Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-ca3c5eb870561017808a",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "Encargado Caja Index ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5777,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:07:19.802Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-0b55aa96d34beffe0714",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "Encargado Caja Noche ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 5527,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:07:21.197Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-1066bd70b2eaaadd66d2",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "Encargado Caja Personal ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 5063,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:07:23.358Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-140164c7699d6656a327",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "Encargado Recepci├│n ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 5267,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:07:23.479Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-f8031d8ce48aed05af27",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "Log├¡stica Index ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 5195,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:07:24.380Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-53bd2b6b940c497c74eb",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "Log├¡stica Stock ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 5219,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:07:25.266Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-3ccbbd949979aa97444e",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "Log├¡stica Distribuci├│n ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5118,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:07:25.590Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-258d024b900a0042bfc6",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "Log├¡stica Recepci├│n ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 5061,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:07:26.736Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-22c2a2ee9f2cf3fdb34a",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "Log├¡stica Seguimiento ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 4785,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:07:28.431Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-28e6742b59a0d44259f0",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "Staff Barra Index ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 4881,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:07:28.758Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-69662e4f15fb13ea0666",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "Staff Caja Index ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 4831,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:07:29.587Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-253a4ef693004271bcaa",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            },
+            {
+              "title": "Gerencia Balance Semanal ÔÇö sin IDs duplicados",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "authenticated",
+                  "projectName": "authenticated",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 4934,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-22T04:07:30.498Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "60e150e385d66d959fd6-0756b392ef59fe01fbbf",
+              "file": "health-scan.spec.js",
+              "line": 134,
+              "column": 5
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-02-22T04:04:50.184Z",
+    "duration": 165320.57700000002,
+    "expected": 126,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

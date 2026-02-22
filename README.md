@@ -7,30 +7,30 @@
 
 ## Arquitectura
 
-| Capa     | Tecnología                                                           |
-| -------- | -------------------------------------------------------------------- |
-| Frontend | HTML estático + Vanilla JS (IIFE, `window.X` exports)                |
-| Estilos  | CSS modular: `tokens.css` + 5 modulares + `theme-swiss.css` (opt-in) |
-| Backend  | Supabase (Auth, Postgres 65 tablas, 27 vistas, 38 RPCs, Edge Funcs)  |
-| Tooling  | Node.js (audits) + PowerShell (scans, verificación)                  |
-| Hosting  | Estático (sin bundler, sin framework)                                |
+| Capa     | Tecnología                                                                                                                                     |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| Frontend | HTML estático + Vanilla JS (ES modules)                                                                                                        |
+| Estilos  | CSS modular: `tokens.css` + 5 modulares (`base`, `layout`, `components`, `forms`, `utilities`) + `theme-swiss.css` (opt-in) + 16 page-specific |
+| Backend  | Supabase (Auth, Postgres 65 tablas, 27 vistas, 38 RPCs, Edge Functions)                                                                        |
+| Tooling  | Node.js (audits) + PowerShell (scans, watchdogs, verificación) + Playwright (E2E)                                                              |
+| Hosting  | Estático (sin bundler, sin framework)                                                                                                          |
 
 ## Estructura del Repositorio
 
 ```text
 tester_3.0/
-├── pages/           47 HTML (8 módulos: admin, encargados, operativo, logística, staff, gerencia, members, prototypes)
+├── pages/          46 HTML (7 módulos: admin, encargados, operativo, logística, staff, gerencia, prototypes)
 ├── assets/
-│   ├── css/         tokens.css + 5 modulares (base/layout/components/forms/utilities) + theme-swiss.css + 16 page-specific
+│   ├── css/        tokens.css + 5 modulares (base/layout/components/forms/utilities) + theme-swiss.css (opt-in) + 16 page-specific
 │   └── js/
-│       ├── core/    21 módulos (auth, config, router, utils, supabase-client, custom-dropdown)
-│       ├── modules/ 41 módulos de negocio (6 dominios)
+│       ├── core/   20 módulos (auth, config, router, utils, supabase-client)
+│       ├── modules/ 42 módulos de negocio
 │       └── importers/ 6 importadores (GBOL, AFIP, Passline)
-├── scripts/         35 herramientas (audit, extract, scan)
-├── docs/            design-system/, source-of-truth/, operaciones/
-├── supabase/        29 migraciones + 1 edge function
-├── .agent/          4 agentes, 11 workflows
-└── tests/           4 suites
+├── scripts/        17 herramientas operativas (fix, extract, backup, context)
+├── docs/           design-system/ (consolidado ✅), source-of-truth/, operaciones/
+├── supabase/       29 migraciones + 1 edge function
+├── .agent/         4 agentes, 12 workflows, 22 skills
+└── tests/          8 subdirs: sql/ audits/ scanners/ watchdogs/ runners/ collectors/ fixtures/ e2e/ (9 specs)
 ```
 
 ## Módulos por Dominio
@@ -54,14 +54,17 @@ npm run audit
 
 ## Scripts
 
-| Comando                 | Descripción                                       | Script                     |
-| ----------------------- | ------------------------------------------------- | -------------------------- |
-| `npm run audit`         | Ejecuta todas las auditorías                      | —                          |
-| `npm run audit:modules` | Valida reglas base JS en `assets/js/modules`      | `scripts/audit.mjs`        |
-| `npm run audit:css`     | Detecta `<style>` e inline styles en `pages/`     | `scripts/audit-css.js`     |
-| `npm run audit:pages`   | Audita HTML y referencias de assets locales       | `scripts/audit-modules.js` |
-| `npm run audit:links`   | Valida links locales en `.md` y `.html`           | `scripts/audit-links.js`   |
-| `npm run test`          | Ejecuta suites de testing (stock, cash, payments) | `tests/run-audits.mjs`     |
+| Comando                  | Descripción                                   | Script                          |
+| ------------------------ | --------------------------------------------- | ------------------------------- |
+| `npm run audit`          | Ejecuta todas las auditorías                  | —                               |
+| `npm run audit:modules`  | Valida reglas base JS en `assets/js/modules`  | `tests/audits/audit.mjs`        |
+| `npm run audit:css`      | Detecta `<style>` e inline styles en `pages/` | `tests/audits/audit-css.js`     |
+| `npm run audit:pages`    | Audita HTML y referencias de assets locales   | `tests/audits/audit-modules.js` |
+| `npm run audit:links`    | Valida links locales en `.md` y `.html`       | `tests/audits/audit-links.js`   |
+| `npm run test:sql`       | Ejecuta suites SQL (stock, cash, payments)    | `tests/runners/run-audits.mjs`  |
+| `npm run test:e2e`       | Ejecuta E2E con Playwright                    | `npx playwright test`           |
+| `npm run test:e2e:smoke` | Solo smoke tests                              | Playwright smoke.spec.js        |
+| `npm run test`           | Todas las auditorías + SQL tests + E2E        | —                               |
 
 ## Herramientas PowerShell / Node
 
@@ -78,8 +81,16 @@ npm run audit
 - **GS Compliance:** Score avg **81%** · 32/45 páginas compliant (≥80) · 5 launchers N/A
 - **JSDoc Coverage:** **9%** (65/710 funciones documentadas)
 - Spec completa: [`docs/design-system/MASTER.md`](docs/design-system/MASTER.md)
-- Compliance matrix: [`docs/output/ui-scan/compliance-matrix.md`](docs/output/ui-scan/compliance-matrix.md)
+- Compliance matrix: `docs/output/ui-scan/compliance-matrix.md` (regenerar con `ui-component-scanner.ps1`)
 - JSDoc report: [`docs/output/jsdoc-coverage.md`](docs/output/jsdoc-coverage.md)
+
+## E2E Testing (Playwright)
+
+- **9 specs** — smoke, auth, health-scan, accessibility, forms, navigation, stock, workday
+- **Última corrida:** 121/127 health-scan passed (5.4 min, 2026-02-22)
+- **7/7 bugs detectados resueltos** (3 🔴 critical + 4 🟡 yellow)
+- Config: [`playwright.config.js`](playwright.config.js)
+- Reports: `tests/e2e/report/`
 
 ## CSS Modular
 

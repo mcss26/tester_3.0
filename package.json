@@ -2,14 +2,22 @@
   "name": "tester_3.0",
   "private": true,
   "scripts": {
-    "audit:modules": "node scripts/audit.mjs",
-    "audit:css": "node scripts/audit-css.js",
-    "audit:pages": "node scripts/audit-modules.js",
-    "audit:links": "node scripts/audit-links.js",
+    "audit:modules": "node tests/audits/audit.mjs",
+    "audit:css": "node tests/audits/audit-css.js",
+    "audit:pages": "node tests/audits/audit-modules.js",
+    "audit:links": "node tests/audits/audit-links.js",
     "audit": "npm run audit:modules && npm run audit:css && npm run audit:pages && npm run audit:links",
-    "test": "node tests/run-audits.mjs",
-    "test:stock": "node tests/run-audits.mjs --suite stock",
-    "test:cash": "node tests/run-audits.mjs --suite cash",
-    "test:payments": "node tests/run-audits.mjs --suite payments"
+    "test:sql": "node tests/runners/run-audits.mjs",
+    "test:stock": "node tests/runners/run-audits.mjs --suite stock",
+    "test:cash": "node tests/runners/run-audits.mjs --suite cash",
+    "test:payments": "node tests/runners/run-audits.mjs --suite payments",
+    "test:e2e": "npx playwright test",
+    "test:e2e:headed": "npx playwright test --headed",
+    "test:e2e:smoke": "npx playwright test tests/e2e/smoke.spec.js",
+    "test:e2e:report": "npx playwright show-report tests/e2e/report",
+    "test": "npm run audit && npm run test:sql && npm run test:e2e"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.2"
   }
 }

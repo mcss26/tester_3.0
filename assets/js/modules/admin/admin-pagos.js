@@ -611,11 +611,11 @@
                     </td>
                     <td class="table-cell text-center">
                         <span class="cell-read text-xs">${esc(prov)}</span>
-                        <select class="cell-edit hidden input-inline" data-field="supplier_id">${buildSupplierOptions(d.supplier_id)}</select>
+                        <select class="cell-edit hidden input-inline" data-field="supplier_id" aria-label="Proveedor de ${esc(d.title)}">${buildSupplierOptions(d.supplier_id)}</select>
                     </td>
                     <td class="table-cell text-center">
                         <span class="cell-read text-xs">${esc(meth)}</span>
-                        <select class="cell-edit hidden input-inline" data-field="payment_method">${buildMethodOptions(d.payment_method)}</select>
+                        <select class="cell-edit hidden input-inline" data-field="payment_method" aria-label="Método de pago de ${esc(d.title)}">${buildMethodOptions(d.payment_method)}</select>
                     </td>
                     <td class="table-cell text-center cell-pad">
                         <span class="js-actions-read">
@@ -703,7 +703,7 @@
                     </td>
                     <td class="table-cell text-center">
                         <span class="cell-read text-xs">${taxPct}</span>
-                        <select class="cell-edit hidden input-inline js-tax" data-field="tax_rate">${taxOpts}</select>
+                        <select class="cell-edit hidden input-inline js-tax" data-field="tax_rate" aria-label="Alícuota IVA de ${esc(d.title)}">${taxOpts}</select>
                     </td>
                     <td class="table-cell text-right">
                         <span class="cell-read font-mono text-sm font-bold">${fmt(total)}</span>
@@ -711,11 +711,11 @@
                     </td>
                     <td class="table-cell text-center">
                         <span class="cell-read text-xs">${esc(prov)}</span>
-                        <select class="cell-edit hidden input-inline" data-field="supplier_id">${buildSupplierOptions(d.supplier_id)}</select>
+                        <select class="cell-edit hidden input-inline" data-field="supplier_id" aria-label="Proveedor de ${esc(d.title)}">${buildSupplierOptions(d.supplier_id)}</select>
                     </td>
                     <td class="table-cell text-center">
                         <span class="cell-read text-xs">${esc(meth)}</span>
-                        <select class="cell-edit hidden input-inline" data-field="payment_method">${buildMethodOptions(d.payment_method)}</select>
+                        <select class="cell-edit hidden input-inline" data-field="payment_method" aria-label="Método de pago de ${esc(d.title)}">${buildMethodOptions(d.payment_method)}</select>
                     </td>
                     <td class="table-cell text-center cell-pad">
                         <span class="js-actions-read">
@@ -864,7 +864,7 @@
                 <div class="config-list-item js-param-row" data-table="payment_categories" data-id="${v.id}">
                     <span class="cell-read">${esc(v.tipo_comprobante)} <span class="muted text-xs">(${taxLabel})</span></span>
                     <input class="cell-edit hidden input-inline" data-field="tipo_comprobante" value="${esc(v.tipo_comprobante)}" style="max-width:140px" />
-                    <select class="cell-edit hidden input-inline" data-field="tax_rate" style="max-width:80px">${taxOpts}</select>
+                    <select class="cell-edit hidden input-inline" data-field="tax_rate" aria-label="Alícuota IVA de ${esc(v.tipo_comprobante)}" style="max-width:80px">${taxOpts}</select>
                     <span class="js-actions-read">
                         <button class="btn-ghost btn-xs js-btn-edit-param">✎</button>
                         <button class="btn-ghost btn-xs text-danger js-btn-del-param">✕</button>

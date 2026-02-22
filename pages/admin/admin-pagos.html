@@ -476,7 +476,7 @@
 
                                     <!-- Card: Medios de Pago -->
                                     <div class="config-card">
-                                        <h4 class="config-card-title">Medios de Pago</h4>
+                                        <h3 class="config-card-title">Medios de Pago</h3>
                                         <div class="config-list" id="paramPayMethods">
                                             <!-- Injected -->
                                         </div>
@@ -484,7 +484,7 @@
 
                                     <!-- Card: Tipos de Factura -->
                                     <div class="config-card">
-                                        <h4 class="config-card-title">Tipos de Factura</h4>
+                                        <h3 class="config-card-title">Tipos de Factura</h3>
                                         <div class="config-list" id="paramVoucherTypes">
                                             <!-- Injected -->
                                         </div>
@@ -492,7 +492,7 @@
 
                                     <!-- Card: Alícuotas IVA -->
                                     <div class="config-card">
-                                        <h4 class="config-card-title">Alícuotas IVA</h4>
+                                        <h3 class="config-card-title">Alícuotas IVA</h3>
                                         <div class="config-list" id="paramTaxRates">
                                             <!-- Injected -->
                                         </div>
@@ -500,7 +500,7 @@
 
                                     <!-- Card: Herramientas -->
                                     <div class="config-card">
-                                        <h4 class="config-card-title">Herramientas</h4>
+                                        <h3 class="config-card-title">Herramientas</h3>
                                         <div class="row-flex gap-2 mt-2 flex-wrap">
                                             <button class="btn btn-ghost btn-sm" id="btnExportCosts">EXPORTAR
                                                 COSTOS</button>
@@ -534,20 +534,22 @@
             <form id="ruleForm">
                 <input type="hidden" id="ruleId" />
                 <div class="form-group">
-                    <label class="form-label" for="ruleTitle">Título</label>
+                    <label class="form-label" for="ruleTitle">Título *</label>
                     <input id="ruleTitle" class="input" placeholder="Ej: Pago de Alquiler" required />
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="ruleType">Tipo</label>
                     <select id="ruleType" class="input">
-                        <option value="WEEKLY">Semanal</option>
+                        <option value="" disabled>Seleccionar...</option>
+                        <option value="WEEKLY" selected>Semanal</option>
                         <option value="MONTHLY">Mensual</option>
                     </select>
                 </div>
                 <div class="form-group hidden" id="weeklyWrap">
                     <label class="form-label" for="ruleWeekday">Día de la semana</label>
                     <select id="ruleWeekday" class="input">
-                        <option value="0">Lunes</option>
+                        <option value="" disabled>Seleccionar...</option>
+                        <option value="0" selected>Lunes</option>
                         <option value="1">Martes</option>
                         <option value="2">Miércoles</option>
                         <option value="3">Jueves</option>
@@ -564,7 +566,8 @@
                 <div class="form-group">
                     <label class="form-label" for="ruleOnHoliday">Si cae feriado / no hábil:</label>
                     <select id="ruleOnHoliday" class="input">
-                        <option value="IGNORE">Mantener fecha original</option>
+                        <option value="" disabled>Seleccionar...</option>
+                        <option value="IGNORE" selected>Mantener fecha original</option>
                         <option value="PREV">Mover al día hábil anterior</option>
                         <option value="NEXT">Mover al día hábil siguiente</option>
                     </select>
@@ -579,7 +582,8 @@
                     <label class="form-label" for="ruleAmountMode">Monto</label>
                     <div class="row-flex gap-1">
                         <select id="ruleAmountMode" class="input w-100">
-                            <option value="FIXED">Fijo</option>
+                            <option value="" disabled>Seleccionar...</option>
+                            <option value="FIXED" selected>Fijo</option>
                             <option value="VARIABLE">Variable</option>
                         </select>
                         <input id="ruleFixedAmount" type="number" class="input" step="0.01" placeholder="0.00" />
@@ -608,7 +612,7 @@
             <form id="openingForm">
                 <input type="hidden" id="openingId" />
                 <div class="form-group">
-                    <label class="form-label" for="openingTitle">Título</label>
+                    <label class="form-label" for="openingTitle">Título *</label>
                     <input id="openingTitle" class="input" placeholder="Ej: Personal de Limpieza" required />
                 </div>
                 <div class="form-group">
@@ -647,7 +651,7 @@
             <form id="extraForm">
                 <input type="hidden" id="extraId" />
                 <div class="form-group">
-                    <label class="form-label" for="extraTitle">Título</label>
+                    <label class="form-label" for="extraTitle">Título *</label>
                     <input id="extraTitle" class="input" placeholder="Ej: Arreglo de Heladera" required />
                 </div>
                 <div class="form-group">
@@ -656,11 +660,11 @@
                     <input type="hidden" id="extraSupplier" />
                 </div>
                 <div class="form-group">
-                    <label class="form-label" for="extraDueDate">Vencimiento</label>
+                    <label class="form-label" for="extraDueDate">Vencimiento *</label>
                     <input id="extraDueDate" type="date" class="input" required />
                 </div>
                 <div class="form-group">
-                    <label class="form-label" for="extraAmount">Monto Total</label>
+                    <label class="form-label" for="extraAmount">Monto Total *</label>
                     <input id="extraAmount" type="number" class="input" step="0.01" required placeholder="0.00" />
                 </div>
             </form>
@@ -682,7 +686,7 @@
             <div class="modal-body custom-scroll">
                 <input type="hidden" id="payPaymentId" />
                 <div class="mb-4">
-                    <h4 id="payTitle" class="m-0 font-bold">—</h4>
+                    <h3 id="payTitle" class="m-0 font-bold">—</h3>
                     <p id="payDue" class="muted text-sm">—</p>
                 </div>
 

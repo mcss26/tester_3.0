@@ -38,5 +38,7 @@ Este proyecto prioriza la mantenibilidad y la claridad sobre el código intelige
 ## 6. Flujos de Trabajo
 
 - Siempre verifica los cambios localmente antes de pedir una revisión.
-- Sigue los flujos de trabajo definidos en `.agent/workflows/
-- Documenta todos los cambios en el archivo `state.md`
+
+- Sigue los flujos de trabajo definidos en [.agent/workflows/](C:\Users\siste\Documents\GitHub\tester_3.0\state.md)
+
+- Documenta todos los cambios que realices en el repo en [state.md](C:\Users\siste\Documents\GitHub\tester_3.0\state.md)

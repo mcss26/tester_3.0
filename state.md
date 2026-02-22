@@ -1,6 +1,6 @@
 # Estado del Proyecto: Tester 3.0 — Midnight Club
 
-**Última actualización:** 2026-02-21 08:20  
+**Última actualización:** 2026-02-22 01:12  
 **Método:** Indexado recursivo completo
 
 ---
@@ -22,7 +22,7 @@
 | Frontend | HTML estático + Vanilla JS (ES modules)                                                                                                        |
 | Estilos  | CSS modular: `tokens.css` + 5 modulares (`base`, `layout`, `components`, `forms`, `utilities`) + `theme-swiss.css` (opt-in) + 16 page-specific |
 | Backend  | Supabase (Auth, Postgres 65 tablas, 27 vistas, 38 RPCs, Edge Functions)                                                                        |
-| Tooling  | Node.js (audits) + PowerShell (scans, watchdogs, verificación)                                                                                 |
+| Tooling  | Node.js (audits) + PowerShell (scans, watchdogs, verificación) + Playwright (E2E)                                                              |
 | Hosting  | Estático (sin bundler, sin framework)                                                                                                          |
 
 ## 3. Estructura del Repositorio
@@ -36,11 +36,11 @@ tester_3.0/
 │       ├── core/   20 módulos (auth, config, router, utils, supabase-client)
 │       ├── modules/ 42 módulos de negocio
 │       └── importers/ 6 importadores (GBOL, AFIP, Passline)
-├── scripts/        34 herramientas (audit, extract, scan)
+├── scripts/        17 herramientas operativas (fix, extract, backup, context)
 ├── docs/           design-system/ (consolidado ✅), source-of-truth/, operaciones/
 ├── supabase/       29 migraciones + 1 edge function
 ├── .agent/         4 agentes, 12 workflows, 22 skills (component-builder absorbida → css-architect v3.0)
-└── tests/          4 suites
+└── tests/          8 subdirs: sql/ audits/ scanners/ watchdogs/ runners/ collectors/ fixtures/ e2e/ (9 specs, 214 tests)
 ```
 
 ## 4. Dominios de Negocio (Backend)
@@ -145,6 +145,7 @@ _El agente lee esto para no replanificar trabajo existente._
 - [x] **Deuda técnica audit** — 18 ítems documentados (3 críticos, 4 altos, 7 medios, 4 bajos). Reporte en brain artifacts.
 - [x] **Orchestrator workflow** — `.agent/workflows/orchestrate.md` creado. Modo planificación invocable con `/orchestrate`
 - [x] **Skills-First rule** — Agregada a `GEMINI.md` §4 Filosofía de Ingeniería
+- [x] **Playwright E2E setup** — 9 test specs (214 tests), 4 proyectos (setup/smoke/auth/authenticated). Cobertura: 46 páginas × 3 health checks + 9 páginas a11y + 14 páginas forms. 194 pass, 20 bugs encontrados.
 
 ## 8. Pendiente (To Do)
 
@@ -245,6 +246,20 @@ _Información crítica que el agente debe tener en cuenta._
 ### Wire Map de Agentes — 47 nodos → [`Wire_Map_Agentes.md`](docs/operaciones/testing/observations/Wire_Map_Agentes.md)
 
 - 41 OK · 6 skills huérfanas (sin auto-invoke) · 3 docs agents desconectados del router
+
+### E2E Testing — 214 tests (Playwright) → `tests/e2e/report/`
+
+> **Última corrida:** 121/127 health-scan passed en 5.4 min (2026-02-22). 6 failures son pre-existentes (JS crash en test-devenciones, console.error SlidePanel en logística-seguimiento).
+
+| #   | Bug                                               | Sev.     | Páginas afectadas                                                              |
+| --- | ------------------------------------------------- | -------- | ------------------------------------------------------------------------------ |
+| 1   | ~~JS crash: `assertSbOrShowBlockingError` undef~~ | ~~🔴~~✅ | ~~QR Monitor~~ — `utils.js` agregado                                           |
+| 2   | ~~404: `admin-portal.js` no existe~~              | ~~🔴~~✅ | ~~admin-index~~ — renombrado a `admin-index.js`                                |
+| 3   | ~~ID duplicado `staff-active`~~                   | ~~🔴~~✅ | ~~admin-master-nomina~~ — checkbox → `staff-is-active`                         |
+| 4   | ~~Selects sin placeholder (73 instancias)~~       | ~~🟡~~✅ | pagos (4 HTML fixed), config/pagos/solicitudes (11 JS templates + aria-labels) |
+| 5   | ~~Inputs `required` sin indicador visual (12)~~   | ~~🟡~~✅ | pagos (5 labels con `*`)                                                       |
+| 6   | ~~Inputs sin `<label>` ni `aria-label` (11)~~     | ~~🟡~~✅ | workdays, stock, config.js, pagos.js, solicitudes.js (aria-labels agregados)   |
+| 7   | ~~Headings saltan niveles h2→h4~~                 | ~~🟡~~✅ | pagos, stock, workdays, logística-seguimiento (h4→h3). **0 h4 tags quedan.**   |
 
 ## 12. Gaps Cross-Rol
 

@@ -13,7 +13,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const ROOT = path.resolve(__dirname, '..');
+const ROOT = path.resolve(__dirname, '..', '..');
 const SCAN_DIRS = ['assets/js/core', 'assets/js/modules'];
 const OUTPUT_DIR = path.resolve(ROOT, 'docs/output');
 const OUTPUT_FILE = path.resolve(OUTPUT_DIR, 'jsdoc-coverage.md');

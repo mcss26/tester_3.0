@@ -286,7 +286,7 @@
                 <td class="table-cell cell-pad cell-narrow cell-strong">${stockData ? calc.total : "—"}</td>
                 
                 <td class="table-cell cell-pad">
-                    <select class="input input-compact js-supplier" data-id="${item.id}">
+                    <select class="input input-compact js-supplier" data-id="${item.id}" aria-label="Proveedor de ${window.Utils.escapeHtml(item.master_sku?.nombre || 'SKU')}">
                         <option value="">Seleccionar...</option>
                         ${provOptions}
                     </select>
