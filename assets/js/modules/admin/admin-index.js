@@ -216,16 +216,7 @@
         });
     }
 
-    // 5. Avatar Dropdown Toggle
-    if (refs.avatar && refs.userMenu) {
-        refs.avatar.addEventListener('click', (e) => {
-            e.stopPropagation();
-            refs.userMenu.classList.toggle('hidden');
-        });
-        document.addEventListener('click', () => {
-            refs.userMenu.classList.add('hidden');
-        });
-    }
+    // 5. Avatar Dropdown → handled by core/topbar.js (event delegation)
 
     // 6. Logout
     refs.logoutBtn?.addEventListener('click', async (e) => {

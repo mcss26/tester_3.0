@@ -1377,31 +1377,7 @@
       window.Auth.signOutAndGoLogin(),
     );
 
-    // Topbar Dropdowns
-    setupDropdown(ui.btnNotifications, ui.menuNotifications);
-    setupDropdown(ui.btnUserAvatar, ui.menuUser);
-  }
-
-  function setupDropdown(trigger, menu) {
-    if (!trigger || !menu) return;
-    
-    trigger.addEventListener("click", (e) => {
-      e.stopPropagation();
-      const isHidden = menu.classList.contains("hidden");
-      // Close all others first
-      document.querySelectorAll(".dropdown-menu").forEach(m => m.classList.add("hidden"));
-      
-      if (isHidden) {
-        menu.classList.remove("hidden");
-      }
-    });
-
-    // Close on click outside
-    document.addEventListener("click", (e) => {
-        if (!menu.contains(e.target) && !trigger.contains(e.target)) {
-            menu.classList.add("hidden");
-        }
-    });
+    // Topbar Dropdowns → handled by core/topbar.js (event delegation)
   }
 
   // Init

@@ -160,7 +160,8 @@
     // 4. Insert new items found
     if (toInsert.length > 0) {
       // OperativoSolicitudes: Adding new low-stock items
-      await window.sb.from("replenishment_items").insert(toInsert);
+      const { error: insertError } = await window.sb.from("replenishment_items").insert(toInsert);
+      if (insertError) throw insertError;
     }
   }
 

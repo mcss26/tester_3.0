@@ -286,23 +286,32 @@
 
   // 5. Initialization
   async function init() {
-    if (window.initSlidePanel) {
-      ui.panelInstance = window.initSlidePanel({
-        panelId: "slide-panel",
-        overlayId: "panel-overlay",
-      });
+    const initCtrl = window.Utils.setPageState(ui, { loading: true });
+    try {
+      if (window.initSlidePanel) {
+        ui.panelInstance = window.initSlidePanel({
+          panelId: "slide-panel",
+          overlayId: "panel-overlay",
+        });
+      }
+
+      bindEvents();
+      await loadInitialData();
+
+      // Default today's date if empty
+      if (!ui.inputDate.value) {
+        ui.inputDate.value = new Date().toISOString().split("T")[0];
+      }
+
+      // Trigger initial load
+      handleDateChange();
+    } catch (e) {
+      console.error("init failed:", e);
+      window.Toast.error("Error al inicializar la pantalla.");
+    } finally {
+      initCtrl.cancel();
+      window.Utils.setPageState(ui, { loading: false });
     }
-
-    bindEvents();
-    await loadInitialData();
-
-    // Default today's date if empty
-    if (!ui.inputDate.value) {
-      ui.inputDate.value = new Date().toISOString().split("T")[0];
-    }
-
-    // Trigger initial load
-    handleDateChange();
   }
 
   // 6. Event Binding
@@ -1064,8 +1073,10 @@
           approved_budget: state.staffPlan[role.id] * (role.base_rate || 0),
         }));
 
-      if (staffPayload.length > 0)
-        await window.sb.from("work_day_staff_planning").insert(staffPayload);
+      if (staffPayload.length > 0) {
+        const { error: staffErr } = await window.sb.from("work_day_staff_planning").insert(staffPayload);
+        if (staffErr) throw staffErr;
+      }
 
       // C. Costs → finance_payments
       const costsPayload = state.openingCosts
@@ -1083,8 +1094,10 @@
           payment_method: cost.payment_method || null,
           created_by: session.user.id,
         }));
-      if (costsPayload.length > 0)
-        await window.sb.from("finance_payments").insert(costsPayload);
+      if (costsPayload.length > 0) {
+        const { error: costsErr } = await window.sb.from("finance_payments").insert(costsPayload);
+        if (costsErr) throw costsErr;
+      }
 
       // NOTE: No rpc_open_work_day here — day stays in DRAFT until confirmed
       window.Toast.success("Jornada creada en Borrador.");
@@ -1507,7 +1520,8 @@
           code: window.Utils.generateUUID(),
           status: "PENDIENTE",
         }));
-        await window.sb.from("qr_codes").insert(rows);
+        const { error: qrErr } = await window.sb.from("qr_codes").insert(rows);
+        if (qrErr) throw qrErr;
         window.Toast.success(`Lote de ${qrQty} QRs creado.`);
       }
 

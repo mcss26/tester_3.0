@@ -1,5 +1,5 @@
 ﻿# Contexto: workday
-Generado: 2026-02-22 13:49 | Topic: `workday`
+Generado: 2026-02-22 17:55 | Topic: `workday`
 
 > Este archivo contiene todo el contexto relevante sobre **workday**.
 > Pegalo al inicio de una conversacion para que el agente arranque informado.
@@ -70,8 +70,8 @@ Reference implementation for `.grid-sidebar-main` with complex state management.
 
 ## 2. Codigo fuente (7 archivos)
 
-- `pages\admin\admin-workdays.html` (86.039 bytes, mod: 2026-02-22 13:43)
-- `pages\operativo\operativo-workday.html` (10.136 bytes, mod: 2026-02-22 04:19)
+- `pages\admin\admin-workdays.html` (85.561 bytes, mod: 2026-02-22 16:50)
+- `pages\operativo\operativo-workday.html` (10.163 bytes, mod: 2026-02-22 16:36)
 - `pages\prototypes\lab-workdays` (1 bytes, mod: 2026-02-13 01:21)
 - `pages\prototypes\lab-workdays-night` (1 bytes, mod: 2026-02-13 01:21)
 - `assets\js\modules\admin\admin-workdays.js` (120.321 bytes, mod: 2026-02-22 13:44)
@@ -86,7 +86,7 @@ Reference implementation for `.grid-sidebar-main` with complex state management.
 **Funciones:** `allowedRoles``, ``init``, ``bindEvents``, ``getOpenWorkDay``, ``updateWorkdayStatusPill``, ``loadPasslineLinks``, ``renderLinksTable``, ``openLinkModal``, ``closeLinkModal``, ``saveLinkType``, ``deleteLinkType``, ``loadStaffStatus``, ``loadRequests`
 **Tablas Supabase:** `replenishment_items``, ``replenishment_requests``, ``site_config``, ``staff_convocations``, ``work_days`
 
-## 3. Documentacion (25 archivos)
+## 3. Documentacion (43 archivos)
 
 - `docs\_router.md`
 - `docs\00-source-of-truth\backend-rpcs.md`
@@ -97,6 +97,16 @@ Reference implementation for `.grid-sidebar-main` with complex state management.
 - `docs\01-design-system\audit-and-prompts\reports\REPORT-js-db-audit.md`
 - `docs\01-design-system\pages\admin-workdays.md`
 - `docs\02-ui-ux\ui-golden-standard.md`
+- `docs\02-ui-ux\lighthouse\console-errors.md`
+- `docs\02-ui-ux\lighthouse\lighthouse-matrix.md`
+- `docs\02-ui-ux\lighthouse\README.md`
+- `docs\02-ui-ux\lighthouse\admin-config\context.md`
+- `docs\02-ui-ux\lighthouse\admin-index\context.md`
+- `docs\02-ui-ux\lighthouse\admin-reportes\context.md`
+- `docs\02-ui-ux\lighthouse\admin-solicitudes\context.md`
+- `docs\02-ui-ux\lighthouse\admin-workdays\context.md`
+- `docs\02-ui-ux\lighthouse\admin-workdays\README.md`
+- `docs\02-ui-ux\lighthouse\admin-workdays\summary.md`
 - `docs\03-business-logic\midnight-workflows.md`
 - `docs\04-operations\release-pipeline.md`
 - `docs\04-operations\testing\tickets\TK-001-crypto-randomuuid-compat.md`
@@ -110,9 +120,17 @@ Reference implementation for `.grid-sidebar-main` with complex state management.
 - `docs\80-ephemeral\agent-logs\wiremap.md`
 - `docs\80-ephemeral\agent-logs\orchestrator\rls-audit-report.md`
 - `docs\80-ephemeral\agent-logs\product\prototypes\feature-spec-drinks-by-web.md`
+- `docs\80-ephemeral\agent-logs\prompts\fix-form-labels-aria.md`
+- `docs\80-ephemeral\agent-logs\prompts\staff-barra-index-refactor.md`
+- `docs\80-ephemeral\agent-logs\prompts\systematic-fix-patterns.md`
 - `docs\80-ephemeral\agent-logs\qa\context-system.md`
 - `docs\80-ephemeral\agent-logs\qa\context-ui.md`
 - `docs\80-ephemeral\agent-logs\visual-audit\visual-audit-report.md`
+- `docs\output\qa\context-config.md`
+- `docs\output\qa\context-index.md`
+- `docs\output\qa\context-reportes.md`
+- `docs\output\qa\context-solicitudes.md`
+- `docs\output\qa\context-workday.md`
 
 ## 4. Schema
 scheme.md no encontrado.
@@ -127,6 +145,8 @@ scheme.md no encontrado.
 - 81c1bf9 Update admin-workdays.js
 
 ### Commits que tocan archivos *workday*
+- 4c7c197 aria
+- 2c1949d lighthouse
 - 0f66978 docs
 - f2f59c1 css
 - 01acf26 test
@@ -135,12 +155,14 @@ scheme.md no encontrado.
 - 5451edb docs
 - 4dcb56e gs
 - 98ca53c css
-- 1de6d36 docs
-- ea06bae refactor
 
-## 6. Reportes previos (0 encontrados)
+## 6. Reportes previos (5 encontrados)
 
-No se encontraron reportes previos sobre 'workday'.
+- `docs\output\qa\context-config.md`
+- `docs\output\qa\context-index.md`
+- `docs\output\qa\context-reportes.md`
+- `docs\output\qa\context-solicitudes.md`
+- `docs\output\qa\context-workday.md`
 
 ## 7. Conversaciones previas (0 encontradas)
 

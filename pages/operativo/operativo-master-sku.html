@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -14,7 +14,7 @@
       frame-src 'none';">
     <meta name="theme-color" content="#000000">
     <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
-    <title>Master SKU — Midnight</title>
+    <title>Master SKU ï¿½ Midnight</title>
     <link rel="stylesheet" href="../../assets/css/tokens.css">
     <link rel="stylesheet" href="../../assets/css/base.css">
     <link rel="stylesheet" href="../../assets/css/layout.css">
@@ -29,23 +29,23 @@
 
     <!-- Topbar: Golden Standard -->
     <header class="topbar">
-        <nav class="breadcrumb topbar-start" aria-label="Navegación">
+        <nav class="breadcrumb topbar-start" aria-label="Navegaciï¿½n">
             <span class="breadcrumb-item">
                 <a class="breadcrumb-link" href="operativo-index.html">Operativo</a>
             </span>
             <span class="breadcrumb-sep">/</span>
-            <span class="breadcrumb-item current">Configuración SKU</span>
+            <span class="breadcrumb-item current">Configuraciï¿½n SKU</span>
         </nav>
 
         <div class="topbar-center header-search">
-            <input type="text" id="global-search" class="input" placeholder="Ir a..." aria-label="Navegación rápida">
+            <input type="text" id="global-search" class="input" placeholder="Ir a..." aria-label="Navegaciï¿½n rï¿½pida">
             <span class="header-shortcut">?K</span>
         </div>
 
         <div class="topbar-end">
-            <span class="badge status-success">EN LÍNEA</span>
+            <span class="badge status-success">EN Lï¿½NEA</span>
             <div class="dropdown-container">
-                <button class="avatar avatar-sm" id="user-avatar" aria-label="Menú de usuario">OP</button>
+                <button class="avatar avatar-sm" id="user-avatar" aria-label="Menï¿½ de usuario">OP</button>
                 <div class="dropdown-menu dropdown-user hidden" id="user-menu">
                     <div class="dropdown-header" id="user-name-display">Usuario</div>
                     <div class="dropdown-divider"></div>
@@ -55,7 +55,7 @@
                             <polyline points="16 17 21 12 16 7"></polyline>
                             <line x1="21" y1="12" x2="9" y2="12"></line>
                         </svg>
-                        Cerrar Sesión
+                        Cerrar Sesiï¿½n
                     </a>
                 </div>
             </div>
@@ -91,8 +91,8 @@
                     <div class="staff-dashboard">
                         <div class="dashboard-header align-start">
                             <div>
-                                <h2 class="dashboard-title dashboard-title-soft">Configuración de Productos</h2>
-                                <p class="dashboard-subtitle-soft">Solicitudes de alta, baja y modificación de SKUs.</p>
+                                <h2 class="dashboard-title dashboard-title-soft">Configuraciï¿½n de Productos</h2>
+                                <p class="dashboard-subtitle-soft">Solicitudes de alta, baja y modificaciï¿½n de SKUs.</p>
                             </div>
                             <!-- Tab Bar in Header -->
                             <div class="tab-bar" id="sku-view-tabs">
@@ -120,7 +120,7 @@
                                 <button class="btn btn-ghost btn-sm" id="btn-refresh-master">Refrescar</button>
                             </div>
                             <div class="table-viewport table-shell" id="master-list-container">
-                                <div class="empty-state">Cargando catálogo...</div>
+                                <div class="empty-state">Cargando catï¿½logo...</div>
                             </div>
                         </div>
 
@@ -135,9 +135,9 @@
         <div class="panel-header">
             <div class="panel-header-info">
                 <h3 class="panel-title" id="panel-title">Nueva Solicitud</h3>
-                <p class="panel-subtitle">Gestión de cambio de SKU</p>
+                <p class="panel-subtitle">Gestiï¿½n de cambio de SKU</p>
             </div>
-            <button class="btn-icon btn-close-panel" id="btn-close-panel" aria-label="Cerrar panel">×</button>
+            <button class="btn-icon btn-close-panel" id="btn-close-panel" aria-label="Cerrar panel">ï¿½</button>
         </div>
 
         <div class="panel-body custom-scroll" id="panel-form-container">
@@ -213,9 +213,9 @@
             </div>
 
             <div class="form-group mb-4" data-section="justification">
-                <label for="req-justification" class="form-label">Justificación *</label>
+                <label for="req-justification" class="form-label">Justificaciï¿½n *</label>
                 <textarea id="req-justification" class="input w-full" rows="3" placeholder="Motivo del cambio..."
-                    aria-label="Justificación de la solicitud"></textarea>
+                    aria-label="Justificaciï¿½n de la solicitud"></textarea>
             </div>
         </div>
 
@@ -237,6 +237,7 @@
     <script defer src="../../assets/js/modules/operativo/operativo-master-sku.js"></script>
     <script defer src="../../assets/js/core/navigation.js"></script>
     <script defer src="../../assets/js/core/custom-dropdown.js"></script>
-</body>
+    <script defer src="../../assets/js/core/topbar.js"></script>
+  </body>
 
 </html>

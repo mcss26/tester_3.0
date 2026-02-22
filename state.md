@@ -1,6 +1,6 @@
 ﻿# **Estado del Proyecto: Tester 3.0 — Midnight Club**
 
-**Última Actualización:** 2026-02-22T19:30:00-03:00
+**Última Actualización:** 2026-02-22T17:41:00-03:00
 
 **Método:** Lighthouse Audit Pipeline — 13/13 reports generados (Lighthouse v13 CLI + chrome-launcher + puppeteer auth), cross-audit matrix, console errors collector (Playwright)
 
@@ -37,7 +37,7 @@ tester_3.0/
 ├── scripts/ 27 files (22 scripts \+ 5 docs/data)  
 ├── docs/ \_router.md → 00-source-of-truth/ 01-design-system/ 02-ui-ux/ 03-business-logic/ 04-operations/ 80-ephemeral/  
 ├── supabase/ 28 migraciones \+ 1 edge function  
-├── .agent/ 4 agentes, 16 workflows, 22 skills (component-builder absorbida → css-architect v3.0)  
+├── .agent/ 4 agentes, 16 workflows, 24 skills (component-builder absorbida → css-architect v3.0)  
 └── tests/ 8 subdirs: sql/ audits/ scanners/ watchdogs/ runners/ collectors/ fixtures/ e2e/ (12 specs, 214 tests)
 
 ## **4\. Dominios de Negocio (Backend)**
@@ -109,6 +109,8 @@ tester_3.0/
 - \[x\] **JSDoc:** Documentación de 7 archivos core (auth.js, supabase-client.js, etc.).
 - \[x\] **Fix admin-semanal:** Corregida race condition de carga de scripts y redirección errónea.
 - \[x\] **Lighthouse Audit Pipeline:** 13/13 pantallas admin auditadas. Scripts automatizados: `lighthouse-playwright.js`, `console-errors-collector.js`, `lighthouse-matrix.js`, `parse-report.js`. Cross-audit matrix y console errors report generados.
+- \[x\] **Navigation Architecture Skill:** Auditoría completa de navegación. Skill `.agent/skills/navigation-architecture/` con reachability graph, diagnostic script, HTML patterns, design decisions. 7 errores factuales corregidos tras double-check. Identificados 7 orphaned pages (5 admin masters sin entry por ring roto, admin-config sin link, QR sin launcher entry).
+- \[x\] **UX Researcher Skill (robustecida):** Reestructurada `.agent/skills/ux-researcher-designer/`. SKILL.md reducido 273→90 líneas (progressive disclosure). Script `persona_generator.py` reescrito con 6 personas FormulaMid (admin, operativo, logístico, encargado, staff, gerente) con pain points verificados contra codebase. 3 references nuevos: heuristic-checklist, ia-validation, verification-methods. Workflow TDD+UX integration agregado.
 
 ## **8\. Pendiente (To Do)**
 
@@ -222,24 +224,24 @@ tester_3.0/
 | admin-config             | 🟡 88  | 🟢 92 | 🟢 92 | 🟢 90 |
 | admin-master-proveedores | 🟡 86  | 🟢 92 | 🟢 92 | 🟢 90 |
 
-### **Console Errors (30 total)**
+### **Console Errors (30 total → remediado)**
 
-| Patrón                        | Cant. | Pantallas           |
-| :---------------------------- | :---- | :------------------ |
-| CSP inline script violation   | 28    | Todas (13)          |
-| SheetJS CDN bloqueado por CSP | 2     | admin-central-stock |
+| Patrón                        | Cant. | Pantallas           | Estado                               |
+| :---------------------------- | :---- | :------------------ | :----------------------------------- |
+| CSP inline script violation   | 28    | Todas (13)          | ✅ Remediado (CSP actualizada 46pp)  |
+| SheetJS CDN bloqueado por CSP | 2     | admin-central-stock | ✅ Remediado (cdn.sheetjs.com added) |
 
 ### **Top Remediación (por prioridad)**
 
-| #   | Issue                          | Peso | Pantallas                   |
-| :-- | :----------------------------- | :--- | :-------------------------- |
-| 1   | LCP (Largest Contentful Paint) | 300  | 12                          |
-| 2   | Speed Index                    | 110  | 11                          |
-| 3   | FCP (First Contentful Paint)   | 100  | 10                          |
-| 4   | Color contrast ratio           | 91   | 13                          |
-| 5   | ARIA input field names         | 49   | 6 (was 7)                   |
-| 6   | Form labels                    | 40   | 4                           |
-| 7   | Meta description faltante      | 13   | 1 (was 13, remediado 12/12) |
+| #   | Issue                          | Peso | Pantallas                        |
+| :-- | :----------------------------- | :--- | :------------------------------- |
+| 1   | LCP (Largest Contentful Paint) | 300  | 12                               |
+| 2   | Speed Index                    | 110  | 11                               |
+| 3   | FCP (First Contentful Paint)   | 100  | 10                               |
+| 4   | Color contrast ratio           | 91   | 0 (was 13, remediado tokens.css) |
+| 5   | ARIA input field names         | 49   | 0 (was 7, remediado 45 labels)   |
+| 6   | Form labels                    | 40   | 0 (was 4, remediado con ARIA)    |
+| 7   | Meta description faltante      | 13   | 1 (was 13, remediado 12/12)      |
 
 ### **Scripts creados**
 

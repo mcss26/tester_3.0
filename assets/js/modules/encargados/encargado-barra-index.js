@@ -64,17 +64,7 @@
     // ─────────────────────────────────────────────────────────────
     await loadWorkdayAndRules();
 
-    // ─────────────────────────────────────────────────────────────
-    // 5. Avatar Dropdown Toggle
-    // ─────────────────────────────────────────────────────────────
-    ui.avatar.addEventListener('click', (e) => {
-        e.stopPropagation();
-        ui.userMenu.classList.toggle('hidden');
-    });
-
-    document.addEventListener('click', () => {
-        ui.userMenu.classList.add('hidden');
-    });
+    // 5. Avatar Dropdown → handled by core/topbar.js (event delegation)
 
     // ─────────────────────────────────────────────────────────────
     // 6. Logout

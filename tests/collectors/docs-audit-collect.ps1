@@ -2,7 +2,7 @@
   Repo Audit -- Docs Structure Collector
   Scans docs/ for empty dirs, duplicates, naming violations, stubs, dead refs.
   Output: docs/80-ephemeral/agent-logs/repo-audit/docs-waste.json
-  Usage: .\scripts\docs-audit-collect.ps1 [-TempDir <path>]
+  Usage: node scripts/testing-tracker.js  [-TempDir <path>]
 #>
 param(
   [string]$TempDir = ""

@@ -68,17 +68,7 @@
     if (workdayText) workdayText.textContent = "Error";
   }
 
-  // 5. Avatar Dropdown Toggle
-  if (avatar && userMenu) {
-    avatar.addEventListener("click", (e) => {
-      e.stopPropagation();
-      userMenu.classList.toggle("hidden");
-    });
-
-    document.addEventListener("click", () => {
-      userMenu.classList.add("hidden");
-    });
-  }
+  // 5. Avatar Dropdown → handled by core/topbar.js (event delegation)
 
   // 6. Logout
   logoutBtn?.addEventListener("click", async (e) => {

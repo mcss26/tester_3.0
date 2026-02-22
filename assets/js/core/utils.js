@@ -235,11 +235,11 @@
       (error && !loading) ? showEl(errorEl) : hideEl(errorEl);
     }
 
-    // Auto-timeout safety net
+    // Auto-timeout safety net (warn-only — does NOT hide content)
     let timer = null;
     if (loading && timeoutMs > 0) {
       timer = setTimeout(() => {
-        setPageState(ui, { error: true });
+        console.warn(`[setPageState] Loading exceeded ${timeoutMs}ms — possible leak. UI NOT hidden to prevent black-screen.`);
       }, timeoutMs);
     }
 

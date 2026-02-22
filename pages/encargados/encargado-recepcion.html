@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -15,10 +15,10 @@
     <meta name="theme-color" content="#000000">
     <meta
       name="description"
-      content="Recepcion de pedidos — verificacion de entregas de proveedores"
+      content="Recepcion de pedidos ï¿½ verificacion de entregas de proveedores"
     />
     <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
-    <title>Recepción — Midnight</title>
+    <title>Recepciï¿½n ï¿½ Midnight</title>
     <link rel="stylesheet" href="../../assets/css/tokens.css">
     <link rel="stylesheet" href="../../assets/css/base.css">
     <link rel="stylesheet" href="../../assets/css/layout.css">
@@ -33,15 +33,15 @@
         <div class="topbar-start">
             <button class="btn-icon btn-icon-flat" data-go="pages/encargados/encargado-barra-index.html"
                 aria-label="Volver a Inicio">?</button>
-            <nav class="breadcrumb" aria-label="Navegación">
+            <nav class="breadcrumb" aria-label="Navegaciï¿½n">
                 <span class="breadcrumb-item"><a class="breadcrumb-link"
                         href="encargado-barra-index.html">ENCARGADO BARRA</a></span>
                 <span class="breadcrumb-sep">/</span>
-                <span class="breadcrumb-item current">RECEPCIÓN</span>
+                <span class="breadcrumb-item current">RECEPCIï¿½N</span>
             </nav>
         </div>
         <div class="topbar-center">
-            <span class="topbar-title">RECEPCIÓN</span>
+            <span class="topbar-title">RECEPCIï¿½N</span>
         </div>
         <div class="topbar-end">
             <button id="btn-refresh" class="btn-icon btn-icon-flat" aria-label="Refrescar">?</button>
@@ -60,7 +60,7 @@
 
             <!-- Empty State -->
             <div class="page-card-empty hidden" id="pageEmpty">
-                <p>No hay pedidos pendientes de recepción.</p>
+                <p>No hay pedidos pendientes de recepciï¿½n.</p>
             </div>
 
             <!-- Orders Table -->
@@ -93,14 +93,14 @@
         <div class="modal-content modal-content-lg">
             <div class="modal-header">
                 <h3 class="modal-title" id="modal-title">Recibir Pedido</h3>
-                <button class="modal-close" id="modal-close" aria-label="Cerrar modal">×</button>
+                <button class="modal-close" id="modal-close" aria-label="Cerrar modal">ï¿½</button>
             </div>
             <div class="modal-body" id="modal-body">
                 <!-- Items table injected by JS -->
             </div>
             <div class="modal-footer">
                 <button class="btn-secondary" id="modal-cancel">Cancelar</button>
-                <button class="btn-primary" id="modal-confirm">Confirmar Recepción</button>
+                <button class="btn-primary" id="modal-confirm">Confirmar Recepciï¿½n</button>
             </div>
         </div>
     </dialog>
@@ -116,6 +116,7 @@
     <script defer src="../../assets/js/core/navigation.js"></script>
     <script defer src="../../assets/js/modules/encargados/encargado-recepcion.js"></script>
 
-</body>
+    <script defer src="../../assets/js/core/topbar.js"></script>
+  </body>
 
 </html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -14,7 +14,7 @@
       frame-src 'none';">
     <meta name="theme-color" content="#000000">
     <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
-    <title>Categorías — Midnight</title>
+    <title>Categorï¿½as ï¿½ Midnight</title>
     <!-- Design Tokens & Global Components -->
     <link rel="stylesheet" href="../../assets/css/tokens.css">
     <link rel="stylesheet" href="../../assets/css/base.css">
@@ -31,12 +31,12 @@
     <!-- Topbar: Golden Standard -->
     <header class="topbar">
         <!-- Left: Breadcrumb -->
-        <nav class="breadcrumb topbar-start" aria-label="Navegación">
+        <nav class="breadcrumb topbar-start" aria-label="Navegaciï¿½n">
             <span class="breadcrumb-item">
-                <a class="breadcrumb-link" href="admin-index.html">Administración</a>
+                <a class="breadcrumb-link" href="admin-index.html">Administraciï¿½n</a>
             </span>
             <span class="breadcrumb-sep">/</span>
-            <span class="breadcrumb-item current">Categorías</span>
+            <span class="breadcrumb-item current">Categorï¿½as</span>
         </nav>
 
         <!-- Center: Empty -->
@@ -46,7 +46,7 @@
         <div class="topbar-end">
             <span class="status-pill status-neutral">?? DATA</span>
             <div class="dropdown-container">
-                <button class="avatar avatar-sm" id="user-avatar" aria-label="Menú de usuario">AD</button>
+                <button class="avatar avatar-sm" id="user-avatar" aria-label="Menï¿½ de usuario">AD</button>
                 <div class="dropdown-menu dropdown-user hidden" id="user-menu">
                     <div class="dropdown-header" id="user-name-display">Usuario</div>
                     <div class="dropdown-divider"></div>
@@ -56,7 +56,7 @@
                             <polyline points="16 17 21 12 16 7"></polyline>
                             <line x1="21" y1="12" x2="9" y2="12"></line>
                         </svg>
-                        Cerrar Sesión
+                        Cerrar Sesiï¿½n
                     </a>
                 </div>
             </div>
@@ -71,8 +71,8 @@
                 <nav class="master-nav">
                     <a href="admin-central-stock.html" class="master-nav-link">SKU & Recetas</a>
                     <a href="admin-master-proveedores.html" class="master-nav-link">Proveedores</a>
-                    <a href="admin-master-categorias.html" class="master-nav-link active">Categorías</a>
-                    <a href="admin-master-nomina.html" class="master-nav-link">Nómina</a>
+                    <a href="admin-master-categorias.html" class="master-nav-link active">Categorï¿½as</a>
+                    <a href="admin-master-nomina.html" class="master-nav-link">Nï¿½mina</a>
                     <a href="admin-pagos.html" class="master-nav-link">Pagos</a>
                     <a href="admin-master-tarifario.html" class="master-nav-link">Tarifario</a>
                     <a href="admin-master-pos.html" class="master-nav-link">POS</a>
@@ -82,7 +82,7 @@
                 <div id="page-card-loading" class="page-card-loading is-visible">
                     <div class="state-block loading">
                         <div class="state-spinner"></div>
-                        <p class="state-title">Cargando categorías...</p>
+                        <p class="state-title">Cargando categorï¿½as...</p>
                         <p class="state-desc">Esto puede tardar unos segundos</p>
                     </div>
                 </div>
@@ -91,8 +91,8 @@
                 <div id="page-card-empty" class="page-card-empty">
                     <div class="state-block">
                         <p class="state-title">Sin resultados</p>
-                        <p class="state-desc">Prueba con otro término de búsqueda.</p>
-                        <button id="btn-clear-search" class="btn btn-ghost btn-sm mt-2">Limpiar búsqueda</button>
+                        <p class="state-desc">Prueba con otro tï¿½rmino de bï¿½squeda.</p>
+                        <button id="btn-clear-search" class="btn btn-ghost btn-sm mt-2">Limpiar bï¿½squeda</button>
                     </div>
                 </div>
 
@@ -101,14 +101,14 @@
                     <div class="staff-dashboard">
                         <div class="dashboard-header align-start">
                             <div>
-                                <h2 class="dashboard-title dashboard-title-soft">Gestión de categorías</h2>
-                                <p class="dashboard-subtitle dashboard-subtitle-soft">Listado y control de categorías
+                                <h2 class="dashboard-title dashboard-title-soft">Gestiï¿½n de categorï¿½as</h2>
+                                <p class="dashboard-subtitle dashboard-subtitle-soft">Listado y control de categorï¿½as
                                 </p>
                             </div>
-                            <button id="btn-new" class="btn-icon btn-icon-plus" aria-label="Nueva categoría">+</button>
+                            <button id="btn-new" class="btn-icon btn-icon-plus" aria-label="Nueva categorï¿½a">+</button>
                         </div>
 
-                        <div class="filter-bar filter-bar-compact" aria-label="Filtros de categorías">
+                        <div class="filter-bar filter-bar-compact" aria-label="Filtros de categorï¿½as">
                             <div class="filter-group">
                                 <button class="status-pill status-neutral filter-pill active" data-status="all">
                                     Total <span class="pill-count" id="categories-total">0</span>
@@ -122,7 +122,7 @@
                             </div>
                             <div class="filter-actions">
                                 <input type="search" id="search-input" class="input input-compact filter-input"
-                                    placeholder="Buscar categoría..." aria-label="Buscar categoría" />
+                                    placeholder="Buscar categorï¿½a..." aria-label="Buscar categorï¿½a" />
                             </div>
                         </div>
 
@@ -140,8 +140,8 @@
     <div class="panel-overlay" id="panel-overlay"></div>
     <div class="slide-panel" id="slide-panel">
         <div class="panel-header">
-            <h3 class="panel-title" id="panel-title">Nueva Categoría</h3>
-            <button class="panel-close" id="btn-close-panel" aria-label="Cerrar panel">×</button>
+            <h3 class="panel-title" id="panel-title">Nueva Categorï¿½a</h3>
+            <button class="panel-close" id="btn-close-panel" aria-label="Cerrar panel">ï¿½</button>
         </div>
         <div class="panel-body" id="panel-form-container">
             <div id="panel-error" class="panel-error"></div>
@@ -178,6 +178,7 @@
     <script defer src="../../assets/js/modules/admin/admin-master-categorias.js"></script>
     <!-- Navigation -->
     <script defer src="../../assets/js/core/navigation.js"></script>
-</body>
+    <script defer src="../../assets/js/core/topbar.js"></script>
+  </body>
 
 </html>

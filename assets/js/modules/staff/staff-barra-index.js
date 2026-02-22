@@ -76,16 +76,6 @@
         if (ui.workdayText) ui.workdayText.textContent = 'Error';
     }
 
-    // 6. Avatar Dropdown Toggle
-    if (ui.avatar) {
-        ui.avatar.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (ui.userMenu) ui.userMenu.classList.toggle('hidden');
-        });
-    }
-
-    document.addEventListener('click', () => {
-        if (ui.userMenu) ui.userMenu.classList.add('hidden');
-    });
+    // 6. Avatar Dropdown → handled by core/topbar.js (event delegation)
 
 })();
